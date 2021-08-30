@@ -1,0 +1,36 @@
+.layout {
+	display: grid;
+
+	min-height: 100vh;
+
+	grid-template-columns: 320px auto 320px;
+	grid-template-rows: 156px 1fr 1fr;
+
+	grid-template-areas:
+		"sidePanel header overlay"
+		"sidePanel content overlay"
+		"footer footer footer";
+}
+
+.header {
+	grid-area: header;
+}
+
+.sidePanel {
+	background-color: aliceblue;
+	grid-area: sidePanel;
+}
+
+.overlay {
+	grid-area: overlay;
+}
+
+.footer {
+	grid-area: footer;
+}
+
+.content {
+	grid-area: content;
+
+	padding: 0 23px;
+}
