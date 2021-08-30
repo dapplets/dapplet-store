@@ -9,7 +9,6 @@ function ItemDapplet({ item }: ItemDappletProps): React.ReactElement {
   const [isOpen, setOpen] = useState<boolean>(false);
   const [install, setInstall] = useState<boolean>(false);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handlerOpen = ({ target }: any) => {
     target.tagName !== 'BUTTON' && setOpen(v => !v);
   };

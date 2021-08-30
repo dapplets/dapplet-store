@@ -15,8 +15,9 @@ const MENU = [
 export function Header({ className }: HeaderProps): React.ReactElement {
 	const [active, setActive] = useState<string>(MENU[0].label);
 
-	function handleItemClick(_: React.MouseEvent<HTMLElement>, { children }) {
-		setActive(children);
+	// @ts-ignore
+	function handleItemClick(_: React.MouseEvent<HTMLElement>, el): void {
+		setActive(el.children);
 	}
 
 	return (

@@ -1,6 +1,6 @@
 import logo from '../images/logo.png';
 
-// TODO: Реализовать ассинхронное получение данных
+// TODO: Реализовать асинхронное получение данных
 export interface IDappet {
   id: number | string;
   icon: string;
