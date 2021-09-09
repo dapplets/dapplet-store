@@ -1,5 +1,6 @@
-import { IDappet } from "../../config/DAPPLETS";
+import { IDappet } from "../../config/types";
 
 export interface ListDappletsProps {
-  list: IDappet[]
+  list: any[]
+  dappletsVersions: any
 }
