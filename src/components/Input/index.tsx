@@ -8,15 +8,22 @@ import styles from './Input.module.scss';
 function Input({ value, onChange, onClick }: InputProps): React.ReactElement {
   return (
     <SemanticInput
-      placeholder='поисковая строка'
+      placeholder='Start typing here'
       iconPosition="left" fluid
       size="large"
       className={styles.input}
       onChange={onChange}
       value={value}
+      style={{
+        padding: 15,
+        borderBottom: '1px solid #E3E3E3'
+      }}
     >
       <Icon name="search" />
-      <input style={{ color: '#2A2A2A', fontSize: 16 }} className="app-input" />
+      <input
+        style={{ color: '#2A2A2A', fontSize: 16, borderRadius: 0 }}
+        className="app-input"
+      />
       <Button onClick={onClick} basic size="tiny"
         className={cn(styles.clearInput, {
           [styles.show]: value.length > 0

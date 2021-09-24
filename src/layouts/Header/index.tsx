@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { HeaderProps } from './Header.props';
 import cn from 'classnames';
 import { Menu } from 'semantic-ui-react';
+import STORE_LOGO from '../../images/StoreLogo.svg';
 
 import styles from './Header.module.scss';
 
@@ -23,8 +24,12 @@ export function Header({ className }: HeaderProps): React.ReactElement {
 	return (
 		<header className={cn(styles.header, className)}>
 
-			<Menu secondary>
-				<Menu.Menu position="right">
+      <div className={cn(styles.headerLogo, className)}>
+        <img src={STORE_LOGO} alt='logo' style={{ width: 212 }}/>
+      </div>
+
+			<Menu text style={{ display: 'flex', flexGrow: 1, justifyContent: 'center' }}>
+				<Menu.Menu style={{ width: '100%', justifyContent: 'space-evenly' }}>
 					{
 						MENU.map(({ id, label }) => {
 							return (
@@ -41,6 +46,8 @@ export function Header({ className }: HeaderProps): React.ReactElement {
 					}
 				</Menu.Menu>
 			</Menu>
+
+      <div id='place-for-overlay-in-header' style={{ width: 430 }}></div>
 
 		</header>
 	);

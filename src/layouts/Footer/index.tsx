@@ -6,9 +6,7 @@ import cn from 'classnames';
 
 export function Footer({ className }: FooterProps): React.ReactElement {
 	return (
-		<footer className={cn(styles.footer, className)}>
-			Футер
-		</footer>
+		<footer className={cn(styles.footer, className)}></footer>
 	);
 }
 

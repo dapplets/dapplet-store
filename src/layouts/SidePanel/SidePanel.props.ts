@@ -1,3 +1,9 @@
 import { DetailedHTMLProps, HTMLAttributes } from "react";
+import { IDappletsList } from "../../config/types";
 
-export interface SidePanelProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> { }
+export interface SidePanelProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+  localDapplets: IDappletsList
+  setLocalDapplets: any
+  selectedList: IDappletsList | undefined
+  setSelectedList: any
+}

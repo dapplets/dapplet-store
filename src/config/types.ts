@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber';
 
-export interface IDappet {
+export interface IDapplet {
   description: string
   flags: BigNumber
   icon: {
@@ -12,4 +12,11 @@ export interface IDappet {
   name: string
   owner: string
   title: string
+}
+
+export interface IDappletsList {
+  name: string
+  dapplets: {
+    [key: string]: string
+  }
 }

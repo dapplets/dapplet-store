@@ -1,9 +1,9 @@
-img::before {  
+.itemImgage::before {  
   content: "";
   display: block;
 }
 
-img::after {  
+.itemImgage::after {  
   content: "" "";
   display: block;
   position: absolute;
@@ -16,15 +16,15 @@ img::after {
 }
 
 .item {
-	margin-bottom: 24px;
+	margin: 12px 15px;
 	padding: 7px 18px !important;
 
 	cursor: pointer;
 
-	border: 1px solid #7B7B7B;
-	border-radius: 14px;
+	border: 1px solid lightgray;
+  border-radius: 0 !important;
 	background: #FFF;
-	box-shadow: 0 3px 4px rgba(0, 0, 0, 0.09), 0 10px 8px rgba(38, 117, 209, 0.04);
+  box-shadow: none;
 }
 
 .itemContainer {
@@ -97,4 +97,54 @@ img::after {
 	margin-top: 20px;
 
 	font-weight: 700;
+}
+
+.button {
+  display: block !important;
+  width: 100px !important;
+  padding: 10px 0 !important;
+  margin: 14px 0 0 !important;
+  border-radius: 0 !important;
+}
+
+.button.add {
+  color: #57D983 !important;
+  background: none !important;
+  border: 1px solid #57D983 !important;
+
+  &:hover {
+    color: white !important;
+    background: #57D983 !important;
+  }
+
+  &:active {
+    color: white !important;
+    background: #47b36b !important;
+  }
+}
+
+.button.remove {
+  color: #D9304F !important;
+  background: none !important;
+  border: 1px solid #D9304F !important;
+
+  &:hover {
+    color: white !important;
+    background: #D9304F !important;
+  }
+
+  &:active {
+    color: white !important;
+    background: #c42441 !important;
+  }
+}
+
+.title {
+  font-family: 'Montserrat', sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px !important;
+  line-height: 149% !important;
+  color: #2A2A2A !important;
+  margin-bottom: 2px !important;
 }

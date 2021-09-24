@@ -1,11 +1,27 @@
 .header {
-	padding: 47px 89px;
+  display: flex;
+  position: fixed;
+	padding: 0 40px;
+  align-items: center;
+  border-bottom: 1px solid #E3E3E3;
+  background: white;
+  width: 100%;
+  height: 60px;
+  z-index: 9999;
 }
 
 .item {
-	color: #000;
+  font-family: 'Montserrat', sans-serif;
+  font-style: normal;
+  font-weight: normal !important;
+  font-size: 16px;
+  line-height: 149% !important;
+  color: #2A2A2A !important;
+}
 
-	font-size: 24px;
-	font-weight: 700 !important;
-	line-height: 28px;
+.headerLogo {
+  display: block;
+  position: relative;
+  width: 430px;
+  margin-top: 4px;
 }

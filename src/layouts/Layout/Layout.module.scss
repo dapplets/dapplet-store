@@ -3,13 +3,12 @@
 
 	min-height: 100vh;
 
-	grid-template-columns: 320px auto 320px;
-	grid-template-rows: 156px 1fr 548px;
+	grid-template-columns: 430px auto 430px;
+	grid-template-rows: 60px 1fr;
 
 	grid-template-areas:
-		"sidePanel header overlay"
-		"sidePanel content overlay"
-		"footer footer footer";
+		"header header header"
+		"sidePanel content overlay";
 }
 
 .header {
@@ -17,7 +16,7 @@
 }
 
 .sidePanel {
-	background-color: aliceblue;
+	background-color: #F5F5F5;
 	grid-area: sidePanel;
 }
 
@@ -25,12 +24,9 @@
 	grid-area: overlay;
 }
 
-.footer {
-	grid-area: footer;
-}
-
 .content {
 	grid-area: content;
 
-	padding: 0 23px;
+	padding: 0 !important;
+  width: 100%;
 }
