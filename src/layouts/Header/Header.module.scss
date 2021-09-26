@@ -22,6 +22,32 @@
 .headerLogo {
   display: block;
   position: relative;
-  width: 430px;
+  width: 390px;
   margin-top: 4px;
+
+  & > button {
+    background: none;
+    border: none;
+    box-shadow: none;
+    cursor: pointer;
+
+    & > img {
+      width: 212px;
+    }
+  }
+}
+
+.headerMainMenu {
+  display: flex;
+  flex-grow: 1;
+  align-items: baseline; 
+  justify-content: space-around;
+
+  & > a {
+    flex-grow: 1;
+    font-size: 16;
+    color: inherit;
+    padding: 5px 8px;
+    text-align: center;
+  }
 }

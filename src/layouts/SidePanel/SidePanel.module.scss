@@ -61,6 +61,21 @@
   }
 }
 
-.tags {
+.content > div {
 	margin-top: 28px;
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 12px;
+
+  & > a {
+    color: inherit;
+    margin-right: 10px;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }

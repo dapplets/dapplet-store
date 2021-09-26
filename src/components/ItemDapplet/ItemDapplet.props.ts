@@ -7,4 +7,6 @@ export interface ItemDappletProps {
   setSelectedDapplets: any
   localDapplets: IDappletsList
   setLocalDapplets: any
+  selectedList: IDappletsList | undefined
+  setSelectedList: any
 }

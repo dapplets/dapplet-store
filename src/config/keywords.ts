@@ -3,9 +3,7 @@ export const TAGS = [
   { id: 1, label: 'Twitter' },
   { id: 2, label: 'community' },
   { id: 3, label: 'video' },
-  { id: 4, label: 'Facebook' },
-  { id: 5, label: 'identity' },
-  { id: 6, label: 'Social' },
-  { id: 7, label: 'YouTube' },
-  { id: 8, label: 'wallet' },
+  { id: 4, label: 'identity' },
+  { id: 5, label: 'Social' },
+  { id: 6, label: 'YouTube' },
 ];

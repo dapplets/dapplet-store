@@ -15,17 +15,25 @@ export function Layout({
   setLocalDapplets,
   selectedList,
   setSelectedList,
-  children
+  children,
+  activeTags,
+  setActiveTags,
 }: LayoutProps): React.ReactElement<LayoutProps> {
 	return (
 		<main className={styles.layout}>
-			<Header className={styles.header} />
+			<Header
+        className={styles.header}
+        selectedList={selectedList}
+        setSelectedList={setSelectedList}
+      />
 			<SidePanel
         className={styles.sidePanel}
         localDapplets={localDapplets}
         setLocalDapplets={setLocalDapplets}
         selectedList={selectedList}
         setSelectedList={setSelectedList}
+        activeTags={activeTags}
+        setActiveTags={setActiveTags}
       />
 
 			<div className={styles.content}>

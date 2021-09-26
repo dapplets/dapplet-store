@@ -40,7 +40,7 @@ function ListDapplets({
             className='infoTitle'
             size="medium"
           >
-            {selectedList ? selectedList.name : 'All dapplets'}
+            {selectedList ? selectedList.name : 'Dapplets'}
           </Header>
           {selectedList && (
             <button
@@ -61,6 +61,8 @@ function ListDapplets({
               setSelectedDapplets={setSelectedDapplets}
               localDapplets={localDapplets}
               setLocalDapplets={setLocalDapplets}
+              selectedList={selectedList}
+              setSelectedList={setSelectedList}
             />;
           })
         }

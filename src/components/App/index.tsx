@@ -17,6 +17,7 @@ export default (): React.ReactElement => {
   const [selectedDapplets, setSelectedDapplets] = useState<IDappletsList>({ name: 'Selected dapplets', dapplets: {} });
   const [localDapplets, setLocalDapplets] = useState<IDappletsList>({ name: 'My dapplets', dapplets: {} });
   const [selectedList, setSelectedList] = useState<IDappletsList>();
+  const [activeTags, setActiveTags] = useState<string[]>([]);
 
   useEffect(() => {
     const provider = new ethers.providers.JsonRpcProvider(PROVIDER_URL, 4);
@@ -78,15 +79,18 @@ export default (): React.ReactElement => {
     dappletsToShow = dapplets;
   }
 
+  const reg1 = new RegExp(`${searchQuery.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')}`, 'gi');
+  const regs = activeTags.map((activeTag) => new RegExp(activeTag, 'gi'));
+  regs.push(reg1);
   const filteredDapplets = dappletsToShow && dappletsToShow.filter((dapplet) => {
-    const reg = new RegExp(`${searchQuery.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')}`, 'gi');
-    return (
+    const res = regs.map((reg) => (
       reg.exec(dapplet.name) ||
       reg.exec(dapplet.title) ||
       reg.exec(dapplet.owner.replace('0x000000000000000000000000', '0x')) ||
       reg.exec(dapplet.description) ||
       reg.exec(dappletsVersions[dapplet.name][dappletsVersions[dapplet.name].length - 1])
-    );
+    ));
+    return  !res.includes(null);
   })
   
   /** 
@@ -130,6 +134,8 @@ export default (): React.ReactElement => {
       setLocalDapplets={setLocalDapplets}
       selectedList={selectedList}
       setSelectedList={setSelectedList}
+      activeTags={activeTags}
+      setActiveTags={setActiveTags}
     >
       <React.Fragment>
         <Input 

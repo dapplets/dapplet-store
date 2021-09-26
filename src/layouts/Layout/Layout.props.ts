@@ -8,4 +8,6 @@ export interface LayoutProps {
   selectedList: IDappletsList | undefined
   setSelectedList: any
 	children?: React.ReactElement
+  activeTags: string[]
+  setActiveTags: any
 }

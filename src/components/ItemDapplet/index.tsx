@@ -8,7 +8,16 @@ import { ItemDappletProps } from './ItemDapplet.props';
 
 export default (props: ItemDappletProps): React.ReactElement => {
   const [isOpen, setOpen] = useState<boolean>(false);
-  const { item, dappletsVersions, selectedDapplets, setSelectedDapplets, localDapplets, setLocalDapplets } = props;
+  const {
+    item,
+    dappletsVersions,
+    selectedDapplets,
+    setSelectedDapplets,
+    localDapplets,
+    setLocalDapplets,
+    selectedList,
+    setSelectedList,
+  } = props;
 
   const selected = Object.prototype.hasOwnProperty.call(selectedDapplets.dapplets, item.name);
   const isLocalDapplet = Object.prototype.hasOwnProperty.call(localDapplets.dapplets, item.name);
@@ -28,6 +37,9 @@ export default (props: ItemDappletProps): React.ReactElement => {
     const localDappletsListStringified = JSON.stringify({ name: localDapplets.name, dapplets: localDappletsList });
     window.localStorage.setItem(localDapplets.name, localDappletsListStringified);
     setLocalDapplets({ name: localDapplets.name, dapplets: localDappletsList });
+    if (selectedList && selectedList.name === localDapplets.name) {
+      setSelectedList({ name: localDapplets.name, dapplets: localDappletsList });
+    }
   };
 
   const editSelectedDappletsList = (e: any) => {
@@ -41,6 +53,9 @@ export default (props: ItemDappletProps): React.ReactElement => {
     const selectedDappletsListStringified = JSON.stringify({ name: selectedDapplets.name, dapplets: selectedDappletsList });
     window.localStorage.setItem(selectedDapplets.name, selectedDappletsListStringified);
     setSelectedDapplets({ name: selectedDapplets.name, dapplets: selectedDappletsList });
+    if (selectedList && selectedList.name === selectedDapplets.name) {
+      setSelectedList({ name: selectedDapplets.name, dapplets: selectedDappletsList });
+    }
   };
 
   const owner = item.owner.replace('0x000000000000000000000000', '0x');

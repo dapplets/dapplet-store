@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { SidePanelProps } from './SidePanel.props';
 import cn from 'classnames';
 
@@ -11,7 +11,9 @@ export function SidePanel({
   localDapplets,
   setLocalDapplets,
   selectedList,
-  setSelectedList
+  setSelectedList,
+  activeTags,
+  setActiveTags,
 }: SidePanelProps): React.ReactElement {
 
   const removeFromLocalList = (name: string) => (e: any) => {
@@ -24,6 +26,15 @@ export function SidePanel({
     setLocalDapplets({ name: localDapplets.name, dapplets: localDappletsList});
   }
 
+  const handleSwitchTag = (label: string) => (e: any) => {
+    e.preventDefault();
+    if (activeTags.includes(label)) {
+      setActiveTags(activeTags.filter((tag) => tag !== label));
+    } else {
+      setActiveTags([...activeTags, label]);
+    }
+  }
+
 	return (
 		<div className={cn(styles.sidePanel, className)}>
       <div style={{
@@ -31,63 +42,81 @@ export function SidePanel({
         overflow: 'auto',
         paddingBottom: '20px'
       }}>
-
         <div className={styles.content}>
-          <div className={styles.info}>
-            <div style={{ marginTop: 28 }}>
-              <Header
-                as="h4"
-                className={cn('infoTitle', 'link')}
-                size="medium"
-                onClick={() => setSelectedList(localDapplets)}
-              >
-                My dapplets ({Object.keys(localDapplets.dapplets).length})
-              </Header>
-              {Object.entries(localDapplets.dapplets).map(([name, title], i) => (
-                <div style={{ display: 'flex', margin: 10 }} key={i + 1000}>
-                  <a href="#" className={styles.infoLink}>{title}</a>
-                  <button
-                    className='clearInput'
-                    style={{ background: 'none !important' }}
-                    onClick={removeFromLocalList(name)}
-                  >
-                    <span />
-                  </button>
-                </div>
-              ))}
-            </div>
-
-            <div style={{ marginTop: 28 }}>
-              <Header as="h4" className='infoTitle' size="medium">My lists</Header>
-            </div>
-
-            <div style={{ marginTop: 28 }}>
-              <Header as="h4" className='infoTitle' size="medium">Subscriptions</Header>
-              <a href="#" className={styles.infoLink}>Essential Dapplets <span>(Dapplets Team)</span></a>
-            </div>
+          <div>
+            <Header
+              as="h4"
+              className={cn('infoTitle', 'link')}
+              size="medium"
+              onClick={() => setSelectedList(localDapplets)}
+            >
+              My dapplets ({Object.keys(localDapplets.dapplets).length})
+            </Header>
+            {Object.entries(localDapplets.dapplets).map(([name, title], i) => (
+              <div style={{ display: 'flex', margin: 10 }} key={i + 1000}>
+                <a href="#" className={styles.infoLink}>{title}</a>
+                <button
+                  className='clearInput'
+                  style={{ background: 'none !important' }}
+                  onClick={removeFromLocalList(name)}
+                >
+                  <span />
+                </button>
+              </div>
+            ))}
           </div>
+
+          <div>
+            <Header as="h4" className='infoTitle' size="medium">My lists</Header>
+          </div>
+
+          <div>
+            <Header as="h4" className='infoTitle' size="medium">Subscriptions</Header>
+            <a href="#" className={styles.infoLink}>Essential Dapplets <span>(Dapplets Team)</span></a>
+          </div>
+
+          <div>
+            <Header as="h4" className='infoTitle' size="medium">Keywords:</Header>
+            <List horizontal>
+              {
+                TAGS.map(({ id, label }) => {
+                  return (
+                    <List.Item key={id} style={{ marginLeft: 0, marginRight: 10 }}>
+                      <Button
+                        size="tiny"
+                        color={activeTags.includes(label) ? 'orange' : 'green'}
+                        style={{ padding: '3px', margin: 0 }}
+                        onClick={handleSwitchTag(label)}
+                      >
+                        {label}
+                      </Button>
+                    </List.Item>
+                  );
+                })
+              }
+            </List>
+          </div>
+
+          <div className={styles.footer}>
+            <a href='https://dapplets.org/terms-conditions.html'>
+              Terms & Conditions
+            </a>
+            <a href='https://dapplets.org/privacy-policy.html'>
+              Privacy Policy
+            </a>
+            <a href='https://dapplets.org/index.html'>
+              About
+            </a>
+            <a href='https://forum.dapplets.org'>
+              Forum
+            </a>
+            <a href='https://docs.dapplets.org'>
+              Docs
+            </a>
+            <p>© 2019—2021 Dapplets Project</p>
+          </div>
+
         </div>
-
-        <div className={cn(styles.tags, styles.content)}>
-          <Header as="h4" className='infoTitle' size="medium">Keywords:</Header>
-
-          <List horizontal>
-            {
-              TAGS.map(({ id, label }) => {
-                return (
-                  <List.Item key={id} style={{ marginLeft: 0, marginRight: 10 }}>
-                    <Button size="mini" color="green"
-                      style={{ padding: '3px', margin: 0 }}
-                    >
-                      {label}
-                    </Button>
-                  </List.Item>
-                );
-              })
-            }
-          </List>
-        </div>
-
       </div>
 		</div>
 	);

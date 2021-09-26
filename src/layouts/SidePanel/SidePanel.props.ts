@@ -6,4 +6,6 @@ export interface SidePanelProps extends DetailedHTMLProps<HTMLAttributes<HTMLDiv
   setLocalDapplets: any
   selectedList: IDappletsList | undefined
   setSelectedList: any
+  activeTags: string[]
+  setActiveTags: any
 }
