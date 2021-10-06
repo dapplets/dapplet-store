@@ -9,4 +9,6 @@ export interface ListDappletsProps {
   setLocalDapplets: any
   selectedList: IDappletsList | undefined
   setSelectedList: any
+  dappletsTransactions: any
+  updateDappletsTransactions: any
 }

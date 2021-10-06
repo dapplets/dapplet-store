@@ -14,6 +14,7 @@ export default (): React.ReactElement => {
   const [searchQuery, editSearchQuery] = useState<string>('');
   const [dapplets, updateDapplets] = useState<any[]>();
   const [dappletsVersions, updateDappletsVersions] = useState<any>();
+  const [dappletsTransactions, updateDappletsTransactions] = useState<any>();
   const [selectedDapplets, setSelectedDapplets] = useState<IDappletsList>({ name: 'Selected dapplets', dapplets: {} });
   const [localDapplets, setLocalDapplets] = useState<IDappletsList>({ name: 'My dapplets', dapplets: {} });
   const [selectedList, setSelectedList] = useState<IDappletsList>();
@@ -23,7 +24,9 @@ export default (): React.ReactElement => {
     const provider = new ethers.providers.JsonRpcProvider(PROVIDER_URL, 4);
     const contract: any = new ethers.Contract('0xb76b02b35ad7cb71e2061056915e521e8f05c130', abi, provider);
     contract.queryFilter('ModuleInfoAdded').then(async (events: any) => {
+      // console.log('events', events)
       const versions: any = {};
+      const timestamps: any = {};
       const allModules: any[] = await Promise.all(events.map(async (ev: any) => {
         const tx: any = await provider.getTransaction(ev.transactionHash);
         const t: any = types;
@@ -36,12 +39,16 @@ export default (): React.ReactElement => {
           .map(x => `${parseInt('0x' + x[0] + x[1])}.${parseInt('0x' + x[2] + x[3])}.${parseInt('0x' + x[4] + x[5])}`);
         versions[module.name] = result;
 
+        const block = await ev.getBlock();
+        timestamps[module.name] = block.timestamp;
+
         return module;
       }));
 
       const allDapplets = allModules.filter((module: any) => module.moduleType === 1);
       updateDapplets(allDapplets);
       updateDappletsVersions(versions);
+      updateDappletsTransactions(timestamps);
     });
 
     const selectedDappletsListStringified = window.localStorage.getItem(selectedDapplets.name);
@@ -152,6 +159,8 @@ export default (): React.ReactElement => {
           setLocalDapplets={setLocalDapplets}
           selectedList={selectedList}
           setSelectedList={setSelectedList}
+          dappletsTransactions={dappletsTransactions}
+          updateDappletsTransactions={updateDappletsTransactions}
         />}
       </React.Fragment>
     </Layout>

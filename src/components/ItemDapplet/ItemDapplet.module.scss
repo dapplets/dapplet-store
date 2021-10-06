@@ -1,9 +1,9 @@
-.itemImgage::before {  
+.itemImage::before {  
   content: "";
   display: block;
 }
 
-.itemImgage::after {  
+.itemImage::after {  
   content: "" "";
   display: block;
   position: absolute;
@@ -40,7 +40,7 @@
 .author {
 	margin-top: 4px;
 
-	color: #919191;
+	color: #454545;
 
 	font-size: 14px;
 	line-height: 16px;
@@ -48,7 +48,7 @@
 
 .author {
 	a {
-		color: #919191;
+		color: #454545;
 		text-decoration-line: underline;
 	}
 
@@ -85,7 +85,7 @@
 	max-width: 546px;
 	margin-top: 6px;
 
-	color: #919191;
+	color: #454545;
 
 	font-size: 14px;
 	line-height: 16px;
