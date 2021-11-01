@@ -6,19 +6,28 @@ import Input from '../Input';
 import ListDapplets from '../ListDapplets';
 import abi from '../../abi.json';
 import types from '../../types.json';
-import { IDappletsList } from "../../config/types";
+import { IDapplet, IDappletsList, IDappletVersions } from "../../config/types";
+import { Lists } from '../../config/types';
 
 const PROVIDER_URL = 'https://rinkeby.infura.io/v3/eda881d858ae4a25b2dfbbd0b4629992';
 
-export default (): React.ReactElement => {
+const App = (): React.ReactElement => {
   const [searchQuery, editSearchQuery] = useState<string>('');
-  const [dapplets, updateDapplets] = useState<any[]>();
-  const [dappletsVersions, updateDappletsVersions] = useState<any>();
+  const [dapplets, updateDapplets] = useState<IDapplet[]>();
+  const [dappletsVersions, updateDappletsVersions] = useState<IDappletVersions>();
   const [dappletsTransactions, updateDappletsTransactions] = useState<any>();
-  const [selectedDapplets, setSelectedDapplets] = useState<IDappletsList>({ name: 'Selected dapplets', dapplets: {} });
-  const [localDapplets, setLocalDapplets] = useState<IDappletsList>({ name: 'My dapplets', dapplets: {} });
-  const [selectedList, setSelectedList] = useState<IDappletsList>();
+  const [selectedDappletsList, setSelectedDappletsList] = useState<IDappletsList>({ listName: Lists.Selected, dappletsNames: [] });
+  const [localDappletsList, setLocalDappletsList] = useState<IDappletsList>({ listName: Lists.Local, dappletsNames: [] });
+  const [selectedList, setSelectedList] = useState<Lists>();
   const [activeTags, setActiveTags] = useState<string[]>([]);
+  const [expandedItems, setExpandedItems] = useState<string[]>([]);
+
+  // console.log('dapplets', dapplets)
+  // console.log('dappletsVersions', dappletsVersions)
+  // console.log('dappletsTransactions', dappletsTransactions)
+  // console.log('selectedDapplets', selectedDappletsList)
+  // console.log('localDapplets', localDappletsList)
+  // console.log('selectedList', selectedList)
 
   useEffect(() => {
     const provider = new ethers.providers.JsonRpcProvider(PROVIDER_URL, 4);
@@ -51,60 +60,63 @@ export default (): React.ReactElement => {
       updateDappletsTransactions(timestamps);
     });
 
-    const selectedDappletsListStringified = window.localStorage.getItem(selectedDapplets.name);
+    // console.log('selectedDapplets.name', selectedDappletsList.name)
+    const selectedDappletsListStringified = window.localStorage.getItem(selectedDappletsList.listName);
+    // console.log('selectedDappletsListStringified', selectedDappletsListStringified)
     if (selectedDappletsListStringified) {
-      const selectedDappletsListParsed = JSON.parse(selectedDappletsListStringified);
-      setSelectedDapplets(selectedDappletsListParsed);
+      const selectedDappletsListParsed: string[] = JSON.parse(selectedDappletsListStringified);
+      setSelectedDappletsList({ listName: selectedDappletsList.listName, dappletsNames: selectedDappletsListParsed });
     } else {
-      setSelectedDapplets({ name: selectedDapplets.name, dapplets: {} });
+      setSelectedDappletsList({ listName: selectedDappletsList.listName, dappletsNames: [] });
     }
 
-    const localDappletsListStringified = window.localStorage.getItem(localDapplets.name);
+    // console.log('localDapplets.name', localDappletsList.name)
+    const localDappletsListStringified = window.localStorage.getItem(localDappletsList.listName);
+    // console.log('localDappletsListStringified', localDappletsListStringified)
     if (localDappletsListStringified) {
-      const localDappletsListParsed = JSON.parse(localDappletsListStringified);
-      setLocalDapplets(localDappletsListParsed);
+      const localDappletsListParsed: string[] = JSON.parse(localDappletsListStringified);
+      setLocalDappletsList({ listName: localDappletsList.listName, dappletsNames: localDappletsListParsed });
     } else {
-      setLocalDapplets({ name: localDapplets.name, dapplets: {} });
+      setLocalDappletsList({ listName: localDappletsList.listName, dappletsNames: [] });
     }
 
   }, []);
 
-  const handlerChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    const value = event.target.value;
-    editSearchQuery(value);
-  };
-
-  const deleteTextInput = () => editSearchQuery('');
-
-  let dappletsToShow: any[] | undefined;
-  if (selectedList) {
-    if (dapplets !== undefined) {
-      const keys = Object.keys(selectedList.dapplets);
-      dappletsToShow = dapplets.filter((dapp) => keys.includes(dapp.name));
-    }
-  } else {
-    dappletsToShow = dapplets;
+  const formDappletsList = (selectedList?: Lists) => {
+    if (dapplets === undefined || selectedList === undefined) return dapplets;
+    const chooseDappletsList = {
+      [Lists.Local]: localDappletsList,
+      [Lists.Selected]: selectedDappletsList,
+    };
+    // console.log('selectedList', selectedList)
+    const dapps = chooseDappletsList[selectedList];
+    // console.log('dapps', dapps)
+    return dapps.dappletsNames
+      .map((dappletName) => dapplets.find((dapplet) => dapplet.name === dappletName))
+      .filter((dapp): dapp is IDapplet => !!dapp);
   }
+
+  const dappletsByList = formDappletsList(selectedList);
 
   const reg1 = new RegExp(`${searchQuery.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')}`, 'gi');
   const regs = activeTags.map((activeTag) => new RegExp(activeTag, 'gi'));
   regs.push(reg1);
-  const filteredDapplets = dappletsToShow && dappletsToShow.filter((dapplet) => {
+  const filteredDapplets = dappletsByList && dappletsByList.filter((dapplet) => {
     const res = regs.map((reg) => (
       reg.exec(dapplet.name) ||
       reg.exec(dapplet.title) ||
       reg.exec(dapplet.owner.replace('0x000000000000000000000000', '0x')) ||
       reg.exec(dapplet.description) ||
-      reg.exec(dappletsVersions[dapplet.name][dappletsVersions[dapplet.name].length - 1])
+      reg.exec(dappletsVersions![dapplet.name][dappletsVersions![dapplet.name].length - 1])
     ));
     return  !res.includes(null);
   })
-  
+
   /** 
    *  The feature makes the header hidden when scrilling down the page and visible when scrolling up the page.
    * */
 
-  /* let lastKnownScrollPosition = 0;
+  let lastKnownScrollPosition = 0;
   let ticking = false;
   
   useEffect(() => {
@@ -131,38 +143,43 @@ export default (): React.ReactElement => {
         el.style.opacity = '1';
       }
     };
-  };*/
+  };
 
   return (
     <Layout
-      selectedDapplets={selectedDapplets}
-      setSelectedDapplets={setSelectedDapplets}
-      localDapplets={localDapplets}
-      setLocalDapplets={setLocalDapplets}
+      dappletTitles={dapplets?.reduce((acc, dapp) => ({ ...acc, [dapp.name]: dapp.title }), {})}
+      selectedDappletsList={selectedDappletsList}
+      setSelectedDappletsList={setSelectedDappletsList}
+      localDappletsList={localDappletsList}
+      setLocalDappletsList={setLocalDappletsList}
       selectedList={selectedList}
       setSelectedList={setSelectedList}
       activeTags={activeTags}
       setActiveTags={setActiveTags}
+      setExpandedItems={setExpandedItems}
     >
-      <React.Fragment>
+      <>
         <Input 
-          value={searchQuery}
-          onChange={handlerChange}
-          onClick={deleteTextInput}
+          searchQuery={searchQuery}
+          editSearchQuery={editSearchQuery}
         />
-        {filteredDapplets  && <ListDapplets
-          list={filteredDapplets}
+        {filteredDapplets && <ListDapplets
+          dapplets={filteredDapplets}
           dappletsVersions={dappletsVersions}
-          selectedDapplets={selectedDapplets}
-          setSelectedDapplets={setSelectedDapplets}
-          localDapplets={localDapplets}
-          setLocalDapplets={setLocalDapplets}
+          selectedDapplets={selectedDappletsList}
+          setSelectedDapplets={setSelectedDappletsList}
+          localDapplets={localDappletsList}
+          setLocalDapplets={setLocalDappletsList}
           selectedList={selectedList}
           setSelectedList={setSelectedList}
           dappletsTransactions={dappletsTransactions}
           updateDappletsTransactions={updateDappletsTransactions}
+          expandedItems={expandedItems}
+          setExpandedItems={setExpandedItems}
         />}
-      </React.Fragment>
+      </>
     </Layout>
   );
 };
+
+export default App;

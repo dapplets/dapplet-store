@@ -1,13 +1,15 @@
-import { IDappletsList } from "../../config/types";
+import { IDappletsList, Lists } from "../../config/types";
 
 export interface LayoutProps {
-  selectedDapplets: IDappletsList
-  setSelectedDapplets: any
-  localDapplets: IDappletsList
-  setLocalDapplets: any
-  selectedList: IDappletsList | undefined
-  setSelectedList: any
+  dappletTitles?: { [x: string]: string }
+  selectedDappletsList: IDappletsList
+  setSelectedDappletsList: any
+  localDappletsList: IDappletsList
+  setLocalDappletsList: React.Dispatch<React.SetStateAction<IDappletsList>>
+  selectedList?: Lists
+  setSelectedList: React.Dispatch<React.SetStateAction<Lists | undefined>>
 	children?: React.ReactElement
   activeTags: string[]
   setActiveTags: any
+  setExpandedItems: React.Dispatch<React.SetStateAction<string[]>>
 }

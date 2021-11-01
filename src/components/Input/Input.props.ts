@@ -1,7 +1,6 @@
 import React from "react";
 
 export interface InputProps {
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
-  onClick: () => void;
-  value: string;
+  searchQuery: string;
+  editSearchQuery: React.Dispatch<React.SetStateAction<string>>
 }

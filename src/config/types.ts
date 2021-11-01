@@ -1,5 +1,15 @@
 import { BigNumber } from '@ethersproject/bignumber';
 
+export enum Lists {
+  Selected = 'Selected dapplets',
+  Local = 'My dapplets',
+}
+
+export interface IDappletsList {
+  listName: Lists
+  dappletsNames: string[]
+}
+
 export interface IDapplet {
   description: string
   flags: BigNumber
@@ -14,9 +24,6 @@ export interface IDapplet {
   title: string
 }
 
-export interface IDappletsList {
-  name: string
-  dapplets: {
-    [key: string]: string
-  }
+export interface IDappletVersions {
+  [name: string]: string[]
 }

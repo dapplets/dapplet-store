@@ -1,9 +1,11 @@
 import { DetailedHTMLProps, HTMLAttributes } from "react";
-import { IDappletsList } from "../../config/types";
+import { IDappletsList, Lists } from "../../config/types";
 
 export interface OverlayProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
-  selectedDapplets: IDappletsList
-  setSelectedDapplets: any
-  selectedList: IDappletsList | undefined
-  setSelectedList: any
+  dappletTitles?: { [x: string]: string }
+  selectedDappletsList: IDappletsList
+  setSelectedDappletsList: any
+  selectedList?: Lists
+  setSelectedList: React.Dispatch<React.SetStateAction<Lists | undefined>>
+  setExpandedItems: React.Dispatch<React.SetStateAction<string[]>>
 }

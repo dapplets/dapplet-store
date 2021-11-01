@@ -11,7 +11,12 @@ const MENU = [
 	{ id: 1, label: 'Lists' },
 ];
 
-export function Header({ className, selectedList, setSelectedList }: HeaderProps): React.ReactElement {
+export function Header({
+  className,
+  selectedList,
+  setSelectedList,
+  setExpandedItems,
+}: HeaderProps): React.ReactElement {
 	const [active, setActive] = useState<string>(MENU[0].label);
 
 	function handleItemClick(_: React.MouseEvent<HTMLElement>, el: any): void {
@@ -27,7 +32,10 @@ export function Header({ className, selectedList, setSelectedList }: HeaderProps
 		<header className={cn(styles.header, className)}>
 
       <div className={styles.headerLogo}>
-        <button onClick={() => setSelectedList()}>
+        <button onClick={() => {
+          setExpandedItems([]);
+          setSelectedList();
+        }}>
           <img src={STORE_LOGO} alt='logo' />
         </button>
       </div>

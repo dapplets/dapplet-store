@@ -8,45 +8,51 @@ import { LayoutProps } from './Layout.props';
 
 
 export function Layout({
-  selectedDapplets,
-  setSelectedDapplets,
-  localDapplets,
-  setLocalDapplets,
+  dappletTitles,
+  selectedDappletsList,
+  setSelectedDappletsList,
+  localDappletsList,
+  setLocalDappletsList,
   selectedList,
   setSelectedList,
   children,
   activeTags,
   setActiveTags,
+  setExpandedItems,
 }: LayoutProps): React.ReactElement<LayoutProps> {
 	return (
-		<main className={styles.layout}>
+		<div className={styles.layout}>
 			<Header
         className={styles.header}
         selectedList={selectedList}
         setSelectedList={setSelectedList}
+        setExpandedItems={setExpandedItems}
       />
 			<SidePanel
+        dappletTitles={dappletTitles}
         className={styles.sidePanel}
-        localDapplets={localDapplets}
-        setLocalDapplets={setLocalDapplets}
-        selectedList={selectedList}
+        localDappletsList={localDappletsList}
+        setLocalDappletsList={setLocalDappletsList}
         setSelectedList={setSelectedList}
         activeTags={activeTags}
         setActiveTags={setActiveTags}
+        setExpandedItems={setExpandedItems}
       />
 
-			<div className={styles.content}>
+			<main className={styles.content}>
 				{children}
-			</div>
+			</main>
 
 			<Overlay
+        dappletTitles={dappletTitles}
         className={styles.overlay}
-        selectedDapplets={selectedDapplets}
-        setSelectedDapplets={setSelectedDapplets}
+        selectedDappletsList={selectedDappletsList}
+        setSelectedDappletsList={setSelectedDappletsList}
         selectedList={selectedList}
         setSelectedList={setSelectedList}
+        setExpandedItems={setExpandedItems}
       />
-		</main>
+		</div>
 	);
 }
 
