@@ -3,8 +3,12 @@ import cn from 'classnames';
 import { Button, Checkbox, Image, List } from 'semantic-ui-react';
 import { ethers } from 'ethers';
 
+import {useDraggable} from '@dnd-kit/core';
+import {useSortable} from '@dnd-kit/sortable'
+
 import styles from './ItemDapplet.module.scss';
 import { ItemDappletProps } from './ItemDapplet.props';
+import {CSS} from '@dnd-kit/utilities';
 
 export default (props: ItemDappletProps): React.ReactElement => {
   const [isOpen, setOpen] = useState<boolean>(false);
@@ -19,6 +23,14 @@ export default (props: ItemDappletProps): React.ReactElement => {
     setSelectedList,
     dappletsTransactions,
   } = props;
+
+  const {attributes, listeners, setNodeRef, transform, transition} = useSortable({
+    id: item.name
+  });
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
 
   const selected = Object.prototype.hasOwnProperty.call(selectedDapplets.dapplets, item.name);
   const isLocalDapplet = Object.prototype.hasOwnProperty.call(localDapplets.dapplets, item.name);
@@ -67,7 +79,14 @@ export default (props: ItemDappletProps): React.ReactElement => {
   };
 
   return (
-    <List.Item className={styles.item} onClick={handlerOpen}>
+    <List.Item
+      className={styles.item}
+      ref={setNodeRef}
+      style={style}
+      {...listeners}
+      {...attributes}
+      /*onClick={handlerOpen}*/
+    >
       <div className={styles.itemContainer}>
         <Checkbox
           style={{
