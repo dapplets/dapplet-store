@@ -10,4 +10,6 @@ export interface ItemDappletProps {
   selectedList: IDappletsList | undefined
   setSelectedList: any
   dappletsTransactions: any
+  editLocalDappletsList: (item: IDapplet) => (e: any) => void
+  editSelectedDappletsList: (item: IDapplet) => (e: any) => void
 }

@@ -4,9 +4,9 @@ export interface ListDappletsProps {
   list: any[]
   dappletsVersions: any
   selectedDapplets: IDappletsList
-  setSelectedDapplets: any
+  setSelectedDapplets: React.Dispatch<React.SetStateAction<IDappletsList>>
   localDapplets: IDappletsList
-  setLocalDapplets: any
+  setLocalDapplets: React.Dispatch<React.SetStateAction<IDappletsList>>
   selectedList: IDappletsList | undefined
   setSelectedList: any
   dappletsTransactions: any

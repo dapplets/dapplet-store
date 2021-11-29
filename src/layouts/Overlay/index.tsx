@@ -15,9 +15,8 @@ export function Overlay({
 
   const removeFromSelectedDappletsList = (name: string) => (e: any) => {
     e.preventDefault();
-    const selectedDappletsList = Object.keys(selectedDapplets.dapplets)
-        .filter((dapp) => dapp !== name)
-        .reduce((acc, key) => ({ ...acc, [key]: selectedDapplets.dapplets[key] }), {});
+    const selectedDappletsList = selectedDapplets.dapplets
+        .filter((dapp) => dapp !== name);
     const selectedDappletsListStringified = JSON.stringify({ name: selectedDapplets.name, dapplets: selectedDappletsList });
     window.localStorage.setItem(selectedDapplets.name, selectedDappletsListStringified);
     setSelectedDapplets({ name: selectedDapplets.name, dapplets: selectedDappletsList });
@@ -26,7 +25,7 @@ export function Overlay({
   const editDecentralizedList = (e: any) => {
     e.preventDefault();
     window.localStorage.removeItem(selectedDapplets.name);
-    setSelectedDapplets({ name: selectedDapplets.name, dapplets: {} });
+    setSelectedDapplets({ name: selectedDapplets.name, dapplets: [] });
   }
 
 	return (

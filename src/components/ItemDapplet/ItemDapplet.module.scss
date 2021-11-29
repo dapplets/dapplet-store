@@ -25,6 +25,25 @@
   border-radius: 0 !important;
 	background: #FFF;
   box-shadow: none;
+
+  &__draggable {
+      cursor: pointer;
+      /*grid-area: draggable;*/
+      width: 20px;
+      height: 20px;
+      margin: 23px 18px 0 0;
+      background: transparent url('../../images/draggable.svg')
+          center no-repeat;
+      background-size: 18px 9px;
+
+      @media (max-width: 900px) {
+          display: none;
+      }
+
+      &:active {
+        cursor: grabbing;
+      }
+  }
 }
 
 .itemContainer {

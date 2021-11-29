@@ -18,9 +18,8 @@ export function SidePanel({
 
   const removeFromLocalList = (name: string) => (e: any) => {
     e.preventDefault();
-    const localDappletsList = Object.keys(localDapplets.dapplets)
-        .filter((dapp) => dapp !== name)
-        .reduce((acc, key) => ({ ...acc, [key]: localDapplets.dapplets[key] }), {});
+    const localDappletsList = localDapplets.dapplets
+      .filter((dapp) => dapp !== name);
     const localDappletsListStringified = JSON.stringify({ name: localDapplets.name, dapplets: localDappletsList});
     window.localStorage.setItem(localDapplets.name, localDappletsListStringified);
     setLocalDapplets({ name: localDapplets.name, dapplets: localDappletsList});
