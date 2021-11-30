@@ -8,10 +8,11 @@ import { LayoutProps } from './Layout.props';
 
 
 export function Layout({
-  selectedDapplets,
-  setSelectedDapplets,
-  localDapplets,
-  setLocalDapplets,
+  dappletTitles,
+  selectedDappletsList,
+  setSelectedDappletsList,
+  localDappletsList,
+  setLocalDappletsList,
   selectedList,
   setSelectedList,
   children,
@@ -26,9 +27,10 @@ export function Layout({
         setSelectedList={setSelectedList}
       />
 			<SidePanel
+        dappletTitles={dappletTitles}
         className={styles.sidePanel}
-        localDapplets={localDapplets}
-        setLocalDapplets={setLocalDapplets}
+        localDappletsList={localDappletsList}
+        setLocalDappletsList={setLocalDappletsList}
         selectedList={selectedList}
         setSelectedList={setSelectedList}
         activeTags={activeTags}
@@ -40,9 +42,10 @@ export function Layout({
 			</div>
 
 			<Overlay
+        dappletTitles={dappletTitles}
         className={styles.overlay}
-        selectedDapplets={selectedDapplets}
-        setSelectedDapplets={setSelectedDapplets}
+        selectedDappletsList={selectedDappletsList}
+        setSelectedDappletsList={setSelectedDappletsList}
         selectedList={selectedList}
         setSelectedList={setSelectedList}
       />

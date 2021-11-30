@@ -6,8 +6,8 @@ export enum Lists {
 }
 
 export interface IDappletsList {
-  name: Lists
-  dapplets: string[]
+  listName: Lists
+  dappletsNames: string[]
 }
 
 export interface IDapplet {
@@ -22,4 +22,8 @@ export interface IDapplet {
   name: string
   owner: string
   title: string
+}
+
+export interface IDappletVersions {
+  [name: string]: string[]
 }

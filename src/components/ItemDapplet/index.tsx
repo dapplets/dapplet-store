@@ -35,8 +35,8 @@ export default (props: ItemDappletProps): React.ReactElement => {
     transition,
   };
 
-  const selected = selectedDapplets.dapplets.includes(item.name);
-  const isLocalDapplet = localDapplets.dapplets.includes(item.name);
+  const selected = selectedDapplets.dappletsNames.includes(item.name);
+  const isLocalDapplet = localDapplets.dappletsNames.includes(item.name);
 
   const handlerOpen = ({ target }: any) => {
     target.tagName !== 'BUTTON' && setOpen(v => !v);
@@ -57,12 +57,12 @@ export default (props: ItemDappletProps): React.ReactElement => {
       onClick={handlerOpen}
     >
       <div className={styles.itemContainer}>
-        <div
+        {selectedList && <div
           className={styles.item__draggable}
           onClick={e => e.stopPropagation()}
           {...attributes}
           {...listeners}
-        />
+        />}
         <Checkbox
           style={{
             margin: '25px 18px 0 0'

@@ -1,4 +1,4 @@
-import { IDapplet, IDappletsList } from "../../config/types";
+import { IDapplet, IDappletsList, Lists } from "../../config/types";
 
 export interface ItemDappletProps {
   item: IDapplet
@@ -7,7 +7,7 @@ export interface ItemDappletProps {
   setSelectedDapplets: any
   localDapplets: IDappletsList
   setLocalDapplets: any
-  selectedList: IDappletsList | undefined
+  selectedList?: Lists
   setSelectedList: any
   dappletsTransactions: any
   editLocalDappletsList: (item: IDapplet) => (e: any) => void

@@ -1,7 +1,7 @@
 import { DetailedHTMLProps, HTMLAttributes } from "react";
-import { IDappletsList } from "../../config/types";
+import { IDappletsList, Lists } from "../../config/types";
 
 export interface HeaderProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
-  selectedList: IDappletsList | undefined
+  selectedList?: Lists
   setSelectedList: any
 }

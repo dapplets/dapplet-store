@@ -6,4 +6,5 @@ export const TAGS = [
   { id: 4, label: 'identity' },
   { id: 5, label: 'Social' },
   { id: 6, label: 'YouTube' },
+  { id: 7, label: 'NEAR' },
 ];

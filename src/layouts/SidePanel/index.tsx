@@ -5,11 +5,14 @@ import cn from 'classnames';
 import styles from './SidePanel.module.scss';
 import { Button, Header, List } from 'semantic-ui-react';
 import { TAGS } from '../../config/keywords';
+import { Lists, IDappletsList } from '../../config/types';
+import { saveListToLocalStorage } from '../../utils';
 
 export function SidePanel({
+  dappletTitles,
   className,
-  localDapplets,
-  setLocalDapplets,
+  localDappletsList,
+  setLocalDappletsList,
   selectedList,
   setSelectedList,
   activeTags,
@@ -18,11 +21,13 @@ export function SidePanel({
 
   const removeFromLocalList = (name: string) => (e: any) => {
     e.preventDefault();
-    const localDappletsList = localDapplets.dapplets
+    const list = localDappletsList.dappletsNames
       .filter((dapp) => dapp !== name);
-    const localDappletsListStringified = JSON.stringify({ name: localDapplets.name, dapplets: localDappletsList});
-    window.localStorage.setItem(localDapplets.name, localDappletsListStringified);
-    setLocalDapplets({ name: localDapplets.name, dapplets: localDappletsList});
+    // console.log('localDappletsList', localDappletsList)
+    const newLocalDappletsList: IDappletsList = { listName: localDappletsList.listName, dappletsNames: list };
+    // console.log('newLocalDappletsList', newLocalDappletsList)
+    saveListToLocalStorage(newLocalDappletsList);
+    setLocalDappletsList(newLocalDappletsList);
   }
 
   const handleSwitchTag = (label: string) => (e: any) => {
@@ -47,13 +52,13 @@ export function SidePanel({
               as="h4"
               className={cn('infoTitle', 'link')}
               size="medium"
-              onClick={() => setSelectedList(localDapplets)}
+              onClick={() => setSelectedList(Lists.Local)}
             >
-              My dapplets ({Object.keys(localDapplets.dapplets).length})
+              My dapplets ({localDappletsList.dappletsNames.length})
             </Header>
-            {Object.entries(localDapplets.dapplets).map(([name, title], i) => (
+            {dappletTitles && localDappletsList.dappletsNames.map((name, i) => (
               <div style={{ display: 'flex', margin: 10 }} key={i + 1000}>
-                <a href="#" className={styles.infoLink}>{title}</a>
+                <a href="#" className={styles.infoLink}>{dappletTitles[name]}</a>
                 <button
                   className='clearInput'
                   style={{ background: 'none !important' }}

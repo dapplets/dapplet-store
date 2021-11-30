@@ -4,28 +4,31 @@ import { OverlayProps } from './Overlay.props';
 import { Button, Divider, Header, Input, Message } from 'semantic-ui-react';
 
 import styles from './Overlay.module.scss';
+import { Lists, IDappletsList } from '../../config/types';
+import { saveListToLocalStorage } from '../../utils';
 
 export function Overlay({
+  dappletTitles,
   className,
-  selectedDapplets,
-  setSelectedDapplets,
+  selectedDappletsList,
+  setSelectedDappletsList,
   selectedList,
   setSelectedList
 }: OverlayProps): React.ReactElement {
 
   const removeFromSelectedDappletsList = (name: string) => (e: any) => {
     e.preventDefault();
-    const selectedDappletsList = selectedDapplets.dapplets
+    const list = selectedDappletsList.dappletsNames
         .filter((dapp) => dapp !== name);
-    const selectedDappletsListStringified = JSON.stringify({ name: selectedDapplets.name, dapplets: selectedDappletsList });
-    window.localStorage.setItem(selectedDapplets.name, selectedDappletsListStringified);
-    setSelectedDapplets({ name: selectedDapplets.name, dapplets: selectedDappletsList });
+    const newSelectedDappletsList: IDappletsList = { listName: selectedDappletsList.listName, dappletsNames: list };
+    saveListToLocalStorage(newSelectedDappletsList);
+    setSelectedDappletsList(newSelectedDappletsList);
   }
 
   const editDecentralizedList = (e: any) => {
     e.preventDefault();
-    window.localStorage.removeItem(selectedDapplets.name);
-    setSelectedDapplets({ name: selectedDapplets.name, dapplets: [] });
+    window.localStorage.removeItem(selectedDappletsList.listName);
+    setSelectedDappletsList({ name: selectedDappletsList.listName, dapplets: [] });
   }
 
 	return (
@@ -36,7 +39,7 @@ export function Overlay({
         paddingBottom: '20px'
       }}>
 
-        {Object.keys(selectedDapplets.dapplets).length > 0 && (
+        {selectedDappletsList.dappletsNames.length > 0 && (
           <div className={styles.content}>
             <div className={styles.info}>
               <div style={{ marginTop: 28 }}>
@@ -44,13 +47,13 @@ export function Overlay({
                   as="h4"
                   className={cn('infoTitle', 'link')}
                   size="medium"
-                  onClick={() => setSelectedList(selectedDapplets)}
+                  onClick={() => setSelectedList(Lists.Selected)}
                 >
-                  Selected dapplets ({Object.keys(selectedDapplets.dapplets).length})
+                  Selected dapplets ({selectedDappletsList.dappletsNames.length})
                 </Header>
-                {Object.entries(selectedDapplets.dapplets).map(([name, title], i) => (
+                {dappletTitles && selectedDappletsList.dappletsNames.map((name, i) => (
                   <div style={{ display: 'flex', margin: 10 }} key={i}>
-                    <a href="#" className={styles.infoLink}>{title}</a>
+                    <a href="#" className={styles.infoLink}>{dappletTitles[name]}</a>
                     <button
                       className='clearInput'
                       style={{ background: 'none !important' }}
