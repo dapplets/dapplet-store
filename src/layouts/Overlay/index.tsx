@@ -53,7 +53,7 @@ export function Overlay({
                 </Header>
                 {dappletTitles && selectedDappletsList.dappletsNames.map((name, i) => (
                   <div style={{ display: 'flex', margin: 10 }} key={i}>
-                    <a href="#" className={styles.infoLink}>{dappletTitles[name]}</a>
+                    <button className={styles.infoLink}>{dappletTitles[name]}</button>
                     <button
                       className='clearInput'
                       style={{ background: 'none !important' }}
@@ -102,7 +102,7 @@ export function Overlay({
             }}>
             Download
           </Button>
-          <a href='https://docs.dapplets.org/docs/installation' target='_blank'>
+          <a href='https://docs.dapplets.org/docs/installation' target='_blank' rel='noreferrer'>
             How to install  <svg height="10" width="15" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4.53657 8.69699" className="css-b7q1rs">
               <path d="M.18254,8.697a.18149.18149,0,0,1-.12886-.31034L4.09723,4.34126.05369.29954a.18149.18149,0,0,1,.2559-.2559L4.4838,4.21785a.18149.18149,0,0,1,0,.2559L.30958,8.648A.18149.18149,0,0,1,.18254,8.697Z" fill="currentColor">
               </path>

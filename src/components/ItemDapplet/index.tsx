@@ -1,34 +1,34 @@
 import React, { useState } from 'react';
 import cn from 'classnames';
-import { Button, Checkbox, Image, List } from 'semantic-ui-react';
+import { Button, Checkbox, Image } from 'semantic-ui-react';
 import { ethers } from 'ethers';
 
-import {useDraggable} from '@dnd-kit/core';
 import {useSortable} from '@dnd-kit/sortable'
 
 import styles from './ItemDapplet.module.scss';
 import { ItemDappletProps } from './ItemDapplet.props';
-import {CSS} from '@dnd-kit/utilities';
+import { CSS } from '@dnd-kit/utilities';
 import Item from '../SortableOverlayItem/Item';
 
-export default (props: ItemDappletProps): React.ReactElement => {
+const ItemDapplet = (props: ItemDappletProps): React.ReactElement => {
   const [isOpen, setOpen] = useState<boolean>(false);
   const {
     item,
     dappletsVersions,
     selectedDapplets,
-    setSelectedDapplets,
     localDapplets,
-    setLocalDapplets,
     selectedList,
-    setSelectedList,
     dappletsTransactions,
     editLocalDappletsList,
     editSelectedDappletsList,
   } = props;
 
   const {attributes, listeners, setNodeRef, transform, transition} = useSortable({
-    id: item.name
+    id: item.name,
+    transition: {
+      duration: 150, // milliseconds
+      easing: 'cubic-bezier(0.25, 1, 0.5, 1)',
+    },
   });
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -52,8 +52,8 @@ export default (props: ItemDappletProps): React.ReactElement => {
   return (
     <Item
       className={styles.item}
-      ref={setNodeRef}
       style={style}
+      ref={setNodeRef}
       onClick={handlerOpen}
     >
       <div className={styles.itemContainer}>
@@ -112,3 +112,5 @@ export default (props: ItemDappletProps): React.ReactElement => {
     </Item>
   );
 };
+
+export default ItemDapplet;

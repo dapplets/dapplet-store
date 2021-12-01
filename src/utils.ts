@@ -1,4 +1,4 @@
-import { IDapplet, IDappletsList } from "./config/types";
+import { IDappletsList } from "./config/types";
 
 export const saveListToLocalStorage = (dappletsList: IDappletsList) => {
   const { listName: name, dappletsNames: dapplets } = dappletsList;

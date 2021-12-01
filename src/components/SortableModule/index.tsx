@@ -24,7 +24,7 @@ import {
 
 import { SortableModuleProps } from './SortableModule.props';
 
-export default ({ children, ...props }: SortableModuleProps) => {
+const SortableModule = ({ children, ...props }: SortableModuleProps) => {
   const { items, setItems } = props;
 
   const [activeId, setActiveId] = useState<SetStateAction<string> | null>(null);
@@ -58,8 +58,8 @@ export default ({ children, ...props }: SortableModuleProps) => {
     }
     // console.log('newArray', newArray)
     const newDappletsList: IDappletsList = { listName: items!.listName, dappletsNames: newArray };
-    saveListToLocalStorage(newDappletsList);
     setItems(newDappletsList);
+    saveListToLocalStorage(newDappletsList);
     setActiveId(null);
   }
 
@@ -73,9 +73,18 @@ export default ({ children, ...props }: SortableModuleProps) => {
       <SortableContext items={items!.dappletsNames} strategy={verticalListSortingStrategy}>
         {children}
       </SortableContext>
-      <DragOverlay>
+      <DragOverlay
+        style={{ zIndex: 999, cursor: 'grabbing' }}
+        dropAnimation={{
+          duration: 500,
+          easing: 'cubic-bezier(0.18, 0.67, 0.6, 1.22)',
+        }}
+      >
+        {/* ToDo: It is not correct. We need to pass ItemDapplet data to Item */}
         {activeId ? <Item id={activeId} /> : null}
       </DragOverlay>
     </DndContext>
   );
 };
+
+export default SortableModule;

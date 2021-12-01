@@ -1,9 +1,8 @@
-import React, { useState,  SetStateAction } from 'react';
+import React, { useState } from 'react';
 import { Dropdown, Header } from 'semantic-ui-react';
 
 import { ListDappletsProps } from './ListDapplets.props';
 import ItemDapplet from '../ItemDapplet';
-import Item from '../SortableOverlayItem/Item';
 import { IDapplet, IDappletsList, Lists } from '../../config/types';
 import { saveListToLocalStorage } from '../../utils';
 import SortableModule from '../SortableModule';
@@ -121,11 +120,8 @@ function ListDapplets({
         item={item}
         dappletsVersions={dappletsVersions}
         selectedDapplets={selectedDapplets}
-        setSelectedDapplets={setSelectedDapplets}
         localDapplets={localDapplets}
-        setLocalDapplets={setLocalDapplets}
         selectedList={selectedList}
-        setSelectedList={setSelectedList}
         dappletsTransactions={dappletsTransactions}
         editLocalDappletsList={editLocalDappletsList}
         editSelectedDappletsList={editSelectedDappletsList}

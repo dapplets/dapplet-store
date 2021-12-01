@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { SidePanelProps } from './SidePanel.props';
 import cn from 'classnames';
 
@@ -13,7 +13,6 @@ export function SidePanel({
   className,
   localDappletsList,
   setLocalDappletsList,
-  selectedList,
   setSelectedList,
   activeTags,
   setActiveTags,
@@ -58,7 +57,7 @@ export function SidePanel({
             </Header>
             {dappletTitles && localDappletsList.dappletsNames.map((name, i) => (
               <div style={{ display: 'flex', margin: 10 }} key={i + 1000}>
-                <a href="#" className={styles.infoLink}>{dappletTitles[name]}</a>
+                <button className={styles.infoLink}>{dappletTitles[name]}</button>
                 <button
                   className='clearInput'
                   style={{ background: 'none !important' }}
@@ -76,7 +75,7 @@ export function SidePanel({
 
           <div>
             <Header as="h4" className='infoTitle' size="medium">Subscriptions</Header>
-            <a href="#" className={styles.infoLink}>Essential Dapplets <span>(Dapplets Team)</span></a>
+            <button className={styles.infoLink}>Essential Dapplets <span>(Dapplets Team)</span></button>
           </div>
 
           <div>

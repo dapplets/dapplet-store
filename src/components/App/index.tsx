@@ -11,7 +11,7 @@ import { Lists } from '../../config/types';
 
 const PROVIDER_URL = 'https://rinkeby.infura.io/v3/eda881d858ae4a25b2dfbbd0b4629992';
 
-export default (): React.ReactElement => {
+const App = (): React.ReactElement => {
   const [searchQuery, editSearchQuery] = useState<string>('');
   const [dapplets, updateDapplets] = useState<IDapplet[]>();
   const [dappletsVersions, updateDappletsVersions] = useState<IDappletVersions>();
@@ -81,16 +81,6 @@ export default (): React.ReactElement => {
 
   }, []);
 
-  // let dappletsByList: IDapplet[] | undefined;
-  // if (selectedList) {
-  //   if (dapplets !== undefined) {
-  //     dappletsByList = selectedList.dapplets
-  //       .map((dappletName) => dapplets.find((dapplet) => dapplet.name === dappletName))
-  //       .filter((dapp): dapp is IDapplet => !!dapp);
-  //   }
-  // } else {
-  //   dappletsByList = dapplets;
-  // }
   const formDappletsList = (selectedList?: Lists) => {
     if (dapplets === undefined || selectedList === undefined) return dapplets;
     const chooseDappletsList = {
@@ -187,3 +177,5 @@ export default (): React.ReactElement => {
     </Layout>
   );
 };
+
+export default App;
