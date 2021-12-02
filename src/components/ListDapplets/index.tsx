@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { Dropdown, Header } from 'semantic-ui-react';
 
-import { ListDappletsProps } from './ListDapplets.props';
-import ItemDapplet from '../ItemDapplet';
 import { IDapplet, IDappletsList, Lists } from '../../config/types';
 import { saveListToLocalStorage } from '../../utils';
-import SortableModule from '../SortableModule';
+
+import { ListDappletsProps } from './ListDapplets.props';
+import styles from './ListDapplets.module.scss';
+import SortableList from '../SortableList';
+import ItemDapplet from '../ItemDapplet';
 
 function ListDapplets({
-  list,
+  dapplets,
   dappletsVersions,
   setSelectedDapplets,
   selectedDapplets,
@@ -17,6 +19,8 @@ function ListDapplets({
   selectedList,
   setSelectedList,
   dappletsTransactions,
+  expandedItems,
+  setExpandedItems,
 }: ListDappletsProps): React.ReactElement {
 
   const [sortType, setSortType] = useState('A-Z');
@@ -99,34 +103,24 @@ function ListDapplets({
         </Dropdown>
       )}
       {selectedList && (
-        <button className="small-link" onClick={() => setSelectedList(undefined)}>
+        <button className="small-link" onClick={() => {
+          setExpandedItems([]);
+          setSelectedList(undefined);
+        }}>
           Show all
         </button>
       )}
     </div>
   );
 
-  const sortedDapplets = list
+  const sortedDapplets = dapplets
     .sort((a, b) => {
       if (selectedList) return 0;
       if (sortType === 'A-Z') return collator.compare(a.title, b.title);
       if (sortType === 'Z-A') return collator.compare(b.title, a.title);
       if (sortType === 'Newest') return collator.compare(dappletsTransactions[b.name], dappletsTransactions[a.name]);
       return collator.compare(dappletsTransactions[a.name], dappletsTransactions[b.name]);
-    })
-    .map((item, i) =>
-      <ItemDapplet
-        key={i}
-        item={item}
-        dappletsVersions={dappletsVersions}
-        selectedDapplets={selectedDapplets}
-        localDapplets={localDapplets}
-        selectedList={selectedList}
-        dappletsTransactions={dappletsTransactions}
-        editLocalDappletsList={editLocalDappletsList}
-        editSelectedDappletsList={editSelectedDappletsList}
-      />
-    );
+    });
 
   const chooseList = {
     [Lists.Selected]: selectedDapplets,
@@ -139,7 +133,7 @@ function ListDapplets({
   }
 
   return (
-    <div
+    <article
       style={{
         position: 'static',
         padding: '0 !important',
@@ -156,10 +150,41 @@ function ListDapplets({
       >
         {listDappletsHeader}
         {selectedList
-          ? <SortableModule items={chooseList[selectedList]} setItems={chooseSetMethod[selectedList]}>{sortedDapplets}</SortableModule>
-          : sortedDapplets}
+          ? <SortableList
+            dapplets={dapplets}
+            items={chooseList[selectedList]}
+            setItems={chooseSetMethod[selectedList]}
+            dappletsVersions={dappletsVersions}
+            selectedDapplets={selectedDapplets}
+            localDapplets={localDapplets}
+            dappletsTransactions={dappletsTransactions}
+            editLocalDappletsList={editLocalDappletsList}
+            editSelectedDappletsList={editSelectedDappletsList}
+            expandedItems={expandedItems}
+            setExpandedItems={setExpandedItems}
+          />
+          : sortedDapplets
+            .map((item, i) => (
+              <section className={styles.item} key={i}>
+                <div className={styles.itemContainer}>
+                  <ItemDapplet
+                    key={item.name}
+                    item={item}
+                    dappletsVersions={dappletsVersions}
+                    selectedDapplets={selectedDapplets}
+                    localDapplets={localDapplets}
+                    dappletsTransactions={dappletsTransactions}
+                    editLocalDappletsList={editLocalDappletsList}
+                    editSelectedDappletsList={editSelectedDappletsList}
+                    expandedItems={expandedItems}
+                    setExpandedItems={setExpandedItems}
+                  />
+                </div>
+              </section>
+            )
+          )}
       </div>
-    </div>
+    </article>
   );
 }
 

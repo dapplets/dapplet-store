@@ -18,13 +18,15 @@ export function Layout({
   children,
   activeTags,
   setActiveTags,
+  setExpandedItems,
 }: LayoutProps): React.ReactElement<LayoutProps> {
 	return (
-		<main className={styles.layout}>
+		<div className={styles.layout}>
 			<Header
         className={styles.header}
         selectedList={selectedList}
         setSelectedList={setSelectedList}
+        setExpandedItems={setExpandedItems}
       />
 			<SidePanel
         dappletTitles={dappletTitles}
@@ -34,11 +36,12 @@ export function Layout({
         setSelectedList={setSelectedList}
         activeTags={activeTags}
         setActiveTags={setActiveTags}
+        setExpandedItems={setExpandedItems}
       />
 
-			<div className={styles.content}>
+			<main className={styles.content}>
 				{children}
-			</div>
+			</main>
 
 			<Overlay
         dappletTitles={dappletTitles}
@@ -47,8 +50,9 @@ export function Layout({
         setSelectedDappletsList={setSelectedDappletsList}
         selectedList={selectedList}
         setSelectedList={setSelectedList}
+        setExpandedItems={setExpandedItems}
       />
-		</main>
+		</div>
 	);
 }
 

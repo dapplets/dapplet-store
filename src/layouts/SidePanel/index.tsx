@@ -16,6 +16,7 @@ export function SidePanel({
   setSelectedList,
   activeTags,
   setActiveTags,
+  setExpandedItems,
 }: SidePanelProps): React.ReactElement {
 
   const removeFromLocalList = (name: string) => (e: any) => {
@@ -39,7 +40,7 @@ export function SidePanel({
   }
 
 	return (
-		<div className={cn(styles.sidePanel, className)}>
+		<aside className={cn(styles.sidePanel, className)}>
       <div style={{
         height: 'calc(100vh - 70px)',
         overflow: 'auto',
@@ -51,7 +52,10 @@ export function SidePanel({
               as="h4"
               className={cn('infoTitle', 'link')}
               size="medium"
-              onClick={() => setSelectedList(Lists.Local)}
+              onClick={() => {
+                setExpandedItems([]);
+                setSelectedList(Lists.Local);
+              }}
             >
               My dapplets ({localDappletsList.dappletsNames.length})
             </Header>
@@ -121,6 +125,6 @@ export function SidePanel({
 
         </div>
       </div>
-		</div>
+		</aside>
 	);
 }

@@ -7,4 +7,5 @@ export interface OverlayProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivEl
   setSelectedDappletsList: any
   selectedList?: Lists
   setSelectedList: React.Dispatch<React.SetStateAction<Lists | undefined>>
+  setExpandedItems: React.Dispatch<React.SetStateAction<string[]>>
 }

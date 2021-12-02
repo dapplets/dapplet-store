@@ -11,4 +11,5 @@ export interface LayoutProps {
 	children?: React.ReactElement
   activeTags: string[]
   setActiveTags: any
+  setExpandedItems: React.Dispatch<React.SetStateAction<string[]>>
 }

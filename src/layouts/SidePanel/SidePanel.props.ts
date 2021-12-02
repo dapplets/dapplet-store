@@ -8,4 +8,5 @@ export interface SidePanelProps extends DetailedHTMLProps<HTMLAttributes<HTMLDiv
   setSelectedList: React.Dispatch<React.SetStateAction<Lists | undefined>>
   activeTags: string[]
   setActiveTags: any
+  setExpandedItems: React.Dispatch<React.SetStateAction<string[]>>
 }

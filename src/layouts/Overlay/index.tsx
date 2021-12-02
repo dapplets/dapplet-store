@@ -13,7 +13,8 @@ export function Overlay({
   selectedDappletsList,
   setSelectedDappletsList,
   selectedList,
-  setSelectedList
+  setSelectedList,
+  setExpandedItems,
 }: OverlayProps): React.ReactElement {
 
   const removeFromSelectedDappletsList = (name: string) => (e: any) => {
@@ -32,7 +33,7 @@ export function Overlay({
   }
 
 	return (
-		<div className={cn(styles.overlay, className)}>
+		<aside className={cn(styles.overlay, className)}>
       <div style={{
         height: 'calc(100vh - 70px)',
         overflow: 'auto',
@@ -47,7 +48,10 @@ export function Overlay({
                   as="h4"
                   className={cn('infoTitle', 'link')}
                   size="medium"
-                  onClick={() => setSelectedList(Lists.Selected)}
+                  onClick={() => {
+                    setExpandedItems([]);
+                    setSelectedList(Lists.Selected);
+                  }}
                 >
                   Selected dapplets ({selectedDappletsList.dappletsNames.length})
                 </Header>
@@ -111,6 +115,6 @@ export function Overlay({
         </Message>
 
       </div>
-    </div>
+    </aside>
 	);
 }

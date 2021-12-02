@@ -20,6 +20,7 @@ const App = (): React.ReactElement => {
   const [localDappletsList, setLocalDappletsList] = useState<IDappletsList>({ listName: Lists.Local, dappletsNames: [] });
   const [selectedList, setSelectedList] = useState<Lists>();
   const [activeTags, setActiveTags] = useState<string[]>([]);
+  const [expandedItems, setExpandedItems] = useState<string[]>([]);
 
   // console.log('dapplets', dapplets)
   // console.log('dappletsVersions', dappletsVersions)
@@ -155,6 +156,7 @@ const App = (): React.ReactElement => {
       setSelectedList={setSelectedList}
       activeTags={activeTags}
       setActiveTags={setActiveTags}
+      setExpandedItems={setExpandedItems}
     >
       <>
         <Input 
@@ -162,7 +164,7 @@ const App = (): React.ReactElement => {
           editSearchQuery={editSearchQuery}
         />
         {filteredDapplets && <ListDapplets
-          list={filteredDapplets}
+          dapplets={filteredDapplets}
           dappletsVersions={dappletsVersions}
           selectedDapplets={selectedDappletsList}
           setSelectedDapplets={setSelectedDappletsList}
@@ -172,6 +174,8 @@ const App = (): React.ReactElement => {
           setSelectedList={setSelectedList}
           dappletsTransactions={dappletsTransactions}
           updateDappletsTransactions={updateDappletsTransactions}
+          expandedItems={expandedItems}
+          setExpandedItems={setExpandedItems}
         />}
       </>
     </Layout>
