@@ -61,23 +61,23 @@ const App = (): React.ReactElement => {
     });
 
     // console.log('selectedDapplets.name', selectedDappletsList.name)
-    const selectedDappletsListStringified = window.localStorage.getItem(selectedDappletsList.listName);
+    const selectedDappletsListStringified = window.localStorage.getItem(Lists.Selected);
     // console.log('selectedDappletsListStringified', selectedDappletsListStringified)
     if (selectedDappletsListStringified) {
       const selectedDappletsListParsed: string[] = JSON.parse(selectedDappletsListStringified);
-      setSelectedDappletsList({ listName: selectedDappletsList.listName, dappletsNames: selectedDappletsListParsed });
+      setSelectedDappletsList({ listName: Lists.Selected, dappletsNames: selectedDappletsListParsed });
     } else {
-      setSelectedDappletsList({ listName: selectedDappletsList.listName, dappletsNames: [] });
+      setSelectedDappletsList({ listName: Lists.Selected, dappletsNames: [] });
     }
 
     // console.log('localDapplets.name', localDappletsList.name)
-    const localDappletsListStringified = window.localStorage.getItem(localDappletsList.listName);
+    const localDappletsListStringified = window.localStorage.getItem(Lists.Local);
     // console.log('localDappletsListStringified', localDappletsListStringified)
     if (localDappletsListStringified) {
       const localDappletsListParsed: string[] = JSON.parse(localDappletsListStringified);
-      setLocalDappletsList({ listName: localDappletsList.listName, dappletsNames: localDappletsListParsed });
+      setLocalDappletsList({ listName: Lists.Local, dappletsNames: localDappletsListParsed });
     } else {
-      setLocalDappletsList({ listName: localDappletsList.listName, dappletsNames: [] });
+      setLocalDappletsList({ listName: Lists.Local, dappletsNames: [] });
     }
 
   }, []);
@@ -115,11 +115,10 @@ const App = (): React.ReactElement => {
   /** 
    *  The feature makes the header hidden when scrilling down the page and visible when scrolling up the page.
    * */
-
-  let lastKnownScrollPosition = 0;
-  let ticking = false;
   
   useEffect(() => {
+    let lastKnownScrollPosition = 0;
+    let ticking = false;
     document.addEventListener('scroll', function(e) {
       if (!ticking) {
         window.requestAnimationFrame(function() {
