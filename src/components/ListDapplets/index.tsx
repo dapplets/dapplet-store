@@ -26,7 +26,7 @@ function ListDapplets({
       margin: '0 !important'
     }}>
       <div style={{
-        height: 'calc(100vh - 135px)',
+        height: 'calc(100vh - 206px)',
         overflow: 'auto',
         padding: '0 !important',
         margin: '0 !important'

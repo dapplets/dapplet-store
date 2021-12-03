@@ -102,7 +102,7 @@ export function Header({ className, selectedList, setSelectedList }: HeaderProps
         </div>
 
       </div>
-      <div className={cn(styles.headerTop)}>
+      <div className={cn(styles.headerTop)} style={{ height: 84 }}>
         <div className={styles.headerLogo}>
           <button onClick={() => setSelectedList()}>
             <img src={STORE_LOGO} alt='logo' />
