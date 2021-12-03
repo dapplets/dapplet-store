@@ -53,6 +53,11 @@
   background-color: #e3e3e3;
 }
 
+.activeItem {
+  color: #d9304f !important;
+  transition: all .2s cubic-bezier(.24,.22,.015,1.56);
+}
+
 .item:hover {
   color: #d9304f !important;
   transition: all .2s cubic-bezier(.24,.22,.015,1.56);
@@ -62,7 +67,7 @@
   width: 100%;
 }
 
-.item::after {
+.item::after, .activeItem::after {
   position: absolute;
   top: -12px;
   left: 50%;
@@ -72,6 +77,10 @@
   transform: translateX(-50%);
   background-color: #d9304f;
   transition: all .2s cubic-bezier(.24,.22,.015,1.56);
+}
+
+.activeItem::after {
+  width: 90%;
 }
 
 .avatar {

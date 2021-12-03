@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { HeaderProps } from './Header.props';
 import cn from 'classnames';
 import STORE_LOGO from '../../images/StoreLogo.svg';
 import AVATAR from '../../images/mockedImage.jpg';
+import { Lists } from '../../config/types';
 
 import styles from './Header.module.scss';
 
@@ -31,13 +32,29 @@ export function Header({
 	const [active, setActive] = useState<number>(MENU[0].id);
 
 	function handleItemClick(id: number): void {
-    if (id === 1) {
-      setSelectedList()
-    } else {
-      setSelectedList(selectedList)
+    switch (id) {
+      case 1:
+        setSelectedList();
+        break;
+      case 3:
+        setSelectedList(Lists.Local);
+        break;
+      default:
+        setSelectedList(selectedList);
+        break;
     }
-		setActive(id);
 	}
+
+  useEffect(() => {
+    switch (selectedList) {
+      case Lists.Local:
+        setActive(3);
+        break;
+      default:
+        setActive(1);
+        break;
+    }
+  }, [selectedList])
 
 	return (
 		<header className={cn(styles.header, className)}>
@@ -54,7 +71,6 @@ export function Header({
                   <a
                     key={id}
                     className={styles.headerTopItem}
-                    onClick={() => handleItemClick(id)}
                     href={href}
                   >
                     {label}
@@ -66,7 +82,6 @@ export function Header({
                 <div
                   key={id}
                   className={styles.headerTopItem}
-                  onClick={() => handleItemClick(id)}
                 >
                   {label}
                 </div>
@@ -119,7 +134,7 @@ export function Header({
               return (
                 <div
                   key={id}
-                  className={styles.item}
+                  className={cn(styles.item, id === active ? styles.activeItem : null)}
                   onClick={() => handleItemClick(id)}
                 >
                   {label}
