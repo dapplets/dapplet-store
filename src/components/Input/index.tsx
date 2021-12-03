@@ -5,15 +5,23 @@ import { InputProps } from './Input.props';
 import cn from 'classnames';
 import styles from './Input.module.scss';
 
-function Input({ value, onChange, onClick }: InputProps): React.ReactElement {
+function Input({ searchQuery, editSearchQuery }: InputProps): React.ReactElement {
+
+  const handlerChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    const value = event.target.value;
+    editSearchQuery(value);
+  };
+
+  const deleteTextInput = () => editSearchQuery('');
+
   return (
     <SemanticInput
       placeholder='Start typing here'
       iconPosition="left" fluid
       size="large"
       className={styles.input}
-      onChange={onChange}
-      value={value}
+      onChange={handlerChange}
+      value={searchQuery}
       style={{
         padding: 15,
         borderBottom: '1px solid #E3E3E3'
@@ -24,9 +32,9 @@ function Input({ value, onChange, onClick }: InputProps): React.ReactElement {
         style={{ color: '#2A2A2A', fontSize: 16, borderRadius: 0 }}
         className="app-input"
       />
-      <Button onClick={onClick} basic size="tiny"
+      <Button onClick={deleteTextInput} basic size="tiny"
         className={cn(styles.clearInput, {
-          [styles.show]: value.length > 0
+          [styles.show]: searchQuery.length > 0
         })}>
         <span />
       </Button>

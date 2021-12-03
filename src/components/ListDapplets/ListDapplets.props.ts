@@ -1,14 +1,16 @@
-import { IDappletsList } from "../../config/types";
+import { IDapplet, IDappletsList, IDappletVersions, Lists } from "../../config/types";
 
 export interface ListDappletsProps {
-  list: any[]
-  dappletsVersions: any
+  dapplets: IDapplet[]
+  dappletsVersions?: IDappletVersions
   selectedDapplets: IDappletsList
-  setSelectedDapplets: any
+  setSelectedDapplets: React.Dispatch<React.SetStateAction<IDappletsList>>
   localDapplets: IDappletsList
-  setLocalDapplets: any
-  selectedList: IDappletsList | undefined
-  setSelectedList: any
+  setLocalDapplets: React.Dispatch<React.SetStateAction<IDappletsList>>
+  selectedList?: Lists
+  setSelectedList: React.Dispatch<React.SetStateAction<Lists | undefined>>
   dappletsTransactions: any
   updateDappletsTransactions: any
+  expandedItems: string[]
+  setExpandedItems: React.Dispatch<React.SetStateAction<string[]>>
 }

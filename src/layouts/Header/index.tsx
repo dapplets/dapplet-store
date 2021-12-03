@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import { HeaderProps } from './Header.props';
 import cn from 'classnames';
-import { Menu } from 'semantic-ui-react';
 import STORE_LOGO from '../../images/StoreLogo.svg';
-import GITHUB_LOGO from '../../images/github.svg';
-import DISCORD_LOGO from '../../images/discord.svg';
-import TELEGRAM_LOGO from '../../images/telegram.svg';
 import AVATAR from '../../images/mockedImage.jpg';
 
 import styles from './Header.module.scss';
@@ -26,7 +22,12 @@ const MENU2 = [
 	{ id: 5, label: 'Forum', href:'https://forum.dapplets.org' },
 ];
 
-export function Header({ className, selectedList, setSelectedList }: HeaderProps): React.ReactElement {
+export function Header({
+  className,
+  selectedList,
+  setSelectedList,
+  setExpandedItems,
+}: HeaderProps): React.ReactElement {
 	const [active, setActive] = useState<number>(MENU[0].id);
 
 	function handleItemClick(id: number): void {
@@ -104,7 +105,10 @@ export function Header({ className, selectedList, setSelectedList }: HeaderProps
       </div>
       <div className={cn(styles.headerTop)} style={{ height: 84 }}>
         <div className={styles.headerLogo}>
-          <button onClick={() => setSelectedList()}>
+          <button onClick={() => {
+            setExpandedItems([]);
+            setSelectedList();
+          }}>
             <img src={STORE_LOGO} alt='logo' />
           </button>
         </div>

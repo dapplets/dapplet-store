@@ -1,11 +1,12 @@
 import { DetailedHTMLProps, HTMLAttributes } from "react";
-import { IDappletsList } from "../../config/types";
+import { IDappletsList, Lists } from "../../config/types";
 
 export interface SidePanelProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
-  localDapplets: IDappletsList
-  setLocalDapplets: any
-  selectedList: IDappletsList | undefined
-  setSelectedList: any
+  dappletTitles?: { [x: string]: string }
+  localDappletsList: IDappletsList
+  setLocalDappletsList: React.Dispatch<React.SetStateAction<IDappletsList>>
+  setSelectedList: React.Dispatch<React.SetStateAction<Lists | undefined>>
   activeTags: string[]
   setActiveTags: any
+  setExpandedItems: React.Dispatch<React.SetStateAction<string[]>>
 }

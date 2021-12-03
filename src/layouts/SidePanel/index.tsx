@@ -1,29 +1,33 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { SidePanelProps } from './SidePanel.props';
 import cn from 'classnames';
 
 import styles from './SidePanel.module.scss';
 import { Button, Header, List } from 'semantic-ui-react';
 import { TAGS } from '../../config/keywords';
+import { Lists, IDappletsList } from '../../config/types';
+import { saveListToLocalStorage } from '../../utils';
 
 export function SidePanel({
+  dappletTitles,
   className,
-  localDapplets,
-  setLocalDapplets,
-  selectedList,
+  localDappletsList,
+  setLocalDappletsList,
   setSelectedList,
   activeTags,
   setActiveTags,
+  setExpandedItems,
 }: SidePanelProps): React.ReactElement {
 
   const removeFromLocalList = (name: string) => (e: any) => {
     e.preventDefault();
-    const localDappletsList = Object.keys(localDapplets.dapplets)
-        .filter((dapp) => dapp !== name)
-        .reduce((acc, key) => ({ ...acc, [key]: localDapplets.dapplets[key] }), {});
-    const localDappletsListStringified = JSON.stringify({ name: localDapplets.name, dapplets: localDappletsList});
-    window.localStorage.setItem(localDapplets.name, localDappletsListStringified);
-    setLocalDapplets({ name: localDapplets.name, dapplets: localDappletsList});
+    const list = localDappletsList.dappletsNames
+      .filter((dapp) => dapp !== name);
+    // console.log('localDappletsList', localDappletsList)
+    const newLocalDappletsList: IDappletsList = { listName: localDappletsList.listName, dappletsNames: list };
+    // console.log('newLocalDappletsList', newLocalDappletsList)
+    saveListToLocalStorage(newLocalDappletsList);
+    setLocalDappletsList(newLocalDappletsList);
   }
 
   const handleSwitchTag = (label: string) => (e: any) => {
@@ -36,7 +40,7 @@ export function SidePanel({
   }
 
 	return (
-		<div className={cn(styles.sidePanel, className)}>
+		<aside className={cn(styles.sidePanel, className)}>
       <div style={{
         height: 'calc(100vh - 70px)',
         overflow: 'auto',
@@ -48,13 +52,16 @@ export function SidePanel({
               as="h4"
               className={cn('infoTitle', 'link')}
               size="medium"
-              onClick={() => setSelectedList(localDapplets)}
+              onClick={() => {
+                setExpandedItems([]);
+                setSelectedList(Lists.Local);
+              }}
             >
-              My dapplets ({Object.keys(localDapplets.dapplets).length})
+              My dapplets ({localDappletsList.dappletsNames.length})
             </Header>
-            {Object.entries(localDapplets.dapplets).map(([name, title], i) => (
+            {dappletTitles && localDappletsList.dappletsNames.map((name, i) => (
               <div style={{ display: 'flex', margin: 10 }} key={i + 1000}>
-                <a href="#" className={styles.infoLink}>{title}</a>
+                <button className={styles.infoLink}>{dappletTitles[name]}</button>
                 <button
                   className='clearInput'
                   style={{ background: 'none !important' }}
@@ -72,7 +79,7 @@ export function SidePanel({
 
           <div>
             <Header as="h4" className='infoTitle' size="medium">Subscriptions</Header>
-            <a href="#" className={styles.infoLink}>Essential Dapplets <span>(Dapplets Team)</span></a>
+            <button className={styles.infoLink}>Essential Dapplets <span>(Dapplets Team)</span></button>
           </div>
 
           <div>
@@ -118,6 +125,6 @@ export function SidePanel({
 
         </div>
       </div>
-		</div>
+		</aside>
 	);
 }

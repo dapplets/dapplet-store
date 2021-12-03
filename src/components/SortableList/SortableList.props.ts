@@ -1,7 +1,9 @@
-import { IDapplet, IDappletsList } from "../../config/types";
+import { IDapplet, IDappletsList, Lists } from "../../config/types";
 
-export interface ItemDappletProps {
-  item: IDapplet
+export interface SortableListProps {
+  dapplets: IDapplet[]
+  items?: IDappletsList
+  setItems: React.Dispatch<React.SetStateAction<IDappletsList>>
   dappletsVersions: any
   selectedDapplets: IDappletsList
   localDapplets: IDappletsList
