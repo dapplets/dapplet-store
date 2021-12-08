@@ -1,6 +1,5 @@
 import React from 'react';
-import cn from 'classnames';
-import { Button, Checkbox, Image } from 'semantic-ui-react';
+import { Checkbox, Image } from 'semantic-ui-react';
 import { ethers } from 'ethers';
 import styled from 'styled-components';
 
