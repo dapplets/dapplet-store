@@ -67,7 +67,7 @@
 
 .author {
 	a {
-		color: #454545;
+		color: #588CA3;
 		text-decoration-line: underline;
 	}
 
@@ -159,6 +159,8 @@
 }
 
 .title {
+  display: grid;
+  grid-template-columns: max-content 1fr;
   font-family: 'Montserrat', sans-serif;
   font-style: normal;
   font-weight: 500;
@@ -166,4 +168,8 @@
   line-height: 149% !important;
   color: #2A2A2A !important;
   margin-bottom: 2px !important;
+}
+
+.titleUsers {
+  display: flex;
 }
