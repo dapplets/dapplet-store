@@ -9,6 +9,8 @@ import types from '../../types.json';
 import { IDapplet, IDappletsList, IDappletVersions } from "../../config/types";
 import { Lists } from '../../config/types';
 
+import "@fontsource/roboto"
+
 const PROVIDER_URL = 'https://rinkeby.infura.io/v3/eda881d858ae4a25b2dfbbd0b4629992';
 
 const App = (): React.ReactElement => {

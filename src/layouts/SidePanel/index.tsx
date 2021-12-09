@@ -3,10 +3,11 @@ import { SidePanelProps } from './SidePanel.props';
 import cn from 'classnames';
 
 import styles from './SidePanel.module.scss';
-import { Button, Header, List } from 'semantic-ui-react';
-import { TAGS } from '../../config/keywords';
+// import { TAGS } from '../../config/keywords';
 import { Lists, IDappletsList } from '../../config/types';
 import { saveListToLocalStorage } from '../../utils';
+import DappletsListSidebar from '../../components/molecules/DappletsListSidebar'
+import { DappletsListItemTypes } from '../../components/atoms/DappletsListItem'
 
 export function SidePanel({
   dappletTitles,
@@ -30,14 +31,14 @@ export function SidePanel({
     setLocalDappletsList(newLocalDappletsList);
   }
 
-  const handleSwitchTag = (label: string) => (e: any) => {
-    e.preventDefault();
-    if (activeTags.includes(label)) {
-      setActiveTags(activeTags.filter((tag) => tag !== label));
-    } else {
-      setActiveTags([...activeTags, label]);
-    }
-  }
+  // const handleSwitchTag = (label: string) => (e: any) => {
+  //   e.preventDefault();
+  //   if (activeTags.includes(label)) {
+  //     setActiveTags(activeTags.filter((tag) => tag !== label));
+  //   } else {
+  //     setActiveTags([...activeTags, label]);
+  //   }
+  // }
 
 	return (
 		<aside className={cn(styles.sidePanel, className)}>
@@ -47,42 +48,62 @@ export function SidePanel({
         paddingBottom: '20px'
       }}>
         <div className={styles.content}>
-          <div>
-            <Header
-              as="h4"
-              className={cn('infoTitle', 'link')}
-              size="medium"
-              onClick={() => {
-                setExpandedItems([]);
-                setSelectedList(Lists.Local);
-              }}
-            >
-              My dapplets ({localDappletsList.dappletsNames.length})
-            </Header>
-            {dappletTitles && localDappletsList.dappletsNames.map((name, i) => (
-              <div style={{ display: 'flex', margin: 10 }} key={i + 1000}>
-                <button className={styles.infoLink}>{dappletTitles[name]}</button>
-                <button
-                  className='clearInput'
-                  style={{ background: 'none !important' }}
-                  onClick={removeFromLocalList(name)}
-                >
-                  <span />
-                </button>
-              </div>
-            ))}
-          </div>
+          <DappletsListSidebar
+            dappletsList={localDappletsList.dappletsNames.map((name) => ({
+              title: name,
+              type: DappletsListItemTypes.Default,
+              onClickRemove: () => removeFromLocalList(name),
+              isRemoved: true,
+            })).slice(0, 5)}
+            title={`My dapplets`}
+            onOpenList={() => {
+              setExpandedItems([]);
+              setSelectedList(Lists.Local);
+            }}
+            isMoreShow={localDappletsList.dappletsNames.length > 5}
+          />
 
-          <div>
-            <Header as="h4" className='infoTitle' size="medium">My lists</Header>
-          </div>
+          {/* <DappletsListSidebar
+            dappletsList={localDappletsList.dappletsNames.map((name) => ({
+              title: name,
+              type: DappletsListItemTypes.Adding,
+              onClickRemove: () => removeFromLocalList(name),
+              isRemoved: true,
+            })).slice(0, 5)}
+            title={`My Listing`}
+            onOpenList={() => {
+              setExpandedItems([]);
+              setSelectedList(Lists.Local);
+            }}
+            isMoreShow={localDappletsList.dappletsNames.length > 5}
+            titleButton={{
+              title: 'Push changes',
+              onClick: () => console.log('push')
+            }}
+          /> */}
 
-          <div>
-            <Header as="h4" className='infoTitle' size="medium">Subscriptions</Header>
-            <button className={styles.infoLink}>Essential Dapplets <span>(Dapplets Team)</span></button>
-          </div>
+          <DappletsListSidebar
+            dappletsList={[]}
+            title={`My Listing`}
+            onOpenList={() => {}}
+            isMoreShow={false}
+          />
 
-          <div>
+          <DappletsListSidebar
+            dappletsList={[]}
+            title={`My trusted users`}
+            onOpenList={() => {}}
+            isMoreShow={false}
+          />
+
+          <DappletsListSidebar
+            dappletsList={[]}
+            title={`Popular tags`}
+            onOpenList={() => {}}
+            isMoreShow={false}
+          />
+
+          {/* <div>
             <Header as="h4" className='infoTitle' size="medium">Keywords:</Header>
             <List horizontal>
               {
@@ -102,7 +123,7 @@ export function SidePanel({
                 })
               }
             </List>
-          </div>
+          </div> */}
 
           <div className={styles.footer}>
             <a href='https://dapplets.org/terms-conditions.html'>
