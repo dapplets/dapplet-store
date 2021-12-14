@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Checkbox, Image } from 'semantic-ui-react';
+import { Image } from 'semantic-ui-react';
 import { ethers } from 'ethers';
 import styled from 'styled-components';
 
