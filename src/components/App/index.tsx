@@ -6,20 +6,31 @@ import Input from '../Input';
 import ListDapplets from '../ListDapplets';
 import abi from '../../abi.json';
 import types from '../../types.json';
-import { IDapplet, IDappletsList, IDappletVersions } from "../../config/types";
+import { IDapplet, IDappletsList, IDappletVersions, IDappletsListElement } from "../../config/types";
 import { Lists } from '../../config/types';
 
 import "@fontsource/roboto"
 
 const PROVIDER_URL = 'https://rinkeby.infura.io/v3/eda881d858ae4a25b2dfbbd0b4629992';
 
+const getDappletsListFromLocal = (listName: string) => {
+  const dappletsListStringified = window.localStorage.getItem(listName);
+  if (dappletsListStringified) {
+    const dappletsListParsed: IDappletsListElement[] = JSON.parse(dappletsListStringified);
+    return({ listName: Lists.Selected, dapplets: dappletsListParsed });
+  } else {
+    return({ listName: Lists.Selected, dapplets: [] });
+  }
+
+}
+
 const App = (): React.ReactElement => {
   const [searchQuery, editSearchQuery] = useState<string>('');
   const [dapplets, updateDapplets] = useState<IDapplet[]>();
   const [dappletsVersions, updateDappletsVersions] = useState<IDappletVersions>();
   const [dappletsTransactions, updateDappletsTransactions] = useState<any>();
-  const [selectedDappletsList, setSelectedDappletsList] = useState<IDappletsList>({ listName: Lists.Selected, dappletsNames: [] });
-  const [localDappletsList, setLocalDappletsList] = useState<IDappletsList>({ listName: Lists.Local, dappletsNames: [] });
+  const [selectedDappletsList, setSelectedDappletsList] = useState<IDappletsList>({ listName: Lists.Selected, dapplets: [] });
+  const [localDappletsList, setLocalDappletsList] = useState<IDappletsList>({ listName: Lists.Local, dapplets: [] });
   const [selectedList, setSelectedList] = useState<Lists>();
   const [activeTags, setActiveTags] = useState<string[]>([]);
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
@@ -62,25 +73,8 @@ const App = (): React.ReactElement => {
       updateDappletsTransactions(timestamps);
     });
 
-    // console.log('selectedDapplets.name', selectedDappletsList.name)
-    const selectedDappletsListStringified = window.localStorage.getItem(Lists.Selected);
-    // console.log('selectedDappletsListStringified', selectedDappletsListStringified)
-    if (selectedDappletsListStringified) {
-      const selectedDappletsListParsed: string[] = JSON.parse(selectedDappletsListStringified);
-      setSelectedDappletsList({ listName: Lists.Selected, dappletsNames: selectedDappletsListParsed });
-    } else {
-      setSelectedDappletsList({ listName: Lists.Selected, dappletsNames: [] });
-    }
-
-    // console.log('localDapplets.name', localDappletsList.name)
-    const localDappletsListStringified = window.localStorage.getItem(Lists.Local);
-    // console.log('localDappletsListStringified', localDappletsListStringified)
-    if (localDappletsListStringified) {
-      const localDappletsListParsed: string[] = JSON.parse(localDappletsListStringified);
-      setLocalDappletsList({ listName: Lists.Local, dappletsNames: localDappletsListParsed });
-    } else {
-      setLocalDappletsList({ listName: Lists.Local, dappletsNames: [] });
-    }
+    setSelectedDappletsList(getDappletsListFromLocal(Lists.Selected))
+    setLocalDappletsList(getDappletsListFromLocal(Lists.Local))
 
   }, []);
 
@@ -93,8 +87,8 @@ const App = (): React.ReactElement => {
     // console.log('selectedList', selectedList)
     const dapps = chooseDappletsList[selectedList];
     // console.log('dapps', dapps)
-    return dapps.dappletsNames
-      .map((dappletName) => dapplets.find((dapplet) => dapplet.name === dappletName))
+    return dapps.dapplets
+      .map((dapplet) => dapplets.find((dapp) => dapp.name === dapplet.name))
       .filter((dapp): dapp is IDapplet => !!dapp);
   }
 

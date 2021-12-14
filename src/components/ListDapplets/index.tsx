@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { Dropdown, Header } from 'semantic-ui-react';
 
-import { IDapplet, IDappletsList, Lists } from '../../config/types';
+import { IDapplet, IDappletsList, IDappletsListElement, Lists } from '../../config/types';
 import { saveListToLocalStorage } from '../../utils';
 
 import { ListDappletsProps } from './ListDapplets.props';
 import styles from './ListDapplets.module.scss';
 import SortableList from '../SortableList';
 import ItemDapplet from '../ItemDapplet';
+import { DappletsListItemTypes } from '../atoms/DappletsListItem'
 
 function ListDapplets({
   dapplets,
@@ -26,38 +27,39 @@ function ListDapplets({
   const [sortType, setSortType] = useState('A-Z');
   const collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
 
+  const editList = (item: IDapplet, dappletsList: IDappletsList, type: DappletsListItemTypes) => {
+    const isLocalDapplet = dappletsList.dapplets.some((dapplet) => dapplet.name === item.name);
+    const nowDappletsList = isLocalDapplet
+      ? dappletsList.dapplets
+        .filter((dapplet) => dapplet.name !== item.name)
+      : [...dappletsList.dapplets, {name: item.name, type}];
+    const newDappletsList: IDappletsList = { listName: dappletsList.listName, dapplets: nowDappletsList };
+    return newDappletsList
+  } 
+
   const editLocalDappletsList = (item: IDapplet) => (e: any) => {
     e.preventDefault();
     e.stopPropagation();
-    const isLocalDapplet = localDapplets.dappletsNames.includes(item.name);
-    const localDappletsList = isLocalDapplet
-      ? localDapplets.dappletsNames
-        .filter((dapp) => dapp !== item.name)
-      : [...localDapplets.dappletsNames, item.name];
-    // console.log('localDappletsList', localDappletsList)
-    const newLocalDappletsList: IDappletsList = { listName: localDapplets.listName, dappletsNames: localDappletsList };
+    const newLocalDappletsList = editList(item, localDapplets, DappletsListItemTypes.Default)
     saveListToLocalStorage(newLocalDappletsList);
     setLocalDapplets(newLocalDappletsList);
-    // if (selectedList && selectedList === localDapplets.name) {
-    //   setSelectedList(localDapplets.name);
-    // }
   };
 
   const editSelectedDappletsList = (item: IDapplet) => (e: any) => {
     e.preventDefault();
     e.stopPropagation();
-    const selected = selectedDapplets.dappletsNames.includes(item.name);
-    const selectedDappletsList = selected
-      ? selectedDapplets.dappletsNames
-        .filter((dapp) => dapp !== item.name)
-      : [...selectedDapplets.dappletsNames, item.name];
-    // console.log('selectedDappletsList', selectedDappletsList)
-    const newSelectedDappletsList: IDappletsList = { listName: selectedDapplets.listName, dappletsNames: selectedDappletsList };
-    saveListToLocalStorage(newSelectedDappletsList);
-    setSelectedDapplets(newSelectedDappletsList);
-    // if (selectedList && selectedList === selectedDapplets.name) {
-    //   setSelectedList(selectedDapplets.name);
-    // }
+    
+    let nowDappletsList: IDappletsListElement[] = selectedDapplets.dapplets
+    const dappletListIndex = nowDappletsList.findIndex((dapplet) => dapplet.name === item.name);
+    if (dappletListIndex >= 0) {
+      if (nowDappletsList[dappletListIndex].type === DappletsListItemTypes.Default)
+        nowDappletsList[dappletListIndex].type = DappletsListItemTypes.Removing
+    } else {
+      nowDappletsList = [...nowDappletsList, {name: item.name, type: DappletsListItemTypes.Adding}]
+    }
+    const newDappletsList: IDappletsList = { listName: selectedDapplets.listName, dapplets: nowDappletsList };
+    saveListToLocalStorage(newDappletsList);
+    setSelectedDapplets(newDappletsList);
   };
 
   const listDappletsHeader = (

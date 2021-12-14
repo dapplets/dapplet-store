@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { SidePanelProps } from './SidePanel.props';
 import cn from 'classnames';
 
 import styles from './SidePanel.module.scss';
 // import { TAGS } from '../../config/keywords';
-import { Lists, IDappletsList } from '../../config/types';
+import { Lists, IDappletsList, IDappletsListElement, IDapplet } from '../../config/types';
 import { saveListToLocalStorage } from '../../utils';
 import DappletsListSidebar from '../../components/molecules/DappletsListSidebar'
 import { DappletsListItemTypes } from '../../components/atoms/DappletsListItem'
@@ -14,6 +14,8 @@ export function SidePanel({
   className,
   localDappletsList,
   setLocalDappletsList,
+  selectedDappletsList,
+  setSelectedDappletsList,
   setSelectedList,
   activeTags,
   setActiveTags,
@@ -22,14 +24,45 @@ export function SidePanel({
 
   const removeFromLocalList = (name: string) => (e: any) => {
     e.preventDefault();
-    const list = localDappletsList.dappletsNames
-      .filter((dapp) => dapp !== name);
+    const list = localDappletsList.dapplets
+      .filter((dapp) => dapp.name !== name);
     // console.log('localDappletsList', localDappletsList)
-    const newLocalDappletsList: IDappletsList = { listName: localDappletsList.listName, dappletsNames: list };
+    const newLocalDappletsList: IDappletsList = { listName: localDappletsList.listName, dapplets: list };
     // console.log('newLocalDappletsList', newLocalDappletsList)
     saveListToLocalStorage(newLocalDappletsList);
     setLocalDappletsList(newLocalDappletsList);
   }
+
+  const removeFromSelectedList = (name: string) => (e: any) => {
+    e.preventDefault();
+    const dappletListIndex = selectedDappletsList.dapplets.findIndex((dapplet) => dapplet.name === name);
+    let list = selectedDappletsList.dapplets
+    if (selectedDappletsList.dapplets[dappletListIndex].type === DappletsListItemTypes.Adding)
+      list = list.filter((dapp) => dapp.name !== name);
+    if (selectedDappletsList.dapplets[dappletListIndex].type === DappletsListItemTypes.Removing)
+      list[dappletListIndex].type = DappletsListItemTypes.Default
+    const newSelectedDappletsList: IDappletsList = { listName: selectedDappletsList.listName, dapplets: list };
+    saveListToLocalStorage(newSelectedDappletsList);
+    setSelectedDappletsList(newSelectedDappletsList);
+  }
+
+  const pushSelectedDappletsList = () => {
+    const nowDappletsList: IDappletsListElement[] = selectedDappletsList.dapplets.map((dapplet) => {
+      if (dapplet.type === DappletsListItemTypes.Adding)
+        return {
+          ...dapplet,
+          type: DappletsListItemTypes.Default
+        }
+      return dapplet
+    })
+    const newDappletsList: IDappletsList = { listName: selectedDappletsList.listName, dapplets: nowDappletsList.filter(({ type }) => type !== DappletsListItemTypes.Removing) };
+    saveListToLocalStorage(newDappletsList);
+    setSelectedDappletsList(newDappletsList);
+  };
+
+  const isSelectedChanged = useMemo(() => {
+    
+  }, [])
 
   // const handleSwitchTag = (label: string) => (e: any) => {
   //   e.preventDefault();
@@ -49,10 +82,10 @@ export function SidePanel({
       }}>
         <div className={styles.content}>
           <DappletsListSidebar
-            dappletsList={localDappletsList.dappletsNames.map((name) => ({
-              title: name,
-              type: DappletsListItemTypes.Default,
-              onClickRemove: () => removeFromLocalList(name),
+            dappletsList={localDappletsList.dapplets.map((dapplet) => ({
+              title: dapplet.name,
+              type: dapplet.type,
+              onClickRemove: () => removeFromLocalList(dapplet.name),
               isRemoved: true,
             })).slice(0, 5)}
             title={`My dapplets`}
@@ -60,33 +93,26 @@ export function SidePanel({
               setExpandedItems([]);
               setSelectedList(Lists.Local);
             }}
-            isMoreShow={localDappletsList.dappletsNames.length > 5}
+            isMoreShow={localDappletsList.dapplets.length > 5}
           />
 
-          {/* <DappletsListSidebar
-            dappletsList={localDappletsList.dappletsNames.map((name) => ({
-              title: name,
-              type: DappletsListItemTypes.Adding,
-              onClickRemove: () => removeFromLocalList(name),
-              isRemoved: true,
+          <DappletsListSidebar
+            dappletsList={selectedDappletsList.dapplets.map((dapplet) => ({
+              title: dapplet.name,
+              type: dapplet.type,
+              onClickRemove: () => removeFromSelectedList(dapplet.name),
+              isRemoved: dapplet.type !== DappletsListItemTypes.Default,
             })).slice(0, 5)}
             title={`My Listing`}
             onOpenList={() => {
               setExpandedItems([]);
-              setSelectedList(Lists.Local);
+              setSelectedList(Lists.Selected);
             }}
-            isMoreShow={localDappletsList.dappletsNames.length > 5}
+            isMoreShow={selectedDappletsList.dapplets.length > 5}
             titleButton={{
               title: 'Push changes',
-              onClick: () => console.log('push')
+              onClick: pushSelectedDappletsList
             }}
-          /> */}
-
-          <DappletsListSidebar
-            dappletsList={[]}
-            title={`My Listing`}
-            onOpenList={() => {}}
-            isMoreShow={false}
           />
 
           <DappletsListSidebar

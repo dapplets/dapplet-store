@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from 'styled-components';
 import { ReactComponent as DappletListItemPlus } from '../../images/dappletListItemPlus.svg'
 import { ReactComponent as DappletListItemMinus } from '../../images/dappletListItemMinus.svg'
@@ -14,7 +14,7 @@ interface TitleIconProps {
   type: string
 }
 
-const TitleIcon = (props: TitleIconProps) => {
+const TitleIcon = (props: { type: string }) => {
   switch (props.type) {
     case DappletsListItemTypes.Adding:
       return <DappletListItemPlus />
@@ -29,7 +29,7 @@ interface DappletsListItemWrapperProps {
   type: string
 }
 
-const DappletsListItemWrapper = styled.div<DappletsListItemWrapperProps>`
+const DappletsListItemWrapper = styled.div<{ type: string }>`
   display: grid;
   grid-template-columns: ${({ type }) => type === DappletsListItemTypes.Default ? '' : 'max-content'} 1fr min-content;
   height: 41px;

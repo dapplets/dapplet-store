@@ -6,6 +6,8 @@ export interface SidePanelProps extends DetailedHTMLProps<HTMLAttributes<HTMLDiv
   localDappletsList: IDappletsList
   setLocalDappletsList: React.Dispatch<React.SetStateAction<IDappletsList>>
   setSelectedList: React.Dispatch<React.SetStateAction<Lists | undefined>>
+  selectedDappletsList: IDappletsList
+  setSelectedDappletsList: any
   activeTags: string[]
   setActiveTags: any
   setExpandedItems: React.Dispatch<React.SetStateAction<string[]>>

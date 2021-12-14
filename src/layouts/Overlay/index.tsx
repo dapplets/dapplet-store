@@ -19,9 +19,9 @@ export function Overlay({
 
   const removeFromSelectedDappletsList = (name: string) => (e: any) => {
     e.preventDefault();
-    const list = selectedDappletsList.dappletsNames
-        .filter((dapp) => dapp !== name);
-    const newSelectedDappletsList: IDappletsList = { listName: selectedDappletsList.listName, dappletsNames: list };
+    const list = selectedDappletsList.dapplets
+        .filter((dapp) => dapp.name !== name);
+    const newSelectedDappletsList: IDappletsList = { listName: selectedDappletsList.listName, dapplets: list };
     saveListToLocalStorage(newSelectedDappletsList);
     setSelectedDappletsList(newSelectedDappletsList);
   }
@@ -40,7 +40,7 @@ export function Overlay({
         paddingBottom: '20px'
       }}>
 
-        {selectedDappletsList.dappletsNames.length > 0 && (
+        {/* {selectedDappletsList.dapplets.length > 0 && (
           <div className={styles.content}>
             <div className={styles.info}>
               <div style={{ marginTop: 28 }}>
@@ -53,7 +53,7 @@ export function Overlay({
                     setSelectedList(Lists.Selected);
                   }}
                 >
-                  Selected dapplets ({selectedDappletsList.dappletsNames.length})
+                  Selected dapplets ({selectedDappletsList.dapplets.length})
                 </Header>
                 {dappletTitles && selectedDappletsList.dappletsNames.map((name, i) => (
                   <div style={{ display: 'flex', margin: 10 }} key={i}>
@@ -86,7 +86,7 @@ export function Overlay({
               </div>
             </div>
           </div>
-        )}
+        )} */}
 
         <Message size='large'	className={styles.message}>
           <h2>

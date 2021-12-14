@@ -33,6 +33,8 @@ export function Layout({
         className={styles.sidePanel}
         localDappletsList={localDappletsList}
         setLocalDappletsList={setLocalDappletsList}
+        selectedDappletsList={selectedDappletsList}
+        setSelectedDappletsList={setSelectedDappletsList}
         setSelectedList={setSelectedList}
         activeTags={activeTags}
         setActiveTags={setActiveTags}

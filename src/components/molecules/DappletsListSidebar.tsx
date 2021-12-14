@@ -78,7 +78,7 @@ const DappletsListSidebar = (props: DappletsListSidebarProps) => {
       {
         isOpen && !!props.dappletsList.length && <DappletsListItemWrapper>
           {props.dappletsList.map((dapplet) => (
-            <DappletsListItem {...dapplet} />
+            <DappletsListItem {...dapplet} key={dapplet.title} />
           ))}
           <MoreWrapper onClick={props.onOpenList}>show more</MoreWrapper>
         </DappletsListItemWrapper>

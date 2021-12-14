@@ -5,9 +5,14 @@ export enum Lists {
   Local = 'My dapplets',
 }
 
+export interface IDappletsListElement {
+  name: string
+  type: string
+}
+
 export interface IDappletsList {
   listName: Lists
-  dappletsNames: string[]
+  dapplets: IDappletsListElement[]
 }
 
 export interface IDapplet {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Checkbox, Image } from 'semantic-ui-react';
 import { ethers } from 'ethers';
 import styled from 'styled-components';
@@ -80,8 +80,22 @@ const ItemDapplet = (props: ItemDappletProps): React.ReactElement => {
     setExpandedItems,
   } = props;
 
-  const selected = selectedDapplets.dappletsNames.includes(item.name);
-  const isLocalDapplet = localDapplets.dappletsNames.includes(item.name);
+  const isLocalDapplet = localDapplets.dapplets.some((dapplet) => dapplet.name === item.name);
+
+  const selected = useMemo(() => {
+    const selectedDapplet = selectedDapplets.dapplets.find((dapplet) => dapplet.name === item.name)
+    console.log({selectedDapplet})
+    if (selectedDapplet)
+
+      return {
+        type: DappletButtonTypes.RemoveFromList,
+        title: 'From My List',
+      }
+    return {
+      type: DappletButtonTypes.AddToList,
+      title: 'To My List',
+    }
+  }, [item.name, selectedDapplets.dapplets])
 
   const owner = item.owner.replace('0x000000000000000000000000', '0x');
 
@@ -106,13 +120,6 @@ const ItemDapplet = (props: ItemDappletProps): React.ReactElement => {
       style={{ display: 'flex', width: '100%' }}
       onClick={handleClickOnItem}
     >
-      <Checkbox
-        style={{
-          margin: '25px 18px 0 0'
-        }}
-        checked={selected}
-        onChange={editSelectedDappletsList(item)}
-      />
       <Image className={styles.itemImage} src={`https://bee.dapplets.org/bzz/${icon.uris[0].slice(6)}`} style={{ width: 46, height: 46, borderRadius: '99em', marginTop: 10 }} />
 
       <div className={styles.left} style={{ flexGrow: 1, padding: '5px 18px' }}>
@@ -178,9 +185,9 @@ const ItemDapplet = (props: ItemDappletProps): React.ReactElement => {
           onClick={editLocalDappletsList(item)}
         />
         <DappletButton
-          title={isLocalDapplet ? 'Remove from list' : 'Add to my list'}
-          type={DappletButtonTypes.AddToList}
-          onClick={editLocalDappletsList(item)}
+          title={selected.title}
+          type={selected.type}
+          onClick={editSelectedDappletsList(item)}
         />
       </ButtonsWrapper>
     </div>

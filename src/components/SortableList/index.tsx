@@ -1,6 +1,6 @@
 import { useState, SetStateAction } from 'react';
 import { saveListToLocalStorage } from '../../utils';
-import { IDappletsList } from '../../config/types';
+import { IDappletsList, IDappletsListElement } from '../../config/types';
 import styles from './SortableList.module.scss';
 
 import {
@@ -60,16 +60,16 @@ const SortableList = (props: SortableListProps) => {
   }
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
-    let newArray: string[];
+    let newArray: IDappletsListElement[];
     if (over !== null && active.id !== over.id) {
-      const itemIds = items!.dappletsNames;
+      const itemIds = items!.dapplets.map(({name}) => name);
       const oldIndex = itemIds.indexOf(active.id);
       const newIndex = itemIds.indexOf(over.id);
-      newArray = arrayMove(items!.dappletsNames, oldIndex, newIndex);
+      newArray = arrayMove(items!.dapplets, oldIndex, newIndex);
     } else {
-      newArray = items!.dappletsNames;
+      newArray = items!.dapplets;
     }
-    const newDappletsList: IDappletsList = { listName: items!.listName, dappletsNames: newArray };
+    const newDappletsList: IDappletsList = { listName: items!.listName, dapplets: newArray };
     setItems(newDappletsList);
     saveListToLocalStorage(newDappletsList);
     setActiveId(null);
@@ -82,8 +82,8 @@ const SortableList = (props: SortableListProps) => {
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <SortableContext items={items!.dappletsNames} strategy={verticalListSortingStrategy}>
-        {items?.dappletsNames.map((itemName) => (
+      <SortableContext items={items!.dapplets.map(({name}) => name)} strategy={verticalListSortingStrategy}>
+        {items?.dapplets.map(({name: itemName}) => (
           <Draggable
             key={itemName}
             id={itemName}
