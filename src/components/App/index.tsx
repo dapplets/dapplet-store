@@ -8,8 +8,10 @@ import abi from '../../abi.json';
 import types from '../../types.json';
 import { IDapplet, IDappletsList, IDappletVersions, IDappletsListElement } from "../../config/types";
 import { Lists } from '../../config/types';
+import styled from "styled-components";
 
 import "@fontsource/roboto"
+import Dropdown from '../Dropdown/Dropdown';
 
 const PROVIDER_URL = 'https://rinkeby.infura.io/v3/eda881d858ae4a25b2dfbbd0b4629992';
 
@@ -23,6 +25,32 @@ const getDappletsListFromLocal = (listName: string) => {
   }
 
 }
+
+const Wrapper = styled.div`
+  display: grid;
+  grid-template-columns: 1fr max-content max-content;
+  grid-column-gap: 16px;
+  align-items: center;
+`
+
+const dropdownItems = [
+  {
+    id: 1,
+    text: "option"
+  },
+  {
+    id: 2,
+    text: "option2"
+  },
+  {
+    id: 3,
+    text: "option3"
+  },
+  {
+    id: 4,
+    text: "option4"
+  }
+];
 
 const App = (): React.ReactElement => {
   const [searchQuery, editSearchQuery] = useState<string>('');
@@ -154,10 +182,14 @@ const App = (): React.ReactElement => {
       setExpandedItems={setExpandedItems}
     >
       <>
-        <Input 
-          searchQuery={searchQuery}
-          editSearchQuery={editSearchQuery}
-        />
+        <Wrapper>
+          <Input 
+            searchQuery={searchQuery}
+            editSearchQuery={editSearchQuery}
+          />
+          <Dropdown items={dropdownItems} activatorText='2'/>
+          <Dropdown items={dropdownItems} activatorText='2'/>
+        </Wrapper>
         {filteredDapplets && <ListDapplets
           dapplets={filteredDapplets}
           dappletsVersions={dappletsVersions}
