@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from 'styled-components';
 import { ReactComponent as DappletListItemPlus } from '../../images/dappletListItemPlus.svg'
 import { ReactComponent as DappletListItemMinus } from '../../images/dappletListItemMinus.svg'
@@ -8,10 +8,6 @@ export enum DappletsListItemTypes {
   Default = 'Default',
   Adding = 'Adding',
   Removing = 'Removing',
-}
-
-interface TitleIconProps {
-  type: string
 }
 
 const TitleIcon = (props: { type: string }) => {

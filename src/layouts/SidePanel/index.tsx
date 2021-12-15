@@ -1,10 +1,10 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { SidePanelProps } from './SidePanel.props';
 import cn from 'classnames';
 
 import styles from './SidePanel.module.scss';
 // import { TAGS } from '../../config/keywords';
-import { Lists, IDappletsList, IDappletsListElement, IDapplet } from '../../config/types';
+import { Lists, IDappletsList, IDappletsListElement } from '../../config/types';
 import { saveListToLocalStorage } from '../../utils';
 import DappletsListSidebar from '../../components/molecules/DappletsListSidebar'
 import { DappletsListItemTypes } from '../../components/atoms/DappletsListItem'
@@ -59,10 +59,6 @@ export function SidePanel({
     saveListToLocalStorage(newDappletsList);
     setSelectedDappletsList(newDappletsList);
   };
-
-  const isSelectedChanged = useMemo(() => {
-    
-  }, [])
 
   // const handleSwitchTag = (label: string) => (e: any) => {
   //   e.preventDefault();

@@ -1,11 +1,9 @@
 import React from 'react';
 import cn from 'classnames';
 import { OverlayProps } from './Overlay.props';
-import { Button, Divider, Header, Input, Message } from 'semantic-ui-react';
+import { Button, Divider, Message } from 'semantic-ui-react';
 
 import styles from './Overlay.module.scss';
-import { Lists, IDappletsList } from '../../config/types';
-import { saveListToLocalStorage } from '../../utils';
 
 export function Overlay({
   dappletTitles,
@@ -17,20 +15,20 @@ export function Overlay({
   setExpandedItems,
 }: OverlayProps): React.ReactElement {
 
-  const removeFromSelectedDappletsList = (name: string) => (e: any) => {
-    e.preventDefault();
-    const list = selectedDappletsList.dapplets
-        .filter((dapp) => dapp.name !== name);
-    const newSelectedDappletsList: IDappletsList = { listName: selectedDappletsList.listName, dapplets: list };
-    saveListToLocalStorage(newSelectedDappletsList);
-    setSelectedDappletsList(newSelectedDappletsList);
-  }
+  // const removeFromSelectedDappletsList = (name: string) => (e: any) => {
+  //   e.preventDefault();
+  //   const list = selectedDappletsList.dapplets
+  //       .filter((dapp) => dapp.name !== name);
+  //   const newSelectedDappletsList: IDappletsList = { listName: selectedDappletsList.listName, dapplets: list };
+  //   saveListToLocalStorage(newSelectedDappletsList);
+  //   setSelectedDappletsList(newSelectedDappletsList);
+  // }
 
-  const editDecentralizedList = (e: any) => {
-    e.preventDefault();
-    window.localStorage.removeItem(selectedDappletsList.listName);
-    setSelectedDappletsList({ name: selectedDappletsList.listName, dapplets: [] });
-  }
+  // const editDecentralizedList = (e: any) => {
+  //   e.preventDefault();
+  //   window.localStorage.removeItem(selectedDappletsList.listName);
+  //   setSelectedDappletsList({ name: selectedDappletsList.listName, dapplets: [] });
+  // }
 
 	return (
 		<aside className={cn(styles.overlay, className)}>
