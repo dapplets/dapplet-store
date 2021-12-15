@@ -29,8 +29,23 @@ const getDappletsListFromLocal = (listName: string) => {
 const Wrapper = styled.div`
   display: grid;
   grid-template-columns: 1fr max-content max-content;
-  grid-column-gap: 16px;
+  grid-column-gap: 20px;
   align-items: center;
+  border-bottom: 1px solid rgb(227, 227, 227);
+`
+
+const CheckboxWrapper = styled.div`
+  display: grid;
+  grid-template-columns: max-content max-content;
+  grid-column-gap: 8px;
+  padding-right: 15px;
+
+  & div {
+    width: 16px;
+    height: 16px;
+    background: #D9304F;
+    border-radius: 50%;
+  }
 `
 
 export enum SortTypes {
@@ -200,7 +215,10 @@ const App = (): React.ReactElement => {
             editSearchQuery={editSearchQuery}
           />
           <Dropdown items={dropdownItems}/>
-
+          <CheckboxWrapper>
+            <div></div>
+            <span>CheckboxWrapper</span>
+          </CheckboxWrapper>
         </Wrapper>
         {filteredDapplets && <ListDapplets
           dapplets={filteredDapplets}

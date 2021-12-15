@@ -32,22 +32,19 @@ export const ActivatorButton = styled.button`
 export const DropdownList = styled.ul<{ active: boolean }>`
   background-color: #ececec;
   color: black;
-  display: ${props => (props.active ? "block" : "none")};
+  display: ${props => (props.active ? "grid" : "none")};
   margin: 0;
   min-width: 180px;
   padding: 0;
   position: absolute;
-  li {
+  right: 0;
+  & li {
     list-style: none;
     margin: 0;
-    a,
-    a:link {
-      display: block;
-      padding: 0.5em;
-      &:hover {
-        background-color: lightblue;
-      }
-    }
+    padding: 10px 8px;
+    background: white;
+    border: rgba(128, 128, 128, 0.3) solid 1px;
+    cursor: pointer;
   }
 `;
 

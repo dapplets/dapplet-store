@@ -24,10 +24,10 @@ function Input({ searchQuery, editSearchQuery }: InputProps): React.ReactElement
       value={searchQuery}
       style={{
         padding: 15,
-        borderBottom: '1px solid #E3E3E3'
+        paddingRight: 0,
       }}
     >
-      <Icon name="search" />
+      <Icon name="search" style={{ marginLeft: '8px'}} />
       <input
         style={{ color: '#2A2A2A', fontSize: 16, borderRadius: 0 }}
         className="app-input"
