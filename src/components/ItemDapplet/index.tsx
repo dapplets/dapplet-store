@@ -7,6 +7,7 @@ import styles from './ItemDapplet.module.scss';
 import { DappletButton, DappletButtonTypes } from './atoms/DappletButton';
 
 import { IDapplet, IDappletsList } from "../../config/types";
+import Highlighter from "react-highlight-words";
 
 const ImagesWrapper = styled.div`
   display: grid;
@@ -65,6 +66,7 @@ interface ItemDappletProps {
   editSelectedDappletsList: (item: IDapplet) => (e: any) => void
   expandedItems: string[] 
   setExpandedItems: React.Dispatch<React.SetStateAction<string[]>>
+  searchQuery?: string
 }
 
 const ItemDapplet = (props: ItemDappletProps): React.ReactElement => {
@@ -78,6 +80,7 @@ const ItemDapplet = (props: ItemDappletProps): React.ReactElement => {
     editSelectedDappletsList,
     expandedItems,
     setExpandedItems,
+    searchQuery,
   } = props;
 
   const isLocalDapplet = localDapplets.dapplets.some((dapplet) => dapplet.name === item.name);
@@ -124,7 +127,14 @@ const ItemDapplet = (props: ItemDappletProps): React.ReactElement => {
 
       <div className={styles.left} style={{ flexGrow: 1, padding: '5px 18px' }}>
         <h3 className={styles.title}>
-          <div>{item.title}</div>
+          {
+            searchQuery ? (
+              <Highlighter textToHighlight={item.title} searchWords={[searchQuery]} highlightStyle={{ background: '#ffff00', padding: 0 }} />
+            ) : (
+              <div>{item.title}</div>
+            )
+          }
+          
           {!isOpen && (
             <>
               <ImagesWrapper>
@@ -159,9 +169,13 @@ const ItemDapplet = (props: ItemDappletProps): React.ReactElement => {
           Author: <a href={owner}>{owner}</a>
         </div>
 
-        <div className={styles.author}>
-          {item.description}
-        </div>
+        {
+          searchQuery ? (
+            <Highlighter className={styles.author} textToHighlight={item.description} searchWords={[searchQuery]} highlightStyle={{ background: '#ffff00', padding: 0 }} />
+          ) : (
+            <div className={styles.author}>{item.description}</div>
+          )
+        }
 
         {isOpen && (
           <>

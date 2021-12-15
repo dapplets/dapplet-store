@@ -13,4 +13,6 @@ export interface ListDappletsProps {
   updateDappletsTransactions: any
   expandedItems: string[]
   setExpandedItems: React.Dispatch<React.SetStateAction<string[]>>
+  sortType: string
+  searchQuery: string
 }

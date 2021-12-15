@@ -54,6 +54,7 @@ export const DropdownList = styled.ul<{ active: boolean }>`
 interface IDropdownItem {
   id: number;
   text: string;
+  onClick: any,
 }
 
 interface IProps {
@@ -64,29 +65,29 @@ interface IProps {
 const dropdownItems = [
   {
     id: 1,
-    url: "myLink",
+    onClick: "myLink",
     text: "option"
   },
   {
     id: 2,
-    url: "myLink2",
+    onClick: "myLink2",
     text: "option2"
   },
   {
     id: 3,
-    url: "myLink3",
+    onClick: "myLink3",
     text: "option3"
   },
   {
     id: 4,
-    url: "myLink4",
+    onClick: "myLink4",
     text: "option4"
   }
 ];
 
 const Dropdown = ({
   activatorText = "Dropdown",
-  items = dropdownItems
+  items = dropdownItems,
 }: IProps) => {
   const activatorRef = React.useRef<HTMLButtonElement | null>(null);
   const listRef = React.useRef<HTMLUListElement | null>(null);
@@ -137,13 +138,16 @@ const Dropdown = ({
         aria-controls="dropdown1"
         onClick={handleClick}
         ref={activatorRef}
-        onFocus={() => setActiveIndex(-1)}
       >
         {currentText}
       </ActivatorButton>
       <DropdownList id="dropdown1" ref={listRef} active={isOpen} role="list">
         {items.map((item, index) => (
-          <li key={item.id} onClick={() => focusHandler(item.id)}>
+          <li key={item.id} onClick={() =>{ 
+              focusHandler(item.id)
+              item.onClick()
+              setIsOpen(false)
+            }}>
               {item.text}
           </li>
         ))}

@@ -10,6 +10,8 @@ import SortableList from '../SortableList';
 import ItemDapplet from '../ItemDapplet';
 import { DappletsListItemTypes } from '../atoms/DappletsListItem'
 
+import { SortTypes } from '../App'
+
 function ListDapplets({
   dapplets,
   dappletsVersions,
@@ -22,9 +24,10 @@ function ListDapplets({
   dappletsTransactions,
   expandedItems,
   setExpandedItems,
+  sortType,
+  searchQuery,
 }: ListDappletsProps): React.ReactElement {
 
-  const [sortType, setSortType] = useState('A-Z');
   const collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
 
   const editList = (item: IDapplet, dappletsList: IDappletsList, type: DappletsListItemTypes) => {
@@ -82,7 +85,7 @@ function ListDapplets({
       >
         {selectedList ? selectedList : 'Dapplets'}
       </Header>
-      {!selectedList && (
+      {/* {!selectedList && (
         <Dropdown text={`Sort by: ${sortType}`} className="small-link">
           <Dropdown.Menu>
             <Dropdown.Item
@@ -103,7 +106,7 @@ function ListDapplets({
             />
           </Dropdown.Menu>
         </Dropdown>
-      )}
+      )} */}
       {selectedList && (
         <button className="small-link" onClick={() => {
           setExpandedItems([]);
@@ -118,10 +121,18 @@ function ListDapplets({
   const sortedDapplets = dapplets
     .sort((a, b) => {
       if (selectedList) return 0;
-      if (sortType === 'A-Z') return collator.compare(a.title, b.title);
-      if (sortType === 'Z-A') return collator.compare(b.title, a.title);
-      if (sortType === 'Newest') return collator.compare(dappletsTransactions[b.name], dappletsTransactions[a.name]);
-      return collator.compare(dappletsTransactions[a.name], dappletsTransactions[b.name]);
+      switch (sortType) {
+        case SortTypes.ABC:
+          return collator.compare(a.title, b.title);
+        case SortTypes.ABCReverse:
+          return collator.compare(b.title, a.title);
+        case SortTypes.Newest:
+          return collator.compare(dappletsTransactions[b.name], dappletsTransactions[a.name]);
+        case SortTypes.Oldest:
+          return collator.compare(dappletsTransactions[a.name], dappletsTransactions[b.name]);
+        default:
+          return 0;
+      }
     });
 
   const chooseList = {
@@ -180,6 +191,7 @@ function ListDapplets({
                     editSelectedDappletsList={editSelectedDappletsList}
                     expandedItems={expandedItems}
                     setExpandedItems={setExpandedItems}
+                    searchQuery={searchQuery}
                   />
                 </div>
               </section>

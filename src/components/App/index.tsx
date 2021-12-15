@@ -33,26 +33,15 @@ const Wrapper = styled.div`
   align-items: center;
 `
 
-const dropdownItems = [
-  {
-    id: 1,
-    text: "option"
-  },
-  {
-    id: 2,
-    text: "option2"
-  },
-  {
-    id: 3,
-    text: "option3"
-  },
-  {
-    id: 4,
-    text: "option4"
-  }
-];
+export enum SortTypes {
+  ABC = 'Sort A-Z',
+  ABCReverse = 'Sort Z-A',
+  Newest = 'Sort by newest',
+  Oldest = 'Sort by oldest',
+}
 
 const App = (): React.ReactElement => {
+  const [sortType, setSortType] = useState(SortTypes.ABC);
   const [searchQuery, editSearchQuery] = useState<string>('');
   const [dapplets, updateDapplets] = useState<IDapplet[]>();
   const [dappletsVersions, updateDappletsVersions] = useState<IDappletVersions>();
@@ -63,6 +52,29 @@ const App = (): React.ReactElement => {
   const [activeTags, setActiveTags] = useState<string[]>([]);
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
 
+  console.log({dapplets, searchQuery})
+  const dropdownItems = [
+    {
+      id: 1,
+      text: SortTypes.ABC,
+      onClick: () => setSortType(SortTypes.ABC),
+    },
+    {
+      id: 2,
+      text: SortTypes.ABCReverse,
+      onClick: () => setSortType(SortTypes.ABCReverse),
+    },
+    {
+      id: 3,
+      text: SortTypes.Newest,
+      onClick: () => setSortType(SortTypes.Newest),
+    },
+    {
+      id: 4,
+      text: SortTypes.Oldest,
+      onClick: () => setSortType(SortTypes.Oldest),
+    }
+  ];
   // console.log('dapplets', dapplets)
   // console.log('dappletsVersions', dappletsVersions)
   // console.log('dappletsTransactions', dappletsTransactions)
@@ -187,8 +199,8 @@ const App = (): React.ReactElement => {
             searchQuery={searchQuery}
             editSearchQuery={editSearchQuery}
           />
-          <Dropdown items={dropdownItems} activatorText='2'/>
-          <Dropdown items={dropdownItems} activatorText='2'/>
+          <Dropdown items={dropdownItems}/>
+
         </Wrapper>
         {filteredDapplets && <ListDapplets
           dapplets={filteredDapplets}
@@ -203,6 +215,8 @@ const App = (): React.ReactElement => {
           updateDappletsTransactions={updateDappletsTransactions}
           expandedItems={expandedItems}
           setExpandedItems={setExpandedItems}
+          sortType={sortType}
+          searchQuery={searchQuery}
         />}
       </>
     </Layout>
