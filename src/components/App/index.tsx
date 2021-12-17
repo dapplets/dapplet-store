@@ -12,7 +12,6 @@ import styled from "styled-components";
 
 import "@fontsource/roboto"
 import Dropdown from '../Dropdown/Dropdown';
-import ProfileInList from '../../features/ProfileInList/ProfileInList';
 
 const PROVIDER_URL = 'https://rinkeby.infura.io/v3/eda881d858ae4a25b2dfbbd0b4629992';
 

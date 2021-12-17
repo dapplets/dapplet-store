@@ -1,5 +1,5 @@
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import styled from 'styled-components';
 import jazzicon from '@metamask/jazzicon';
 import { ReactComponent as ButtonPush } from './InAppPrimaryButton.svg'
@@ -13,7 +13,7 @@ const VanillaChildren = ({ children }: VanillaChildrenProps): JSX.Element => {
 
 	useEffect(() => {
 		ref.current?.appendChild(children);
-	}, [ref]);
+	}, [children, ref]);
 
 	return (
 		<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} ref={ref} />
@@ -33,10 +33,10 @@ const Wrapper = styled.div`
 
 `
 
-const Title = styled.div`
-  font-size: 26px;
-  grid-area: title;
-`
+// const Title = styled.div`
+//   font-size: 26px;
+//   grid-area: title;
+// `
 
 const Avatar = styled.div`
   grid-area: avatar;
@@ -47,9 +47,9 @@ const Address = styled.div`
   cursor: pointer;
 `
 
-const Description = styled.div`
-  grid-area: description;
-`
+// const Description = styled.div`
+//   grid-area: description;
+// `
 
 const ButtonsWrapper = styled.div`
   grid-area: buttons;

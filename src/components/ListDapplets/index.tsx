@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from 'react';
-import { Dropdown, Header } from 'semantic-ui-react';
+import React, { useMemo } from 'react';
+import { Header } from 'semantic-ui-react';
 
 import { IDapplet, IDappletsList, IDappletsListElement, Lists } from '../../config/types';
 import { saveListToLocalStorage } from '../../utils';
@@ -33,7 +33,9 @@ function ListDapplets({
   editSearchQuery,
 }: ListDappletsProps): React.ReactElement {
 
-  const collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
+  const collator = useMemo(() => (
+    new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'})
+  ), []) 
 
   const editList = (item: IDapplet, dappletsList: IDappletsList, type: DappletsListItemTypes) => {
     const isLocalDapplet = dappletsList.dapplets.some((dapplet) => dapplet.name === item.name);
@@ -188,6 +190,7 @@ function ListDapplets({
           padding: '0 !important',
           margin: '0 !important',
         }}
+
 
       >
         {listDappletsHeader}
