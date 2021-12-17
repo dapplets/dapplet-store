@@ -67,6 +67,7 @@ interface ItemDappletProps {
   expandedItems: string[] 
   setExpandedItems: React.Dispatch<React.SetStateAction<string[]>>
   searchQuery?: string
+  setAddressFilter: any
 }
 
 const ItemDapplet = (props: ItemDappletProps): React.ReactElement => {
@@ -81,6 +82,7 @@ const ItemDapplet = (props: ItemDappletProps): React.ReactElement => {
     expandedItems,
     setExpandedItems,
     searchQuery,
+    setAddressFilter,
   } = props;
 
   const isLocalDapplet = localDapplets.dapplets.some((dapplet) => dapplet.name === item.name);
@@ -166,7 +168,8 @@ const ItemDapplet = (props: ItemDappletProps): React.ReactElement => {
           )}
 
         <div className={styles.author}>
-          Author: <a href={owner}>{owner}</a>
+          {/* Author: <a href={owner}>{owner}</a> */}
+          Author: <a onClick={() => setAddressFilter(item.owner)}>{owner}</a>
         </div>
 
         {

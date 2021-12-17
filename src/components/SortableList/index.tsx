@@ -43,6 +43,7 @@ const SortableList = (props: SortableListProps) => {
     editSelectedDappletsList,
     expandedItems,
     setExpandedItems,
+    setAddressFilter
   } = props;
 
   const [activeId, setActiveId] = useState<SetStateAction<string> | null>(null);
@@ -100,6 +101,7 @@ const SortableList = (props: SortableListProps) => {
               editSelectedDappletsList={editSelectedDappletsList}
               expandedItems={expandedItems}
               setExpandedItems={setExpandedItems}
+              setAddressFilter={setAddressFilter}
             />
           </Draggable>
         ))}
@@ -127,6 +129,7 @@ const SortableList = (props: SortableListProps) => {
                 editSelectedDappletsList={editSelectedDappletsList}
                 expandedItems={expandedItems}
                 setExpandedItems={setExpandedItems}
+                setAddressFilter={setAddressFilter}
               />
             </div>
           </section>

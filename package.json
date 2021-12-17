@@ -8,6 +8,8 @@
     "@dnd-kit/sortable": "^5.0.0",
     "@dnd-kit/utilities": "^3.0.0",
     "@fontsource/roboto": "^4.5.1",
+    "@metamask/jazzicon": "^2.0.0",
+    "@rematch/core": "^2.2.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",

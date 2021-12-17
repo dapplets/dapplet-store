@@ -12,6 +12,7 @@ import styled from "styled-components";
 
 import "@fontsource/roboto"
 import Dropdown from '../Dropdown/Dropdown';
+import ProfileInList from '../../features/ProfileInList/ProfileInList';
 
 const PROVIDER_URL = 'https://rinkeby.infura.io/v3/eda881d858ae4a25b2dfbbd0b4629992';
 
@@ -57,6 +58,7 @@ export enum SortTypes {
 
 const App = (): React.ReactElement => {
   const [sortType, setSortType] = useState(SortTypes.ABC);
+  const [addressFilter, setAddressFilter] = useState('');
   const [searchQuery, editSearchQuery] = useState<string>('');
   const [dapplets, updateDapplets] = useState<IDapplet[]>();
   const [dappletsVersions, updateDappletsVersions] = useState<IDappletVersions>();
@@ -234,7 +236,11 @@ const App = (): React.ReactElement => {
           expandedItems={expandedItems}
           setExpandedItems={setExpandedItems}
           sortType={sortType}
+          setSortType={setSortType}
           searchQuery={searchQuery}
+          editSearchQuery={editSearchQuery}
+          addressFilter={addressFilter}
+          setAddressFilter={setAddressFilter}
         />}
       </>
     </Layout>

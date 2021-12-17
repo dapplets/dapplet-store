@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Dropdown, Header } from 'semantic-ui-react';
 
 import { IDapplet, IDappletsList, IDappletsListElement, Lists } from '../../config/types';
@@ -11,6 +11,7 @@ import ItemDapplet from '../ItemDapplet';
 import { DappletsListItemTypes } from '../atoms/DappletsListItem'
 
 import { SortTypes } from '../App'
+import ProfileInList from '../../features/ProfileInList/ProfileInList';
 
 function ListDapplets({
   dapplets,
@@ -26,6 +27,10 @@ function ListDapplets({
   setExpandedItems,
   sortType,
   searchQuery,
+  addressFilter,
+  setAddressFilter,
+  setSortType,
+  editSearchQuery,
 }: ListDappletsProps): React.ReactElement {
 
   const collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
@@ -118,8 +123,9 @@ function ListDapplets({
     </div>
   );
 
-  const sortedDapplets = dapplets
-    .sort((a, b) => {
+  const sortedDapplets = useMemo(() => {
+    console.log({addressFilter})
+    const sortedList =  dapplets.sort((a, b) => {
       if (selectedList) return 0;
       switch (sortType) {
         case SortTypes.ABC:
@@ -134,6 +140,28 @@ function ListDapplets({
           return 0;
       }
     });
+    if (addressFilter === '') 
+      return sortedList
+    return sortedList.filter(({ owner }) => owner === addressFilter)
+  }, [addressFilter, collator, dapplets, dappletsTransactions, selectedList, sortType])
+
+  // const sortedDapplets = dapplets
+  //   .sort((a, b) => {
+  //     if (selectedList) return 0;
+  //     console.log({sortType})
+  //     switch (sortType) {
+  //       case SortTypes.ABC:
+  //         return collator.compare(a.title, b.title);
+  //       case SortTypes.ABCReverse:
+  //         return collator.compare(b.title, a.title);
+  //       case SortTypes.Newest:
+  //         return collator.compare(dappletsTransactions[b.name], dappletsTransactions[a.name]);
+  //       case SortTypes.Oldest:
+  //         return collator.compare(dappletsTransactions[a.name], dappletsTransactions[b.name]);
+  //       default:
+  //         return 0;
+  //     }
+  //   });
 
   const chooseList = {
     [Lists.Selected]: selectedDapplets,
@@ -160,8 +188,18 @@ function ListDapplets({
           padding: '0 !important',
           margin: '0 !important',
         }}
+
       >
         {listDappletsHeader}
+        {addressFilter !== '' && <ProfileInList
+          title='title'
+          address='0x000000000000000000000000692a4d7b7be2dc1623155e90b197a82d114a74f3'
+          avatar='https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/f3/f3fc836163981fb4517cfc2da30e194e84bcafcd_full.jpg'
+          description='description'
+          setAddressFilter={setAddressFilter}
+          setSortType={setSortType}
+          editSearchQuery={editSearchQuery}
+        />}
         {selectedList
           ? <SortableList
             dapplets={dapplets}
@@ -175,6 +213,7 @@ function ListDapplets({
             editSelectedDappletsList={editSelectedDappletsList}
             expandedItems={expandedItems}
             setExpandedItems={setExpandedItems}
+            setAddressFilter={setAddressFilter}
           />
           : sortedDapplets
             .map((item, i) => (
@@ -192,6 +231,7 @@ function ListDapplets({
                     expandedItems={expandedItems}
                     setExpandedItems={setExpandedItems}
                     searchQuery={searchQuery}
+                    setAddressFilter={setAddressFilter}
                   />
                 </div>
               </section>

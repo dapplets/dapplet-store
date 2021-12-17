@@ -12,4 +12,5 @@ export interface SortableListProps {
   editSelectedDappletsList: (item: IDapplet) => (e: any) => void
   expandedItems: string[] 
   setExpandedItems: React.Dispatch<React.SetStateAction<string[]>>
+  setAddressFilter: any
 }

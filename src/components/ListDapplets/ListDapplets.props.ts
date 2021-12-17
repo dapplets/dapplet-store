@@ -15,4 +15,8 @@ export interface ListDappletsProps {
   setExpandedItems: React.Dispatch<React.SetStateAction<string[]>>
   sortType: string
   searchQuery: string
+  addressFilter: string
+  setAddressFilter: any
+  setSortType: any
+  editSearchQuery: any
 }
