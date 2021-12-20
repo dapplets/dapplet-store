@@ -31,6 +31,9 @@ function ListDapplets({
   setAddressFilter,
   setSortType,
   editSearchQuery,
+  trustedUsersList,
+  setTrustedUsersList,
+  isTrustedSort,
 }: ListDappletsProps): React.ReactElement {
 
   const collator = useMemo(() => (
@@ -62,8 +65,18 @@ function ListDapplets({
     let nowDappletsList: IDappletsListElement[] = selectedDapplets.dapplets
     const dappletListIndex = nowDappletsList.findIndex((dapplet) => dapplet.name === item.name);
     if (dappletListIndex >= 0) {
-      if (nowDappletsList[dappletListIndex].type === DappletsListItemTypes.Default)
-        nowDappletsList[dappletListIndex].type = DappletsListItemTypes.Removing
+      switch (nowDappletsList[dappletListIndex].type) {
+        default:
+        case DappletsListItemTypes.Default:
+          nowDappletsList[dappletListIndex].type = DappletsListItemTypes.Removing
+          break;
+        case DappletsListItemTypes.Removing:
+          nowDappletsList[dappletListIndex].type = DappletsListItemTypes.Default
+          break;
+        case DappletsListItemTypes.Adding:
+          nowDappletsList.splice(dappletListIndex, 1)
+          break;
+      }
     } else {
       nowDappletsList = [...nowDappletsList, {name: item.name, type: DappletsListItemTypes.Adding}]
     }
@@ -114,7 +127,7 @@ function ListDapplets({
           </Dropdown.Menu>
         </Dropdown>
       )} */}
-      {selectedList && (
+      {addressFilter === '' && selectedList && (
         <button className="small-link" onClick={() => {
           setExpandedItems([]);
           setSelectedList(undefined);
@@ -126,8 +139,7 @@ function ListDapplets({
   );
 
   const sortedDapplets = useMemo(() => {
-    console.log({addressFilter})
-    const sortedList =  dapplets.sort((a, b) => {
+    let sortedList =  dapplets.sort((a, b) => {
       if (selectedList) return 0;
       switch (sortType) {
         case SortTypes.ABC:
@@ -142,10 +154,12 @@ function ListDapplets({
           return 0;
       }
     });
-    if (addressFilter === '') 
-      return sortedList
-    return sortedList.filter(({ owner }) => owner === addressFilter)
-  }, [addressFilter, collator, dapplets, dappletsTransactions, selectedList, sortType])
+    if (addressFilter !== '') 
+      sortedList = sortedList.filter(({ owner }) => owner === addressFilter)
+    if (isTrustedSort)
+      sortedList = sortedList.filter(({ owner }) => trustedUsersList.includes(owner))
+    return sortedList
+  }, [addressFilter, collator, dapplets, dappletsTransactions, isTrustedSort, selectedList, sortType, trustedUsersList])
 
   // const sortedDapplets = dapplets
   //   .sort((a, b) => {
@@ -196,12 +210,15 @@ function ListDapplets({
         {listDappletsHeader}
         {addressFilter !== '' && <ProfileInList
           title='title'
-          address='0x000000000000000000000000692a4d7b7be2dc1623155e90b197a82d114a74f3'
+          address={addressFilter}
           avatar='https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/f3/f3fc836163981fb4517cfc2da30e194e84bcafcd_full.jpg'
           description='description'
           setAddressFilter={setAddressFilter}
           setSortType={setSortType}
           editSearchQuery={editSearchQuery}
+          setSelectedList={setSelectedList}
+          trustedUsersList={trustedUsersList}
+          setTrustedUsersList={setTrustedUsersList}
         />}
         {selectedList
           ? <SortableList
@@ -217,6 +234,7 @@ function ListDapplets({
             expandedItems={expandedItems}
             setExpandedItems={setExpandedItems}
             setAddressFilter={setAddressFilter}
+            addressFilter={addressFilter}
           />
           : sortedDapplets
             .map((item, i) => (

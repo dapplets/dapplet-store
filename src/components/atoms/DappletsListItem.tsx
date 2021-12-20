@@ -25,13 +25,14 @@ interface DappletsListItemWrapperProps {
   type: string
 }
 
-const DappletsListItemWrapper = styled.div<{ type: string }>`
+const DappletsListItemWrapper = styled.div<{ type: string, isClickable: boolean }>`
   display: grid;
   grid-template-columns: ${({ type }) => type === DappletsListItemTypes.Default ? '' : 'max-content'} 1fr min-content;
   height: 41px;
   align-items: center;
   width: 100%;
   grid-column-gap: 10px;
+  cursor: ${({ isClickable }) => isClickable ? 'pointer' : 'auto'};
 `
 
 const getColorByType = (type: string) => {
@@ -66,11 +67,19 @@ export interface DappletsListItemProps {
   type: string
   onClickRemove: any
   isRemoved: boolean
+  onClick?: any
+  id?: string
 }
 
 const DappletsListItem = (props: DappletsListItemProps) => {
   return (
-    <DappletsListItemWrapper type={props.type}>
+    <DappletsListItemWrapper 
+      type={props.type} 
+      onClick={() => {
+        if (props.onClick) props.onClick(props.id)}
+      } 
+      isClickable={!!props.onClick}
+    >
       <TitleIcon type={props.type}/>
       <Title type={props.type}>{props.title}</Title>
       {props.isRemoved && <DappletListItemCloseWrapper>

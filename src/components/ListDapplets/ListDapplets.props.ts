@@ -19,4 +19,7 @@ export interface ListDappletsProps {
   setAddressFilter: any
   setSortType: any
   editSearchQuery: any
+  trustedUsersList: string[]
+  setTrustedUsersList: any
+  isTrustedSort: boolean
 }

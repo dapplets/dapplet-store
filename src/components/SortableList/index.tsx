@@ -43,7 +43,8 @@ const SortableList = (props: SortableListProps) => {
     editSelectedDappletsList,
     expandedItems,
     setExpandedItems,
-    setAddressFilter
+    setAddressFilter,
+    addressFilter,
   } = props;
 
   const [activeId, setActiveId] = useState<SetStateAction<string> | null>(null);
@@ -88,6 +89,8 @@ const SortableList = (props: SortableListProps) => {
           <Draggable
             key={itemName}
             id={itemName}
+            item={dapplets.find((dapp) => dapp.name === itemName)!}
+            addressFilter={addressFilter}
             activeId={activeId}
           >
             <ItemDapplet
@@ -102,7 +105,7 @@ const SortableList = (props: SortableListProps) => {
               expandedItems={expandedItems}
               setExpandedItems={setExpandedItems}
               setAddressFilter={setAddressFilter}
-            />
+            /> 
           </Draggable>
         ))}
       </SortableContext>

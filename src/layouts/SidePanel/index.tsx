@@ -20,6 +20,8 @@ export function SidePanel({
   activeTags,
   setActiveTags,
   setExpandedItems,
+  trustedUsersList,
+  setAddressFilter,
 }: SidePanelProps): React.ReactElement {
 
   const removeFromLocalList = (name: string) => (e: any) => {
@@ -78,44 +80,51 @@ export function SidePanel({
       }}>
         <div className={styles.content}>
           <DappletsListSidebar
-            dappletsList={localDappletsList.dapplets.map((dapplet) => ({
+            dappletsList={localDappletsList.dapplets.slice(0, 5).map((dapplet) => ({
               title: dapplet.name,
               type: dapplet.type,
               onClickRemove: () => removeFromLocalList(dapplet.name),
               isRemoved: true,
-            })).slice(0, 5)}
+            }))}
             title={`My dapplets`}
             onOpenList={() => {
               setExpandedItems([]);
               setSelectedList(Lists.Local);
             }}
-            isMoreShow={localDappletsList.dapplets.length > 5}
+            isMoreShow={localDappletsList.dapplets.length > 0}
           />
 
           <DappletsListSidebar
-            dappletsList={selectedDappletsList.dapplets.map((dapplet) => ({
+            dappletsList={selectedDappletsList.dapplets.slice(0, 5).map((dapplet) => ({
               title: dapplet.name,
               type: dapplet.type,
               onClickRemove: () => removeFromSelectedList(dapplet.name),
               isRemoved: dapplet.type !== DappletsListItemTypes.Default,
-            })).slice(0, 5)}
+            }))}
             title={`My Listing`}
             onOpenList={() => {
               setExpandedItems([]);
               setSelectedList(Lists.Selected);
             }}
-            isMoreShow={selectedDappletsList.dapplets.length > 5}
-            titleButton={{
+            isMoreShow={selectedDappletsList.dapplets.length > 0}
+            titleButton={selectedDappletsList.dapplets.find(({ type }) => type !== DappletsListItemTypes.Default) && {
               title: 'Push changes',
               onClick: pushSelectedDappletsList
             }}
           />
 
           <DappletsListSidebar
-            dappletsList={[]}
+            dappletsList={trustedUsersList.map((user) => ({
+              title: user.replace('0x000000000000000000000000', '0x'),
+              id: user,
+              type: DappletsListItemTypes.Default,
+              onClickRemove: () => {},
+              isRemoved: false,
+            }))}
             title={`My trusted users`}
             onOpenList={() => {}}
             isMoreShow={false}
+            onElementClick={(id: string) => setAddressFilter(id)}
           />
 
           <DappletsListSidebar

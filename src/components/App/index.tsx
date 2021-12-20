@@ -15,13 +15,13 @@ import Dropdown from '../Dropdown/Dropdown';
 
 const PROVIDER_URL = 'https://rinkeby.infura.io/v3/eda881d858ae4a25b2dfbbd0b4629992';
 
-const getDappletsListFromLocal = (listName: string) => {
+const getDappletsListFromLocal = (listName: Lists) => {
   const dappletsListStringified = window.localStorage.getItem(listName);
   if (dappletsListStringified) {
     const dappletsListParsed: IDappletsListElement[] = JSON.parse(dappletsListStringified);
-    return({ listName: Lists.Selected, dapplets: dappletsListParsed });
+    return({ listName, dapplets: dappletsListParsed });
   } else {
-    return({ listName: Lists.Selected, dapplets: [] });
+    return({ listName, dapplets: [] });
   }
 
 }
@@ -39,12 +39,22 @@ const CheckboxWrapper = styled.div`
   grid-template-columns: max-content max-content;
   grid-column-gap: 8px;
   padding-right: 15px;
+  cursor: pointer;
+  user-select: none;
 
-  & div {
+  & > div {
     width: 16px;
     height: 16px;
     background: #D9304F;
     border-radius: 50%;
+  }
+
+  & > div > div {
+    width: 6px;
+    height: 6px;
+    background: white;
+    border-radius: 50%;
+    margin: 5px;
   }
 `
 
@@ -64,9 +74,12 @@ const App = (): React.ReactElement => {
   const [dappletsTransactions, updateDappletsTransactions] = useState<any>();
   const [selectedDappletsList, setSelectedDappletsList] = useState<IDappletsList>({ listName: Lists.Selected, dapplets: [] });
   const [localDappletsList, setLocalDappletsList] = useState<IDappletsList>({ listName: Lists.Local, dapplets: [] });
+  const [trustedUsersList, setTrustedUsersList] = useState<string[]>([]);
   const [selectedList, setSelectedList] = useState<Lists>();
   const [activeTags, setActiveTags] = useState<string[]>([]);
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
+  const [isTrustedSort, setIsTrustedSort] = useState<boolean>(false);
+
 
   console.log({dapplets, searchQuery})
   const dropdownItems = [
@@ -131,8 +144,18 @@ const App = (): React.ReactElement => {
 
     setSelectedDappletsList(getDappletsListFromLocal(Lists.Selected))
     setLocalDappletsList(getDappletsListFromLocal(Lists.Local))
-
   }, []);
+
+  useEffect(() => {
+    // window.localStorage.setItem('trustedUsers', JSON.stringify(trustedUsersList));
+    const trustedUsers = window.localStorage.getItem('trustedUsers');
+    if (trustedUsers) setTrustedUsersList(JSON.parse(trustedUsers))
+  }, [])
+
+  useEffect(() => {
+    console.log('hih')
+    window.localStorage.setItem('trustedUsers', JSON.stringify(trustedUsersList));
+  }, [trustedUsersList])
 
   const formDappletsList = (selectedList?: Lists) => {
     if (dapplets === undefined || selectedList === undefined) return dapplets;
@@ -208,6 +231,8 @@ const App = (): React.ReactElement => {
       activeTags={activeTags}
       setActiveTags={setActiveTags}
       setExpandedItems={setExpandedItems}
+      trustedUsersList={trustedUsersList}
+      setAddressFilter={setAddressFilter}
     >
       <>
         <Wrapper>
@@ -216,9 +241,9 @@ const App = (): React.ReactElement => {
             editSearchQuery={editSearchQuery}
           />
           <Dropdown items={dropdownItems}/>
-          <CheckboxWrapper>
-            <div></div>
-            <span>CheckboxWrapper</span>
+          <CheckboxWrapper onClick={() => setIsTrustedSort(!isTrustedSort)}>
+            <div>{isTrustedSort && <div></div>}</div>
+            <span>From trusted users</span>
           </CheckboxWrapper>
         </Wrapper>
         {filteredDapplets && <ListDapplets
@@ -240,6 +265,9 @@ const App = (): React.ReactElement => {
           editSearchQuery={editSearchQuery}
           addressFilter={addressFilter}
           setAddressFilter={setAddressFilter}
+          trustedUsersList={trustedUsersList}
+          setTrustedUsersList={setTrustedUsersList}
+          isTrustedSort={isTrustedSort}
         />}
       </>
     </Layout>

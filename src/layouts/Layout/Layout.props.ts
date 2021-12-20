@@ -12,4 +12,6 @@ export interface LayoutProps {
   activeTags: string[]
   setActiveTags: any
   setExpandedItems: React.Dispatch<React.SetStateAction<string[]>>
+  trustedUsersList: string[]
+  setAddressFilter: any
 }

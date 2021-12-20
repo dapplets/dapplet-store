@@ -89,7 +89,7 @@ const Dropdown = ({
   const activatorRef = React.useRef<HTMLButtonElement | null>(null);
   const listRef = React.useRef<HTMLUListElement | null>(null);
   const [isOpen, setIsOpen] = React.useState(false);
-  const [activeIndex, setActiveIndex] = React.useState(-1);
+  const [activeIndex, setActiveIndex] = React.useState(1);
 
   const handleClick = () => {
     setIsOpen(!isOpen);

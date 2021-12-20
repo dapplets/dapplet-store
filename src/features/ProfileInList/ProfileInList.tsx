@@ -1,8 +1,8 @@
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import styled from 'styled-components';
 import jazzicon from '@metamask/jazzicon';
-import { ReactComponent as ButtonPush } from './InAppPrimaryButton.svg'
+import { ReactComponent as UserPlus } from './userPlus.svg'
 
 interface VanillaChildrenProps {
 	children: HTMLElement | HTMLDivElement;
@@ -75,6 +75,32 @@ const ButtonAll = styled.div`
 
 `
 
+const ButtonAction = styled.div`
+  display: grid;
+  grid-template-columns: max-content max-content;
+  justify-items: center;
+  align-items: center;
+  grid-column-gap: 4px;
+
+  font-family: Roboto;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 14px;
+  letter-spacing: 0em;
+  text-align: center;
+
+  padding: 10px 20px;
+  cursor: pointer;
+  background: #D9304F;
+  border-radius: 30px;
+  color: white;
+
+  & div {
+    margin-top: 1px;
+  }
+`
+
 
 interface ProfileInListProps {
   title: string
@@ -84,24 +110,40 @@ interface ProfileInListProps {
   setAddressFilter: any
   setSortType: any
   editSearchQuery: any
+  setSelectedList: any
+  trustedUsersList: string[]
+  setTrustedUsersList: any
 }
 
 const ProfileInList = (props: ProfileInListProps) => {
   const getAvatar = (loggedIn: string): HTMLDivElement => jazzicon(164, parseInt(loggedIn.slice(2, 10), 16));
+
   
-  const address = props.address.replace('0x000000000000000000000000', '0x');
+  const address = useMemo(() => props.address.replace('0x000000000000000000000000', '0x'), [props.address])
+  const AvatarImg = useMemo(() => getAvatar(address), [address])
   return (
     <Wrapper>
       {/* <Title>{props.title}</Title> */}
-      <Avatar><VanillaChildren>{getAvatar(props.address)}</VanillaChildren></Avatar>
+      <Avatar><VanillaChildren>{AvatarImg}</VanillaChildren></Avatar>
       <Address onClick={() => props.setAddressFilter(props.address)}>{address}</Address>
       <ButtonsWrapper>
-        <ButtonPush />
+        <ButtonAction onClick={() => {
+          if (props.trustedUsersList.includes(props.address)) 
+            props.setTrustedUsersList(props.trustedUsersList.filter((user) => user !== props.address))
+          else
+            props.setTrustedUsersList([props.address, ...props.trustedUsersList])
+        }}>
+          <UserPlus/>
+          <div>
+            {props.trustedUsersList.includes(props.address) ? 'Remove from trusted users' : 'Add to trusted users'}
+          </div>
+        </ButtonAction>
       </ButtonsWrapper>
       <ButtonAll  >
         <button onClick={() => {
         props.setAddressFilter('')
         props.editSearchQuery('')
+        props.setSelectedList(undefined)
       }}>
         all
 

@@ -13,4 +13,5 @@ export interface SortableListProps {
   expandedItems: string[] 
   setExpandedItems: React.Dispatch<React.SetStateAction<string[]>>
   setAddressFilter: any
+  addressFilter: string
 }

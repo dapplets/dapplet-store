@@ -11,4 +11,6 @@ export interface SidePanelProps extends DetailedHTMLProps<HTMLAttributes<HTMLDiv
   activeTags: string[]
   setActiveTags: any
   setExpandedItems: React.Dispatch<React.SetStateAction<string[]>>
+  trustedUsersList: string[]
+  setAddressFilter: any
 }

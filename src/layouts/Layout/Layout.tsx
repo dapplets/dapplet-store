@@ -19,6 +19,8 @@ export function Layout({
   activeTags,
   setActiveTags,
   setExpandedItems,
+  trustedUsersList,
+  setAddressFilter,
 }: LayoutProps): React.ReactElement<LayoutProps> {
 	return (
 		<div className={styles.layout}>
@@ -39,6 +41,8 @@ export function Layout({
         activeTags={activeTags}
         setActiveTags={setActiveTags}
         setExpandedItems={setExpandedItems}
+        trustedUsersList={trustedUsersList}
+        setAddressFilter={setAddressFilter}
       />
 
 			<main className={styles.content}>

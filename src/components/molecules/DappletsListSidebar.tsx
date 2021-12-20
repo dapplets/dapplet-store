@@ -64,7 +64,8 @@ interface DappletsListSidebarProps {
   titleButton?: {
     title: string
     onClick: any
-  } 
+  }
+  onElementClick?: any
 }
 
 const DappletsListSidebar = (props: DappletsListSidebarProps) => {
@@ -78,9 +79,9 @@ const DappletsListSidebar = (props: DappletsListSidebarProps) => {
       {
         isOpen && !!props.dappletsList.length && <DappletsListItemWrapper>
           {props.dappletsList.map((dapplet) => (
-            <DappletsListItem {...dapplet} key={dapplet.title} />
+            <DappletsListItem onClick={props.onElementClick} {...dapplet} key={dapplet.title} />
           ))}
-          <MoreWrapper onClick={props.onOpenList}>show more</MoreWrapper>
+          {props.isMoreShow && <MoreWrapper onClick={props.onOpenList}>show more</MoreWrapper>}
         </DappletsListItemWrapper>
       }
     </ListWrapper>

@@ -5,3 +5,7 @@ export const saveListToLocalStorage = (dappletsList: IDappletsList) => {
   const dappletsListStringified = JSON.stringify(dapplets);
   window.localStorage.setItem(name, dappletsListStringified);
 };
+
+export const saveUsersListToLocalStorage = (usersList: string[]) => {
+  window.localStorage.setItem('trustedUsers', JSON.stringify(usersList));
+};

@@ -10,6 +10,8 @@ const Draggable = ({ children, ...props }: DraggableProps): React.ReactElement =
   const {
     id,
     activeId,
+    item,
+    addressFilter,
   } = props;
 
   const {attributes, listeners, setNodeRef, transform, transition} = useSortable({
@@ -24,6 +26,7 @@ const Draggable = ({ children, ...props }: DraggableProps): React.ReactElement =
     transition,
     opacity: id === activeId ? .5 : 1
   };
+  if (!!addressFilter && item.owner !== addressFilter) return <></>
 
   return (
     <Item

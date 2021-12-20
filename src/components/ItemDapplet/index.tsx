@@ -11,7 +11,7 @@ import Highlighter from "react-highlight-words";
 
 const ImagesWrapper = styled.div`
   display: grid;
-  grid-template-columns: repeat(5, min-content) 1fr;
+  grid-template-columns: repeat(3, min-content) 1fr;
   margin-left: 8px;
   align-items: center;
 
@@ -87,20 +87,20 @@ const ItemDapplet = (props: ItemDappletProps): React.ReactElement => {
 
   const isLocalDapplet = localDapplets.dapplets.some((dapplet) => dapplet.name === item.name);
 
-  const selected = useMemo(() => {
+  const getSelectedType = () => {
     const selectedDapplet = selectedDapplets.dapplets.find((dapplet) => dapplet.name === item.name)
-    console.log({selectedDapplet})
     if (selectedDapplet)
-
-      return {
-        type: DappletButtonTypes.RemoveFromList,
-        title: 'From My List',
+      switch (selectedDapplet.type) {
+        case 'Adding':
+          return DappletButtonTypes.AddingToList
+        case 'Removing':
+          return DappletButtonTypes.RemovingFromList
+        default:
+        case 'Default':
+          return DappletButtonTypes.InMyList
       }
-    return {
-      type: DappletButtonTypes.AddToList,
-      title: 'To My List',
-    }
-  }, [item.name, selectedDapplets.dapplets])
+    return DappletButtonTypes.AddToList
+  }
 
   const owner = item.owner.replace('0x000000000000000000000000', '0x');
 
@@ -143,9 +143,7 @@ const ItemDapplet = (props: ItemDappletProps): React.ReactElement => {
                 <ImageItem src={`https://bee.dapplets.org/bzz/5067359fb612cc8f083ab35fc7e5c0f3f98fc0ef57856731d6ae6e0b498ee37f/`}/>
                 <ImageItem src={`https://bee.dapplets.org/bzz/5067359fb612cc8f083ab35fc7e5c0f3f98fc0ef57856731d6ae6e0b498ee37f/`}/>
                 <ImageItem src={`https://bee.dapplets.org/bzz/5067359fb612cc8f083ab35fc7e5c0f3f98fc0ef57856731d6ae6e0b498ee37f/`}/>
-                <ImageItem src={`https://bee.dapplets.org/bzz/5067359fb612cc8f083ab35fc7e5c0f3f98fc0ef57856731d6ae6e0b498ee37f/`}/>
-                <ImageItem src={`https://bee.dapplets.org/bzz/5067359fb612cc8f083ab35fc7e5c0f3f98fc0ef57856731d6ae6e0b498ee37f/`}/>
-                <a href='/'>+24 more lists</a>
+                <a>+24 more lists</a>
               </ImagesWrapper>
             </>
           )}
@@ -158,9 +156,7 @@ const ItemDapplet = (props: ItemDappletProps): React.ReactElement => {
               <ImageItem src={`https://bee.dapplets.org/bzz/5067359fb612cc8f083ab35fc7e5c0f3f98fc0ef57856731d6ae6e0b498ee37f/`}/>
               <ImageItem src={`https://bee.dapplets.org/bzz/5067359fb612cc8f083ab35fc7e5c0f3f98fc0ef57856731d6ae6e0b498ee37f/`}/>
               <ImageItem src={`https://bee.dapplets.org/bzz/5067359fb612cc8f083ab35fc7e5c0f3f98fc0ef57856731d6ae6e0b498ee37f/`}/>
-              <ImageItem src={`https://bee.dapplets.org/bzz/5067359fb612cc8f083ab35fc7e5c0f3f98fc0ef57856731d6ae6e0b498ee37f/`}/>
-              <ImageItem src={`https://bee.dapplets.org/bzz/5067359fb612cc8f083ab35fc7e5c0f3f98fc0ef57856731d6ae6e0b498ee37f/`}/>
-              <a href='/'>+24 more lists</a>
+              <a>+24 more lists</a>
             </ImagesWrapper>
             <UnderUserInfoSeparator />
             <div>4 320 214 active users</div>
@@ -169,7 +165,10 @@ const ItemDapplet = (props: ItemDappletProps): React.ReactElement => {
 
         <div className={styles.author}>
           {/* Author: <a href={owner}>{owner}</a> */}
-          Author: <a onClick={() => setAddressFilter(item.owner)}>{owner}</a>
+          Author: <a onClick={(e) => {
+            e.stopPropagation()
+            setAddressFilter(item.owner)
+          }}>{owner}</a>
         </div>
 
         {
@@ -197,13 +196,11 @@ const ItemDapplet = (props: ItemDappletProps): React.ReactElement => {
 
       <ButtonsWrapper>
         <DappletButton
-          title={isLocalDapplet ? 'From My Dapplets' : 'To My Dapplets'}
-          type={isLocalDapplet ? DappletButtonTypes.RemoveFromMy : DappletButtonTypes.AddToMy}
+          type={isLocalDapplet ? DappletButtonTypes.InMyDapplets : DappletButtonTypes.AddToMy}
           onClick={editLocalDappletsList(item)}
         />
         <DappletButton
-          title={selected.title}
-          type={selected.type}
+          type={getSelectedType()}
           onClick={editSelectedDappletsList(item)}
         />
       </ButtonsWrapper>
