@@ -1,4 +1,5 @@
-import React, { useMemo } from 'react';
+/* eslint-disable jsx-a11y/anchor-is-valid */
+import React from 'react';
 import { Image } from 'semantic-ui-react';
 import { ethers } from 'ethers';
 import styled from 'styled-components';
