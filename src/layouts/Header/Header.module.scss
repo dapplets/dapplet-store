@@ -69,7 +69,7 @@
 
 .item::after, .activeItem::after {
   position: absolute;
-  top: -12px;
+  top: -30px;
   left: 50%;
   width: 0;
   height: 4px;
@@ -100,7 +100,7 @@
   display: block;
   position: relative;
   width: 390px;
-  margin-top: 4px;
+  margin-top: -68px;
 
   & > button {
     background: none;

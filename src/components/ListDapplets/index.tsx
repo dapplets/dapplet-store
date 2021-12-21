@@ -254,6 +254,21 @@ function ListDapplets({
                     searchQuery={searchQuery}
                     setAddressFilter={setAddressFilter}
                   />
+                  {/* <SortableList
+                    dapplets={dapplets}
+                    items={chooseList[Lists.Selected]}
+                    setItems={chooseSetMethod[Lists.Selected]}
+                    dappletsVersions={dappletsVersions}
+                    selectedDapplets={selectedDapplets}
+                    localDapplets={localDapplets}
+                    dappletsTransactions={dappletsTransactions}
+                    editLocalDappletsList={editLocalDappletsList}
+                    editSelectedDappletsList={editSelectedDappletsList}
+                    expandedItems={expandedItems}
+                    setExpandedItems={setExpandedItems}
+                    setAddressFilter={setAddressFilter}
+                    addressFilter={addressFilter}
+                  /> */}
                 </div>
               </section>
             )

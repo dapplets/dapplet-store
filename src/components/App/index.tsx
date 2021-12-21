@@ -13,6 +13,10 @@ import styled from "styled-components";
 import "@fontsource/roboto"
 import Dropdown from '../Dropdown/Dropdown';
 
+import Web3 from "web3";
+import Web3Modal from "web3modal";
+
+
 const PROVIDER_URL = 'https://rinkeby.infura.io/v3/eda881d858ae4a25b2dfbbd0b4629992';
 
 const getDappletsListFromLocal = (listName: Lists) => {
@@ -47,6 +51,7 @@ const CheckboxWrapper = styled.div`
     height: 16px;
     background: #D9304F;
     border-radius: 50%;
+    margin-top: 2px;
   }
 
   & > div > div {
@@ -58,11 +63,33 @@ const CheckboxWrapper = styled.div`
   }
 `
 
+const ModalWrapperBg = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 99999;
+  display: grid;
+  justify-items: center;
+  align-items: center;
+`
+
+const ModalWrapper = styled.div`
+  width: 300px;
+  height: 200px;
+  background-color: white;
+  border-radius: 4px;
+`
+
 export enum SortTypes {
   ABC = 'Sort A-Z',
   ABCReverse = 'Sort Z-A',
   Newest = 'Sort by newest',
   Oldest = 'Sort by oldest',
+}
+
+declare global {
+  interface Window { ethereum: any; }
 }
 
 const App = (): React.ReactElement => {
@@ -79,7 +106,29 @@ const App = (): React.ReactElement => {
   const [activeTags, setActiveTags] = useState<string[]>([]);
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
   const [isTrustedSort, setIsTrustedSort] = useState<boolean>(false);
+  const [isLoginOpen, setIsLoginOpen] = useState<boolean>(false);
+  const [loginInfo, setLoginInfo] = useState({});
 
+  const web3Init = async () => {
+    const providerOptions = {
+      /* See Provider Options Section */
+    };
+    
+    const web3Modal = new Web3Modal({
+      network: "goerli", // optional
+      cacheProvider: true, // optional
+      providerOptions // required
+    });
+    
+    const provider = await web3Modal.connect();
+    
+    const web3 = new Web3(provider);
+    const address = await web3.eth.getAccounts()
+    console.log({address})
+    return web3
+  }
+
+  web3Init()
 
   console.log({dapplets, searchQuery})
   const dropdownItems = [
@@ -220,57 +269,66 @@ const App = (): React.ReactElement => {
   };
 
   return (
-    <Layout
-      dappletTitles={dapplets?.reduce((acc, dapp) => ({ ...acc, [dapp.name]: dapp.title }), {})}
-      selectedDappletsList={selectedDappletsList}
-      setSelectedDappletsList={setSelectedDappletsList}
-      localDappletsList={localDappletsList}
-      setLocalDappletsList={setLocalDappletsList}
-      selectedList={selectedList}
-      setSelectedList={setSelectedList}
-      activeTags={activeTags}
-      setActiveTags={setActiveTags}
-      setExpandedItems={setExpandedItems}
-      trustedUsersList={trustedUsersList}
-      setAddressFilter={setAddressFilter}
-    >
-      <>
-        <Wrapper>
-          <Input 
+    <>
+      {isLoginOpen &&
+        <ModalWrapperBg onClick={() => setIsLoginOpen(false)}>
+          <ModalWrapper onClick={(e) => e.stopPropagation()}>
+            hi
+          </ModalWrapper>
+        </ModalWrapperBg>
+      }
+      <Layout
+        dappletTitles={dapplets?.reduce((acc, dapp) => ({ ...acc, [dapp.name]: dapp.title }), {})}
+        selectedDappletsList={selectedDappletsList}
+        setSelectedDappletsList={setSelectedDappletsList}
+        localDappletsList={localDappletsList}
+        setLocalDappletsList={setLocalDappletsList}
+        selectedList={selectedList}
+        setSelectedList={setSelectedList}
+        activeTags={activeTags}
+        setActiveTags={setActiveTags}
+        setExpandedItems={setExpandedItems}
+        trustedUsersList={trustedUsersList}
+        setAddressFilter={setAddressFilter}
+      >
+        <>
+          <Wrapper>
+            <Input 
+              searchQuery={searchQuery}
+              editSearchQuery={editSearchQuery}
+            />
+            <Dropdown items={dropdownItems}/>
+            <CheckboxWrapper onClick={() => setIsTrustedSort(!isTrustedSort)}>
+              <div>{isTrustedSort && <div></div>}</div>
+              <span>From trusted users</span>
+            </CheckboxWrapper>
+          </Wrapper>
+          {filteredDapplets && <ListDapplets
+            dapplets={filteredDapplets}
+            dappletsVersions={dappletsVersions}
+            selectedDapplets={selectedDappletsList}
+            setSelectedDapplets={setSelectedDappletsList}
+            localDapplets={localDappletsList}
+            setLocalDapplets={setLocalDappletsList}
+            selectedList={selectedList}
+            setSelectedList={setSelectedList}
+            dappletsTransactions={dappletsTransactions}
+            updateDappletsTransactions={updateDappletsTransactions}
+            expandedItems={expandedItems}
+            setExpandedItems={setExpandedItems}
+            sortType={sortType}
+            setSortType={setSortType}
             searchQuery={searchQuery}
             editSearchQuery={editSearchQuery}
-          />
-          <Dropdown items={dropdownItems}/>
-          <CheckboxWrapper onClick={() => setIsTrustedSort(!isTrustedSort)}>
-            <div>{isTrustedSort && <div></div>}</div>
-            <span>From trusted users</span>
-          </CheckboxWrapper>
-        </Wrapper>
-        {filteredDapplets && <ListDapplets
-          dapplets={filteredDapplets}
-          dappletsVersions={dappletsVersions}
-          selectedDapplets={selectedDappletsList}
-          setSelectedDapplets={setSelectedDappletsList}
-          localDapplets={localDappletsList}
-          setLocalDapplets={setLocalDappletsList}
-          selectedList={selectedList}
-          setSelectedList={setSelectedList}
-          dappletsTransactions={dappletsTransactions}
-          updateDappletsTransactions={updateDappletsTransactions}
-          expandedItems={expandedItems}
-          setExpandedItems={setExpandedItems}
-          sortType={sortType}
-          setSortType={setSortType}
-          searchQuery={searchQuery}
-          editSearchQuery={editSearchQuery}
-          addressFilter={addressFilter}
-          setAddressFilter={setAddressFilter}
-          trustedUsersList={trustedUsersList}
-          setTrustedUsersList={setTrustedUsersList}
-          isTrustedSort={isTrustedSort}
-        />}
-      </>
-    </Layout>
+            addressFilter={addressFilter}
+            setAddressFilter={setAddressFilter}
+            trustedUsersList={trustedUsersList}
+            setTrustedUsersList={setTrustedUsersList}
+            isTrustedSort={isTrustedSort}
+          />}
+        </>
+      </Layout>
+    </>
   );
 };
 

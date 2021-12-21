@@ -58,6 +58,7 @@ const ButtonsWrapper = styled.div`
 const ButtonAll = styled.div`
   grid-area: all;
   justify-self: end;
+  align-self: end;
 
   & button {
     font-family: Roboto;
@@ -145,7 +146,7 @@ const ProfileInList = (props: ProfileInListProps) => {
         props.editSearchQuery('')
         props.setSelectedList(undefined)
       }}>
-        all
+        All Dapplets
 
         </button>
       </ButtonAll>

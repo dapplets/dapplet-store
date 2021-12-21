@@ -57,12 +57,11 @@ const ButtonWrapper = styled.button<ButtonWrapperProps>`
   padding: 0 8px;
   display: grid;
   align-items: center;
-  grid-template-columns: min-content max-content;
+  justify-items: center;
   grid-column-gap: 8px;
   color: ${(props) => getColor(props.buttonType)};
   border: 1px ${(props) => getBorderType(props.buttonType)} ${(props) => getColor(props.buttonType)};
   background-color: white;
-
 `
 
 const ButtonIcon = (props: { type: string }) => {
@@ -108,7 +107,7 @@ export const DappletButton = (props: DappletButtonProps) => {
   }, [props.type, hovered])
   return(
   <ButtonWrapper onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} onClick={props.onClick} buttonType={buttonType}>
-    <ButtonIcon type={buttonType} />
+    {/* <ButtonIcon type={buttonType} /> */}
     <div>{buttonType}</div>
   </ButtonWrapper>
 )}
