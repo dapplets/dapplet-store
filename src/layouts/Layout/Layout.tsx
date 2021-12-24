@@ -21,6 +21,8 @@ export function Layout({
   setExpandedItems,
   trustedUsersList,
   setAddressFilter,
+  openedList,
+  setOpenedList,
 }: LayoutProps): React.ReactElement<LayoutProps> {
 	return (
 		<div className={styles.layout}>
@@ -43,6 +45,8 @@ export function Layout({
         setExpandedItems={setExpandedItems}
         trustedUsersList={trustedUsersList}
         setAddressFilter={setAddressFilter}
+        openedList={openedList}
+        setOpenedList={setOpenedList}
       />
 
 			<main className={styles.content}>

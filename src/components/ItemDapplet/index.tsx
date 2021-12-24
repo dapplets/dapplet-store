@@ -69,6 +69,7 @@ interface ItemDappletProps {
   setExpandedItems: React.Dispatch<React.SetStateAction<string[]>>
   searchQuery?: string
   setAddressFilter: any
+  setOpenedList: any
 }
 
 const ItemDapplet = (props: ItemDappletProps): React.ReactElement => {
@@ -84,6 +85,7 @@ const ItemDapplet = (props: ItemDappletProps): React.ReactElement => {
     setExpandedItems,
     searchQuery,
     setAddressFilter,
+    setOpenedList,
   } = props;
 
   const isLocalDapplet = localDapplets.dapplets.some((dapplet) => dapplet.name === item.name);

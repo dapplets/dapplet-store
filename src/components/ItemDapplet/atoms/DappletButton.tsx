@@ -6,9 +6,11 @@ import { useMemo } from 'react';
 
 export enum DappletButtonTypes {
   AddToMy = 'To My Dapplets',  // To My Dapplets
+  AddToMyHovered = 'To My Dapplets ',  // To My Dapplets hovered
   InMyDapplets = 'In My dapplets', // In My dapplets
   RemoveFromMy = 'From My Dapplets', // From My Dapplets
   AddToList = 'Add to My List', // Add to My List
+  AddToListHovered = 'Add to My List ', // Add to My List
   AddingToList = 'Adding to List', // Adding to List - -
   RemoveFromList = 'Cancel', // CANCEL 
   InMyList = 'In My List', // In My List
@@ -20,28 +22,67 @@ const getBorderType = (type: string): string => {
   switch (type) {
     case DappletButtonTypes.RemovingFromList:
     case DappletButtonTypes.AddingToList:
+    case DappletButtonTypes.RemoveFromList:
       return 'dashed'
     default:
       return 'solid'
   }
 }
 
-const getColor = (type: string): string => {
+const getColor = (type: string) => {
   switch (type) {
     case DappletButtonTypes.AddToList:
     case DappletButtonTypes.AddToMy:
+      return {
+        text: '#5EC280',
+        border: '#5EC280',
+        background: '#ffffff',
+      }
+    case DappletButtonTypes.AddToListHovered:
+    case DappletButtonTypes.AddToMyHovered:
+      return {
+        text: '#D3F8E0',
+        border: '#D3F8E0',
+        background: '#ffffff',
+      }
     case DappletButtonTypes.InMyDapplets:
     case DappletButtonTypes.InMyList:
-      return '#5EC280'
+      return {
+        text: '#919191',
+        border: '#F5F5F5',
+        background: '#ffffff',
+      }
     case DappletButtonTypes.RemoveFromMy:
-    case DappletButtonTypes.RemoveFromList:
     case DappletButtonTypes.FromMyList:
-      return '#FF6442'
+      return {
+        text: '#ffffff',
+        border: '#F5CF6C',
+        background: '#F5CF6C',
+      }
+    case DappletButtonTypes.RemoveFromList:
+      return {
+        text: '#919191',
+        border: '#919191',
+        background: '#ffffff',
+      }
     case DappletButtonTypes.RemovingFromList:
+      return {
+        text: '#F5CF6C',
+        border: '#F5CF6C',
+        background: '#ffffff',
+      }
     case DappletButtonTypes.AddingToList:
-      return '#919191'
+      return {
+        text: '#5AB5E8',
+        border: '#5AB5E8',
+        background: '#ffffff',
+      }
     default:
-      return '#5EC280'
+      return {
+        text: '#5EC280',
+        border: '#5EC280',
+        background: '#ffffff',
+      }
   }
 }
 
@@ -59,28 +100,28 @@ const ButtonWrapper = styled.button<ButtonWrapperProps>`
   align-items: center;
   justify-items: center;
   grid-column-gap: 8px;
-  color: ${(props) => getColor(props.buttonType)};
-  border: 1px ${(props) => getBorderType(props.buttonType)} ${(props) => getColor(props.buttonType)};
-  background-color: white;
+  color: ${(props) => getColor(props.buttonType).text};
+  border: 1px ${(props) => getBorderType(props.buttonType)} ${(props) => getColor(props.buttonType).border};
+  background-color: ${(props) => getColor(props.buttonType).background};
 `
 
-const ButtonIcon = (props: { type: string }) => {
-  switch (props.type) {
-    case DappletButtonTypes.AddToMy:
-    case DappletButtonTypes.RemoveFromMy:
-    case DappletButtonTypes.InMyDapplets:
-      return <PlusIcon stroke={getColor(props.type)} />
-    case DappletButtonTypes.AddToList:
-    case DappletButtonTypes.RemoveFromList:
-    case DappletButtonTypes.RemovingFromList:
-    case DappletButtonTypes.AddingToList:
-    case DappletButtonTypes.InMyList:
-    case DappletButtonTypes.FromMyList:
-      return <ListIcon stroke={getColor(props.type)} />
-    default:
-      return <PlusIcon />
-  }
-}
+// const ButtonIcon = (props: { type: string }) => {
+//   switch (props.type) {
+//     case DappletButtonTypes.AddToMy:
+//     case DappletButtonTypes.RemoveFromMy:
+//     case DappletButtonTypes.InMyDapplets:
+//       return <PlusIcon stroke={getColor(props.type)} />
+//     case DappletButtonTypes.AddToList:
+//     case DappletButtonTypes.RemoveFromList:
+//     case DappletButtonTypes.RemovingFromList:
+//     case DappletButtonTypes.AddingToList:
+//     case DappletButtonTypes.InMyList:
+//     case DappletButtonTypes.FromMyList:
+//       return <ListIcon stroke={getColor(props.type)} />
+//     default:
+//       return <PlusIcon />
+//   }
+// }
 
 interface DappletButtonProps {
   type: string
@@ -96,6 +137,13 @@ export const DappletButton = (props: DappletButtonProps) => {
         return props.type
       case DappletButtonTypes.InMyList:
         if (hovered) return DappletButtonTypes.FromMyList
+        return props.type
+      
+      case DappletButtonTypes.AddToList:
+        if (hovered) return DappletButtonTypes.AddToListHovered
+        return props.type
+      case DappletButtonTypes.AddToMy:
+        if (hovered) return DappletButtonTypes.AddToMyHovered
         return props.type
       case DappletButtonTypes.RemovingFromList:
       case DappletButtonTypes.AddingToList:

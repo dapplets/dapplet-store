@@ -3,20 +3,25 @@ import React, { useEffect, useMemo, useRef } from "react";
 import styled from 'styled-components';
 import jazzicon from '@metamask/jazzicon';
 import { ReactComponent as UserPlus } from './userPlus.svg'
+import { ReactComponent as Copy } from './copy.svg'
 
 interface VanillaChildrenProps {
-	children: HTMLElement | HTMLDivElement;
+	children: HTMLElement | HTMLDivElement
+  address: string
 }
 
-const VanillaChildren = ({ children }: VanillaChildrenProps): JSX.Element => {
+const VanillaChildren = ({ children, address }: VanillaChildrenProps): JSX.Element => {
 	const ref = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
+    while (ref.current?.firstChild) {
+      ref.current?.removeChild(ref.current?.firstChild);
+    }
 		ref.current?.appendChild(children);
 	}, [children, ref]);
 
 	return (
-		<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} ref={ref} />
+		<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} ref={ref} id={address} />
 	);
 };
 
@@ -45,6 +50,9 @@ const Avatar = styled.div`
 const Address = styled.div`
   grid-area: address;
   cursor: pointer;
+  display: grid;
+  grid-template-columns: max-content max-content;
+  grid-column-gap: 8px;
 `
 
 // const Description = styled.div`
@@ -102,6 +110,41 @@ const ButtonAction = styled.div`
   }
 `
 
+function fallbackCopyTextToClipboard(text: string) {
+  var textArea = document.createElement("textarea");
+  textArea.value = text;
+  
+  // Avoid scrolling to bottom
+  textArea.style.top = "0";
+  textArea.style.left = "0";
+  textArea.style.position = "fixed";
+
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
+
+  try {
+    var successful = document.execCommand('copy');
+    var msg = successful ? 'successful' : 'unsuccessful';
+    console.log('Fallback: Copying text command was ' + msg);
+  } catch (err) {
+    console.error('Fallback: Oops, unable to copy', err);
+  }
+
+  document.body.removeChild(textArea);
+}
+
+function copyTextToClipboard(text: string) {
+  if (!navigator.clipboard) {
+    fallbackCopyTextToClipboard(text);
+    return;
+  }
+  navigator.clipboard.writeText(text).then(function() {
+    console.log('Async: Copying to clipboard was successful!');
+  }, function(err) {
+    console.error('Async: Could not copy text: ', err);
+  });
+}
 
 interface ProfileInListProps {
   title: string
@@ -121,12 +164,18 @@ const ProfileInList = (props: ProfileInListProps) => {
 
   
   const address = useMemo(() => props.address.replace('0x000000000000000000000000', '0x'), [props.address])
-  const AvatarImg = useMemo(() => getAvatar(address), [address])
+  const AvatarImg = useMemo(() => ({
+    img: getAvatar(address),
+    address,
+  }), [address])
   return (
     <Wrapper>
       {/* <Title>{props.title}</Title> */}
-      <Avatar><VanillaChildren>{AvatarImg}</VanillaChildren></Avatar>
-      <Address onClick={() => props.setAddressFilter(props.address)}>{address}</Address>
+      <Avatar><VanillaChildren address={AvatarImg.address}>{AvatarImg.img}</VanillaChildren></Avatar>
+      <Address>
+        <div>{address}</div>
+        <Copy width={16} height={16} onClick={() => copyTextToClipboard(address)} />
+      </Address>
       <ButtonsWrapper>
         <ButtonAction onClick={() => {
           if (props.trustedUsersList.includes(props.address)) 
@@ -142,12 +191,11 @@ const ProfileInList = (props: ProfileInListProps) => {
       </ButtonsWrapper>
       <ButtonAll  >
         <button onClick={() => {
-        props.setAddressFilter('')
-        props.editSearchQuery('')
-        props.setSelectedList(undefined)
-      }}>
-        All Dapplets
-
+          props.setAddressFilter('')
+          props.editSearchQuery('')
+          props.setSelectedList(undefined)
+        }}>
+          All Dapplets
         </button>
       </ButtonAll>
       {/* <ButtonsWrapper>BUTTONS </ButtonsWrapper> */}

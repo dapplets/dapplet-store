@@ -14,4 +14,6 @@ export interface LayoutProps {
   setExpandedItems: React.Dispatch<React.SetStateAction<string[]>>
   trustedUsersList: string[]
   setAddressFilter: any
+  openedList: any
+  setOpenedList: any
 }

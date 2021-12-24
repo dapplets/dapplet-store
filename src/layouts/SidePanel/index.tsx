@@ -1,4 +1,5 @@
 import React from 'react';
+import { useState } from 'react';
 import { SidePanelProps } from './SidePanel.props';
 import cn from 'classnames';
 
@@ -8,6 +9,12 @@ import { Lists, IDappletsList, IDappletsListElement } from '../../config/types';
 import { saveListToLocalStorage } from '../../utils';
 import DappletsListSidebar from '../../components/molecules/DappletsListSidebar'
 import { DappletsListItemTypes } from '../../components/atoms/DappletsListItem'
+
+export enum SideLists {
+  MyDapplets = 'My dapplets',
+  MyListing = 'My listing',
+  MyTrustedUsers = 'My trusted users',
+}
 
 export function SidePanel({
   dappletTitles,
@@ -22,6 +29,8 @@ export function SidePanel({
   setExpandedItems,
   trustedUsersList,
   setAddressFilter,
+  openedList,
+  setOpenedList,
 }: SidePanelProps): React.ReactElement {
 
   const removeFromLocalList = (name: string) => (e: any) => {
@@ -71,6 +80,7 @@ export function SidePanel({
   //   }
   // }
 
+
 	return (
 		<aside className={cn(styles.sidePanel, className)}>
       <div style={{
@@ -86,12 +96,14 @@ export function SidePanel({
               onClickRemove: () => removeFromLocalList(dapplet.name),
               isRemoved: true,
             }))}
-            title={`My dapplets`}
+            title={SideLists.MyDapplets}
             onOpenList={() => {
               setExpandedItems([]);
               setSelectedList(Lists.Local);
             }}
             isMoreShow={localDappletsList.dapplets.length > 0}
+            isOpen={SideLists.MyDapplets === openedList}
+            setIsOpen={setOpenedList}
           />
 
           <DappletsListSidebar
@@ -101,7 +113,7 @@ export function SidePanel({
               onClickRemove: () => removeFromSelectedList(dapplet.name),
               isRemoved: dapplet.type !== DappletsListItemTypes.Default,
             }))}
-            title={`My Listing`}
+            title={SideLists.MyListing}
             onOpenList={() => {
               setExpandedItems([]);
               setSelectedList(Lists.Selected);
@@ -111,20 +123,25 @@ export function SidePanel({
               title: 'Push changes',
               onClick: pushSelectedDappletsList
             }}
+            isOpen={SideLists.MyListing === openedList}
+            setIsOpen={setOpenedList}
           />
 
           <DappletsListSidebar
             dappletsList={trustedUsersList.map((user) => ({
               title: user.replace('0x000000000000000000000000', '0x'),
+              subTitle: `${user.replace('0x000000000000000000000000', '0x').slice(0, 6)}...${user.replace('0x000000000000000000000000', '0x').slice(-4)}`,
               id: user,
               type: DappletsListItemTypes.Default,
               onClickRemove: () => {},
               isRemoved: false,
             }))}
-            title={`My trusted users`}
+            title={SideLists.MyTrustedUsers}
             onOpenList={() => {}}
             isMoreShow={false}
             onElementClick={(id: string) => setAddressFilter(id)}
+            isOpen={SideLists.MyTrustedUsers === openedList}
+            setIsOpen={setOpenedList}
           />
 
           <DappletsListSidebar
@@ -132,6 +149,8 @@ export function SidePanel({
             title={`Popular tags`}
             onOpenList={() => {}}
             isMoreShow={false}
+            isOpen={false}
+            setIsOpen={setOpenedList}
           />
 
           {/* <div>

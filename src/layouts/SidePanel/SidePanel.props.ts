@@ -13,4 +13,6 @@ export interface SidePanelProps extends DetailedHTMLProps<HTMLAttributes<HTMLDiv
   setExpandedItems: React.Dispatch<React.SetStateAction<string[]>>
   trustedUsersList: string[]
   setAddressFilter: any
+  openedList: any
+  setOpenedList: any
 }

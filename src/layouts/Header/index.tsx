@@ -36,6 +36,9 @@ export function Header({
       case 1:
         setSelectedList();
         break;
+      case 2:
+        setSelectedList(Lists.Selected);
+        break;
       case 3:
         setSelectedList(Lists.Local);
         break;
@@ -49,6 +52,9 @@ export function Header({
     switch (selectedList) {
       case Lists.Local:
         setActive(3);
+        break;
+      case Lists.Selected:
+        setActive(2);
         break;
       default:
         setActive(1);

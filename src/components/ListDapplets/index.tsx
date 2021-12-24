@@ -12,6 +12,7 @@ import { DappletsListItemTypes } from '../atoms/DappletsListItem'
 
 import { SortTypes } from '../App'
 import ProfileInList from '../../features/ProfileInList/ProfileInList';
+import { SideLists } from '../../layouts/SidePanel';
 
 function ListDapplets({
   dapplets,
@@ -34,6 +35,8 @@ function ListDapplets({
   trustedUsersList,
   setTrustedUsersList,
   isTrustedSort,
+  openedList,
+  setOpenedList,
 }: ListDappletsProps): React.ReactElement {
 
   const collator = useMemo(() => (
@@ -53,6 +56,7 @@ function ListDapplets({
   const editLocalDappletsList = (item: IDapplet) => (e: any) => {
     e.preventDefault();
     e.stopPropagation();
+    setOpenedList(SideLists.MyDapplets)
     const newLocalDappletsList = editList(item, localDapplets, DappletsListItemTypes.Default)
     saveListToLocalStorage(newLocalDappletsList);
     setLocalDapplets(newLocalDappletsList);
@@ -61,6 +65,7 @@ function ListDapplets({
   const editSelectedDappletsList = (item: IDapplet) => (e: any) => {
     e.preventDefault();
     e.stopPropagation();
+    setOpenedList(SideLists.MyListing)
     
     let nowDappletsList: IDappletsListElement[] = selectedDapplets.dapplets
     const dappletListIndex = nowDappletsList.findIndex((dapplet) => dapplet.name === item.name);
@@ -85,6 +90,14 @@ function ListDapplets({
     setSelectedDapplets(newDappletsList);
   };
 
+  const titleText = useMemo(() => {
+    if (selectedList) return selectedList
+    if (searchQuery) return 'Search Result'
+    if (addressFilter) return 'User'
+    if (isTrustedSort) return 'User Listing'
+    return 'All Dapplets'
+  }, [addressFilter, isTrustedSort, searchQuery, selectedList])
+
   const listDappletsHeader = (
     <div
       style={{
@@ -103,7 +116,7 @@ function ListDapplets({
           flexGrow: 1,
         }}
       >
-        {selectedList ? selectedList : 'Dapplets'}
+        {titleText}
       </Header>
       {/* {!selectedList && (
         <Dropdown text={`Sort by: ${sortType}`} className="small-link">
@@ -206,6 +219,7 @@ function ListDapplets({
         }}
 
 
+
       >
         {listDappletsHeader}
         {addressFilter !== '' && <ProfileInList
@@ -235,6 +249,7 @@ function ListDapplets({
             setExpandedItems={setExpandedItems}
             setAddressFilter={setAddressFilter}
             addressFilter={addressFilter}
+            setOpenedList={setOpenedList}
           />
           : sortedDapplets
             .map((item, i) => (
@@ -253,6 +268,7 @@ function ListDapplets({
                     setExpandedItems={setExpandedItems}
                     searchQuery={searchQuery}
                     setAddressFilter={setAddressFilter}
+                    setOpenedList={setOpenedList}
                   />
                   {/* <SortableList
                     dapplets={dapplets}

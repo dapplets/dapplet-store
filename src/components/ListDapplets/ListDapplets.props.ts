@@ -22,4 +22,6 @@ export interface ListDappletsProps {
   trustedUsersList: string[]
   setTrustedUsersList: any
   isTrustedSort: boolean
+  openedList: any
+  setOpenedList: any
 }

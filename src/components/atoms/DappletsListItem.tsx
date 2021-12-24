@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useMemo } from "react";
 import styled from 'styled-components';
 import { ReactComponent as DappletListItemPlus } from '../../images/dappletListItemPlus.svg'
 import { ReactComponent as DappletListItemMinus } from '../../images/dappletListItemMinus.svg'
@@ -64,6 +64,7 @@ const DappletListItemCloseWrapper = styled.div`
 
 export interface DappletsListItemProps {
   title: string
+  subTitle?: string
   type: string
   onClickRemove: any
   isRemoved: boolean
@@ -72,6 +73,18 @@ export interface DappletsListItemProps {
 }
 
 const DappletsListItem = (props: DappletsListItemProps) => {
+  const [hovered, setHovered] = useState(false)
+
+  const title = useMemo(() => {
+    if (!props.subTitle) {
+      return props.title
+    }
+    if (hovered) {
+      return props.title
+    }
+    return props.subTitle
+  }, [hovered, props.subTitle, props.title])
+
   return (
     <DappletsListItemWrapper 
       type={props.type} 
@@ -79,9 +92,11 @@ const DappletsListItem = (props: DappletsListItemProps) => {
         if (props.onClick) props.onClick(props.id)}
       } 
       isClickable={!!props.onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)} 
     >
       <TitleIcon type={props.type}/>
-      <Title type={props.type}>{props.title}</Title>
+      <Title type={props.type}>{title}</Title>
       {props.isRemoved && <DappletListItemCloseWrapper>
         <DappletListItemClose onClick={props.onClickRemove()}/>
       </DappletListItemCloseWrapper>}

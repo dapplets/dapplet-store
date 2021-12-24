@@ -66,20 +66,22 @@ interface DappletsListSidebarProps {
     onClick: any
   }
   onElementClick?: any
+  isOpen: boolean
+  setIsOpen: any
 }
 
 const DappletsListSidebar = (props: DappletsListSidebarProps) => {
-  const [isOpen, setIsOpen] = useState(false)
+  // const [isOpen, setIsOpen] = useState(false)
   return (
     <ListWrapper>
       <TitleWrapper>
-        <Title onClick={() => setIsOpen(!isOpen)} color={isOpen ? '#2A2A2A' : '#747376'}>{isOpen ? '-' : '+'} {props.title}</Title>
-        {isOpen && props.titleButton && <TitleButtonWrapper onClick={props.titleButton?.onClick}>{props.titleButton?.title}</TitleButtonWrapper>}
+        <Title onClick={() => props.setIsOpen(props.isOpen ? null : props.title)} color={props.isOpen ? '#2A2A2A' : '.#747376'}>{props.isOpen ? '-' : '+'} {props.title}</Title>
+        {props.isOpen && props.titleButton && <TitleButtonWrapper onClick={props.titleButton?.onClick}>{props.titleButton?.title}</TitleButtonWrapper>}
       </TitleWrapper>
       {
-        isOpen && !!props.dappletsList.length && <DappletsListItemWrapper>
+        props.isOpen && !!props.dappletsList.length && <DappletsListItemWrapper>
           {props.dappletsList.map((dapplet) => (
-            <DappletsListItem onClick={props.onElementClick} {...dapplet} key={dapplet.title} />
+            <DappletsListItem onClick={props.onElementClick} subTitle={dapplet.subTitle} {...dapplet} key={dapplet.title} />
           ))}
           {props.isMoreShow && <MoreWrapper onClick={props.onOpenList}>show more</MoreWrapper>}
         </DappletsListItemWrapper>

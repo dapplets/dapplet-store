@@ -11,10 +11,12 @@ import { Lists } from '../../config/types';
 import styled from "styled-components";
 
 import "@fontsource/roboto"
+import "@fontsource/montserrat"
 import Dropdown from '../Dropdown/Dropdown';
 
 import Web3 from "web3";
 import Web3Modal from "web3modal";
+import LoginModal from '../LoginModal/LoginModal';
 
 
 const PROVIDER_URL = 'https://rinkeby.infura.io/v3/eda881d858ae4a25b2dfbbd0b4629992';
@@ -75,10 +77,7 @@ const ModalWrapperBg = styled.div`
 `
 
 const ModalWrapper = styled.div`
-  width: 300px;
-  height: 200px;
   background-color: white;
-  border-radius: 4px;
 `
 
 export enum SortTypes {
@@ -106,8 +105,13 @@ const App = (): React.ReactElement => {
   const [activeTags, setActiveTags] = useState<string[]>([]);
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
   const [isTrustedSort, setIsTrustedSort] = useState<boolean>(false);
-  const [isLoginOpen, setIsLoginOpen] = useState<boolean>(false);
+  const [openedModal, setOpenedModal] = useState<any>(null);
+  const [openedList, setOpenedList] = useState(null)
   const [loginInfo, setLoginInfo] = useState({});
+
+  useEffect(() => {
+    setOpenedModal(<LoginModal />)
+  }, [])
 
   const web3Init = async () => {
     const providerOptions = {
@@ -197,6 +201,7 @@ const App = (): React.ReactElement => {
 
   useEffect(() => {
     // window.localStorage.setItem('trustedUsers', JSON.stringify(trustedUsersList));
+    // JSON.parse('testparser')
     const trustedUsers = window.localStorage.getItem('trustedUsers');
     if (trustedUsers) setTrustedUsersList(JSON.parse(trustedUsers))
   }, [])
@@ -270,10 +275,10 @@ const App = (): React.ReactElement => {
 
   return (
     <>
-      {isLoginOpen &&
-        <ModalWrapperBg onClick={() => setIsLoginOpen(false)}>
+      {openedModal &&
+        <ModalWrapperBg onClick={() => setOpenedModal(null)}>
           <ModalWrapper onClick={(e) => e.stopPropagation()}>
-            hi
+            {openedModal}
           </ModalWrapper>
         </ModalWrapperBg>
       }
@@ -290,6 +295,8 @@ const App = (): React.ReactElement => {
         setExpandedItems={setExpandedItems}
         trustedUsersList={trustedUsersList}
         setAddressFilter={setAddressFilter}
+        openedList={openedList}
+        setOpenedList={setOpenedList}
       >
         <>
           <Wrapper>
@@ -325,6 +332,8 @@ const App = (): React.ReactElement => {
             trustedUsersList={trustedUsersList}
             setTrustedUsersList={setTrustedUsersList}
             isTrustedSort={isTrustedSort}
+            openedList={openedList}
+            setOpenedList={setOpenedList}
           />}
         </>
       </Layout>
