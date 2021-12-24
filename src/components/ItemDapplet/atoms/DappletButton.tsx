@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { ReactComponent as PlusIcon } from '../../../images/dappletPlus.svg';
-import { ReactComponent as ListIcon } from '../../../images/dappletList.svg';
 import { useMemo } from 'react';
 
 export enum DappletButtonTypes {

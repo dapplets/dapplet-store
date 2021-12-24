@@ -1,5 +1,4 @@
 import React from 'react';
-import { useState } from 'react';
 import { SidePanelProps } from './SidePanel.props';
 import cn from 'classnames';
 

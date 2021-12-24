@@ -85,7 +85,6 @@ const ItemDapplet = (props: ItemDappletProps): React.ReactElement => {
     setExpandedItems,
     searchQuery,
     setAddressFilter,
-    setOpenedList,
   } = props;
 
   const isLocalDapplet = localDapplets.dapplets.some((dapplet) => dapplet.name === item.name);

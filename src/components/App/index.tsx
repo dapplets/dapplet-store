@@ -107,7 +107,7 @@ const App = (): React.ReactElement => {
   const [isTrustedSort, setIsTrustedSort] = useState<boolean>(false);
   const [openedModal, setOpenedModal] = useState<any>(null);
   const [openedList, setOpenedList] = useState(null)
-  const [loginInfo, setLoginInfo] = useState({});
+  // const [loginInfo, setLoginInfo] = useState({});
 
   useEffect(() => {
     setOpenedModal(<LoginModal />)
