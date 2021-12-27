@@ -110,6 +110,7 @@ const App = (): React.ReactElement => {
   const [isTrustedSort, setIsTrustedSort] = useState<boolean>(false);
   const [openedModal, setOpenedModal] = useState<any>(null);
   const [openedList, setOpenedList] = useState(null)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [loginInfo, setLoginInfo] = useState('');
 
 
