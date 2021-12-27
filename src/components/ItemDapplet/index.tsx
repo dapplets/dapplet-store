@@ -9,6 +9,7 @@ import { DappletButton, DappletButtonTypes } from './atoms/DappletButton';
 
 import { IDapplet, IDappletsList } from "../../config/types";
 import Highlighter from "react-highlight-words";
+import DappletListersPopup from '../../features/DappletListersPopup/DappletListersPopup';
 
 const ImagesWrapper = styled.div`
   display: grid;
@@ -114,6 +115,7 @@ const ItemDapplet = (props: ItemDappletProps): React.ReactElement => {
   const isOpen = !!expandedItems?.includes(item.name);
 
   const handleClickOnItem = ({ target }: any) => {
+    console.log({target})
     if (target.tagName === 'BUTTON') return;
     if (isOpen) {
       setExpandedItems(expandedItems.filter((name) => name !== item.name))
@@ -145,7 +147,7 @@ const ItemDapplet = (props: ItemDappletProps): React.ReactElement => {
                 <ImageItem src={`https://bee.dapplets.org/bzz/5067359fb612cc8f083ab35fc7e5c0f3f98fc0ef57856731d6ae6e0b498ee37f/`}/>
                 <ImageItem src={`https://bee.dapplets.org/bzz/5067359fb612cc8f083ab35fc7e5c0f3f98fc0ef57856731d6ae6e0b498ee37f/`}/>
                 <ImageItem src={`https://bee.dapplets.org/bzz/5067359fb612cc8f083ab35fc7e5c0f3f98fc0ef57856731d6ae6e0b498ee37f/`}/>
-                <a>+24 more lists</a>
+                <DappletListersPopup text='+24 more lists' onClickSort={setAddressFilter} />
               </ImagesWrapper>
             </>
           )}
@@ -158,7 +160,7 @@ const ItemDapplet = (props: ItemDappletProps): React.ReactElement => {
               <ImageItem src={`https://bee.dapplets.org/bzz/5067359fb612cc8f083ab35fc7e5c0f3f98fc0ef57856731d6ae6e0b498ee37f/`}/>
               <ImageItem src={`https://bee.dapplets.org/bzz/5067359fb612cc8f083ab35fc7e5c0f3f98fc0ef57856731d6ae6e0b498ee37f/`}/>
               <ImageItem src={`https://bee.dapplets.org/bzz/5067359fb612cc8f083ab35fc7e5c0f3f98fc0ef57856731d6ae6e0b498ee37f/`}/>
-              <a>+24 more lists</a>
+              <DappletListersPopup text='+24 more lists' onClickSort={setAddressFilter}/>
             </ImagesWrapper>
             <UnderUserInfoSeparator />
             <div>4 320 214 active users</div>

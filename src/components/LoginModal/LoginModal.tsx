@@ -70,7 +70,7 @@ const ButtonWrapper = styled.button`
   align-items: center;
   box-shadow: none;
 	outline: inherit;
-  /* background: white; */
+  background: white;
 `
 
 const ButtonContentWrapper = styled.div`
@@ -83,9 +83,9 @@ const ButtonContentWrapper = styled.div`
 
 const ButtonText = styled.div``
 
-const Button = (props: { icon: any, text: string, className?: any }) => {
+const Button = (props: { icon: any, text: string, className?: any, onClick?: any }) => {
   return(
-    <ButtonWrapper className={props.className}>
+    <ButtonWrapper className={props.className} onClick={props.onClick}>
       <ButtonContentWrapper>
         {props.icon}
         <ButtonText>{props.text}</ButtonText>
@@ -107,6 +107,7 @@ const SignButton = styled(Button)`
 `
 
 interface LoginModalProps {
+  onMetamask: any
 }
 
 const LoginModal = (props: LoginModalProps) => {
@@ -118,7 +119,7 @@ const LoginModal = (props: LoginModalProps) => {
       <ButtonsWrapper>
         <DappletButton icon={<Dapplet />} text='Install Dapplets Extension'/>
         <ButtonWrapperText>or</ButtonWrapperText>
-        <SignButton icon={<Metamask />} text='Sign in with Metamask'/>
+        <SignButton icon={<Metamask />} text='Sign in with Metamask' onClick={props.onMetamask}/>
         <SignButton icon={<Walletconnect />} text='Sign in with WalletConnect'/>
       </ButtonsWrapper>
     </Wrapper>

@@ -1,11 +1,30 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { HeaderProps } from './Header.props';
 import cn from 'classnames';
 import STORE_LOGO from '../../images/StoreLogo.svg';
-import AVATAR from '../../images/mockedImage.jpg';
 import { Lists } from '../../config/types';
-
+import jazzicon from '@metamask/jazzicon';
 import styles from './Header.module.scss';
+
+interface VanillaChildrenProps {
+	children: HTMLElement | HTMLDivElement
+}
+
+const VanillaChildren = ({ children }: VanillaChildrenProps): JSX.Element => {
+	const ref = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+    while (ref.current?.firstChild) {
+      ref.current?.removeChild(ref.current?.firstChild);
+    }
+		ref.current?.appendChild(children);
+	}, [children, ref]);
+
+	return (
+		<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} ref={ref}/>
+	);
+};
+
 
 const MENU = [
 	{ id: 0, label: 'Home' },
@@ -28,8 +47,11 @@ export function Header({
   selectedList,
   setSelectedList,
   setExpandedItems,
+  loginInfo,
 }: HeaderProps): React.ReactElement {
 	const [active, setActive] = useState<number>(MENU[0].id);
+  const getAvatar = (loggedIn: string): HTMLDivElement => jazzicon(50, parseInt(loggedIn.slice(2, 10), 16));
+  const address = useMemo(() => loginInfo ? loginInfo.replace('0x000000000000000000000000', '0x') : '', [loginInfo])
 
 	function handleItemClick(id: number): void {
     switch (id) {
@@ -151,7 +173,8 @@ export function Header({
         </div>
 
         <div id='place-for-overlay-in-header' className={styles.avatar}>
-          <img src={AVATAR} alt='avatar' />
+          {/* <img src={AVATAR} alt='avatar' /> */}
+          {address && <VanillaChildren>{getAvatar(address)}</VanillaChildren>}
         </div>
 
       </div>

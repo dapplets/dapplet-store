@@ -16,4 +16,5 @@ export interface LayoutProps {
   setAddressFilter: any
   openedList: any
   setOpenedList: any
+  loginInfo: string | null
 }

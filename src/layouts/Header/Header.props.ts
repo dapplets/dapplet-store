@@ -5,4 +5,5 @@ export interface HeaderProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivEle
   selectedList?: Lists
   setSelectedList: any
   setExpandedItems: React.Dispatch<React.SetStateAction<string[]>>
+  loginInfo: string | null
 }

@@ -55,8 +55,9 @@ interface IDropdownItem {
 }
 
 interface IProps {
-  activatorText?: string;
-  items?: IDropdownItem[];
+  active: string
+  items: IDropdownItem[]
+  setActive: any
 }
 
 const dropdownItems = [
@@ -83,25 +84,25 @@ const dropdownItems = [
 ];
 
 const Dropdown = ({
-  activatorText = "Dropdown",
+  active,
+  setActive,
   items = dropdownItems,
 }: IProps) => {
   const activatorRef = React.useRef<HTMLButtonElement | null>(null);
   const listRef = React.useRef<HTMLUListElement | null>(null);
   const [isOpen, setIsOpen] = React.useState(false);
-  const [activeIndex, setActiveIndex] = React.useState(1);
 
   const handleClick = () => {
     setIsOpen(!isOpen);
   };
 
   const currentText = useMemo(() => {
-    const item = items.find(({ id }) => id === activeIndex) 
+    const item = items.find(({ text }) => text === active) 
     if (item) {
       return item.text
     }
     return 'TITLE'
-  }, [activeIndex, items])
+  }, [active, items])
 
   const handleClickOutside = (event: any) => {
     if (
@@ -124,8 +125,8 @@ const Dropdown = ({
     };
   }, [isOpen]);
 
-  const focusHandler = (index: number) => {
-    setActiveIndex(index);
+  const focusHandler = (index: string) => {
+    setActive(index);
   };
 
   return (
@@ -140,8 +141,8 @@ const Dropdown = ({
       </ActivatorButton>
       <DropdownList id="dropdown1" ref={listRef} active={isOpen} role="list">
         {items.map((item, index) => (
-          <li key={item.id} onClick={() =>{ 
-              focusHandler(item.id)
+          <li key={item.text} onClick={() =>{ 
+              focusHandler(item.text)
               item.onClick()
               setIsOpen(false)
             }}>

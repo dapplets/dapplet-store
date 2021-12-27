@@ -234,7 +234,8 @@ function ListDapplets({
           trustedUsersList={trustedUsersList}
           setTrustedUsersList={setTrustedUsersList}
         />}
-        {selectedList
+        {selectedList 
+          // ? <></>
           ? <SortableList
             dapplets={dapplets}
             items={chooseList[selectedList]}

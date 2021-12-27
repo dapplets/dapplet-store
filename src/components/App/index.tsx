@@ -14,9 +14,12 @@ import "@fontsource/roboto"
 import "@fontsource/montserrat"
 import Dropdown from '../Dropdown/Dropdown';
 
-import Web3 from "web3";
-import Web3Modal from "web3modal";
-import LoginModal from '../LoginModal/LoginModal';
+// import Web3 from "web3";
+// import Web3Modal from "web3modal";
+// @ts-ignore
+// import WalletConnectProvider from "@walletconnect/web3-provider";
+// import LoginModal from '../LoginModal/LoginModal';
+import { getAnchorParams, setAnchorParams } from '../../lib/anchorLink';
 
 
 const PROVIDER_URL = 'https://rinkeby.infura.io/v3/eda881d858ae4a25b2dfbbd0b4629992';
@@ -95,7 +98,7 @@ const App = (): React.ReactElement => {
   const [sortType, setSortType] = useState(SortTypes.ABC);
   const [addressFilter, setAddressFilter] = useState('');
   const [searchQuery, editSearchQuery] = useState<string>('');
-  const [dapplets, updateDapplets] = useState<IDapplet[]>();
+  const [dapplets, updateDapplets] = useState<IDapplet[]>([]);
   const [dappletsVersions, updateDappletsVersions] = useState<IDappletVersions>();
   const [dappletsTransactions, updateDappletsTransactions] = useState<any>();
   const [selectedDappletsList, setSelectedDappletsList] = useState<IDappletsList>({ listName: Lists.Selected, dapplets: [] });
@@ -107,32 +110,64 @@ const App = (): React.ReactElement => {
   const [isTrustedSort, setIsTrustedSort] = useState<boolean>(false);
   const [openedModal, setOpenedModal] = useState<any>(null);
   const [openedList, setOpenedList] = useState(null)
-  // const [loginInfo, setLoginInfo] = useState({});
+  const [loginInfo, setLoginInfo] = useState('');
+
 
   useEffect(() => {
-    setOpenedModal(<LoginModal />)
+    const params = getAnchorParams()
+    setSortType(params.sortType)
+    setAddressFilter(params.addressFilter)
+    // editSearchQuery(params.searchQuery)
+    setIsTrustedSort(params.isTrustedSort)
+    // if (!!params.selectedList) setSelectedList(params.selectedList)
   }, [])
 
-  const web3Init = async () => {
-    const providerOptions = {
-      /* See Provider Options Section */
-    };
-    
-    const web3Modal = new Web3Modal({
-      network: "goerli", // optional
-      cacheProvider: true, // optional
-      providerOptions // required
-    });
-    
-    const provider = await web3Modal.connect();
-    
-    const web3 = new Web3(provider);
-    const address = await web3.eth.getAccounts()
-    console.log({address})
-    return web3
-  }
+  // const firstUpdate = useRef(true);
+  useEffect(() => {    
+    // if (firstUpdate.current) {
+    //   firstUpdate.current = false;
+    //   return;
+    // }
+    setAnchorParams({
+      sortType,
+      addressFilter,
+      searchQuery,
+      isTrustedSort,
+      selectedList,
+    })
+  }, [addressFilter, isTrustedSort, searchQuery, selectedList, sortType])
 
-  web3Init()
+  // const web3Init = async () => {
+  //   const providerOptions = {
+  //     walletconnect: {
+  //       package: WalletConnectProvider,
+  //     },
+  //   };
+    
+  //   const web3Modal = new Web3Modal({
+  //     network: "goerli", // optional
+  //     cacheProvider: true, // optional
+  //     providerOptions // required
+  //   });
+    
+  //   const provider = await web3Modal.connect();
+
+  //   provider.on("accountsChanged", (accounts: string[]) => {
+  //     setLoginInfo(accounts[0])
+  //   });
+    
+  //   const web3 = new Web3(provider);
+  //   const address = await web3.eth.getAccounts()
+  //   setLoginInfo(address[0])
+  //   setOpenedModal(null)
+    
+  //   console.log({address})
+  //   return web3
+  // }
+
+  useEffect(() => {
+    // setOpenedModal(<LoginModal onMetamask={web3Init} />)
+  }, [])
 
   console.log({dapplets, searchQuery})
   const dropdownItems = [
@@ -200,14 +235,11 @@ const App = (): React.ReactElement => {
   }, []);
 
   useEffect(() => {
-    // window.localStorage.setItem('trustedUsers', JSON.stringify(trustedUsersList));
-    // JSON.parse('testparser')
     const trustedUsers = window.localStorage.getItem('trustedUsers');
     if (trustedUsers) setTrustedUsersList(JSON.parse(trustedUsers))
   }, [])
 
   useEffect(() => {
-    console.log('hih')
     window.localStorage.setItem('trustedUsers', JSON.stringify(trustedUsersList));
   }, [trustedUsersList])
 
@@ -225,6 +257,8 @@ const App = (): React.ReactElement => {
       .filter((dapp): dapp is IDapplet => !!dapp);
   }
 
+  // const [filteredDapplets, setFilteredDapplets] = useState()
+
   const dappletsByList = formDappletsList(selectedList);
 
   const reg1 = new RegExp(`${searchQuery.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')}`, 'gi');
@@ -240,6 +274,8 @@ const App = (): React.ReactElement => {
     ));
     return  !res.includes(null);
   })
+
+  
 
   /** 
    *  The feature makes the header hidden when scrilling down the page and visible when scrolling up the page.
@@ -297,6 +333,7 @@ const App = (): React.ReactElement => {
         setAddressFilter={setAddressFilter}
         openedList={openedList}
         setOpenedList={setOpenedList}
+        loginInfo={loginInfo}
       >
         <>
           <Wrapper>
@@ -304,7 +341,11 @@ const App = (): React.ReactElement => {
               searchQuery={searchQuery}
               editSearchQuery={editSearchQuery}
             />
-            <Dropdown items={dropdownItems}/>
+            <Dropdown 
+              items={dropdownItems}
+              active={sortType}
+              setActive={setSortType}
+            />
             <CheckboxWrapper onClick={() => setIsTrustedSort(!isTrustedSort)}>
               <div>{isTrustedSort && <div></div>}</div>
               <span>From trusted users</span>

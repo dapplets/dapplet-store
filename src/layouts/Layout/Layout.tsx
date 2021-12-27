@@ -23,6 +23,7 @@ export function Layout({
   setAddressFilter,
   openedList,
   setOpenedList,
+  loginInfo,
 }: LayoutProps): React.ReactElement<LayoutProps> {
 	return (
 		<div className={styles.layout}>
@@ -31,6 +32,7 @@ export function Layout({
         selectedList={selectedList}
         setSelectedList={setSelectedList}
         setExpandedItems={setExpandedItems}
+        loginInfo={loginInfo}
       />
 			<SidePanel
         dappletTitles={dappletTitles}
