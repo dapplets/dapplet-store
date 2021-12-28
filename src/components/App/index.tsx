@@ -116,11 +116,12 @@ const App = (): React.ReactElement => {
 
   useEffect(() => {
     const params = getAnchorParams()
+    if (!params) return;
     setSortType(params.sortType)
     setAddressFilter(params.addressFilter)
-    // editSearchQuery(params.searchQuery)
+    editSearchQuery(params.searchQuery)
     setIsTrustedSort(params.isTrustedSort)
-    // if (!!params.selectedList) setSelectedList(params.selectedList)
+    if (!!params.selectedList) setSelectedList(params.selectedList)
   }, [])
 
   // const firstUpdate = useRef(true);
@@ -266,14 +267,18 @@ const App = (): React.ReactElement => {
   const regs = activeTags.map((activeTag) => new RegExp(activeTag, 'gi'));
   regs.push(reg1);
   const filteredDapplets = dappletsByList && dappletsByList.filter((dapplet) => {
-    const res = regs.map((reg) => (
-      reg.exec(dapplet.name) ||
-      reg.exec(dapplet.title) ||
-      reg.exec(dapplet.owner.replace('0x000000000000000000000000', '0x')) ||
-      reg.exec(dapplet.description) ||
-      reg.exec(dappletsVersions![dapplet.name][dappletsVersions![dapplet.name].length - 1])
-    ));
-    return  !res.includes(null);
+    try {
+      const res = regs.map((reg) => (
+        reg.exec(dapplet.name) ||
+        reg.exec(dapplet.title) ||
+        reg.exec(dapplet.owner.replace('0x000000000000000000000000', '0x')) ||
+        reg.exec(dapplet.description) ||
+        reg.exec(dappletsVersions![dapplet.name][dappletsVersions![dapplet.name].length - 1])
+      ));
+      return  !res.includes(null);
+    } catch (error) {
+      console.log(error)
+    }
   })
 
   

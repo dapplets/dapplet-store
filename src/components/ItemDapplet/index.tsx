@@ -88,6 +88,8 @@ const ItemDapplet = (props: ItemDappletProps): React.ReactElement => {
     setAddressFilter,
   } = props;
 
+  if (!item) return <></>;
+
   const isLocalDapplet = localDapplets.dapplets.some((dapplet) => dapplet.name === item.name);
 
   const getSelectedType = () => {
