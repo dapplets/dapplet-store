@@ -279,6 +279,7 @@ const App = (): React.ReactElement => {
     } catch (error) {
       console.log(error)
     }
+    return false
   })
 
   
