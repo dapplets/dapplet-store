@@ -12,7 +12,6 @@ const Draggable = ({ children, ...props }: DraggableProps): React.ReactElement =
     activeId,
     item,
     addressFilter,
-    searchQuery,
   } = props;
 
   console.log({item})

@@ -187,15 +187,24 @@ const ItemDapplet = (props: ItemDappletProps): React.ReactElement => {
 
         {isOpen && (
           <>
-            <div className={styles.author}>
-              Full name: {item.name}
-            </div>
-            <div className={styles.author}>
-              Last version: {dappletsVersions[item.name][dappletsVersions[item.name].length - 1]}
-            </div>
-            <div className={styles.author}>
-              Published since: {new Date(dappletsTransactions[item.name] * 1000).toString()}
-            </div>
+          {
+            searchQuery ? <>
+              <Highlighter className={styles.author} textToHighlight={`Full name: ${item.name}`} searchWords={[searchQuery]} highlightStyle={{ background: '#ffff00', padding: 0 }} />
+              <Highlighter className={styles.author} textToHighlight={`Last version: ${dappletsVersions[item.name][dappletsVersions[item.name].length - 1]}`} searchWords={[searchQuery]} highlightStyle={{ background: '#ffff00', padding: 0 }} />
+              <Highlighter className={styles.author} textToHighlight={`Published since: ${new Date(dappletsTransactions[item.name] * 1000).toString()}`} searchWords={[searchQuery]} highlightStyle={{ background: '#ffff00', padding: 0 }} />
+            </> :
+            <>
+              <div className={styles.author}>
+                Full name: {item.name}
+              </div>
+              <div className={styles.author}>
+                Last version: {dappletsVersions[item.name][dappletsVersions[item.name].length - 1]}
+              </div>
+              <div className={styles.author}>
+                Published since: {new Date(dappletsTransactions[item.name] * 1000).toString()}
+              </div>
+            </>
+          }
           </>
         )}
       </div>

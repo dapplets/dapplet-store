@@ -97,7 +97,6 @@ const SortableList = (props: SortableListProps) => {
             item={dapplets.find((dapp) => dapp.name === itemName)!}
             addressFilter={addressFilter}
             activeId={activeId}
-            searchQuery={searchQuery}
           >
             <ItemDapplet
               key={itemName}
@@ -112,6 +111,7 @@ const SortableList = (props: SortableListProps) => {
               setExpandedItems={setExpandedItems}
               setAddressFilter={setAddressFilter}
               setOpenedList={setOpenedList}
+              searchQuery={searchQuery}
             /> 
           </Draggable>
         ))}

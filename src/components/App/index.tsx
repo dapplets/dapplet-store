@@ -341,6 +341,7 @@ const App = (): React.ReactElement => {
         openedList={openedList}
         setOpenedList={setOpenedList}
         loginInfo={loginInfo}
+        dapplets={dapplets}
       >
         <>
           <Wrapper>

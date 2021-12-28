@@ -30,6 +30,7 @@ export function SidePanel({
   setAddressFilter,
   openedList,
   setOpenedList,
+  dapplets,
 }: SidePanelProps): React.ReactElement {
 
   const removeFromLocalList = (name: string) => (e: any) => {
@@ -90,7 +91,7 @@ export function SidePanel({
         <div className={styles.content}>
           <DappletsListSidebar
             dappletsList={localDappletsList.dapplets.slice(0, 5).map((dapplet) => ({
-              title: dapplet.name,
+              title: dapplets.find(({ name }) => dapplet.name === name)?.title || '',
               type: dapplet.type,
               onClickRemove: () => removeFromLocalList(dapplet.name),
               isRemoved: true,
@@ -107,7 +108,7 @@ export function SidePanel({
 
           <DappletsListSidebar
             dappletsList={selectedDappletsList.dapplets.slice(0, 5).map((dapplet) => ({
-              title: dapplet.name,
+              title: dapplets.find(({ name }) => dapplet.name === name)?.title || '',
               type: dapplet.type,
               onClickRemove: () => removeFromSelectedList(dapplet.name),
               isRemoved: dapplet.type !== DappletsListItemTypes.Default,

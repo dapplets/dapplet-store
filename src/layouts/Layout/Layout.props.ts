@@ -1,4 +1,4 @@
-import { IDappletsList, Lists } from "../../config/types";
+import { IDapplet, IDappletsList, Lists } from "../../config/types";
 
 export interface LayoutProps {
   dappletTitles?: { [x: string]: string }
@@ -17,4 +17,5 @@ export interface LayoutProps {
   openedList: any
   setOpenedList: any
   loginInfo: string | null
+  dapplets: IDapplet[]
 }

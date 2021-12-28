@@ -24,6 +24,7 @@ export function Layout({
   openedList,
   setOpenedList,
   loginInfo,
+  dapplets,
 }: LayoutProps): React.ReactElement<LayoutProps> {
 	return (
 		<div className={styles.layout}>
@@ -49,6 +50,7 @@ export function Layout({
         setAddressFilter={setAddressFilter}
         openedList={openedList}
         setOpenedList={setOpenedList}
+        dapplets={dapplets}
       />
 
 			<main className={styles.content}>

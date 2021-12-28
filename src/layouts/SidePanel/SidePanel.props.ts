@@ -1,5 +1,5 @@
 import { DetailedHTMLProps, HTMLAttributes } from "react";
-import { IDappletsList, Lists } from "../../config/types";
+import { IDapplet, IDappletsList, Lists } from "../../config/types";
 
 export interface SidePanelProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
   dappletTitles?: { [x: string]: string }
@@ -15,4 +15,5 @@ export interface SidePanelProps extends DetailedHTMLProps<HTMLAttributes<HTMLDiv
   setAddressFilter: any
   openedList: any
   setOpenedList: any
+  dapplets: IDapplet[]
 }
