@@ -277,7 +277,7 @@ const App = (): React.ReactElement => {
       ));
       return  !res.includes(null);
     } catch (error) {
-      console.log(error)
+      console.error(error)
     }
     return false
   })

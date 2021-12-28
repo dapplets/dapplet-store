@@ -46,7 +46,10 @@ const SortableList = (props: SortableListProps) => {
     setAddressFilter,
     addressFilter,
     setOpenedList,
+    searchQuery,
   } = props;
+
+  console.log({items})
 
   const [activeId, setActiveId] = useState<SetStateAction<string> | null>(null);
 
@@ -87,12 +90,14 @@ const SortableList = (props: SortableListProps) => {
     >
       <SortableContext items={items!.dapplets.map(({name}) => name)} strategy={verticalListSortingStrategy}>
         {items?.dapplets.map(({name: itemName}) => (
+          dapplets.find((dapp) => dapp.name === itemName) &&
           <Draggable
             key={itemName}
             id={itemName}
             item={dapplets.find((dapp) => dapp.name === itemName)!}
             addressFilter={addressFilter}
             activeId={activeId}
+            searchQuery={searchQuery}
           >
             <ItemDapplet
               key={itemName}

@@ -251,6 +251,7 @@ function ListDapplets({
             setAddressFilter={setAddressFilter}
             addressFilter={addressFilter}
             setOpenedList={setOpenedList}
+            searchQuery={searchQuery}
           />
           : sortedDapplets
             .map((item, i) => (

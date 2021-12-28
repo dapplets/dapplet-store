@@ -15,4 +15,5 @@ export interface SortableListProps {
   setAddressFilter: any
   addressFilter: string
   setOpenedList: any
+  searchQuery: string
 }

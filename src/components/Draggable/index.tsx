@@ -12,7 +12,10 @@ const Draggable = ({ children, ...props }: DraggableProps): React.ReactElement =
     activeId,
     item,
     addressFilter,
+    searchQuery,
   } = props;
+
+  console.log({item})
 
   const {attributes, listeners, setNodeRef, transform, transition} = useSortable({
     id,
