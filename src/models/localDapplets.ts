@@ -1,33 +1,15 @@
 import { createModel } from "@rematch/core";
-import { BigNumber, ethers } from 'ethers';
+import { ethers } from 'ethers';
 import types from '../types.json';
 import abi from '../abi.json';
 
 const PROVIDER_URL = 'https://rinkeby.infura.io/v3/eda881d858ae4a25b2dfbbd0b4629992';
 
-export interface IDapplet {
-  description: string
-  flags: BigNumber
-  icon: {
-    hash: string
-    uris: string[]
-  }
-  interfaces: any[]
-  moduleType: 1
-  name: string
-  owner: string
-  title: string
-  version: any
-  versionToShow: string
-  timestamp: any
-  timestampToShow: string
-}
-
-type DappletsState = Readonly<IDapplet[]>
+type DappletsState = Readonly<[]>
 const INITIAL_STATE: DappletsState = [];
 
 const reducers = {
-  setDapplets(_: DappletsState, payload: IDapplet[]) {
+  setDapplets(_: DappletsState, payload: []) {
     return payload
   }
 }
@@ -71,7 +53,7 @@ const effects = (dispatch: any) => ({
 })
 
 export const dapplets = createModel()({
-  name: 'dapplets',
+  name: 'localDapplets',
   state: INITIAL_STATE,
   reducers,
   effects,

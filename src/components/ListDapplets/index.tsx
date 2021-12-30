@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Header } from 'semantic-ui-react';
 
-import { IDapplet, IDappletsList, IDappletsListElement, Lists } from '../../config/types';
+import { IDappletsList, IDappletsListElement, Lists } from '../../config/types';
 import { saveListToLocalStorage } from '../../utils';
 
 import { ListDappletsProps } from './ListDapplets.props';
@@ -13,6 +13,7 @@ import { DappletsListItemTypes } from '../atoms/DappletsListItem'
 import { SortTypes } from '../App'
 import ProfileInList from '../../features/ProfileInList/ProfileInList';
 import { SideLists } from '../../layouts/SidePanel';
+import { IDapplet } from '../../models/dapplets';
 
 function ListDapplets({
   dapplets,
@@ -46,7 +47,7 @@ function ListDapplets({
     const nowDappletsList = isLocalDapplet
       ? dappletsList.dapplets
         .filter((dapplet) => dapplet.name !== item.name)
-      : [...dappletsList.dapplets, {name: item.name, type}];
+      : [{name: item.name, type}, ...dappletsList.dapplets];
     const newDappletsList: IDappletsList = { listName: dappletsList.listName, dapplets: nowDappletsList };
     return newDappletsList
   } 
@@ -68,20 +69,21 @@ function ListDapplets({
     let nowDappletsList: IDappletsListElement[] = selectedDapplets.dapplets
     const dappletListIndex = nowDappletsList.findIndex((dapplet) => dapplet.name === item.name);
     if (dappletListIndex >= 0) {
-      switch (nowDappletsList[dappletListIndex].type) {
+      const nowDapplet = nowDappletsList[dappletListIndex]
+      nowDappletsList.splice(dappletListIndex, 1)
+      switch (nowDapplet.type) {
         default:
         case DappletsListItemTypes.Default:
-          nowDappletsList[dappletListIndex].type = DappletsListItemTypes.Removing
+          nowDapplet.type = DappletsListItemTypes.Removing
+          nowDappletsList = [nowDapplet, ...nowDappletsList]
           break;
         case DappletsListItemTypes.Removing:
-          nowDappletsList[dappletListIndex].type = DappletsListItemTypes.Default
-          break;
-        case DappletsListItemTypes.Adding:
-          nowDappletsList.splice(dappletListIndex, 1)
+          nowDapplet.type = DappletsListItemTypes.Default
+          nowDappletsList = [nowDapplet, ...nowDappletsList]
           break;
       }
     } else {
-      nowDappletsList = [...nowDappletsList, {name: item.name, type: DappletsListItemTypes.Adding}]
+      nowDappletsList = [{name: item.name, type: DappletsListItemTypes.Adding}, ...nowDappletsList]
     }
     const newDappletsList: IDappletsList = { listName: selectedDapplets.listName, dapplets: nowDappletsList };
     saveListToLocalStorage(newDappletsList);

@@ -1,4 +1,5 @@
-import { IDapplet, IDappletsList, Lists } from "../../config/types";
+import { IDappletsList, Lists } from "../../config/types";
+import { IDapplet } from "../../models/dapplets";
 
 export interface LayoutProps {
   dappletTitles?: { [x: string]: string }

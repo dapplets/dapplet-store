@@ -1,5 +1,5 @@
 import { SetStateAction } from "react";
-import { IDapplet } from './../../config/types';
+import { IDapplet } from "../../models/dapplets";
 
 export interface DraggableProps {
   children: JSX.Element

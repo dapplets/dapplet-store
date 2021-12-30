@@ -1,4 +1,5 @@
-import { IDapplet, IDappletsList, Lists } from "../../config/types";
+import { IDappletsList } from "../../config/types";
+import { IDapplet } from "../../models/dapplets";
 
 export interface SortableListProps {
   dapplets: IDapplet[]

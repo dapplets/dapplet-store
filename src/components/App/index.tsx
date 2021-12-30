@@ -3,7 +3,7 @@ import React, { useEffect, useState, FC } from 'react';
 import { Layout } from '../../layouts/Layout/Layout';
 import Input from '../Input';
 import ListDapplets from '../ListDapplets';
-import { IDapplet, IDappletsList, IDappletsListElement } from "../../config/types";
+import { IDappletsList, IDappletsListElement } from "../../config/types";
 import { Lists } from '../../config/types';
 import styled from "styled-components";
 
@@ -20,6 +20,7 @@ import { getAnchorParams, setAnchorParams } from '../../lib/anchorLink';
 
 import { connect } from "react-redux";
 import { RootState, RootDispatch } from "../../models";
+import { IDapplet } from '../../models/dapplets';
 
 const mapState = (state: RootState) => ({
   dapplets: state.dapplets,
@@ -122,6 +123,10 @@ const App: FC<Props> = ({ dapplets, getDapplets }): React.ReactElement => {
   const [openedList, setOpenedList] = useState(null)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [loginInfo, setLoginInfo] = useState('');
+
+  useEffect(() => {
+    console.log({localDappletsList})
+  }, [localDappletsList])
 
   useEffect(() => {
     const params = getAnchorParams()

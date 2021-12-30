@@ -7,9 +7,10 @@ import styled from 'styled-components';
 import styles from './ItemDapplet.module.scss';
 import { DappletButton, DappletButtonTypes } from './atoms/DappletButton';
 
-import { IDapplet, IDappletsList } from "../../config/types";
+import { IDappletsList } from "../../config/types";
 import Highlighter from "react-highlight-words";
 import DappletListersPopup from '../../features/DappletListersPopup/DappletListersPopup';
+import { IDapplet } from '../../models/dapplets';
 
 const ImagesWrapper = styled.div`
   display: grid;

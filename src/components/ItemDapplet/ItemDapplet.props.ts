@@ -1,4 +1,5 @@
-import { IDapplet, IDappletsList } from "../../config/types";
+import { IDappletsList } from "../../config/types";
+import { IDapplet } from "../../models/dapplets";
 
 export interface ItemDappletProps {
   item: IDapplet
