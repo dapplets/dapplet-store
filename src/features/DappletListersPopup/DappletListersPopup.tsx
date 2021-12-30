@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { ReactComponent as Trusted } from './trusted.svg'
@@ -147,8 +147,26 @@ interface DappletListersPopupProps {
 
 const DappletListersPopup = (props: DappletListersPopupProps) => {
   const [open, setOpen] = useState(false)
+  const activatorRef = React.useRef<HTMLDivElement | null>(null);
+
+  const handleClickOutside = (event: any) => {
+    if (activatorRef.current!.contains(event.target)) return;
+    setOpen(false)
+  }
+
+  useEffect(() => {
+    if (open) {
+      document.addEventListener("mouseup", handleClickOutside)
+    } else {
+      document.removeEventListener("mouseup", handleClickOutside)
+    }
+    return () => {
+      document.removeEventListener("mouseup", handleClickOutside)
+    };
+  }, [open])
+
   return(
-    <MainWrapper>
+    <MainWrapper ref={activatorRef} >
       <MainText onClick={(e) => {
         e.stopPropagation()
         setOpen(!open)

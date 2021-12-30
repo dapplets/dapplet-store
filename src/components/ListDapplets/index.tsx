@@ -89,7 +89,16 @@ function ListDapplets({
   };
 
   const titleText = useMemo(() => {
-    if (selectedList) return selectedList
+    if (selectedList) {
+      switch (selectedList) {
+        case Lists.Local:
+          return 'My Dapplets'
+        case Lists.Selected:
+          return 'My Listing'
+        default:
+          return ''
+      }
+    }
     if (searchQuery) return 'Search Result'
     if (addressFilter) return 'User'
     if (isTrustedSort) return 'User Listing'

@@ -1,4 +1,4 @@
-import { createModel, RematchDispatch } from "@rematch/core";
+import { createModel } from "@rematch/core";
 import { IDapplet } from "../config/types";
 import { ethers } from 'ethers';
 import types from '../types.json';
@@ -20,7 +20,6 @@ const effects = (dispatch: any) => ({
     const provider = new ethers.providers.JsonRpcProvider(PROVIDER_URL, 4);
     const contract: any = new ethers.Contract('0xb76b02b35ad7cb71e2061056915e521e8f05c130', abi, provider);
     contract.queryFilter('ModuleInfoAdded').then(async (events: any) => {
-      // console.log('events', events)
       const versions: any = {};
       const timestamps: any = {};
       const allModules: any[] = await Promise.all(events.map(async (ev: any) => {

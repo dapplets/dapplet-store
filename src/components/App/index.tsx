@@ -1,12 +1,9 @@
 import React, { useEffect, useState, FC } from 'react';
-import { ethers } from 'ethers';
 
 import { Layout } from '../../layouts/Layout/Layout';
 import Input from '../Input';
 import ListDapplets from '../ListDapplets';
-import abi from '../../abi.json';
-import types from '../../types.json';
-import { IDapplet, IDappletsList, IDappletVersions, IDappletsListElement } from "../../config/types";
+import { IDapplet, IDappletsList, IDappletsListElement } from "../../config/types";
 import { Lists } from '../../config/types';
 import styled from "styled-components";
 
@@ -54,7 +51,11 @@ const Wrapper = styled.div`
   border-bottom: 1px solid rgb(227, 227, 227);
 `
 
-const CheckboxWrapper = styled.div`
+interface CheckboxWrapperProps {
+  isTrustedSort: boolean
+}
+
+const CheckboxWrapper = styled.div<CheckboxWrapperProps>`
   display: grid;
   grid-template-columns: max-content max-content;
   grid-column-gap: 8px;
@@ -65,9 +66,10 @@ const CheckboxWrapper = styled.div`
   & > div {
     width: 16px;
     height: 16px;
-    background: #D9304F;
+    background: ${({ isTrustedSort }) => isTrustedSort ?  '#D9304F' : '#ffffff'};
     border-radius: 50%;
     margin-top: 2px;
+    border:  ${({ isTrustedSort }) => isTrustedSort ?  'none' : '1px solid #919191'};
   }
 
   & > div > div {
@@ -324,7 +326,7 @@ const App: FC<Props> = ({ dapplets, getDapplets }): React.ReactElement => {
               active={sortType}
               setActive={setSortType}
             />
-            <CheckboxWrapper onClick={() => setIsTrustedSort(!isTrustedSort)}>
+            <CheckboxWrapper isTrustedSort={isTrustedSort} onClick={() => setIsTrustedSort(!isTrustedSort)}>
               <div>{isTrustedSort && <div></div>}</div>
               <span>From trusted users</span>
             </CheckboxWrapper>

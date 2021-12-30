@@ -127,7 +127,7 @@ const ItemDapplet = (props: ItemDappletProps): React.ReactElement => {
       style={{ display: 'flex', width: '100%' }}
       onClick={handleClickOnItem}
     >
-      <Image className={styles.itemImage} src={`https://bee.dapplets.org/bzz/${icon.uris[0].slice(6)}`} style={{ width: 46, height: 46, borderRadius: '99em', marginTop: 10 }} />
+      <Image className={styles.itemImage} src={`https://bee.dapplets.org/bzz/${icon.uris[0].slice(6)}`} style={{ width: 85, height: 85, borderRadius: '99em', marginTop: 10 }} />
 
       <div className={styles.left} style={{ flexGrow: 1, padding: '5px 18px' }}>
         <h3 className={styles.title}>

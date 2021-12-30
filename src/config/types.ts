@@ -32,7 +32,3 @@ export interface IDapplet {
   timestamp: any
   timestampToShow: string
 }
-
-export interface IDappletVersions {
-  [name: string]: string[]
-}
