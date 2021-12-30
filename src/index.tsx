@@ -6,9 +6,13 @@ import App from './components/App';
 import reportWebVitals from './reportWebVitals';
 
 import './index.scss';
+import { Provider } from "react-redux";
+import store from "./models";
 
 ReactDOM.render(
-  <App />,
+  <Provider store={store}>
+    <App />
+  </Provider>,
   document.getElementById('root')
 );
 

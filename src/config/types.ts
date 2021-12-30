@@ -27,6 +27,10 @@ export interface IDapplet {
   name: string
   owner: string
   title: string
+  version: any
+  versionToShow: string
+  timestamp: any
+  timestampToShow: string
 }
 
 export interface IDappletVersions {

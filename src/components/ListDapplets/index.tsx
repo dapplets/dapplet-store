@@ -16,14 +16,12 @@ import { SideLists } from '../../layouts/SidePanel';
 
 function ListDapplets({
   dapplets,
-  dappletsVersions,
   setSelectedDapplets,
   selectedDapplets,
   localDapplets,
   setLocalDapplets,
   selectedList,
   setSelectedList,
-  dappletsTransactions,
   expandedItems,
   setExpandedItems,
   sortType,
@@ -118,28 +116,6 @@ function ListDapplets({
       >
         {titleText}
       </Header>
-      {/* {!selectedList && (
-        <Dropdown text={`Sort by: ${sortType}`} className="small-link">
-          <Dropdown.Menu>
-            <Dropdown.Item
-              text="A-Z"
-              onClick={() => setSortType('A-Z')}
-            />
-            <Dropdown.Item
-              text="Z-A"
-              onClick={() => setSortType('Z-A')}
-            />
-            <Dropdown.Item
-              text="Newest"
-              onClick={() => setSortType('Newest')}
-            />
-            <Dropdown.Item
-              text="Oldest"
-              onClick={() => setSortType('Oldest')}
-            />
-          </Dropdown.Menu>
-        </Dropdown>
-      )} */}
       {addressFilter === '' && selectedList && (
         <button className="small-link" onClick={() => {
           setExpandedItems([]);
@@ -160,9 +136,9 @@ function ListDapplets({
         case SortTypes.ABCReverse:
           return collator.compare(b.title, a.title);
         case SortTypes.Newest:
-          return collator.compare(dappletsTransactions[b.name], dappletsTransactions[a.name]);
+          return collator.compare(b.timestamp, a.timestamp);
         case SortTypes.Oldest:
-          return collator.compare(dappletsTransactions[a.name], dappletsTransactions[b.name]);
+          return collator.compare(a.timestamp, b.timestamp);
         default:
           return 0;
       }
@@ -172,25 +148,7 @@ function ListDapplets({
     if (isTrustedSort)
       sortedList = sortedList.filter(({ owner }) => trustedUsersList.includes(owner))
     return sortedList
-  }, [addressFilter, collator, dapplets, dappletsTransactions, isTrustedSort, selectedList, sortType, trustedUsersList])
-
-  // const sortedDapplets = dapplets
-  //   .sort((a, b) => {
-  //     if (selectedList) return 0;
-  //     console.log({sortType})
-  //     switch (sortType) {
-  //       case SortTypes.ABC:
-  //         return collator.compare(a.title, b.title);
-  //       case SortTypes.ABCReverse:
-  //         return collator.compare(b.title, a.title);
-  //       case SortTypes.Newest:
-  //         return collator.compare(dappletsTransactions[b.name], dappletsTransactions[a.name]);
-  //       case SortTypes.Oldest:
-  //         return collator.compare(dappletsTransactions[a.name], dappletsTransactions[b.name]);
-  //       default:
-  //         return 0;
-  //     }
-  //   });
+  }, [addressFilter, collator, dapplets, isTrustedSort, selectedList, sortType, trustedUsersList])
 
   const chooseList = {
     [Lists.Selected]: selectedDapplets,
@@ -240,10 +198,8 @@ function ListDapplets({
             dapplets={dapplets}
             items={chooseList[selectedList]}
             setItems={chooseSetMethod[selectedList]}
-            dappletsVersions={dappletsVersions}
             selectedDapplets={selectedDapplets}
             localDapplets={localDapplets}
-            dappletsTransactions={dappletsTransactions}
             editLocalDappletsList={editLocalDappletsList}
             editSelectedDappletsList={editSelectedDappletsList}
             expandedItems={expandedItems}
@@ -260,10 +216,8 @@ function ListDapplets({
                   <ItemDapplet
                     key={item.name}
                     item={item}
-                    dappletsVersions={dappletsVersions}
                     selectedDapplets={selectedDapplets}
                     localDapplets={localDapplets}
-                    dappletsTransactions={dappletsTransactions}
                     editLocalDappletsList={editLocalDappletsList}
                     editSelectedDappletsList={editSelectedDappletsList}
                     expandedItems={expandedItems}
@@ -272,21 +226,6 @@ function ListDapplets({
                     setAddressFilter={setAddressFilter}
                     setOpenedList={setOpenedList}
                   />
-                  {/* <SortableList
-                    dapplets={dapplets}
-                    items={chooseList[Lists.Selected]}
-                    setItems={chooseSetMethod[Lists.Selected]}
-                    dappletsVersions={dappletsVersions}
-                    selectedDapplets={selectedDapplets}
-                    localDapplets={localDapplets}
-                    dappletsTransactions={dappletsTransactions}
-                    editLocalDappletsList={editLocalDappletsList}
-                    editSelectedDappletsList={editSelectedDappletsList}
-                    expandedItems={expandedItems}
-                    setExpandedItems={setExpandedItems}
-                    setAddressFilter={setAddressFilter}
-                    addressFilter={addressFilter}
-                  /> */}
                 </div>
               </section>
             )

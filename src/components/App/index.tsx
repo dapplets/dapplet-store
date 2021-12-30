@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, FC } from 'react';
 import { ethers } from 'ethers';
 
 import { Layout } from '../../layouts/Layout/Layout';
@@ -21,8 +21,19 @@ import Dropdown from '../Dropdown/Dropdown';
 // import LoginModal from '../LoginModal/LoginModal';
 import { getAnchorParams, setAnchorParams } from '../../lib/anchorLink';
 
+import { connect } from "react-redux";
+import { RootState, RootDispatch } from "../../models";
 
-const PROVIDER_URL = 'https://rinkeby.infura.io/v3/eda881d858ae4a25b2dfbbd0b4629992';
+const mapState = (state: RootState) => ({
+  dapplets: state.dapplets,
+});
+const mapDispatch = (dispatch: RootDispatch) => ({
+  getDapplets: () => dispatch.dapplets.getDapplets(),
+});
+
+// type StateProps = ReturnType<typeof mapState>;
+// type DispatchProps = ReturnType<typeof mapDispatch>;
+type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
 
 const getDappletsListFromLocal = (listName: Lists) => {
   const dappletsListStringified = window.localStorage.getItem(listName);
@@ -94,13 +105,10 @@ declare global {
   interface Window { ethereum: any; }
 }
 
-const App = (): React.ReactElement => {
+const App: FC<Props> = ({ dapplets, getDapplets }): React.ReactElement => {
   const [sortType, setSortType] = useState(SortTypes.ABC);
   const [addressFilter, setAddressFilter] = useState('');
   const [searchQuery, editSearchQuery] = useState<string>('');
-  const [dapplets, updateDapplets] = useState<IDapplet[]>([]);
-  const [dappletsVersions, updateDappletsVersions] = useState<IDappletVersions>();
-  const [dappletsTransactions, updateDappletsTransactions] = useState<any>();
   const [selectedDappletsList, setSelectedDappletsList] = useState<IDappletsList>({ listName: Lists.Selected, dapplets: [] });
   const [localDappletsList, setLocalDappletsList] = useState<IDappletsList>({ listName: Lists.Local, dapplets: [] });
   const [trustedUsersList, setTrustedUsersList] = useState<string[]>([]);
@@ -113,7 +121,6 @@ const App = (): React.ReactElement => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [loginInfo, setLoginInfo] = useState('');
 
-
   useEffect(() => {
     const params = getAnchorParams()
     if (!params) return;
@@ -124,12 +131,7 @@ const App = (): React.ReactElement => {
     if (!!params.selectedList) setSelectedList(params.selectedList)
   }, [])
 
-  // const firstUpdate = useRef(true);
-  useEffect(() => {    
-    // if (firstUpdate.current) {
-    //   firstUpdate.current = false;
-    //   return;
-    // }
+  useEffect(() => {
     setAnchorParams({
       sortType,
       addressFilter,
@@ -194,47 +196,16 @@ const App = (): React.ReactElement => {
       onClick: () => setSortType(SortTypes.Oldest),
     }
   ];
-  // console.log('dapplets', dapplets)
-  // console.log('dappletsVersions', dappletsVersions)
-  // console.log('dappletsTransactions', dappletsTransactions)
-  // console.log('selectedDapplets', selectedDappletsList)
-  // console.log('localDapplets', localDappletsList)
-  // console.log('selectedList', selectedList)
 
   useEffect(() => {
-    const provider = new ethers.providers.JsonRpcProvider(PROVIDER_URL, 4);
-    const contract: any = new ethers.Contract('0xb76b02b35ad7cb71e2061056915e521e8f05c130', abi, provider);
-    contract.queryFilter('ModuleInfoAdded').then(async (events: any) => {
-      // console.log('events', events)
-      const versions: any = {};
-      const timestamps: any = {};
-      const allModules: any[] = await Promise.all(events.map(async (ev: any) => {
-        const tx: any = await provider.getTransaction(ev.transactionHash);
-        const t: any = types;
-        const decoded = ethers.utils.defaultAbiCoder.decode(t, ethers.utils.hexDataSlice(tx.data, 4));
-        const module = await contract.getModuleInfoByName(decoded.mInfo.name);
-
-        const hex: string = await contract.getVersionNumbers(module.name, 'default');
-        const result = (hex.replace('0x', '')
-          .match(/.{1,8}/g) ?? [])
-          .map(x => `${parseInt('0x' + x[0] + x[1])}.${parseInt('0x' + x[2] + x[3])}.${parseInt('0x' + x[4] + x[5])}`);
-        versions[module.name] = result;
-
-        const block = await ev.getBlock();
-        timestamps[module.name] = block.timestamp;
-
-        return module;
-      }));
-
-      const allDapplets = allModules.filter((module: any) => module.moduleType === 1);
-      updateDapplets(allDapplets);
-      updateDappletsVersions(versions);
-      updateDappletsTransactions(timestamps);
-    });
-
+    getDapplets()
     setSelectedDappletsList(getDappletsListFromLocal(Lists.Selected))
     setLocalDappletsList(getDappletsListFromLocal(Lists.Local))
-  }, []);
+  }, [getDapplets])
+
+  useEffect(() => {
+    console.log({dapplets})
+  }, [dapplets])
 
   useEffect(() => {
     const trustedUsers = window.localStorage.getItem('trustedUsers');
@@ -273,7 +244,7 @@ const App = (): React.ReactElement => {
         reg.exec(dapplet.title) ||
         reg.exec(dapplet.owner.replace('0x000000000000000000000000', '0x')) ||
         reg.exec(dapplet.description) ||
-        reg.exec(dappletsVersions![dapplet.name][dappletsVersions![dapplet.name].length - 1])
+        reg.exec(dapplet.timestamp)
       ));
       return  !res.includes(null);
     } catch (error) {
@@ -315,7 +286,6 @@ const App = (): React.ReactElement => {
       }
     };
   };
-
   return (
     <>
       {openedModal &&
@@ -341,7 +311,7 @@ const App = (): React.ReactElement => {
         openedList={openedList}
         setOpenedList={setOpenedList}
         loginInfo={loginInfo}
-        dapplets={dapplets}
+        dapplets={[...dapplets]}
       >
         <>
           <Wrapper>
@@ -361,15 +331,12 @@ const App = (): React.ReactElement => {
           </Wrapper>
           {filteredDapplets && <ListDapplets
             dapplets={filteredDapplets}
-            dappletsVersions={dappletsVersions}
             selectedDapplets={selectedDappletsList}
             setSelectedDapplets={setSelectedDappletsList}
             localDapplets={localDappletsList}
             setLocalDapplets={setLocalDappletsList}
             selectedList={selectedList}
             setSelectedList={setSelectedList}
-            dappletsTransactions={dappletsTransactions}
-            updateDappletsTransactions={updateDappletsTransactions}
             expandedItems={expandedItems}
             setExpandedItems={setExpandedItems}
             sortType={sortType}
@@ -390,4 +357,4 @@ const App = (): React.ReactElement => {
   );
 };
 
-export default App;
+export default connect(mapState, mapDispatch)(App);

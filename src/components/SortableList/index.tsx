@@ -35,10 +35,8 @@ const SortableList = (props: SortableListProps) => {
     dapplets,
     items,
     setItems,
-    dappletsVersions,
     selectedDapplets,
     localDapplets,
-    dappletsTransactions,
     editLocalDappletsList,
     editSelectedDappletsList,
     expandedItems,
@@ -101,10 +99,8 @@ const SortableList = (props: SortableListProps) => {
             <ItemDapplet
               key={itemName}
               item={dapplets.find((dapp) => dapp.name === itemName)!}
-              dappletsVersions={dappletsVersions}
               selectedDapplets={selectedDapplets}
               localDapplets={localDapplets}
-              dappletsTransactions={dappletsTransactions}
               editLocalDappletsList={editLocalDappletsList}
               editSelectedDappletsList={editSelectedDappletsList}
               expandedItems={expandedItems}
@@ -131,10 +127,8 @@ const SortableList = (props: SortableListProps) => {
               />
               <ItemDapplet
                 item={dapplets.find((dapp) => dapp.name === activeId)!}
-                dappletsVersions={dappletsVersions}
                 selectedDapplets={selectedDapplets}
                 localDapplets={localDapplets}
-                dappletsTransactions={dappletsTransactions}
                 editLocalDappletsList={editLocalDappletsList}
                 editSelectedDappletsList={editSelectedDappletsList}
                 expandedItems={expandedItems}

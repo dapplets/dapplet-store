@@ -4,10 +4,8 @@ export interface SortableListProps {
   dapplets: IDapplet[]
   items?: IDappletsList
   setItems: React.Dispatch<React.SetStateAction<IDappletsList>>
-  dappletsVersions: any
   selectedDapplets: IDappletsList
   localDapplets: IDappletsList
-  dappletsTransactions: any
   editLocalDappletsList: (item: IDapplet) => (e: any) => void
   editSelectedDappletsList: (item: IDapplet) => (e: any) => void
   expandedItems: string[] 
