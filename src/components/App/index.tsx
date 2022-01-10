@@ -16,21 +16,27 @@ import Dropdown from '../Dropdown/Dropdown';
 // @ts-ignore
 // import WalletConnectProvider from "@walletconnect/web3-provider";
 // import LoginModal from '../LoginModal/LoginModal';
-import { getAnchorParams, setAnchorParams } from '../../lib/anchorLink';
+// import { getAnchorParams, setAnchorParams } from '../../lib/anchorLink';
 
 import { connect } from "react-redux";
 import { RootState, RootDispatch } from "../../models";
 import { IDapplet } from '../../models/dapplets';
+import { Sort, SortTypes } from '../../models/sort';
 
 const mapState = (state: RootState) => ({
   dapplets: state.dapplets,
+  sortType: state.sort.sortType,
+  addressFilter: state.sort.addressFilter,
+  searchQuery: state.sort.searchQuery,
+  selectedList: state.sort.selectedList,
+  isTrustedSort: state.sort.isTrustedSort,
 });
 const mapDispatch = (dispatch: RootDispatch) => ({
   getDapplets: () => dispatch.dapplets.getDapplets(),
+  getSort: () => dispatch.sort.getSort(),
+  setSort: (payload: Sort) => dispatch.sort.setSort(payload),
 });
 
-// type StateProps = ReturnType<typeof mapState>;
-// type DispatchProps = ReturnType<typeof mapDispatch>;
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
 
 const getDappletsListFromLocal = (listName: Lists) => {
@@ -97,28 +103,26 @@ const ModalWrapper = styled.div`
   background-color: white;
 `
 
-export enum SortTypes {
-  ABC = 'Sort A-Z',
-  ABCReverse = 'Sort Z-A',
-  Newest = 'Sort by newest',
-  Oldest = 'Sort by oldest',
-}
-
 declare global {
   interface Window { ethereum: any; }
 }
 
-const App: FC<Props> = ({ dapplets, getDapplets }): React.ReactElement => {
-  const [sortType, setSortType] = useState(SortTypes.ABC);
-  const [addressFilter, setAddressFilter] = useState('');
-  const [searchQuery, editSearchQuery] = useState<string>('');
+const App: FC<Props> = ({ 
+  dapplets,
+  sortType,
+  addressFilter,
+  searchQuery,
+  selectedList,
+  isTrustedSort,
+  getDapplets,
+  getSort,
+  setSort,
+}): React.ReactElement => {
   const [selectedDappletsList, setSelectedDappletsList] = useState<IDappletsList>({ listName: Lists.Selected, dapplets: [] });
   const [localDappletsList, setLocalDappletsList] = useState<IDappletsList>({ listName: Lists.Local, dapplets: [] });
   const [trustedUsersList, setTrustedUsersList] = useState<string[]>([]);
-  const [selectedList, setSelectedList] = useState<Lists>();
   const [activeTags, setActiveTags] = useState<string[]>([]);
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
-  const [isTrustedSort, setIsTrustedSort] = useState<boolean>(false);
   const [openedModal, setOpenedModal] = useState<any>(null);
   const [openedList, setOpenedList] = useState(null)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -129,24 +133,18 @@ const App: FC<Props> = ({ dapplets, getDapplets }): React.ReactElement => {
   }, [localDappletsList])
 
   useEffect(() => {
-    const params = getAnchorParams()
-    if (!params) return;
-    setSortType(params.sortType)
-    setAddressFilter(params.addressFilter)
-    editSearchQuery(params.searchQuery)
-    setIsTrustedSort(params.isTrustedSort)
-    if (!!params.selectedList) setSelectedList(params.selectedList)
-  }, [])
+    getSort()
+  }, [getSort])
 
-  useEffect(() => {
-    setAnchorParams({
-      sortType,
-      addressFilter,
-      searchQuery,
-      isTrustedSort,
-      selectedList,
-    })
-  }, [addressFilter, isTrustedSort, searchQuery, selectedList, sortType])
+  // useEffect(() => {
+  //   setAnchorParams({
+  //     sortType,
+  //     addressFilter,
+  //     searchQuery,
+  //     isTrustedSort,
+  //     selectedList,
+  //   })
+  // }, [addressFilter, isTrustedSort, searchQuery, selectedList, sortType])
 
   // const web3Init = async () => {
   //   const providerOptions = {
@@ -176,31 +174,30 @@ const App: FC<Props> = ({ dapplets, getDapplets }): React.ReactElement => {
   //   return web3
   // }
 
-  useEffect(() => {
+  // useEffect(() => {
     // setOpenedModal(<LoginModal onMetamask={web3Init} />)
-  }, [])
+  // }, [])
 
-  console.log({dapplets, searchQuery})
   const dropdownItems = [
     {
       id: 1,
       text: SortTypes.ABC,
-      onClick: () => setSortType(SortTypes.ABC),
+      onClick: () => setSort({ searchQuery: SortTypes.ABC }),
     },
     {
       id: 2,
       text: SortTypes.ABCReverse,
-      onClick: () => setSortType(SortTypes.ABCReverse),
+      onClick: () => setSort({ searchQuery: SortTypes.ABCReverse }),
     },
     {
       id: 3,
       text: SortTypes.Newest,
-      onClick: () => setSortType(SortTypes.Newest),
+      onClick: () => setSort({ searchQuery: SortTypes.Newest }),
     },
     {
       id: 4,
       text: SortTypes.Oldest,
-      onClick: () => setSortType(SortTypes.Oldest),
+      onClick: () => setSort({ searchQuery: SortTypes.Oldest }),
     }
   ];
 
@@ -210,9 +207,9 @@ const App: FC<Props> = ({ dapplets, getDapplets }): React.ReactElement => {
     setLocalDappletsList(getDappletsListFromLocal(Lists.Local))
   }, [getDapplets])
 
-  useEffect(() => {
-    console.log({dapplets})
-  }, [dapplets])
+  // useEffect(() => {
+  //   console.log({dapplets})
+  // }, [dapplets])
 
   useEffect(() => {
     const trustedUsers = window.localStorage.getItem('trustedUsers');
@@ -229,19 +226,15 @@ const App: FC<Props> = ({ dapplets, getDapplets }): React.ReactElement => {
       [Lists.Local]: localDappletsList,
       [Lists.Selected]: selectedDappletsList,
     };
-    // console.log('selectedList', selectedList)
     const dapps = chooseDappletsList[selectedList];
-    // console.log('dapps', dapps)
     return dapps.dapplets
       .map((dapplet) => dapplets.find((dapp) => dapp.name === dapplet.name))
       .filter((dapp): dapp is IDapplet => !!dapp);
   }
 
-  // const [filteredDapplets, setFilteredDapplets] = useState()
-
   const dappletsByList = formDappletsList(selectedList);
 
-  const reg1 = new RegExp(`${searchQuery.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')}`, 'gi');
+  const reg1 = new RegExp(`${searchQuery?.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')}`, 'gi');
   const regs = activeTags.map((activeTag) => new RegExp(activeTag, 'gi'));
   regs.push(reg1);
   const filteredDapplets = dappletsByList && dappletsByList.filter((dapplet) => {
@@ -259,8 +252,6 @@ const App: FC<Props> = ({ dapplets, getDapplets }): React.ReactElement => {
     }
     return false
   })
-
-  
 
   /** 
    *  The feature makes the header hidden when scrilling down the page and visible when scrolling up the page.
@@ -309,12 +300,12 @@ const App: FC<Props> = ({ dapplets, getDapplets }): React.ReactElement => {
         localDappletsList={localDappletsList}
         setLocalDappletsList={setLocalDappletsList}
         selectedList={selectedList}
-        setSelectedList={setSelectedList}
+        setSelectedList={(newSelectedList: Lists | undefined) => setSort({ selectedList: newSelectedList})}
         activeTags={activeTags}
         setActiveTags={setActiveTags}
         setExpandedItems={setExpandedItems}
         trustedUsersList={trustedUsersList}
-        setAddressFilter={setAddressFilter}
+        setAddressFilter={(newAddressFilter: string | undefined) => setSort({ addressFilter: newAddressFilter})}
         openedList={openedList}
         setOpenedList={setOpenedList}
         loginInfo={loginInfo}
@@ -323,15 +314,15 @@ const App: FC<Props> = ({ dapplets, getDapplets }): React.ReactElement => {
         <>
           <Wrapper>
             <Input 
-              searchQuery={searchQuery}
-              editSearchQuery={editSearchQuery}
+              searchQuery={searchQuery || ""}
+              editSearchQuery={(newSearchQuery: string | undefined) => setSort({ searchQuery: newSearchQuery})}
             />
             <Dropdown 
               items={dropdownItems}
-              active={sortType}
-              setActive={setSortType}
+              active={sortType || SortTypes.ABC}
+              setActive={(newSortType: SortTypes) => setSort({ sortType: newSortType})}
             />
-            <CheckboxWrapper isTrustedSort={isTrustedSort} onClick={() => setIsTrustedSort(!isTrustedSort)}>
+            <CheckboxWrapper isTrustedSort={isTrustedSort || false} onClick={() => setSort({isTrustedSort: !isTrustedSort})}>
               <div>{isTrustedSort && <div></div>}</div>
               <span>From trusted users</span>
             </CheckboxWrapper>
@@ -343,18 +334,18 @@ const App: FC<Props> = ({ dapplets, getDapplets }): React.ReactElement => {
             localDapplets={localDappletsList}
             setLocalDapplets={setLocalDappletsList}
             selectedList={selectedList}
-            setSelectedList={setSelectedList}
+            setSelectedList={(newSelectedList: Lists | undefined) => setSort({ selectedList: newSelectedList })}
             expandedItems={expandedItems}
             setExpandedItems={setExpandedItems}
-            sortType={sortType}
-            setSortType={setSortType}
-            searchQuery={searchQuery}
-            editSearchQuery={editSearchQuery}
-            addressFilter={addressFilter}
-            setAddressFilter={setAddressFilter}
+            sortType={sortType || SortTypes.ABC}
+            setSortType={(newSortType: SortTypes) => setSort({ sortType: newSortType })}
+            searchQuery={searchQuery || ""}
+            editSearchQuery={(newtSearchQuery: string) => setSort({ searchQuery: newtSearchQuery })}
+            addressFilter={addressFilter || ""}
+            setAddressFilter={(newAddressFilter: string) => setSort({ addressFilter: newAddressFilter })}
             trustedUsersList={trustedUsersList}
             setTrustedUsersList={setTrustedUsersList}
-            isTrustedSort={isTrustedSort}
+            isTrustedSort={isTrustedSort || false}
             openedList={openedList}
             setOpenedList={setOpenedList}
           />}

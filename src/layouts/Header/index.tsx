@@ -1,10 +1,19 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { HeaderProps } from './Header.props';
+import React, { DetailedHTMLProps, FC, HTMLAttributes, useEffect, useMemo, useRef, useState } from 'react';
 import cn from 'classnames';
 import STORE_LOGO from '../../images/StoreLogo.svg';
-import { Lists } from '../../config/types';
 import jazzicon from '@metamask/jazzicon';
 import styles from './Header.module.scss';
+import { RootDispatch } from '../../models';
+import { INITIAL_STATE, Sort } from '../../models/sort';
+
+import { connect } from 'react-redux';
+import { Lists } from '../../config/types';
+
+const mapDispatch = (dispatch: RootDispatch) => ({
+  setSort: (payload: Sort) => dispatch.sort.setSort(payload),
+});
+
+type Props = ReturnType<typeof mapDispatch>;
 
 interface VanillaChildrenProps {
 	children: HTMLElement | HTMLDivElement
@@ -42,13 +51,20 @@ const MENU2 = [
 	{ id: 5, label: 'Forum', href:'https://forum.dapplets.org' },
 ];
 
-export function Header({
+
+interface HeaderProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+  selectedList?: Lists
+  setExpandedItems: React.Dispatch<React.SetStateAction<string[]>>
+  loginInfo: string | null
+}
+
+const Header: FC<HeaderProps & Props> = ({
   className,
   selectedList,
-  setSelectedList,
   setExpandedItems,
   loginInfo,
-}: HeaderProps): React.ReactElement {
+  setSort,
+}): React.ReactElement => {
 	const [active, setActive] = useState<number>(MENU[0].id);
   const getAvatar = (loggedIn: string): HTMLDivElement => jazzicon(50, parseInt(loggedIn.slice(2, 10), 16));
   const address = useMemo(() => loginInfo ? loginInfo.replace('0x000000000000000000000000', '0x') : '', [loginInfo])
@@ -56,16 +72,21 @@ export function Header({
 	function handleItemClick(id: number): void {
     switch (id) {
       case 1:
-        setSelectedList();
+        setSort(INITIAL_STATE);
         break;
       case 2:
-        setSelectedList(Lists.Selected);
+        setSort({
+          selectedList: Lists.Selected,
+          addressFilter: "",
+        });
         break;
       case 3:
-        setSelectedList(Lists.Local);
+        setSort({
+          selectedList: Lists.Local,
+          addressFilter: "",
+        });
         break;
       default:
-        setSelectedList(selectedList);
         break;
     }
 	}
@@ -150,7 +171,7 @@ export function Header({
         <div className={styles.headerLogo}>
           <button onClick={() => {
             setExpandedItems([]);
-            setSelectedList();
+            setSort(INITIAL_STATE);
           }}>
             <img src={STORE_LOGO} alt='logo' />
           </button>
@@ -183,3 +204,5 @@ export function Header({
 		</header>
 	);
 }
+
+export default connect(null, mapDispatch)(Header);

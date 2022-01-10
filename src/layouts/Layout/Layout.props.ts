@@ -8,7 +8,7 @@ export interface LayoutProps {
   localDappletsList: IDappletsList
   setLocalDappletsList: React.Dispatch<React.SetStateAction<IDappletsList>>
   selectedList?: Lists
-  setSelectedList: React.Dispatch<React.SetStateAction<Lists | undefined>>
+  setSelectedList: any
 	children?: React.ReactElement
   activeTags: string[]
   setActiveTags: any

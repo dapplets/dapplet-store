@@ -1,7 +1,7 @@
 import React from 'react';
-import { Header } from '../Header';
+import Header from '../Header';
 import { Overlay } from '../Overlay';
-import { SidePanel } from '../SidePanel';
+import SidePanel from '../SidePanel';
 
 import styles from './Layout.module.scss';
 import { LayoutProps } from './Layout.props';
@@ -31,7 +31,6 @@ export function Layout({
 			<Header
         className={styles.header}
         selectedList={selectedList}
-        setSelectedList={setSelectedList}
         setExpandedItems={setExpandedItems}
         loginInfo={loginInfo}
       />

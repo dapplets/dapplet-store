@@ -1,11 +1,4 @@
-interface AnchorParams {
-  sortType: string
-  addressFilter: string
-  searchQuery: string
-  isTrustedSort: boolean
-  selectedList: string | undefined
-}
-
+import { Sort } from '../models/sort'
 
 export const getAnchorParams = () => {
   const urlParts   = document.URL.split('#');
@@ -24,7 +17,7 @@ export const setAnchorParams = ({
   searchQuery,
   isTrustedSort,
   selectedList,
-}: AnchorParams) => {
+}: Sort) => {
   const urlParts   = document.URL.split('#');
   window.location.href = 
     `${urlParts[0]}#sortType=${sortType}|addressFilter=${addressFilter}|searchQuery=${searchQuery}|isTrustedSort=${isTrustedSort}|selectedList=${selectedList}`

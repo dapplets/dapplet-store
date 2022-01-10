@@ -108,12 +108,13 @@ const SignButton = styled(Button)`
 
 interface LoginModalProps {
   onMetamask: any
+  onClose: any
 }
 
 const LoginModal = (props: LoginModalProps) => {
   return(
     <Wrapper>
-      <CloseButton>x</CloseButton>
+      <CloseButton onClick={props.onClose}>x</CloseButton>
       <MainText>Sign In</MainText>
       <SubText>Sed tristique odio fermentum tempus sed.</SubText>
       <ButtonsWrapper>

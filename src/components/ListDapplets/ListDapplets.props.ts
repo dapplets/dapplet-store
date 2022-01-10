@@ -8,7 +8,7 @@ export interface ListDappletsProps {
   localDapplets: IDappletsList
   setLocalDapplets: React.Dispatch<React.SetStateAction<IDappletsList>>
   selectedList?: Lists
-  setSelectedList: React.Dispatch<React.SetStateAction<Lists | undefined>>
+  setSelectedList: any
   expandedItems: string[]
   setExpandedItems: React.Dispatch<React.SetStateAction<string[]>>
   sortType: string

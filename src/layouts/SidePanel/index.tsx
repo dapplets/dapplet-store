@@ -8,6 +8,15 @@ import { Lists, IDappletsList, IDappletsListElement } from '../../config/types';
 import { saveListToLocalStorage } from '../../utils';
 import DappletsListSidebar from '../../components/molecules/DappletsListSidebar'
 import { DappletsListItemTypes } from '../../components/atoms/DappletsListItem'
+import { RootDispatch } from '../../models';
+import { Sort } from '../../models/sort';
+import { connect } from 'react-redux';
+
+const mapDispatch = (dispatch: RootDispatch) => ({
+  setSort: (payload: Sort) => dispatch.sort.setSort(payload),
+});
+
+type Props = ReturnType<typeof mapDispatch>;
 
 export enum SideLists {
   MyDapplets = 'My dapplets',
@@ -15,7 +24,7 @@ export enum SideLists {
   MyTrustedUsers = 'My trusted users',
 }
 
-export function SidePanel({
+const SidePanel = ({
   dappletTitles,
   className,
   localDappletsList,
@@ -31,15 +40,14 @@ export function SidePanel({
   openedList,
   setOpenedList,
   dapplets,
-}: SidePanelProps): React.ReactElement {
+  setSort,
+}: SidePanelProps & Props): React.ReactElement => {
 
   const removeFromLocalList = (name: string) => (e: any) => {
     e.preventDefault();
     const list = localDappletsList.dapplets
       .filter((dapp) => dapp.name !== name);
-    // console.log('localDappletsList', localDappletsList)
     const newLocalDappletsList: IDappletsList = { listName: localDappletsList.listName, dapplets: list };
-    // console.log('newLocalDappletsList', newLocalDappletsList)
     saveListToLocalStorage(newLocalDappletsList);
     setLocalDappletsList(newLocalDappletsList);
   }
@@ -71,16 +79,6 @@ export function SidePanel({
     setSelectedDappletsList(newDappletsList);
   };
 
-  // const handleSwitchTag = (label: string) => (e: any) => {
-  //   e.preventDefault();
-  //   if (activeTags.includes(label)) {
-  //     setActiveTags(activeTags.filter((tag) => tag !== label));
-  //   } else {
-  //     setActiveTags([...activeTags, label]);
-  //   }
-  // }
-
-
 	return (
 		<aside className={cn(styles.sidePanel, className)}>
       <div style={{
@@ -99,7 +97,10 @@ export function SidePanel({
             title={SideLists.MyDapplets}
             onOpenList={() => {
               setExpandedItems([]);
-              setSelectedList(Lists.Local);
+              setSort({
+                selectedList: Lists.Local,
+                addressFilter: "",
+              });
             }}
             isMoreShow={localDappletsList.dapplets.length > 0}
             isOpen={SideLists.MyDapplets === openedList}
@@ -116,7 +117,10 @@ export function SidePanel({
             title={SideLists.MyListing}
             onOpenList={() => {
               setExpandedItems([]);
-              setSelectedList(Lists.Selected);
+              setSort({
+                selectedList: Lists.Selected,
+                addressFilter: "",
+              });
             }}
             isMoreShow={selectedDappletsList.dapplets.length > 0}
             titleButton={selectedDappletsList.dapplets.find(({ type }) => type !== DappletsListItemTypes.Default) && {
@@ -139,7 +143,11 @@ export function SidePanel({
             title={SideLists.MyTrustedUsers}
             onOpenList={() => {}}
             isMoreShow={false}
-            onElementClick={(id: string) => setAddressFilter(id)}
+            onElementClick={(id: string) => 
+              setSort({
+                addressFilter: id,
+                selectedList: undefined,
+              })}
             isOpen={SideLists.MyTrustedUsers === openedList}
             setIsOpen={setOpenedList}
           />
@@ -152,28 +160,6 @@ export function SidePanel({
             isOpen={false}
             setIsOpen={setOpenedList}
           />
-
-          {/* <div>
-            <Header as="h4" className='infoTitle' size="medium">Keywords:</Header>
-            <List horizontal>
-              {
-                TAGS.map(({ id, label }) => {
-                  return (
-                    <List.Item key={id} style={{ marginLeft: 0, marginRight: 10 }}>
-                      <Button
-                        size="tiny"
-                        color={activeTags.includes(label) ? 'orange' : 'green'}
-                        style={{ padding: '3px', margin: 0 }}
-                        onClick={handleSwitchTag(label)}
-                      >
-                        {label}
-                      </Button>
-                    </List.Item>
-                  );
-                })
-              }
-            </List>
-          </div> */}
 
           <div className={styles.footer}>
             <a href='https://dapplets.org/terms-conditions.html'>
@@ -199,3 +185,5 @@ export function SidePanel({
 		</aside>
 	);
 }
+
+export default connect(null, mapDispatch)(SidePanel);

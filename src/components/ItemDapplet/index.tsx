@@ -11,6 +11,16 @@ import { IDappletsList } from "../../config/types";
 import Highlighter from "react-highlight-words";
 import DappletListersPopup from '../../features/DappletListersPopup/DappletListersPopup';
 import { IDapplet } from '../../models/dapplets';
+import { RootDispatch } from '../../models';
+import { Sort } from '../../models/sort';
+import { connect } from 'react-redux';
+
+
+const mapDispatch = (dispatch: RootDispatch) => ({
+  setSort: (payload: Sort) => dispatch.sort.setSort(payload),
+});
+
+type Props = ReturnType<typeof mapDispatch>;
 
 const ImagesWrapper = styled.div`
   display: grid;
@@ -72,7 +82,7 @@ interface ItemDappletProps {
   setOpenedList: any
 }
 
-const ItemDapplet = (props: ItemDappletProps): React.ReactElement => {
+const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
   const {
     item,
     selectedDapplets,
@@ -83,6 +93,7 @@ const ItemDapplet = (props: ItemDappletProps): React.ReactElement => {
     setExpandedItems,
     searchQuery,
     setAddressFilter,
+    setSort,
   } = props;
 
   if (!item) return <></>;
@@ -170,7 +181,10 @@ const ItemDapplet = (props: ItemDappletProps): React.ReactElement => {
           {/* Author: <a href={owner}>{owner}</a> */}
           Author: <a onClick={(e) => {
             e.stopPropagation()
-            setAddressFilter(item.owner)
+            setSort({
+              addressFilter: item.owner,
+              selectedList: undefined,
+            })
           }}>{owner}</a>
         </div>
 
@@ -220,4 +234,4 @@ const ItemDapplet = (props: ItemDappletProps): React.ReactElement => {
   );
 };
 
-export default ItemDapplet;
+export default connect(null, mapDispatch)(ItemDapplet);

@@ -10,10 +10,10 @@ import SortableList from '../SortableList';
 import ItemDapplet from '../ItemDapplet';
 import { DappletsListItemTypes } from '../atoms/DappletsListItem'
 
-import { SortTypes } from '../App'
 import ProfileInList from '../../features/ProfileInList/ProfileInList';
 import { SideLists } from '../../layouts/SidePanel';
 import { IDapplet } from '../../models/dapplets';
+import { SortTypes } from '../../models/sort';
 
 function ListDapplets({
   dapplets,
