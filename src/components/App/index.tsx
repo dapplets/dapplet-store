@@ -11,12 +11,11 @@ import "@fontsource/roboto"
 import "@fontsource/montserrat"
 import Dropdown from '../Dropdown/Dropdown';
 
-// import Web3 from "web3";
-// import Web3Modal from "web3modal";
+import Web3 from "web3";
+import Web3Modal from "web3modal";
 // @ts-ignore
-// import WalletConnectProvider from "@walletconnect/web3-provider";
-// import LoginModal from '../LoginModal/LoginModal';
-// import { getAnchorParams, setAnchorParams } from '../../lib/anchorLink';
+import WalletConnectProvider from "@walletconnect/web3-provider";
+import LoginModal from '../LoginModal/LoginModal';
 
 import { connect } from "react-redux";
 import { RootState, RootDispatch } from "../../models";
@@ -136,47 +135,37 @@ const App: FC<Props> = ({
     getSort()
   }, [getSort])
 
-  // useEffect(() => {
-  //   setAnchorParams({
-  //     sortType,
-  //     addressFilter,
-  //     searchQuery,
-  //     isTrustedSort,
-  //     selectedList,
-  //   })
-  // }, [addressFilter, isTrustedSort, searchQuery, selectedList, sortType])
+  const web3Init = async () => {
+    const providerOptions = {
+      walletconnect: {
+        package: WalletConnectProvider,
+      },
+    };
+    
+    const web3Modal = new Web3Modal({
+      network: "goerli", // optional
+      cacheProvider: true, // optional
+      providerOptions // required
+    });
+    
+    const provider = await web3Modal.connect();
 
-  // const web3Init = async () => {
-  //   const providerOptions = {
-  //     walletconnect: {
-  //       package: WalletConnectProvider,
-  //     },
-  //   };
+    provider.on("accountsChanged", (accounts: string[]) => {
+      setLoginInfo(accounts[0])
+    });
     
-  //   const web3Modal = new Web3Modal({
-  //     network: "goerli", // optional
-  //     cacheProvider: true, // optional
-  //     providerOptions // required
-  //   });
+    const web3 = new Web3(provider);
+    const address = await web3.eth.getAccounts()
+    setLoginInfo(address[0])
+    setOpenedModal(null)
     
-  //   const provider = await web3Modal.connect();
+    console.log({address})
+    return web3
+  }
 
-  //   provider.on("accountsChanged", (accounts: string[]) => {
-  //     setLoginInfo(accounts[0])
-  //   });
-    
-  //   const web3 = new Web3(provider);
-  //   const address = await web3.eth.getAccounts()
-  //   setLoginInfo(address[0])
-  //   setOpenedModal(null)
-    
-  //   console.log({address})
-  //   return web3
-  // }
-
-  // useEffect(() => {
-    // setOpenedModal(<LoginModal onMetamask={web3Init} />)
-  // }, [])
+  useEffect(() => {
+    setOpenedModal(<LoginModal onMetamask={web3Init} onClose={() => {}} />)
+  }, [])
 
   const dropdownItems = [
     {
