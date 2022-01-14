@@ -1,19 +1,54 @@
 import React, { DetailedHTMLProps, FC, HTMLAttributes, useEffect, useMemo, useRef, useState } from 'react';
+import styled from 'styled-components';
 import cn from 'classnames';
 import STORE_LOGO from '../../images/StoreLogo.svg';
 import jazzicon from '@metamask/jazzicon';
 import styles from './Header.module.scss';
-import { RootDispatch } from '../../models';
+import { RootState, RootDispatch } from "../../models";
 import { INITIAL_STATE, Sort } from '../../models/sort';
 
 import { connect } from 'react-redux';
 import { Lists } from '../../config/types';
+import { Modals } from '../../models/modals';
+
+const mapState = (state: RootState) => ({
+  address: state.user.address,
+});
 
 const mapDispatch = (dispatch: RootDispatch) => ({
   setSort: (payload: Sort) => dispatch.sort.setSort(payload),
+  setModalOpen: (payload: Modals) => dispatch.modals.setModalOpen(payload),
 });
 
-type Props = ReturnType<typeof mapDispatch>;
+const Login = styled.button`
+  box-shadow: none;
+	outline: inherit;
+  border: none;
+  border-radius: 4px;
+  display: grid;
+  justify-content: center;
+  align-content: center;
+  font-family: Roboto;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 14px;
+  letter-spacing: 0em;
+  text-align: center;
+  color: white;
+  background: #D9304F;
+
+  width: 90px;
+  height: 32px;
+
+
+
+  &:hover {
+    background: #F26680;
+  }
+`
+
+type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
 
 interface VanillaChildrenProps {
 	children: HTMLElement | HTMLDivElement
@@ -64,10 +99,12 @@ const Header: FC<HeaderProps & Props> = ({
   setExpandedItems,
   loginInfo,
   setSort,
+  setModalOpen,
+  address,
 }): React.ReactElement => {
 	const [active, setActive] = useState<number>(MENU[0].id);
   const getAvatar = (loggedIn: string): HTMLDivElement => jazzicon(50, parseInt(loggedIn.slice(2, 10), 16));
-  const address = useMemo(() => loginInfo ? loginInfo.replace('0x000000000000000000000000', '0x') : '', [loginInfo])
+  const addressShort = useMemo(() => address ? address.replace('0x000000000000000000000000', '0x') : '', [address])
 
 	function handleItemClick(id: number): void {
     switch (id) {
@@ -192,11 +229,24 @@ const Header: FC<HeaderProps & Props> = ({
             })
           }
         </div>
-
-        <div id='place-for-overlay-in-header' className={styles.avatar}>
+        {address ? 
+        <div id='place-for-overlay-in-header' className={styles.avatar}
+        onClick={() => {
+          setModalOpen({
+            isUserOpen: true,
+          })
+        }}
+        >
           {/* <img src={AVATAR} alt='avatar' /> */}
-          {address && <VanillaChildren>{getAvatar(address)}</VanillaChildren>}
+          <VanillaChildren>{getAvatar(addressShort)}</VanillaChildren>
         </div>
+        :<Login onClick={() => {
+          setModalOpen({
+            isLoginOpen: true,
+          })
+        }}>login</Login>}
+
+        
 
       </div>
 
@@ -205,4 +255,4 @@ const Header: FC<HeaderProps & Props> = ({
 	);
 }
 
-export default connect(null, mapDispatch)(Header);
+export default connect(mapState, mapDispatch)(Header);

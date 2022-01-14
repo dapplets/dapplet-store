@@ -16,11 +16,13 @@ import Web3Modal from "web3modal";
 // @ts-ignore
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import LoginModal from '../LoginModal/LoginModal';
+import UserModal from './../UserModal/UserModal';
 
 import { connect } from "react-redux";
 import { RootState, RootDispatch } from "../../models";
 import { IDapplet } from '../../models/dapplets';
 import { Sort, SortTypes } from '../../models/sort';
+import { Modals } from '../../models/modals';
 
 const mapState = (state: RootState) => ({
   dapplets: state.dapplets,
@@ -29,11 +31,18 @@ const mapState = (state: RootState) => ({
   searchQuery: state.sort.searchQuery,
   selectedList: state.sort.selectedList,
   isTrustedSort: state.sort.isTrustedSort,
+  isLoginOpen: !!state.modals.isLoginOpen,
+  isUserOpen: !!state.modals.isUserOpen,
+  address: state.user.address,
 });
 const mapDispatch = (dispatch: RootDispatch) => ({
   getDapplets: () => dispatch.dapplets.getDapplets(),
   getSort: () => dispatch.sort.getSort(),
   setSort: (payload: Sort) => dispatch.sort.setSort(payload),
+  setModalOpen: (payload: Modals) => dispatch.modals.setModalOpen(payload),
+  setUser: (payload: string) => dispatch.user.setUser({
+    address: payload
+  }),
 });
 
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
@@ -103,7 +112,7 @@ const ModalWrapper = styled.div`
 `
 
 declare global {
-  interface Window { ethereum: any; }
+  interface Window { dapplets: any; }
 }
 
 const App: FC<Props> = ({ 
@@ -113,9 +122,14 @@ const App: FC<Props> = ({
   searchQuery,
   selectedList,
   isTrustedSort,
+  isLoginOpen,
+  isUserOpen,
+  address,
   getDapplets,
   getSort,
   setSort,
+  setModalOpen,
+  setUser,
 }): React.ReactElement => {
   const [selectedDappletsList, setSelectedDappletsList] = useState<IDappletsList>({ listName: Lists.Selected, dapplets: [] });
   const [localDappletsList, setLocalDappletsList] = useState<IDappletsList>({ listName: Lists.Local, dapplets: [] });
@@ -124,8 +138,7 @@ const App: FC<Props> = ({
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
   const [openedModal, setOpenedModal] = useState<any>(null);
   const [openedList, setOpenedList] = useState(null)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [loginInfo, setLoginInfo] = useState('');
+  const [provider, setProvider] = useState()
 
   useEffect(() => {
     console.log({localDappletsList})
@@ -141,30 +154,117 @@ const App: FC<Props> = ({
         package: WalletConnectProvider,
       },
     };
-    
+
     const web3Modal = new Web3Modal({
       network: "goerli", // optional
       cacheProvider: true, // optional
       providerOptions // required
     });
-    
+
     const provider = await web3Modal.connect();
 
     provider.on("accountsChanged", (accounts: string[]) => {
-      setLoginInfo(accounts[0])
+      setUser(accounts[0])
     });
     
     const web3 = new Web3(provider);
     const address = await web3.eth.getAccounts()
-    setLoginInfo(address[0])
-    setOpenedModal(null)
+    setUser(address[0])
     
     console.log({address})
+    setProvider(provider)
+    setModalOpen({
+      isLoginOpen: false,
+    })
     return web3
   }
+    
+  const walletConnect = async () => {
+    try {
+      const provider: any = new WalletConnectProvider({
+        infuraId: "eda881d858ae4a25b2dfbbd0b4629992",
+      });
+  
+      //  Enable session (triggers QR Code modal)
+      await provider.enable();
+      const web3 = new Web3(provider);
+      const address = await web3.eth.getAccounts()
+      setUser(address[0])
+      setOpenedModal(null)
+      
+      console.log({address})
+      setProvider(provider)
+      setModalOpen({
+        isLoginOpen: false,
+      })
+
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const onDapplet = async () => {
+    try {
+      const addressDapps = await window.dapplets.getAccounts()
+      if (addressDapps.length > 0) {
+        console.log({addressDapps})
+        setUser(addressDapps[0].account)
+        setModalOpen({
+          isLoginOpen: false,
+        })
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  // useEffect(() => {
+  //   setModalOpen({
+  //     isLoginOpen: true,
+  //   })
+  // }, [setModalOpen])
 
   useEffect(() => {
-    setOpenedModal(<LoginModal onMetamask={web3Init} onClose={() => {}} />)
+    // console.log({ eth: window.dapplets, window})
+    if (isLoginOpen)
+      setOpenedModal(<LoginModal 
+        isDappletInstall={!window.dapplets} 
+        onDapplet={onDapplet} 
+        onMetamask={web3Init} 
+        onWalletConnect={walletConnect} 
+        onClose={() => setModalOpen({
+          isLoginOpen: false,
+        })} />)
+    else
+      setOpenedModal(null)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isLoginOpen])
+
+    useEffect(() => {
+      // console.log({ eth: window.dapplets, window})
+      if (isUserOpen)
+        setOpenedModal(<UserModal 
+          address={address || ""} 
+          onLogout={async () => {
+            try {
+              const prov: any = provider
+              await prov.disconnect()
+            } catch (error) {
+              console.error(error)
+            }
+            setUser("")
+            setModalOpen({
+              isUserOpen: false,
+            })
+          }}
+          />)
+      else
+        setOpenedModal(null)
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, [isUserOpen])
+
+  useEffect(() => {
+    //  Create WalletConnect Provider
   }, [])
 
   const dropdownItems = [
@@ -276,7 +376,10 @@ const App: FC<Props> = ({
   return (
     <>
       {openedModal &&
-        <ModalWrapperBg onClick={() => setOpenedModal(null)}>
+        <ModalWrapperBg onClick={() => setModalOpen({
+          isUserOpen: false,
+          isLoginOpen: false,
+        })}>
           <ModalWrapper onClick={(e) => e.stopPropagation()}>
             {openedModal}
           </ModalWrapper>
@@ -297,7 +400,7 @@ const App: FC<Props> = ({
         setAddressFilter={(newAddressFilter: string | undefined) => setSort({ addressFilter: newAddressFilter})}
         openedList={openedList}
         setOpenedList={setOpenedList}
-        loginInfo={loginInfo}
+        loginInfo={address || ""}
         dapplets={[...dapplets]}
       >
         <>

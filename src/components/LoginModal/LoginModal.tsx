@@ -27,10 +27,14 @@ const Wrapper = styled.div`
   border-radius: 10px; 
 `
 
-const CloseButton = styled.div`
+const CloseButton = styled.button`
   position: absolute;
   top: 14px;
   right: 14px;
+  box-shadow: none;
+	outline: inherit;
+  background: none;
+  border: none;
 `
 
 const MainText = styled.div`
@@ -73,6 +77,16 @@ const ButtonWrapper = styled.button`
   background: white;
 `
 
+const LinkWrapper = styled.a`
+  border-radius: 20px;
+  display: grid;
+  justify-items: center;
+  align-items: center;
+  box-shadow: none;
+	outline: inherit;
+  background: white;
+`
+
 const ButtonContentWrapper = styled.div`
   display: grid;
   grid-template-columns: min-content max-content;
@@ -83,14 +97,23 @@ const ButtonContentWrapper = styled.div`
 
 const ButtonText = styled.div``
 
-const Button = (props: { icon: any, text: string, className?: any, onClick?: any }) => {
-  return(
-    <ButtonWrapper className={props.className} onClick={props.onClick}>
+const Button = (props: { icon: any, text: string, className?: any, onClick?: any, href?: string }) => {
+  if (!props.href)
+    return(
+      <ButtonWrapper className={props.className} onClick={props.onClick}>
+        <ButtonContentWrapper>
+          {props.icon}
+          <ButtonText>{props.text}</ButtonText>
+        </ButtonContentWrapper>
+      </ButtonWrapper>
+    )
+  return (
+    <LinkWrapper className={props.className} href={props.href} target="_blank">
       <ButtonContentWrapper>
         {props.icon}
         <ButtonText>{props.text}</ButtonText>
       </ButtonContentWrapper>
-    </ButtonWrapper>
+    </LinkWrapper>
   )
 }
 
@@ -98,6 +121,11 @@ const DappletButton = styled(Button)`
   grid-row: 1/3;
   border: 1px solid #D9304F;
   color: #D9304F;
+  text-decoration: none;
+  &:hover, &:active, &:focus {
+    color: #D9304F;
+    text-decoration: none;
+  }
 `
 
 const SignButton = styled(Button)`
@@ -108,7 +136,10 @@ const SignButton = styled(Button)`
 
 interface LoginModalProps {
   onMetamask: any
+  onWalletConnect: any
   onClose: any
+  onDapplet: any
+  isDappletInstall: boolean
 }
 
 const LoginModal = (props: LoginModalProps) => {
@@ -118,10 +149,20 @@ const LoginModal = (props: LoginModalProps) => {
       <MainText>Sign In</MainText>
       <SubText>Sed tristique odio fermentum tempus sed.</SubText>
       <ButtonsWrapper>
-        <DappletButton icon={<Dapplet />} text='Install Dapplets Extension'/>
+        {/* <a href='https://docs.dapplets.org/docs/installation' target="_blank">
+          <DappletButton icon={<Dapplet />} text='Install Dapplets Extension'/>
+        </a> */}
+        {
+          props.isDappletInstall ? (
+            <DappletButton icon={<Dapplet />} text='Install Dapplets Extension' href='https://docs.dapplets.org/docs/installation'/>
+          ) :
+          (
+            <DappletButton icon={<Dapplet />} text='Login Dapplets Extension' onClick={props.onDapplet}/>
+          )
+        }
         <ButtonWrapperText>or</ButtonWrapperText>
         <SignButton icon={<Metamask />} text='Sign in with Metamask' onClick={props.onMetamask}/>
-        <SignButton icon={<Walletconnect />} text='Sign in with WalletConnect'/>
+        <SignButton icon={<Walletconnect />} text='Sign in with WalletConnect' onClick={props.onWalletConnect}/>
       </ButtonsWrapper>
     </Wrapper>
 )}
