@@ -13,6 +13,7 @@ const Wrapper = styled.div`
   padding: 40px;
   position: relative;
   grid-template-rows: min-content min-content 1fr;
+  background: white;
 
   font-family: Montserrat;
   font-size: 14px;

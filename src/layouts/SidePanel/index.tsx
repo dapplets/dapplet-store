@@ -8,15 +8,21 @@ import { Lists, IDappletsList, IDappletsListElement } from '../../config/types';
 import { saveListToLocalStorage } from '../../utils';
 import DappletsListSidebar from '../../components/molecules/DappletsListSidebar'
 import { DappletsListItemTypes } from '../../components/atoms/DappletsListItem'
-import { RootDispatch } from '../../models';
+import { RootDispatch, RootState } from '../../models';
 import { Sort } from '../../models/sort';
 import { connect } from 'react-redux';
+import { Modals } from '../../models/modals';
+
+const mapState = (state: RootState) => ({
+  address: state.user.address,
+});
 
 const mapDispatch = (dispatch: RootDispatch) => ({
+  setModalOpen: (payload: Modals) => dispatch.modals.setModalOpen(payload),
   setSort: (payload: Sort) => dispatch.sort.setSort(payload),
 });
 
-type Props = ReturnType<typeof mapDispatch>;
+type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
 
 export enum SideLists {
   MyDapplets = 'My dapplets',
@@ -40,7 +46,9 @@ const SidePanel = ({
   openedList,
   setOpenedList,
   dapplets,
+  address,
   setSort,
+  setModalOpen,
 }: SidePanelProps & Props): React.ReactElement => {
 
   const removeFromLocalList = (name: string) => (e: any) => {
@@ -116,6 +124,12 @@ const SidePanel = ({
             }))}
             title={SideLists.MyListing}
             onOpenList={() => {
+              if (!address) {
+                setModalOpen({
+                  isLoginOpen: true,
+                })
+                return
+              }
               setExpandedItems([]);
               setSort({
                 selectedList: Lists.Selected,
@@ -186,4 +200,4 @@ const SidePanel = ({
 	);
 }
 
-export default connect(null, mapDispatch)(SidePanel);
+export default connect(mapState, mapDispatch)(SidePanel);

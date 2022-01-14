@@ -7,10 +7,10 @@ import { ReactComponent as Metamask } from './metamask.svg';
 import { ReactComponent as Walletconnect } from './walletconnect.svg';
 
 const Wrapper = styled.div`
-  width: 755px;
-  height: 280px;
+  width: 420px;
+  height: 390px;
   display: grid;
-  grid-row-gap: 10px;
+  grid-row-gap: 30px;
   padding: 40px;
   position: relative;
   align-content: center;
@@ -23,6 +23,7 @@ const Wrapper = styled.div`
   letter-spacing: 0em;
   text-align: left;
   color: #919191;
+  background: white;
 
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15), 0px 4px 35px rgba(0, 0, 0, 0.1);
   border-radius: 10px; 
@@ -108,7 +109,7 @@ interface LoginModalProps {
 
 const UserModal = ({address, onLogout}: LoginModalProps) => {
   const addressShort = useMemo(() => address ? address.replace('0x000000000000000000000000', '0x') : '', [address])
-  const getAvatar = (loggedIn: string): HTMLDivElement => jazzicon(50, parseInt(loggedIn.slice(2, 10), 16));
+  const getAvatar = (loggedIn: string): HTMLDivElement => jazzicon(122, parseInt(loggedIn.slice(2, 10), 16));
   return(
     <Wrapper>
       <VanillaChildren>{getAvatar(addressShort)}</VanillaChildren>

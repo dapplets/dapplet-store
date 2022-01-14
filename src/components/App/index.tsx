@@ -108,7 +108,7 @@ const ModalWrapperBg = styled.div`
 `
 
 const ModalWrapper = styled.div`
-  background-color: white;
+  background: none;
 `
 
 declare global {

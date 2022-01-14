@@ -112,6 +112,12 @@ const Header: FC<HeaderProps & Props> = ({
         setSort(INITIAL_STATE);
         break;
       case 2:
+        if (!address) {
+          setModalOpen({
+            isLoginOpen: true,
+          })
+          return
+        }
         setSort({
           selectedList: Lists.Selected,
           addressFilter: "",
