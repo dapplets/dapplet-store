@@ -3,7 +3,7 @@ import { BigNumber, ethers } from 'ethers';
 import types from '../types.json';
 import abi from '../abi.json';
 
-const PROVIDER_URL = 'https://rinkeby.infura.io/v3/eda881d858ae4a25b2dfbbd0b4629992';
+const PROVIDER_URL = 'https://goerli.infura.io/v3/dd596d06e4284273a30004fd22e2af80';
 
 export interface IDapplet {
   description: string
@@ -34,12 +34,16 @@ const reducers = {
 
 const effects = (dispatch: any) => ({
   getDapplets: async (): Promise<void> => {
-    const provider = new ethers.providers.JsonRpcProvider(PROVIDER_URL, 4);
-    const contract: any = new ethers.Contract('0xb76b02b35ad7cb71e2061056915e521e8f05c130', abi, provider);
+    const provider = new ethers.providers.JsonRpcProvider(PROVIDER_URL, 0x05);
+    const contract: any = new ethers.Contract('0x55627158187582228031eD8DF9893d76318D084E', abi, provider);
+    contract.queryFilter('ModuleInfoAdded').then((e: any) => {
+      console.log(e)
+    })
     contract.queryFilter('ModuleInfoAdded').then(async (events: any) => {
       const versions: any = {};
       const timestamps: any = {};
       const allModules: any[] = await Promise.all(events.map(async (ev: any) => {
+        console.log({ev})
         const tx: any = await provider.getTransaction(ev.transactionHash);
         const t: any = types;
         const decoded = ethers.utils.defaultAbiCoder.decode(t, ethers.utils.hexDataSlice(tx.data, 4));
@@ -54,6 +58,7 @@ const effects = (dispatch: any) => ({
         const block = await ev.getBlock();
         timestamps[module.name] = block.timestamp;
 
+        console.log({module})
         return module;
       }));
 
