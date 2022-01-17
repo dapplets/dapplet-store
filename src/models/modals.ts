@@ -1,21 +1,24 @@
 import { createModel } from "@rematch/core";
 
+export enum ModalsList {
+  Login = "login",
+  User = "user",
+  Warning = "warning",
+}
+
 export interface Modals {
-  isLoginOpen?: boolean
-  isUserOpen?: boolean
+  openedModal: ModalsList | null
 }
 
 type ModalsState = Readonly<Modals>
 const INITIAL_STATE: ModalsState = {
-  isLoginOpen: false,
-  isUserOpen: false,
+  openedModal: null,
 };
 
 const reducers = {
-  setModalOpen(state: ModalsState, payload: ModalsState) {
+  setModalOpen(_: ModalsState, payload: ModalsList | null) {
     return {
-      ...state,
-      ...payload,
+      openedModal: payload,
     }
   }
 }

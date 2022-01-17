@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { ReactComponent as Dapplet } from './dapplet.svg';
 import { ReactComponent as Metamask } from './metamask.svg';
 import { ReactComponent as Walletconnect } from './walletconnect.svg';
+import { ReactComponent as Close } from '../close.svg';
 
 const Wrapper = styled.div`
   width: 755px;
@@ -146,7 +147,7 @@ interface LoginModalProps {
 const LoginModal = (props: LoginModalProps) => {
   return(
     <Wrapper>
-      <CloseButton onClick={props.onClose}>x</CloseButton>
+      <CloseButton onClick={props.onClose}><Close /></CloseButton>
       <MainText>Sign In</MainText>
       <SubText>Sed tristique odio fermentum tempus sed.</SubText>
       <ButtonsWrapper>
