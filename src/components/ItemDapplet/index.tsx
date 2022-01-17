@@ -179,13 +179,16 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
 
         <div className={styles.author}>
           {/* Author: <a href={owner}>{owner}</a> */}
+          
           Author: <a onClick={(e) => {
             e.stopPropagation()
             setSort({
               addressFilter: item.owner,
               selectedList: undefined,
             })
-          }}>{owner}</a>
+          }}>
+            <Highlighter textToHighlight={owner} searchWords={[searchQuery || ""]} highlightStyle={{ background: '#ffff00', padding: 0 }} />
+          </a>
         </div>
 
         {
