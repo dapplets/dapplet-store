@@ -2,10 +2,6 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 import jazzicon from '@metamask/jazzicon';
 
-import { ReactComponent as Dapplet } from './dapplet.svg';
-import { ReactComponent as Metamask } from './metamask.svg';
-import { ReactComponent as Walletconnect } from './walletconnect.svg';
-
 const Wrapper = styled.div`
   width: 420px;
   height: 390px;
@@ -47,16 +43,6 @@ const VanillaChildren = ({ children }: VanillaChildrenProps): JSX.Element => {
 		<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} ref={ref}/>
 	);
 };
-
-const Avatar = styled.div`
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  box-shadow: none;
-	outline: inherit;
-  background: none;
-  border: none;
-`
 
 const Address = styled.div`
   font-family: Roboto;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, FC } from 'react';
+import React, { useEffect, useState, FC, useMemo } from 'react';
 
 import { Layout } from '../../layouts/Layout/Layout';
 import Input from '../Input';
@@ -15,33 +15,33 @@ import Web3 from "web3";
 import Web3Modal from "web3modal";
 // @ts-ignore
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import LoginModal from '../LoginModal/LoginModal';
-import UserModal from './../UserModal/UserModal';
+import LoginModal from '../../features/Modals/LoginModal/LoginModal';
+import UserModal from '../../features/Modals/UserModal/UserModal';
 
-import Parse from "parse"
+import Parse from "parse";
 
 import { connect } from "react-redux";
 import { RootState, RootDispatch } from "../../models";
 import { IDapplet } from '../../models/dapplets';
 import { Sort, SortTypes } from '../../models/sort';
-import { Modals } from '../../models/modals';
+import { ModalsList } from '../../models/modals';
+import WarningModal from '../../features/Modals/WarningModal/WarningModal';
 
 const mapState = (state: RootState) => ({
-  dapplets: state.dapplets,
+  dapplets: Object.values(state.dapplets),
   sortType: state.sort.sortType,
   addressFilter: state.sort.addressFilter,
   searchQuery: state.sort.searchQuery,
   selectedList: state.sort.selectedList,
   isTrustedSort: state.sort.isTrustedSort,
-  isLoginOpen: !!state.modals.isLoginOpen,
-  isUserOpen: !!state.modals.isUserOpen,
+  openedModal: state.modals.openedModal,
   address: state.user.address,
 });
 const mapDispatch = (dispatch: RootDispatch) => ({
   getDapplets: () => dispatch.dapplets.getDapplets(),
   getSort: () => dispatch.sort.getSort(),
   setSort: (payload: Sort) => dispatch.sort.setSort(payload),
-  setModalOpen: (payload: Modals) => dispatch.modals.setModalOpen(payload),
+  setModalOpen: (payload: ModalsList | null) => dispatch.modals.setModalOpen(payload),
   setUser: (payload: string) => dispatch.user.setUser({
     address: payload
   }),
@@ -114,7 +114,7 @@ const ModalWrapper = styled.div`
 `
 
 declare global {
-  interface Window { dapplets: any; }
+  interface Window { dapplets: any; openModal: any; }
 }
 
 const App: FC<Props> = ({ 
@@ -124,8 +124,7 @@ const App: FC<Props> = ({
   searchQuery,
   selectedList,
   isTrustedSort,
-  isLoginOpen,
-  isUserOpen,
+  openedModal,
   address,
   getDapplets,
   getSort,
@@ -138,7 +137,6 @@ const App: FC<Props> = ({
   const [trustedUsersList, setTrustedUsersList] = useState<string[]>([]);
   const [activeTags, setActiveTags] = useState<string[]>([]);
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
-  const [openedModal, setOpenedModal] = useState<any>(null);
   const [openedList, setOpenedList] = useState(null)
   const [provider, setProvider] = useState()
 
@@ -150,120 +148,137 @@ const App: FC<Props> = ({
     getSort()
   }, [getSort])
 
-  const web3Init = async () => {
-    const providerOptions = {
-      walletconnect: {
-        package: WalletConnectProvider,
-      },
-    };
+  // test func to open modals
+  useEffect(() => {
+    window.openModal = (modal: ModalsList) => {
+      setModalOpen(modal)
+    }
+  }, [setModalOpen])
 
-    const web3Modal = new Web3Modal({
-      network: "goerli", // optional
-      cacheProvider: true, // optional
-      providerOptions // required
-    });
-
-    const provider = await web3Modal.connect();
-
-    provider.on("accountsChanged", (accounts: string[]) => {
-      setUser(accounts[0])
-    });
-    
-    const web3 = new Web3(provider);
-    const address = await web3.eth.getAccounts()
-    setUser(address[0])
-    
-    console.log({address})
-    setProvider(provider)
-    setModalOpen({
-      isLoginOpen: false,
-    })
-    return web3
-  }
-    
-  const walletConnect = async () => {
-    try {
-      const provider: any = new WalletConnectProvider({
-        infuraId: "eda881d858ae4a25b2dfbbd0b4629992",
+  const nowModal = useMemo(() => {
+    const web3Init = async () => {
+      const providerOptions = {
+        walletconnect: {
+          package: WalletConnectProvider,
+        },
+      };
+  
+      const web3Modal = new Web3Modal({
+        network: "goerli", // optional
+        cacheProvider: true, // optional
+        providerOptions // required
       });
   
-      //  Enable session (triggers QR Code modal)
-      await provider.enable();
+      const provider = await web3Modal.connect();
+  
+      provider.on("accountsChanged", (accounts: string[]) => {
+        setUser(accounts[0])
+      });
+      
       const web3 = new Web3(provider);
       const address = await web3.eth.getAccounts()
       setUser(address[0])
-      setOpenedModal(null)
       
       console.log({address})
       setProvider(provider)
-      setModalOpen({
-        isLoginOpen: false,
-      })
-
-    } catch (error) {
-      console.error(error)
+      setModalOpen(null)
+      return web3
     }
-  }
-
-  const onDapplet = async () => {
-    try {
-      const addressDapps = await window.dapplets.getAccounts()
-      if (addressDapps.length > 0) {
-        console.log({addressDapps})
-        setUser(addressDapps[0].account)
-        setModalOpen({
-          isLoginOpen: false,
-        })
+      
+    const walletConnect = async () => {
+      try {
+        const provider: any = new WalletConnectProvider({
+          infuraId: "eda881d858ae4a25b2dfbbd0b4629992",
+        });
+        
+        //  Enable session (triggers QR Code modal)
+        await provider.enable();
+        const web3 = new Web3(provider);
+        const address = await web3.eth.getAccounts()
+        setUser(address[0])
+        setModalOpen(null)
+        
+        console.log({address})
+        setProvider(provider)
+      } catch (error) {
+        console.error(error)
       }
-    } catch (error) {
-      console.error(error)
     }
-  }
+  
+    const onDapplet = async () => {
+      try {
+        const addressDapps = await window.dapplets.getAccounts()
+        if (addressDapps.length > 0) {
+          console.log({addressDapps})
+          setUser(addressDapps[0].account)
+          setModalOpen(null)
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    switch (openedModal) {
+      case ModalsList.Login:
+        return (
+          <LoginModal 
+            isDappletInstall={!window.dapplets}
+            onDapplet={onDapplet}
+            onMetamask={web3Init}
+            onWalletConnect={walletConnect}
+            onClose={() => setModalOpen(null)}
+          />
+        )
+      case ModalsList.User:
+        return (
+          <UserModal 
+            address={address || ""} 
+            onLogout={async () => {
+              try {
+                const prov: any = provider
+                await prov.disconnect()
+              } catch (error) {
+                console.error(error)
+              }
+              setUser("")
+              setModalOpen(null)
+            }}
+          />
+        )
+        case ModalsList.Warning:
+          return (
+            <WarningModal
+              onClose={() => setModalOpen(null)}
+            />
+          )
+      default:
+        return null
+    }
+  }, [address, openedModal, provider, setModalOpen, setUser])
 
-  // useEffect(() => {
-  //   setModalOpen({
-  //     isLoginOpen: true,
-  //   })
-  // }, [setModalOpen])
+  const dropdownItems = [
+    {
+      id: 1,
+      text: SortTypes.ABC,
+      onClick: () => setSort({ sortType: SortTypes.ABC }),
+    },
+    {
+      id: 2,
+      text: SortTypes.ABCReverse,
+      onClick: () => setSort({ sortType: SortTypes.ABCReverse }),
+    },
+    {
+      id: 3,
+      text: SortTypes.Newest,
+      onClick: () => setSort({ sortType: SortTypes.Newest }),
+    },
+    {
+      id: 4,
+      text: SortTypes.Oldest,
+      onClick: () => setSort({ sortType: SortTypes.Oldest }),
+    }
+  ];
 
-  useEffect(() => {
-    // console.log({ eth: window.dapplets, window})
-    if (isLoginOpen)
-      setOpenedModal(<LoginModal 
-        isDappletInstall={!window.dapplets} 
-        onDapplet={onDapplet} 
-        onMetamask={web3Init} 
-        onWalletConnect={walletConnect} 
-        onClose={() => setModalOpen({
-          isLoginOpen: false,
-        })} />)
-    else
-      setOpenedModal(null)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isLoginOpen])
-
-    useEffect(() => {
-      // console.log({ eth: window.dapplets, window})
-      if (isUserOpen)
-        setOpenedModal(<UserModal 
-          address={address || ""} 
-          onLogout={async () => {
-            try {
-              const prov: any = provider
-              await prov.disconnect()
-            } catch (error) {
-              console.error(error)
-            }
-            setUser("")
-            setModalOpen({
-              isUserOpen: false,
-            })
-          }}
-          />)
-      else
-        setOpenedModal(null)
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [isUserOpen])
+  
 
   const f = async () => {
     Parse.serverURL = 'https://parseapi.back4app.com'; // This is your Server URL
@@ -300,38 +315,11 @@ const App: FC<Props> = ({
     f()
   }, [])
 
-  const dropdownItems = [
-    {
-      id: 1,
-      text: SortTypes.ABC,
-      onClick: () => setSort({ searchQuery: SortTypes.ABC }),
-    },
-    {
-      id: 2,
-      text: SortTypes.ABCReverse,
-      onClick: () => setSort({ searchQuery: SortTypes.ABCReverse }),
-    },
-    {
-      id: 3,
-      text: SortTypes.Newest,
-      onClick: () => setSort({ searchQuery: SortTypes.Newest }),
-    },
-    {
-      id: 4,
-      text: SortTypes.Oldest,
-      onClick: () => setSort({ searchQuery: SortTypes.Oldest }),
-    }
-  ];
-
   useEffect(() => {
     getDapplets()
     setSelectedDappletsList(getDappletsListFromLocal(Lists.Selected))
     setLocalDappletsList(getDappletsListFromLocal(Lists.Local))
   }, [getDapplets])
-
-  // useEffect(() => {
-  //   console.log({dapplets})
-  // }, [dapplets])
 
   useEffect(() => {
     const trustedUsers = window.localStorage.getItem('trustedUsers');
@@ -409,12 +397,9 @@ const App: FC<Props> = ({
   return (
     <>
       {openedModal &&
-        <ModalWrapperBg onClick={() => setModalOpen({
-          isUserOpen: false,
-          isLoginOpen: false,
-        })}>
+        <ModalWrapperBg onClick={() => setModalOpen(null)}>
           <ModalWrapper onClick={(e) => e.stopPropagation()}>
-            {openedModal}
+            {nowModal}
           </ModalWrapper>
         </ModalWrapperBg>
       }

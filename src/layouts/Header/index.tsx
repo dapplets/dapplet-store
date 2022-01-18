@@ -9,7 +9,7 @@ import { INITIAL_STATE, Sort } from '../../models/sort';
 
 import { connect } from 'react-redux';
 import { Lists } from '../../config/types';
-import { Modals } from '../../models/modals';
+import { ModalsList } from '../../models/modals';
 
 const mapState = (state: RootState) => ({
   address: state.user.address,
@@ -17,7 +17,7 @@ const mapState = (state: RootState) => ({
 
 const mapDispatch = (dispatch: RootDispatch) => ({
   setSort: (payload: Sort) => dispatch.sort.setSort(payload),
-  setModalOpen: (payload: Modals) => dispatch.modals.setModalOpen(payload),
+  setModalOpen: (payload: ModalsList | null) => dispatch.modals.setModalOpen(payload),
 });
 
 const Login = styled.button`
@@ -113,9 +113,7 @@ const Header: FC<HeaderProps & Props> = ({
         break;
       case 2:
         if (!address) {
-          setModalOpen({
-            isLoginOpen: true,
-          })
+          setModalOpen(ModalsList.Login)
           return
         }
         setSort({
@@ -238,18 +236,14 @@ const Header: FC<HeaderProps & Props> = ({
         {address ? 
         <div id='place-for-overlay-in-header' className={styles.avatar}
         onClick={() => {
-          setModalOpen({
-            isUserOpen: true,
-          })
+          setModalOpen(ModalsList.User)
         }}
         >
           {/* <img src={AVATAR} alt='avatar' /> */}
           <VanillaChildren>{getAvatar(addressShort)}</VanillaChildren>
         </div>
         :<Login onClick={() => {
-          setModalOpen({
-            isLoginOpen: true,
-          })
+          setModalOpen(ModalsList.Login)
         }}>login</Login>}
 
         

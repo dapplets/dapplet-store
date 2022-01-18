@@ -11,14 +11,14 @@ import { DappletsListItemTypes } from '../../components/atoms/DappletsListItem'
 import { RootDispatch, RootState } from '../../models';
 import { Sort } from '../../models/sort';
 import { connect } from 'react-redux';
-import { Modals } from '../../models/modals';
+import { ModalsList } from '../../models/modals';
 
 const mapState = (state: RootState) => ({
   address: state.user.address,
 });
 
 const mapDispatch = (dispatch: RootDispatch) => ({
-  setModalOpen: (payload: Modals) => dispatch.modals.setModalOpen(payload),
+  setModalOpen: (payload: ModalsList | null) => dispatch.modals.setModalOpen(payload),
   setSort: (payload: Sort) => dispatch.sort.setSort(payload),
 });
 
@@ -125,9 +125,7 @@ const SidePanel = ({
             title={SideLists.MyListing}
             onOpenList={() => {
               if (!address) {
-                setModalOpen({
-                  isLoginOpen: true,
-                })
+                setModalOpen(ModalsList.Login)
                 return
               }
               setExpandedItems([]);
