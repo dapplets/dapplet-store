@@ -139,17 +139,15 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
       style={{ display: 'flex', width: '100%' }}
       onClick={handleClickOnItem}
     >
-      <Image className={styles.itemImage} src={`https://bee.dapplets.org/bzz/${icon.uris[0].slice(6)}`} style={{ width: 85, height: 85, borderRadius: '99em', marginTop: 10 }} />
+      {
+        icon.uris.length > 0 &&
+        <Image className={styles.itemImage} src={`https://bee.dapplets.org/bzz/${icon.uris[0].slice(6)}`} style={{ width: 85, height: 85, borderRadius: '99em', marginTop: 10 }} />
+      }
+      
 
       <div className={styles.left} style={{ flexGrow: 1, padding: '5px 18px' }}>
         <h3 className={styles.title}>
-          {
-            searchQuery ? (
-              <Highlighter textToHighlight={item.title} searchWords={[searchQuery]} highlightStyle={{ background: '#ffff00', padding: 0 }} />
-            ) : (
-              <div>{item.title}</div>
-            )
-          }
+          <Highlighter textToHighlight={item.title} searchWords={[searchQuery || ""]} highlightStyle={{ background: '#ffff00', padding: 0 }} />
           
           {!isOpen && (
             <>

@@ -26,7 +26,7 @@ import { ModalsList } from '../../models/modals';
 import WarningModal from '../../features/Modals/WarningModal/WarningModal';
 
 const mapState = (state: RootState) => ({
-  dapplets: state.dapplets,
+  dapplets: Object.values(state.dapplets),
   sortType: state.sort.sortType,
   addressFilter: state.sort.addressFilter,
   searchQuery: state.sort.searchQuery,
@@ -257,22 +257,22 @@ const App: FC<Props> = ({
     {
       id: 1,
       text: SortTypes.ABC,
-      onClick: () => setSort({ searchQuery: SortTypes.ABC }),
+      onClick: () => setSort({ sortType: SortTypes.ABC }),
     },
     {
       id: 2,
       text: SortTypes.ABCReverse,
-      onClick: () => setSort({ searchQuery: SortTypes.ABCReverse }),
+      onClick: () => setSort({ sortType: SortTypes.ABCReverse }),
     },
     {
       id: 3,
       text: SortTypes.Newest,
-      onClick: () => setSort({ searchQuery: SortTypes.Newest }),
+      onClick: () => setSort({ sortType: SortTypes.Newest }),
     },
     {
       id: 4,
       text: SortTypes.Oldest,
-      onClick: () => setSort({ searchQuery: SortTypes.Oldest }),
+      onClick: () => setSort({ sortType: SortTypes.Oldest }),
     }
   ];
 
