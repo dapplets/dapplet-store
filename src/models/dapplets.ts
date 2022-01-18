@@ -3,7 +3,10 @@ import { BigNumber, ethers } from 'ethers';
 import types from '../types.json';
 import abi from '../abi.json';
 
-const PROVIDER_URL = 'https://goerli.infura.io/v3/dd596d06e4284273a30004fd22e2af80';
+const id = 'dd596d06e4284273a30004fd22e2af80';
+const net = 'goerli';
+
+const PROVIDER_URL = `https://${net}.infura.io/v3/${id}`;
 
 export interface IDapplet {
   description: string
