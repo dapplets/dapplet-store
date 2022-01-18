@@ -1,30 +1,63 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { Image } from 'semantic-ui-react';
 import { ethers } from 'ethers';
 import styled from 'styled-components';
 
 import styles from './ItemDapplet.module.scss';
 import { DappletButton, DappletButtonTypes } from './atoms/DappletButton';
+import jazzicon from '@metamask/jazzicon';
 
 import { IDappletsList } from "../../config/types";
 import Highlighter from "react-highlight-words";
 import DappletListersPopup from '../../features/DappletListersPopup/DappletListersPopup';
 import { IDapplet } from '../../models/dapplets';
-import { RootDispatch } from '../../models';
+import { RootDispatch, RootState } from '../../models';
 import { Sort } from '../../models/sort';
 import { connect } from 'react-redux';
+import { ModalsList } from '../../models/modals';
 
+const mapState = (state: RootState) => ({
+  address: state.user.address,
+});
 
 const mapDispatch = (dispatch: RootDispatch) => ({
   setSort: (payload: Sort) => dispatch.sort.setSort(payload),
+  setModalOpen: (payload: ModalsList | null) => dispatch.modals.setModalOpen(payload),
 });
 
-type Props = ReturnType<typeof mapDispatch>;
+type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
 
-const ImagesWrapper = styled.div`
+
+const ImageItem = styled.div`
+  margin-left: -8px;
+  border: 2px solid white;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+`
+interface VanillaChildrenProps {
+	children: HTMLElement | HTMLDivElement
+}
+
+const VanillaChildren = ({ children }: VanillaChildrenProps): JSX.Element => {
+	const ref = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+    while (ref.current?.firstChild) {
+      ref.current?.removeChild(ref.current?.firstChild);
+    }
+		ref.current?.appendChild(children);
+	}, [children, ref]);
+
+	return (
+		<ImageItem style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} ref={ref}/>
+	);
+};
+
+const ImagesWrapper = styled.div<{count: number}>`
   display: grid;
-  grid-template-columns: repeat(3, min-content) 1fr;
+  grid-template-columns: ${({ count }) => `repeat(${count}, min-content) 1fr`};
   margin-left: 8px;
   align-items: center;
 
@@ -39,14 +72,6 @@ const ImagesWrapper = styled.div`
     letter-spacing: 0em;
     text-align: left;
 	}
-`
-
-const ImageItem = styled.img`
-  margin-left: -8px;
-  border: 2px solid white;
-  border-radius: 50%;
-  width: 16px;
-  height: 16px;
 `
 
 const UnderUserInfo = styled.div`
@@ -73,13 +98,14 @@ interface ItemDappletProps {
   item: IDapplet
   selectedDapplets: IDappletsList
   localDapplets: IDappletsList
-  editLocalDappletsList: (item: IDapplet) => (e: any) => void
-  editSelectedDappletsList: (item: IDapplet) => (e: any) => void
+  editLocalDappletsList: (item: IDapplet) => void
+  editSelectedDappletsList: (item: IDapplet) => void
   expandedItems: string[] 
   setExpandedItems: React.Dispatch<React.SetStateAction<string[]>>
   searchQuery?: string
   setAddressFilter: any
   setOpenedList: any
+  trustedUsersList: string[]
 }
 
 const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
@@ -94,9 +120,22 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
     searchQuery,
     setAddressFilter,
     setSort,
+    trustedUsersList,
+    address,
+    setModalOpen,
   } = props;
 
-  if (!item) return <></>;
+  const trustedList = useMemo(() => {
+    return item.trustedUsers.filter((user) => trustedUsersList.includes(user) || user === address)
+  }, [address, item.trustedUsers, trustedUsersList])
+
+  const otherList = useMemo(() => {
+    return item.trustedUsers.filter((user) => !(trustedUsersList.includes(user) || user === address))
+  }, [address, item.trustedUsers, trustedUsersList])
+
+  
+  const getAvatar = (loggedIn: string): HTMLDivElement => jazzicon(12, parseInt(loggedIn.slice(2, 10), 16));
+  const getAddressShort = (address: string) => address ? address.replace('0x000000000000000000000000', '0x') : ''
 
   const isLocalDapplet = localDapplets.dapplets.some((dapplet) => dapplet.name === item.name);
 
@@ -134,6 +173,7 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
     }
   };
 
+  if (!item) return <></>;
   return (
     <div
       style={{ display: 'flex', width: '100%' }}
@@ -151,11 +191,18 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
           
           {!isOpen && (
             <>
-              <ImagesWrapper>
-                <ImageItem src={`https://bee.dapplets.org/bzz/5067359fb612cc8f083ab35fc7e5c0f3f98fc0ef57856731d6ae6e0b498ee37f/`}/>
-                <ImageItem src={`https://bee.dapplets.org/bzz/5067359fb612cc8f083ab35fc7e5c0f3f98fc0ef57856731d6ae6e0b498ee37f/`}/>
-                <ImageItem src={`https://bee.dapplets.org/bzz/5067359fb612cc8f083ab35fc7e5c0f3f98fc0ef57856731d6ae6e0b498ee37f/`}/>
-                <DappletListersPopup text='+24 more lists' onClickSort={setAddressFilter} />
+              <ImagesWrapper count={trustedList.slice(0,3).length}>
+                {
+                  trustedList.slice(0,3).map((address) => (
+                    <VanillaChildren>{getAvatar(getAddressShort(address))}</VanillaChildren>
+                  ))
+                }
+                <DappletListersPopup 
+                  trustedList={trustedList}
+                  otherList={otherList}
+                  text={`+${Math.max(trustedList.length-3, 0) + otherList.length} more lists`}
+                  onClickSort={setAddressFilter}
+                />
               </ImagesWrapper>
             </>
           )}
@@ -164,11 +211,18 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
         
         {isOpen && (
           <UnderUserInfo>
-            <ImagesWrapper>
-              <ImageItem src={`https://bee.dapplets.org/bzz/5067359fb612cc8f083ab35fc7e5c0f3f98fc0ef57856731d6ae6e0b498ee37f/`}/>
-              <ImageItem src={`https://bee.dapplets.org/bzz/5067359fb612cc8f083ab35fc7e5c0f3f98fc0ef57856731d6ae6e0b498ee37f/`}/>
-              <ImageItem src={`https://bee.dapplets.org/bzz/5067359fb612cc8f083ab35fc7e5c0f3f98fc0ef57856731d6ae6e0b498ee37f/`}/>
-              <DappletListersPopup text='+24 more lists' onClickSort={setAddressFilter}/>
+            <ImagesWrapper count={trustedList.slice(0,3).length}>
+                {
+                  trustedList.slice(0,3).map((address) => (
+                    <VanillaChildren>{getAvatar(getAddressShort(address))}</VanillaChildren>
+                  ))
+                }
+              <DappletListersPopup 
+                trustedList={trustedList}
+                otherList={otherList}
+                text={`+${Math.max(trustedList.length-3, 0) + otherList.length} more lists`}
+                onClickSort={setAddressFilter}
+              />
             </ImagesWrapper>
             <UnderUserInfoSeparator />
             <div>4 320 214 active users</div>
@@ -224,15 +278,26 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
       <ButtonsWrapper>
         <DappletButton
           type={isLocalDapplet ? DappletButtonTypes.InMyDapplets : DappletButtonTypes.AddToMy}
-          onClick={editLocalDappletsList(item)}
+          onClick={(e: any) => {
+            e.preventDefault();
+            e.stopPropagation();
+            editLocalDappletsList(item)
+          }}
         />
         <DappletButton
           type={getSelectedType()}
-          onClick={editSelectedDappletsList(item)}
+          onClick={(e: any) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (!address)
+              setModalOpen(ModalsList.Login)
+            else 
+              editSelectedDappletsList(item)
+          }}
         />
       </ButtonsWrapper>
     </div>
   );
 };
 
-export default connect(null, mapDispatch)(ItemDapplet);
+export default connect(mapState, mapDispatch)(ItemDapplet);

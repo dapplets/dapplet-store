@@ -1,6 +1,7 @@
 import { createModel } from "@rematch/core";
 import { ethers } from 'ethers';
 import abi from '../abi.json';
+import Parse from "parse";
 
 const id = 'dd596d06e4284273a30004fd22e2af80';
 const net = 'goerli';
@@ -21,6 +22,7 @@ export interface IDapplet {
   versionToShow: string
   timestamp: any
   timestampToShow: string
+  trustedUsers: string[]
 }
 
 interface DappletsList {
@@ -40,6 +42,29 @@ const reducers = {
       [payload.name]: payload,
     }
   },
+  addTrustedUserToDapplet(state: DappletsState, {name, address}: {name: string, address: string}) {
+    return {
+      ...state,
+      [name]: {
+        ...state[name],
+        trustedUsers: [
+          ...state[name].trustedUsers,
+          address,
+        ],
+      },
+    }
+  },
+  removeTrustedUserFromDapplet(state: DappletsState, {name, address}: {name: string, address: string}) {
+    return {
+      ...state,
+      [name]: {
+        ...state[name],
+        trustedUsers: state[name].trustedUsers.filter((nowAddress) => (
+          nowAddress !== address
+        )),
+      },
+    }
+  },
 }
 
 const effects = (dispatch: any) => ({
@@ -57,8 +82,9 @@ const effects = (dispatch: any) => ({
           return result;
     }
 
+    const myPromises = []
     for (let i = 1; i <= events.length; i++) {
-      contract.modules(i).then(async (module: any) => {
+      myPromises.push(contract.modules(i).then(async (module: any) => {
         if (module.moduleType !== 1) return;
         const ev = events[i - 1];
         const block = await ev.getBlock();
@@ -73,9 +99,63 @@ const effects = (dispatch: any) => ({
           version: versions,
           timestampToShow: new Date(block.timestamp * 1000).toString(),
           timestamp: block.timestamp,
+          trustedUsers: [module.owner],
         }
-        dispatch.dapplets.addDapplet(dapplet)
+        await dispatch.dapplets.addDapplet(dapplet)
       })
+      )
+    }
+    await Promise.all(myPromises)
+    
+    Parse.serverURL = 'https://parseapi.back4app.com';
+    Parse.initialize(
+      'WyqwCiBmXDHB7kDdTP3NgjtdAupCRxbdm72VQ6xS',
+      '3LpyQhNB0KRTOaBAUHR5z6k5L3KAhR0o140A4vHV',
+    );
+    const query = new Parse.Query('dapplets');
+    const results = await query.find();
+    try {
+      for (const object of results) {
+        const name = object.get('name');
+        const address = object.get('address');
+        dispatch.dapplets.addTrustedUserToDapplet({name, address});
+        console.log({name, address})
+      }
+    } catch (error) {
+      console.error('Error while fetching MyCustomClassName', error);
+    }
+  },
+  addTrustedUserToDappletEffect: async ({name, address}: {name: string, address: string}) => {
+    Parse.serverURL = 'https://parseapi.back4app.com';
+    Parse.initialize(
+      'WyqwCiBmXDHB7kDdTP3NgjtdAupCRxbdm72VQ6xS',
+      '3LpyQhNB0KRTOaBAUHR5z6k5L3KAhR0o140A4vHV',
+    );
+    const Dapplet = Parse.Object.extend("dapplets");
+    const dapplet = new Dapplet();
+    dapplet.set("name", name);
+    dapplet.set("address", address);
+    await dapplet.save();
+    dispatch.dapplets.addTrustedUserToDapplet({name, address});
+  },
+  removeTrustedUserFromDappletEffect: async ({name, address}: {name: string, address: string}) => {
+    Parse.serverURL = 'https://parseapi.back4app.com';
+    Parse.initialize(
+      'WyqwCiBmXDHB7kDdTP3NgjtdAupCRxbdm72VQ6xS',
+      '3LpyQhNB0KRTOaBAUHR5z6k5L3KAhR0o140A4vHV',
+    );
+    const query = new Parse.Query('dapplets');
+    const results = await query.find();
+    
+    try {
+      for (const object of results) {
+        const myName = object.get('name');
+        const myAddress = object.get('address');
+        if (myName === name && myAddress === address)
+          dispatch.dapplets.removeTrustedUserFromDapplet({name, address});
+      }
+    } catch (error) {
+      console.error('Error while fetching MyCustomClassName', error);
     }
   },
 })

@@ -42,53 +42,56 @@ function ListDapplets({
     new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'})
   ), []) 
 
-  const editList = (item: IDapplet, dappletsList: IDappletsList, type: DappletsListItemTypes) => {
-    const isLocalDapplet = dappletsList.dapplets.some((dapplet) => dapplet.name === item.name);
-    const nowDappletsList = isLocalDapplet
-      ? dappletsList.dapplets
-        .filter((dapplet) => dapplet.name !== item.name)
-      : [{name: item.name, type}, ...dappletsList.dapplets];
-    const newDappletsList: IDappletsList = { listName: dappletsList.listName, dapplets: nowDappletsList };
-    return newDappletsList
-  } 
+  const editList = useMemo(() => (
+    (item: IDapplet, dappletsList: IDappletsList, type: DappletsListItemTypes) => {
+      const isLocalDapplet = dappletsList.dapplets.some((dapplet) => dapplet.name === item.name);
+      const nowDappletsList = isLocalDapplet
+        ? dappletsList.dapplets
+          .filter((dapplet) => dapplet.name !== item.name)
+        : [{name: item.name, type}, ...dappletsList.dapplets];
+      const newDappletsList: IDappletsList = { listName: dappletsList.listName, dapplets: nowDappletsList };
+      return newDappletsList
+    } 
+  ), [])
 
-  const editLocalDappletsList = (item: IDapplet) => (e: any) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setOpenedList(SideLists.MyDapplets)
-    const newLocalDappletsList = editList(item, localDapplets, DappletsListItemTypes.Default)
-    saveListToLocalStorage(newLocalDappletsList);
-    setLocalDapplets(newLocalDappletsList);
-  };
-
-  const editSelectedDappletsList = (item: IDapplet) => (e: any) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setOpenedList(SideLists.MyListing)
-    
-    let nowDappletsList: IDappletsListElement[] = selectedDapplets.dapplets
-    const dappletListIndex = nowDappletsList.findIndex((dapplet) => dapplet.name === item.name);
-    if (dappletListIndex >= 0) {
-      const nowDapplet = nowDappletsList[dappletListIndex]
-      nowDappletsList.splice(dappletListIndex, 1)
-      switch (nowDapplet.type) {
-        default:
-        case DappletsListItemTypes.Default:
-          nowDapplet.type = DappletsListItemTypes.Removing
-          nowDappletsList = [nowDapplet, ...nowDappletsList]
-          break;
-        case DappletsListItemTypes.Removing:
-          nowDapplet.type = DappletsListItemTypes.Default
-          nowDappletsList = [nowDapplet, ...nowDappletsList]
-          break;
-      }
-    } else {
-      nowDappletsList = [{name: item.name, type: DappletsListItemTypes.Adding}, ...nowDappletsList]
+  const editLocalDappletsList = useMemo(() => (
+    (item: IDapplet) => {
+      setOpenedList(SideLists.MyDapplets)
+      const newLocalDappletsList = editList(item, localDapplets, DappletsListItemTypes.Default)
+      saveListToLocalStorage(newLocalDappletsList);
+      setLocalDapplets(newLocalDappletsList);
     }
-    const newDappletsList: IDappletsList = { listName: selectedDapplets.listName, dapplets: nowDappletsList };
-    saveListToLocalStorage(newDappletsList);
-    setSelectedDapplets(newDappletsList);
-  };
+  ), [editList, localDapplets, setLocalDapplets, setOpenedList]);
+
+  const editSelectedDappletsList = useMemo(() => (
+    (item: IDapplet) => {
+      console.log("LOGIT")
+      setOpenedList(SideLists.MyListing)
+      
+      let nowDappletsList: IDappletsListElement[] = selectedDapplets.dapplets
+      const dappletListIndex = nowDappletsList.findIndex((dapplet) => dapplet.name === item.name);
+      if (dappletListIndex >= 0) {
+        const nowDapplet = nowDappletsList[dappletListIndex]
+        nowDappletsList.splice(dappletListIndex, 1)
+        switch (nowDapplet.type) {
+          default:
+          case DappletsListItemTypes.Default:
+            nowDapplet.type = DappletsListItemTypes.Removing
+            nowDappletsList = [nowDapplet, ...nowDappletsList]
+            break;
+          case DappletsListItemTypes.Removing:
+            nowDapplet.type = DappletsListItemTypes.Default
+            nowDappletsList = [nowDapplet, ...nowDappletsList]
+            break;
+        }
+      } else {
+        nowDappletsList = [{name: item.name, type: DappletsListItemTypes.Adding}, ...nowDappletsList]
+      }
+      const newDappletsList: IDappletsList = { listName: selectedDapplets.listName, dapplets: nowDappletsList };
+      saveListToLocalStorage(newDappletsList);
+      setSelectedDapplets(newDappletsList);
+    }
+  ), [selectedDapplets.dapplets, selectedDapplets.listName, setOpenedList, setSelectedDapplets]);
 
   const titleText = useMemo(() => {
     if (selectedList) {
@@ -219,6 +222,7 @@ function ListDapplets({
             addressFilter={addressFilter}
             setOpenedList={setOpenedList}
             searchQuery={searchQuery}
+            trustedUsersList={trustedUsersList}
           />
           : sortedDapplets
             .map((item, i) => (
@@ -236,6 +240,7 @@ function ListDapplets({
                     searchQuery={searchQuery}
                     setAddressFilter={setAddressFilter}
                     setOpenedList={setOpenedList}
+                    trustedUsersList={trustedUsersList}
                   />
                 </div>
               </section>

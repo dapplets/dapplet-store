@@ -18,7 +18,7 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import LoginModal from '../../features/Modals/LoginModal/LoginModal';
 import UserModal from '../../features/Modals/UserModal/UserModal';
 
-import Parse from "parse";
+// import Parse from "parse";
 
 import { connect } from "react-redux";
 import { RootState, RootDispatch } from "../../models";
@@ -280,40 +280,47 @@ const App: FC<Props> = ({
 
   
 
-  const f = async () => {
-    Parse.serverURL = 'https://parseapi.back4app.com'; // This is your Server URL
-    // Remember to inform BOTH the Back4App Application ID AND the JavaScript KEY
-    Parse.initialize(
-      'WyqwCiBmXDHB7kDdTP3NgjtdAupCRxbdm72VQ6xS', // This is your Application ID
-      '3LpyQhNB0KRTOaBAUHR5z6k5L3KAhR0o140A4vHV', // This is your Javascript key
-    );
-    const query = new Parse.Query('dapplets');
-    const results = await query.find();
-    try {
-      for (const object of results) {
-        // Access the Parse Object attributes using the .GET method
-        const myCustomKey1Name = object.get('name');
-        console.log(myCustomKey1Name);
-      }
-    } catch (error) {
-      console.error('Error while fetching MyCustomClassName', error);
-    }
-    try {
-      // here you put the objectId that you want to delete
-      const object = await query.get('y133E3nUI7');
-      try {
-        const response = await object.destroy();
-        console.log('Deleted ParseObject', response);
-      } catch (error) {
-        console.error('Error while deleting ParseObject', error);
-      }
-    } catch (error) {
-      console.error('Error while retrieving ParseObject', error);
-    }
-  }
-  useEffect(() => {
-    f()
-  }, [])
+  // const f = async () => {
+  //   Parse.serverURL = 'https://parseapi.back4app.com'; // This is your Server URL
+  //   // Remember to inform BOTH the Back4App Application ID AND the JavaScript KEY
+  //   Parse.initialize(
+  //     'WyqwCiBmXDHB7kDdTP3NgjtdAupCRxbdm72VQ6xS', // This is your Application ID
+  //     '3LpyQhNB0KRTOaBAUHR5z6k5L3KAhR0o140A4vHV', // This is your Javascript key
+  //   );
+  //   const query = new Parse.Query('dapplets');
+
+  //   // const Dapplet = Parse.Object.extend("dapplets");
+  //   // const dapplet = new Dapplet();
+  //   // dapplet.set("name", "11");
+  //   // dapplet.set("address", "qwerty");
+  //   // await dapplet.save();
+    
+  //   const results = await query.find();
+  //   try {
+  //     for (const object of results) {
+  //       // Access the Parse Object attributes using the .GET method
+  //       const name = object.get('name');
+  //       console.log(name);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error while fetching MyCustomClassName', error);
+  //   }
+  //   try {
+  //     // here you put the objectId that you want to delete
+  //     const object = await query.get('y133E3nUI7');
+  //     try {
+  //       const response = await object.destroy();
+  //       console.log('Deleted ParseObject', response);
+  //     } catch (error) {
+  //       console.error('Error while deleting ParseObject', error);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error while retrieving ParseObject', error);
+  //   }
+  // }
+  // useEffect(() => {
+  //   f()
+  // }, [])
 
   useEffect(() => {
     getDapplets()
@@ -419,7 +426,7 @@ const App: FC<Props> = ({
         openedList={openedList}
         setOpenedList={setOpenedList}
         loginInfo={address || ""}
-        dapplets={[...dapplets]}
+        dapplets={dapplets}
       >
         <>
           <Wrapper>

@@ -107,17 +107,12 @@ const ListShowMore = styled.div`
   cursor: pointer;
 `
 
-interface UsersList {
-  address: string
-  followers?: number 
-  onClick: any
-}
-
 interface ListProps {
   icon?: any
-  usersList: UsersList[]
-  onShowMore: any
+  usersList: string[]
+  onShowMore?: any
   listTitle: string
+  onClickSort: any
 }
 
 const List = (props: ListProps) => {
@@ -128,21 +123,26 @@ const List = (props: ListProps) => {
         <div>{props.listTitle}</div>
       </ListTitle>
       {
-        props.usersList.map(({ address, onClick }) => (
+        props.usersList.map((address) => (
           <ListUser>
             <Avatar></Avatar>
-            <Address onClick={() => onClick(address)}>{address}</Address>
+            <Address onClick={() => props.onClickSort(address)}>{address}</Address>
           </ListUser>
         ))
       }
-      <ListShowMore onClick={props.onShowMore}>Show more</ListShowMore>
+      {
+        props.onShowMore &&
+        <ListShowMore onClick={props.onShowMore}>Show more</ListShowMore>
+      }
     </ListWrapper>
   )
 }
 
 interface DappletListersPopupProps {
   text: string
-  onClickSort: any
+  onClickSort: any,
+  trustedList: string[],
+  otherList: string[],
 }
 
 const DappletListersPopup = (props: DappletListersPopupProps) => {
@@ -174,28 +174,18 @@ const DappletListersPopup = (props: DappletListersPopupProps) => {
       {open && <Wrapper onClick={(e) => {e.stopPropagation()}}>
         <List 
           icon={Trusted}
-          usersList={[
-            {
-              address: "0x0",
-              followers: 2,
-              onClick: props.onClickSort,
-            }
-          ]}
-          onShowMore={() => {}}
+          usersList={props.trustedList}
+          // onShowMore={() => {}}
           listTitle="Your trusted users"
+          onClickSort={props.onClickSort}
         />
         <Line />
         <List 
           icon={Others}
-          usersList={[
-            {
-              address: "0x2",
-              followers: 2,
-              onClick: props.onClickSort,
-            }
-          ]}
-          onShowMore={() => {}}
+          usersList={props.otherList}
+          // onShowMore={() => {}}
           listTitle="Other users"
+          onClickSort={props.onClickSort}
         />
       </Wrapper>}
 

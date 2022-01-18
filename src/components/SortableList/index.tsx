@@ -45,6 +45,7 @@ const SortableList = (props: SortableListProps) => {
     addressFilter,
     setOpenedList,
     searchQuery,
+    trustedUsersList,
   } = props;
 
   console.log({items})
@@ -108,6 +109,7 @@ const SortableList = (props: SortableListProps) => {
               setAddressFilter={setAddressFilter}
               setOpenedList={setOpenedList}
               searchQuery={searchQuery}
+              trustedUsersList={trustedUsersList}
             /> 
           </Draggable>
         ))}
@@ -135,6 +137,7 @@ const SortableList = (props: SortableListProps) => {
                 setExpandedItems={setExpandedItems}
                 setAddressFilter={setAddressFilter}
                 setOpenedList={setOpenedList}
+                trustedUsersList={trustedUsersList}
               />
             </div>
           </section>

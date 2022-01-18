@@ -20,6 +20,8 @@ const mapState = (state: RootState) => ({
 const mapDispatch = (dispatch: RootDispatch) => ({
   setModalOpen: (payload: ModalsList | null) => dispatch.modals.setModalOpen(payload),
   setSort: (payload: Sort) => dispatch.sort.setSort(payload),
+  addTrustedUserToDappletEffect: (payload: {name: string, address: string}) => dispatch.dapplets.addTrustedUserToDappletEffect(payload),
+  removeTrustedUserFromDappletEffect: (payload: {name: string, address: string}) => dispatch.dapplets.removeTrustedUserFromDappletEffect(payload),
 });
 
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
@@ -49,6 +51,8 @@ const SidePanel = ({
   address,
   setSort,
   setModalOpen,
+  addTrustedUserToDappletEffect,
+  removeTrustedUserFromDappletEffect,
 }: SidePanelProps & Props): React.ReactElement => {
 
   const removeFromLocalList = (name: string) => (e: any) => {
@@ -75,14 +79,27 @@ const SidePanel = ({
 
   const pushSelectedDappletsList = () => {
     const nowDappletsList: IDappletsListElement[] = selectedDappletsList.dapplets.map((dapplet) => {
-      if (dapplet.type === DappletsListItemTypes.Adding)
+      if (dapplet.type === DappletsListItemTypes.Adding) {
+        addTrustedUserToDappletEffect({
+          name: dapplet.name,
+          address: address || "",
+        })
         return {
           ...dapplet,
           type: DappletsListItemTypes.Default
         }
+      }
       return dapplet
     })
-    const newDappletsList: IDappletsList = { listName: selectedDappletsList.listName, dapplets: nowDappletsList.filter(({ type }) => type !== DappletsListItemTypes.Removing) };
+    const newDappletsList: IDappletsList = { listName: selectedDappletsList.listName, dapplets: nowDappletsList.filter(({ type, name }) => {
+      if (type === DappletsListItemTypes.Removing) {
+        removeTrustedUserFromDappletEffect({
+          name,
+          address: address || "",
+        })
+      }
+      return type !== DappletsListItemTypes.Removing
+    }) };
     saveListToLocalStorage(newDappletsList);
     setSelectedDappletsList(newDappletsList);
   };
