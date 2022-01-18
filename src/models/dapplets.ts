@@ -1,6 +1,5 @@
 import { createModel } from "@rematch/core";
-import { BigNumber, ethers } from 'ethers';
-import types from '../types.json';
+import { ethers } from 'ethers';
 import abi from '../abi.json';
 
 const id = 'dd596d06e4284273a30004fd22e2af80';
