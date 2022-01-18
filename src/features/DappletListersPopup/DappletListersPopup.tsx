@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+import jazzicon from '@metamask/jazzicon';
 
 import { ReactComponent as Trusted } from './trusted.svg'
 import { ReactComponent as Others } from './others.svg'
@@ -77,7 +78,7 @@ const ListUser = styled.div`
 const Avatar = styled.div`
   width: 30px;
   height: 30px;
-  background-color: gray;
+  /* background-color: gray; */
   border-radius: 50%;
 `
 
@@ -107,6 +108,25 @@ const ListShowMore = styled.div`
   cursor: pointer;
 `
 
+interface VanillaChildrenProps {
+	children: HTMLElement | HTMLDivElement
+}
+
+const VanillaChildren = ({ children }: VanillaChildrenProps): JSX.Element => {
+	const ref = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+    while (ref.current?.firstChild) {
+      ref.current?.removeChild(ref.current?.firstChild);
+    }
+		ref.current?.appendChild(children);
+	}, [children, ref]);
+
+	return (
+		<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} ref={ref}/>
+	);
+};
+
 interface ListProps {
   icon?: any
   usersList: string[]
@@ -116,6 +136,8 @@ interface ListProps {
 }
 
 const List = (props: ListProps) => {
+  const getAvatar = (loggedIn: string): HTMLDivElement => jazzicon(30, parseInt(loggedIn.slice(2, 10), 16));
+  const getAddressShort = (address: string) => address ? address.replace('0x000000000000000000000000', '0x') : ''
   return (
     <ListWrapper>
       <ListTitle>
@@ -125,7 +147,7 @@ const List = (props: ListProps) => {
       {
         props.usersList.map((address) => (
           <ListUser>
-            <Avatar></Avatar>
+            <Avatar><VanillaChildren>{getAvatar(getAddressShort(address))}</VanillaChildren></Avatar>
             <Address onClick={() => props.onClickSort(address)}>{address}</Address>
           </ListUser>
         ))
