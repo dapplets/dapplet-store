@@ -7,8 +7,8 @@ import { ReactComponent as Walletconnect } from './walletconnect.svg';
 import { ReactComponent as Close } from '../close.svg';
 
 const Wrapper = styled.div`
-  width: 755px;
-  height: 280px;
+  width: 380px;
+  height: 421px;
   display: grid;
   grid-row-gap: 10px;
   padding: 40px;
@@ -56,15 +56,13 @@ const SubText = styled.div`
 
 const ButtonsWrapper = styled.div`
   display: grid;
-  grid-template-columns: 1fr max-content 1fr;
+  grid-template-columns: 1fr;
   grid-column-gap: 30px;
-  grid-template-rows: 1fr 1fr;
   grid-row-gap: 10px;
   height: 90px;
 `
 
 const ButtonWrapperText = styled.div`
-  grid-row: 1/3;
   align-self: center;
   justify-self: center;
 `
@@ -120,7 +118,7 @@ const Button = (props: { icon: any, text: string, className?: any, onClick?: any
 }
 
 const DappletButton = styled(Button)`
-  grid-row: 1/3;
+  height: 90px;
   border: 1px solid #D9304F;
   color: #D9304F;
   text-decoration: none;
@@ -131,6 +129,7 @@ const DappletButton = styled(Button)`
 `
 
 const SignButton = styled(Button)`
+  height: 40px;
   color: #2A2A2A;
   grid-column-gap: 10px;
   border: 1px solid #E3E3E3;
