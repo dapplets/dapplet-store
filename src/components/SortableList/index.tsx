@@ -1,5 +1,5 @@
 import { useState, SetStateAction } from 'react';
-import { saveListToLocalStorage } from '../../utils';
+import { saveListToLocalStorage } from '../../lib/localStorage';
 import { IDappletsList, IDappletsListElement } from '../../config/types';
 import styles from './SortableList.module.scss';
 

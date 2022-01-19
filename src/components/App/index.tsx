@@ -1,6 +1,6 @@
 import React, { useEffect, useState, FC, useMemo } from 'react';
 
-import { Layout } from '../../layouts/Layout/Layout';
+import { Layout } from '../../features/Layout/Layout';
 import Input from '../Input';
 import ListDapplets from '../ListDapplets';
 import { IDappletsList, IDappletsListElement } from "../../config/types";

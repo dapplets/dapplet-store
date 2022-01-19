@@ -1,5 +1,5 @@
-import { DappletsListItemTypes } from "./components/atoms/DappletsListItem";
-import { IDappletsList, Lists } from "./config/types";
+import { DappletsListItemTypes } from "../components/atoms/DappletsListItem";
+import { IDappletsList, Lists } from "../config/types";
 
 export const saveListToLocalStorage = (dappletsList: IDappletsList) => {
   const { listName: name, dapplets } = dappletsList;

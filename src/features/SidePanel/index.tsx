@@ -5,7 +5,7 @@ import cn from 'classnames';
 import styles from './SidePanel.module.scss';
 // import { TAGS } from '../../config/keywords';
 import { Lists, IDappletsList, IDappletsListElement } from '../../config/types';
-import { saveListToLocalStorage } from '../../utils';
+import { saveListToLocalStorage } from '../../lib/localStorage';
 import DappletsListSidebar from '../../components/molecules/DappletsListSidebar'
 import { DappletsListItemTypes } from '../../components/atoms/DappletsListItem'
 import { RootDispatch, RootState } from '../../models';

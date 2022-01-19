@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { Header } from 'semantic-ui-react';
 
 import { IDappletsList, IDappletsListElement, Lists } from '../../config/types';
-import { saveListToLocalStorage } from '../../utils';
+import { saveListToLocalStorage } from '../../lib/localStorage';
 
 import { ListDappletsProps } from './ListDapplets.props';
 import styles from './ListDapplets.module.scss';
@@ -11,7 +11,7 @@ import ItemDapplet from '../ItemDapplet';
 import { DappletsListItemTypes } from '../atoms/DappletsListItem'
 
 import ProfileInList from '../../features/ProfileInList/ProfileInList';
-import { SideLists } from '../../layouts/SidePanel';
+import { SideLists } from '../../features/SidePanel';
 import { IDapplet } from '../../models/dapplets';
 import { SortTypes } from '../../models/sort';
 
