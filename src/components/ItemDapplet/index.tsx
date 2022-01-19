@@ -164,7 +164,6 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
   const isOpen = !!expandedItems?.includes(item.name);
 
   const handleClickOnItem = ({ target }: any) => {
-    console.log({target})
     if (target.tagName === 'BUTTON') return;
     if (isOpen) {
       setExpandedItems(expandedItems.filter((name) => name !== item.name))

@@ -119,7 +119,6 @@ const effects = (dispatch: any) => ({
         const name = object.get('name');
         const address = object.get('address');
         dispatch.dapplets.addTrustedUserToDapplet({name, address});
-        console.log({name, address})
       }
     } catch (error) {
       console.error('Error while fetching MyCustomClassName', error);

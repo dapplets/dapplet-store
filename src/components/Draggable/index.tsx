@@ -14,8 +14,6 @@ const Draggable = ({ children, ...props }: DraggableProps): React.ReactElement =
     addressFilter,
   } = props;
 
-  console.log({item})
-
   const {attributes, listeners, setNodeRef, transform, transition} = useSortable({
     id,
     transition: {

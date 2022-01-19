@@ -48,8 +48,6 @@ const SortableList = (props: SortableListProps) => {
     trustedUsersList,
   } = props;
 
-  console.log({items})
-
   const [activeId, setActiveId] = useState<SetStateAction<string> | null>(null);
 
   const sensors = useSensors(

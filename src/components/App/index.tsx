@@ -141,10 +141,6 @@ const App: FC<Props> = ({
   const [openedList, setOpenedList] = useState(null)
   const [provider, setProvider] = useState()
 
-  // useEffect(() => {
-  //   console.log({localDappletsList})
-  // }, [localDappletsList])
-
   useEffect(() => {
     getSort()
   }, [getSort])
@@ -180,7 +176,6 @@ const App: FC<Props> = ({
       const address = await web3.eth.getAccounts()
       setUser(address[0])
       
-      console.log({address})
       setProvider(provider)
       setModalOpen(null)
       return web3
@@ -199,7 +194,6 @@ const App: FC<Props> = ({
         setUser(address[0])
         setModalOpen(null)
         
-        console.log({address})
         setProvider(provider)
       } catch (error) {
         console.error(error)
@@ -210,7 +204,6 @@ const App: FC<Props> = ({
       try {
         const addressDapps = await window.dapplets.getAccounts()
         if (addressDapps.length > 0) {
-          console.log({addressDapps})
           setUser(addressDapps[0].account)
           setModalOpen(null)
         }
@@ -348,7 +341,6 @@ const App: FC<Props> = ({
           return -1
         return 0
       })
-      console.log({sortedList})
       setSelectedDappletsList({
         listName: Lists.Selected,
         dapplets: sortedList,

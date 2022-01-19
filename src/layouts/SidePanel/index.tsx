@@ -72,7 +72,6 @@ const SidePanel = ({
       list[dappletListIndex].type = DappletsListItemTypes.Default
     if (selectedDappletsList.dapplets[dappletListIndex].type === DappletsListItemTypes.Adding)
       list = list.filter((dapp) => dapp.name !== name);
-    console.log({list})
     const newSelectedDappletsList: IDappletsList = { listName: selectedDappletsList.listName, dapplets: list };
     saveListToLocalStorage(newSelectedDappletsList);
     setSelectedDappletsList(newSelectedDappletsList);

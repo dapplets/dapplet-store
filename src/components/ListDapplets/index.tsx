@@ -72,7 +72,6 @@ function ListDapplets({
       if (dappletListIndex >= 0) {
         const nowDapplet = nowDappletsList[dappletListIndex]
         
-        console.log({nowDapplet})
         nowDappletsList.splice(dappletListIndex, 1)
         switch (nowDapplet.type) {
           case DappletsListItemTypes.Default:

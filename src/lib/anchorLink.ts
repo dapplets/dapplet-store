@@ -7,7 +7,6 @@ export const getAnchorParams = () => {
   const params = Object.fromEntries(anchor.split('|').map((param) => param.split('=')))
   if (params.selectedList === 'undefined') params.selectedList = undefined
   params.isTrustedSort = params.isTrustedSort === 'true'
-  console.log({params})
   return params
 }
 
