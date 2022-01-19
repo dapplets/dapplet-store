@@ -77,6 +77,9 @@ const ButtonWrapper = styled.button`
 	outline: inherit;
   background: white;
   cursor: pointer;
+  &:hover {
+    background: #F5F5F5
+  }
 `
 
 const LinkWrapper = styled.a`
@@ -87,6 +90,10 @@ const LinkWrapper = styled.a`
   box-shadow: none;
 	outline: inherit;
   background: white;
+  cursor: pointer;
+  &:hover {
+    background: #F5F5F5
+  }
 `
 
 const ButtonContentWrapper = styled.div`

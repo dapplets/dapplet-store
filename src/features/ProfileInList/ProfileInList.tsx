@@ -105,6 +105,10 @@ const ButtonAction = styled.div`
   border-radius: 30px;
   color: white;
 
+  &:hover {
+    background: #F26680;
+  }
+
   & div {
     margin-top: 1px;
   }

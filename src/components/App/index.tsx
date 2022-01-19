@@ -242,6 +242,7 @@ const App: FC<Props> = ({
               setUser("")
               setModalOpen(null)
             }}
+            onClose={() => setModalOpen(null)}
           />
         )
         case ModalsList.Warning:

@@ -2,6 +2,8 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 import jazzicon from '@metamask/jazzicon';
 
+import { ReactComponent as Close } from '../close.svg';
+
 const Wrapper = styled.div`
   width: 420px;
   height: 390px;
@@ -85,19 +87,36 @@ const ButtonWrapper = styled.div`
   letter-spacing: 0em;
   text-align: center;
   color: #D9304F;
+  cursor: pointer;
+  &:hover {
+    background: #F5F5F5
+  }
+`
+
+const CloseButton = styled.button`
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  box-shadow: none;
+	outline: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
 `
 
 
 interface LoginModalProps {
   address: string
   onLogout: any
+  onClose: any
 }
 
-const UserModal = ({address, onLogout}: LoginModalProps) => {
+const UserModal = ({address, onLogout, onClose}: LoginModalProps) => {
   const addressShort = useMemo(() => address ? address.replace('0x000000000000000000000000', '0x') : '', [address])
   const getAvatar = (loggedIn: string): HTMLDivElement => jazzicon(122, parseInt(loggedIn.slice(2, 10), 16));
   return(
     <Wrapper>
+      <CloseButton onClick={onClose}><Close /></CloseButton>
       <VanillaChildren>{getAvatar(addressShort)}</VanillaChildren>
       <Address>{addressShort}</Address>
       <SubText>My Dapplets control panel</SubText>

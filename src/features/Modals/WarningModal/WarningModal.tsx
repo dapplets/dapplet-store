@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { ReactComponent as Cat } from './cat.svg';
@@ -77,6 +77,10 @@ interface ButtonProps {
   onClick: any
   title: string
   className?: any
+  stroke?: {
+    hovered: string,
+    default: string,
+  }
 }
 
 const Button = ({
@@ -84,11 +88,26 @@ const Button = ({
   onClick,
   title,
   className,
+  stroke = {
+    hovered: '#ffffff',
+    default: '#ffffff',
+  },
 }: ButtonProps) => {
+  const [hovered, setHovered] = useState(false)
+  const nowStroke = useMemo(() => {
+    if (hovered) return stroke?.hovered
+    return stroke.default
+  }, [hovered, stroke.default, stroke.hovered])
+  const Icon = icon
   return (
-    <ButtonWrapper onClick={onClick} className={className}>
+    <ButtonWrapper 
+      onClick={onClick}
+      className={className}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
       <ButtonContainer>
-        {icon}
+        <Icon stroke={nowStroke} width={16} height={16}/>
         <div>{title}</div>
       </ButtonContainer>
     </ButtonWrapper>
@@ -99,11 +118,18 @@ const ButtonCancel = styled(Button)`
   border: 1px solid #919191;
   background: #f5f5f5;
   color: #919191;
+  &:hover {
+    background: #ffffff;
+  }
 `
 
 const ButtonRetry = styled(Button)`
   background: #F5CF6C;
   color: white;
+  &:hover {
+    background: #FFE299;
+    color: #D5A93B;
+  }
 `
 
 const CloseButton = styled.button`
@@ -130,14 +156,18 @@ const WarningModal = ({onClose, message = "I can’t push changes to blockchain 
       <Cat />
       <ButtonsWrapper>
         <ButtonCancel
-          icon={<XCircle width={16} height={16} />}
+          icon={XCircle}
           onClick={onClose}
           title='Cancle'
         />
         <ButtonRetry
-          icon={<RotateArrow width={16} height={16} />}
+          icon={RotateArrow}
           onClick={() => {}}
           title='Retry'
+          stroke={{
+            hovered: '#D5A93B',
+            default: '#FFFFFF',
+          }}
         />
       </ButtonsWrapper>
     </Wrapper>
