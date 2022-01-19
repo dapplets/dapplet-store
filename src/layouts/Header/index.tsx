@@ -245,9 +245,6 @@ const Header: FC<HeaderProps & Props> = ({
         :<Login onClick={() => {
           setModalOpen(ModalsList.Login)
         }}>login</Login>}
-
-        
-
       </div>
 
 
