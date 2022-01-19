@@ -11,7 +11,7 @@ import ItemDapplet from '../ItemDapplet';
 import { DappletsListItemTypes } from '../atoms/DappletsListItem'
 
 import ProfileInList from '../../features/ProfileInList/ProfileInList';
-import { SideLists } from '../../features/SidePanel';
+import { SideLists } from '../../features/SidePanel/SidePanel';
 import { IDapplet } from '../../models/dapplets';
 import { SortTypes } from '../../models/sort';
 

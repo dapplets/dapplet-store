@@ -1,9 +1,7 @@
-import React from 'react';
-import { SidePanelProps } from './SidePanel.props';
+import React, { DetailedHTMLProps, HTMLAttributes } from 'react';
 import cn from 'classnames';
 
 import styles from './SidePanel.module.scss';
-// import { TAGS } from '../../config/keywords';
 import { Lists, IDappletsList, IDappletsListElement } from '../../config/types';
 import { saveListToLocalStorage } from '../../lib/localStorage';
 import DappletsListSidebar from '../../components/molecules/DappletsListSidebar'
@@ -12,6 +10,8 @@ import { RootDispatch, RootState } from '../../models';
 import { Sort } from '../../models/sort';
 import { connect } from 'react-redux';
 import { ModalsList } from '../../models/modals';
+import { IDapplet } from '../../models/dapplets';
+import styled from 'styled-components';
 
 const mapState = (state: RootState) => ({
   address: state.user.address,
@@ -24,6 +24,15 @@ const mapDispatch = (dispatch: RootDispatch) => ({
   removeTrustedUserFromDappletEffect: (payload: {name: string, address: string}) => dispatch.dapplets.removeTrustedUserFromDappletEffect(payload),
 });
 
+const Wrapper = styled.aside`
+  padding-bottom: 50px;
+  position: fixed;
+  left: 0;
+  top: 130px;
+  height: 100%;
+  width: 430px;
+`
+
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
 
 export enum SideLists {
@@ -31,20 +40,31 @@ export enum SideLists {
   MyListing = 'My listing',
   MyTrustedUsers = 'My trusted users',
 }
+export interface SidePanelProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+  dappletTitles?: { [x: string]: string }
+  localDappletsList: IDappletsList
+  setLocalDappletsList: React.Dispatch<React.SetStateAction<IDappletsList>>
+  setSelectedList: React.Dispatch<React.SetStateAction<Lists | undefined>>
+  selectedDappletsList: IDappletsList
+  setSelectedDappletsList: any
+  activeTags: string[]
+  setActiveTags: any
+  setExpandedItems: React.Dispatch<React.SetStateAction<string[]>>
+  trustedUsersList: string[]
+  setAddressFilter: any
+  openedList: any
+  setOpenedList: any
+  dapplets: IDapplet[]
+}
 
 const SidePanel = ({
-  dappletTitles,
   className,
   localDappletsList,
   setLocalDappletsList,
   selectedDappletsList,
   setSelectedDappletsList,
-  setSelectedList,
-  activeTags,
-  setActiveTags,
   setExpandedItems,
   trustedUsersList,
-  setAddressFilter,
   openedList,
   setOpenedList,
   dapplets,
@@ -105,7 +125,7 @@ const SidePanel = ({
   };
 
 	return (
-		<aside className={cn(styles.sidePanel, className)}>
+		<Wrapper className={className}>
       <div style={{
         height: 'calc(100vh - 70px)',
         overflow: 'auto',
@@ -211,7 +231,7 @@ const SidePanel = ({
 
         </div>
       </div>
-		</aside>
+		</Wrapper>
 	);
 }
 

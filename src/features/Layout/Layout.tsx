@@ -1,7 +1,7 @@
 import React from 'react';
 import Header from '../Header';
 import { Overlay } from '../Overlay';
-import SidePanel from '../SidePanel';
+import SidePanel from '../SidePanel/SidePanel';
 
 import styles from './Layout.module.scss';
 import { LayoutProps } from './Layout.props';
