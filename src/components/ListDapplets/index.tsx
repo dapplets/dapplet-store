@@ -65,16 +65,16 @@ function ListDapplets({
 
   const editSelectedDappletsList = useMemo(() => (
     (item: IDapplet) => {
-      console.log("LOGIT")
       setOpenedList(SideLists.MyListing)
       
       let nowDappletsList: IDappletsListElement[] = selectedDapplets.dapplets
       const dappletListIndex = nowDappletsList.findIndex((dapplet) => dapplet.name === item.name);
       if (dappletListIndex >= 0) {
         const nowDapplet = nowDappletsList[dappletListIndex]
+        
+        console.log({nowDapplet})
         nowDappletsList.splice(dappletListIndex, 1)
         switch (nowDapplet.type) {
-          default:
           case DappletsListItemTypes.Default:
             nowDapplet.type = DappletsListItemTypes.Removing
             nowDappletsList = [nowDapplet, ...nowDappletsList]
@@ -82,6 +82,8 @@ function ListDapplets({
           case DappletsListItemTypes.Removing:
             nowDapplet.type = DappletsListItemTypes.Default
             nowDappletsList = [nowDapplet, ...nowDappletsList]
+            break;
+          default:
             break;
         }
       } else {

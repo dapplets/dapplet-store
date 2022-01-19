@@ -80,7 +80,7 @@ const DappletsListSidebar = (props: DappletsListSidebarProps) => {
       </TitleWrapper>
       {
         props.isOpen && !!props.dappletsList.length && <DappletsListItemWrapper>
-          {props.dappletsList.map((dapplet) => (
+          {props.dappletsList.filter(({ title }) => !!title).map((dapplet) => (
             <DappletsListItem onClick={props.onElementClick} subTitle={dapplet.subTitle} {...dapplet} key={dapplet.title} />
           ))}
           {props.isMoreShow && <MoreWrapper onClick={props.onOpenList}>show more</MoreWrapper>}

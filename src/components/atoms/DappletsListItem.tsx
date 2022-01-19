@@ -84,7 +84,7 @@ const DappletsListItem = (props: DappletsListItemProps) => {
     }
     return props.subTitle
   }, [hovered, props.subTitle, props.title])
-
+  
   return (
     <DappletsListItemWrapper 
       type={props.type} 
