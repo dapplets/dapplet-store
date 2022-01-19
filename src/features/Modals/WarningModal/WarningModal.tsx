@@ -118,19 +118,20 @@ const CloseButton = styled.button`
 
 interface WarningModalProps {
   onClose: any
+  message?: string
 }
 
-const WarningModal = ({onClose}: WarningModalProps) => {
+const WarningModal = ({onClose, message = "I can’t push changes to blockchain :("}: WarningModalProps) => {
   return(
     <Wrapper>
       <CloseButton onClick={onClose}><Close /></CloseButton>
       <Title>Oooops!</Title>
-      <SubTitle>I can’t push changes to blockchain :(</SubTitle>
+      <SubTitle>{message}</SubTitle>
       <Cat />
       <ButtonsWrapper>
         <ButtonCancel
           icon={<XCircle width={16} height={16} />}
-          onClick={() => {}}
+          onClick={onClose}
           title='Cancle'
         />
         <ButtonRetry
