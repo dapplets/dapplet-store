@@ -37,6 +37,7 @@ const CloseButton = styled.button`
 	outline: inherit;
   background: none;
   border: none;
+  cursor: pointer;
 `
 
 const MainText = styled.div`
@@ -75,6 +76,7 @@ const ButtonWrapper = styled.button`
   box-shadow: none;
 	outline: inherit;
   background: white;
+  cursor: pointer;
 `
 
 const LinkWrapper = styled.a`
