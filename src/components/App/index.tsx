@@ -4,6 +4,7 @@ import { Layout } from '../../layouts/Layout/Layout';
 import Input from '../Input';
 import ListDapplets from '../ListDapplets';
 import { IDappletsList, IDappletsListElement } from "../../config/types";
+import { DappletsListItemTypes } from '../atoms/DappletsListItem';
 import { Lists } from '../../config/types';
 import styled from "styled-components";
 
@@ -140,9 +141,9 @@ const App: FC<Props> = ({
   const [openedList, setOpenedList] = useState(null)
   const [provider, setProvider] = useState()
 
-  useEffect(() => {
-    console.log({localDappletsList})
-  }, [localDappletsList])
+  // useEffect(() => {
+  //   console.log({localDappletsList})
+  // }, [localDappletsList])
 
   useEffect(() => {
     getSort()
@@ -324,9 +325,25 @@ const App: FC<Props> = ({
 
   useEffect(() => {
     getDapplets()
-    setSelectedDappletsList(getDappletsListFromLocal(Lists.Selected))
     setLocalDappletsList(getDappletsListFromLocal(Lists.Local))
   }, [getDapplets])
+
+  useEffect(() => {
+    if (address) {
+      const list: any = {}
+      dapplets.filter((dapp) => dapp.trustedUsers.includes(address) && dapp.owner !== address)
+        .forEach(({ name }) => {
+          list[name] = { name, type: DappletsListItemTypes.Default}
+        })
+      getDappletsListFromLocal(Lists.Selected).dapplets.forEach((dapp) => {
+        list[dapp.name] = dapp
+      })
+      setSelectedDappletsList({
+        listName: Lists.Selected,
+        dapplets: Object.values(list),
+      })
+    }
+  }, [address, dapplets])
 
   useEffect(() => {
     const trustedUsers = window.localStorage.getItem('trustedUsers');

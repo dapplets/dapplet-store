@@ -1,8 +1,9 @@
+import { DappletsListItemTypes } from "./components/atoms/DappletsListItem";
 import { IDappletsList } from "./config/types";
 
 export const saveListToLocalStorage = (dappletsList: IDappletsList) => {
   const { listName: name, dapplets } = dappletsList;
-  const dappletsListStringified = JSON.stringify(dapplets);
+  const dappletsListStringified = JSON.stringify(dapplets.filter((dapp) => dapp.type !== DappletsListItemTypes.Default));
   window.localStorage.setItem(name, dappletsListStringified);
 };
 
