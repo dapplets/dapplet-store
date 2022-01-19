@@ -26,7 +26,7 @@ const Draggable = ({ children, ...props }: DraggableProps): React.ReactElement =
     transition,
     opacity: id === activeId ? .5 : 1
   };
-  if (!!addressFilter && item.owner !== addressFilter) return <></>
+  if (!!addressFilter && !item.trustedUsers.includes(addressFilter)) return <></>
 
   return (
     <Item

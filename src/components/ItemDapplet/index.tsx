@@ -82,11 +82,11 @@ const UnderUserInfo = styled.div`
 `
 
 
-const UnderUserInfoSeparator = styled.div`
-  width: 2px;
-  height: 100%;
-  background-color: #E3E3E3;
-`
+// const UnderUserInfoSeparator = styled.div`
+//   width: 2px;
+//   height: 100%;
+//   background-color: #E3E3E3;
+// `
 
 const ButtonsWrapper = styled.div`
   display: grid;
@@ -216,15 +216,15 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
                     <VanillaChildren>{getAvatar(getAddressShort(address))}</VanillaChildren>
                   ))
                 }
-              <DappletListersPopup 
+              <DappletListersPopup
                 trustedList={trustedList}
                 otherList={otherList}
                 text={`+${Math.max(trustedList.length-3, 0) + otherList.length} more lists`}
                 onClickSort={setAddressFilter}
               />
             </ImagesWrapper>
-            <UnderUserInfoSeparator />
-            <div>4 320 214 active users</div>
+            {/* <UnderUserInfoSeparator /> */}
+            {/* <div>4 320 214 active users</div> */}
           </UnderUserInfo>
           )}
 

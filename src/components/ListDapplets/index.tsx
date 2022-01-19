@@ -159,9 +159,9 @@ function ListDapplets({
       }
     });
     if (addressFilter !== '') 
-      sortedList = sortedList.filter(({ owner }) => owner === addressFilter)
+      sortedList = sortedList.filter(({ trustedUsers }) => trustedUsers.includes(addressFilter))
     if (isTrustedSort)
-      sortedList = sortedList.filter(({ owner }) => trustedUsersList.includes(owner))
+      sortedList = sortedList.filter(({ trustedUsers }) => trustedUsersList.some((user) => trustedUsers.includes(user)))
     return sortedList
   }, [addressFilter, collator, dapplets, isTrustedSort, selectedList, sortType, trustedUsersList])
 

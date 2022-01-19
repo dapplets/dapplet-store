@@ -145,7 +145,7 @@ const App: FC<Props> = ({
     getSort()
   }, [getSort])
 
-  // test func to open modals
+  // TODO: test func to open modals
   useEffect(() => {
     window.openModal = (modal: ModalsList) => {
       setModalOpen(modal)
@@ -154,11 +154,7 @@ const App: FC<Props> = ({
 
   const nowModal = useMemo(() => {
     const web3Init = async () => {
-      const providerOptions = {
-        walletconnect: {
-          package: WalletConnectProvider,
-        },
-      };
+      const providerOptions = {};
   
       const web3Modal = new Web3Modal({
         network: "goerli", // optional
@@ -167,7 +163,12 @@ const App: FC<Props> = ({
       });
   
       const provider = await web3Modal.connect();
-  
+      
+      if (localStorage['metamask_disabled'] === 'true') {
+        localStorage['metamask_disabled'] = '';
+        await provider.request({ method: "wallet_requestPermissions", params: [{ eth_accounts: {} }] });
+      }
+      
       provider.on("accountsChanged", (accounts: string[]) => {
         setUser(accounts[0])
       });
@@ -228,8 +229,9 @@ const App: FC<Props> = ({
             address={address || ""} 
             onLogout={async () => {
               try {
+                localStorage['metamask_disabled'] = 'true'
                 const prov: any = provider
-                await prov.disconnect()
+                prov.disconnect()
               } catch (error) {
                 console.error(error)
               }
