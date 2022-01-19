@@ -487,6 +487,7 @@ const App: FC<Props> = ({
             isTrustedSort={isTrustedSort || false}
             openedList={openedList}
             setOpenedList={setOpenedList}
+            address={address || ""}
           />}
         </>
       </Layout>

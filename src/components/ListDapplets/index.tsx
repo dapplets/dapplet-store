@@ -36,6 +36,7 @@ function ListDapplets({
   isTrustedSort,
   openedList,
   setOpenedList,
+  address,
 }: ListDappletsProps): React.ReactElement {
 
   const collator = useMemo(() => (
@@ -131,14 +132,14 @@ function ListDapplets({
       >
         {titleText}
       </Header>
-      {addressFilter === '' && selectedList && (
+      {/* {addressFilter === '' && selectedList && (
         <button className="small-link" onClick={() => {
           setExpandedItems([]);
           setSelectedList(undefined);
         }}>
           Show all
         </button>
-      )}
+      )} */}
     </div>
   );
 
@@ -190,23 +191,30 @@ function ListDapplets({
           padding: '0 !important',
           margin: '0 !important',
         }}
-
-
-
       >
         {listDappletsHeader}
-        {addressFilter !== '' && <ProfileInList
-          title='title'
-          address={addressFilter}
-          avatar='https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/f3/f3fc836163981fb4517cfc2da30e194e84bcafcd_full.jpg'
-          description='description'
-          setAddressFilter={setAddressFilter}
-          setSortType={setSortType}
-          editSearchQuery={editSearchQuery}
-          setSelectedList={setSelectedList}
-          trustedUsersList={trustedUsersList}
-          setTrustedUsersList={setTrustedUsersList}
-        />}
+        {selectedList ? (
+          <ProfileInList
+            myAddress={address}
+            address={address}
+            setAddressFilter={setAddressFilter}
+            editSearchQuery={editSearchQuery}
+            setSelectedList={setSelectedList}
+            trustedUsersList={trustedUsersList}
+            setTrustedUsersList={setTrustedUsersList}
+          />
+        ) : (
+          addressFilter !== '' && 
+          <ProfileInList
+            myAddress={address}
+            address={addressFilter}
+            setAddressFilter={setAddressFilter}
+            editSearchQuery={editSearchQuery}
+            setSelectedList={setSelectedList}
+            trustedUsersList={trustedUsersList}
+            setTrustedUsersList={setTrustedUsersList}
+          />
+        )}
         {selectedList 
           // ? <></>
           ? <SortableList

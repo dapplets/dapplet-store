@@ -1,5 +1,5 @@
 
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import styled from 'styled-components';
 import jazzicon from '@metamask/jazzicon';
 import { ReactComponent as UserPlus } from './userPlus.svg'
@@ -7,10 +7,9 @@ import { ReactComponent as Copy } from './copy.svg'
 
 interface VanillaChildrenProps {
 	children: HTMLElement | HTMLDivElement
-  address: string
 }
 
-const VanillaChildren = ({ children, address }: VanillaChildrenProps): JSX.Element => {
+const VanillaChildren = ({ children }: VanillaChildrenProps): JSX.Element => {
 	const ref = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
@@ -21,7 +20,7 @@ const VanillaChildren = ({ children, address }: VanillaChildrenProps): JSX.Eleme
 	}, [children, ref]);
 
 	return (
-		<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} ref={ref} id={address} />
+		<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} ref={ref} />
 	);
 };
 
@@ -147,59 +146,84 @@ function copyTextToClipboard(text: string) {
   });
 }
 
-interface ProfileInListProps {
-  title: string
-  avatar: string
+interface ButtonProps {
+  myAddress: string,
   address: string
-  description: string
+  trustedUsersList: string[]
+  setTrustedUsersList: any
+}
+
+const Button = ({
+  myAddress,
+  address,
+  trustedUsersList,
+  setTrustedUsersList,
+}: ButtonProps) => {
+  return (
+    <ButtonsWrapper>
+      <ButtonAction onClick={() => {
+        if (myAddress === address) return
+        if (trustedUsersList.includes(address)) 
+          setTrustedUsersList(trustedUsersList.filter((user) => user !== address))
+        else
+          setTrustedUsersList([address, ...trustedUsersList])
+      }}>
+        <UserPlus/>
+        <div>
+          {
+            myAddress === address ? 'Publish' : 
+            trustedUsersList.includes(address) ? 'Remove from trusted users' : 'Add to trusted users'
+          }
+        </div>
+      </ButtonAction>
+    </ButtonsWrapper>
+  )
+}
+
+interface ProfileInListProps {
+  myAddress: string,
+  address: string
   setAddressFilter: any
-  setSortType: any
   editSearchQuery: any
   setSelectedList: any
   trustedUsersList: string[]
   setTrustedUsersList: any
 }
 
-const ProfileInList = (props: ProfileInListProps) => {
+const ProfileInList = ({
+  myAddress,
+  address,
+  setAddressFilter,
+  editSearchQuery,
+  setSelectedList,
+  trustedUsersList,
+  setTrustedUsersList,
+}: ProfileInListProps) => {
   const getAvatar = (loggedIn: string): HTMLDivElement => jazzicon(164, parseInt(loggedIn.slice(2, 10), 16));
+  const getAddress = (address: string) => address.replace('0x000000000000000000000000', '0x')
 
-  
-  const address = useMemo(() => props.address.replace('0x000000000000000000000000', '0x'), [props.address])
-  const AvatarImg = useMemo(() => ({
-    img: getAvatar(address),
-    address,
-  }), [address])
   return (
     <Wrapper>
-      {/* <Title>{props.title}</Title> */}
-      <Avatar><VanillaChildren address={AvatarImg.address}>{AvatarImg.img}</VanillaChildren></Avatar>
+      <Avatar><VanillaChildren >{getAvatar(getAddress(address))}</VanillaChildren></Avatar>
       <Address>
-        <div>{address}</div>
-        <Copy width={16} height={16} onClick={() => copyTextToClipboard(address)} />
+        <div>{getAddress(address)}</div>
+        <Copy width={16} height={16} onClick={() => copyTextToClipboard(getAddress(address))} />
       </Address>
-      <ButtonsWrapper>
-        <ButtonAction onClick={() => {
-          if (props.trustedUsersList.includes(props.address)) 
-            props.setTrustedUsersList(props.trustedUsersList.filter((user) => user !== props.address))
-          else
-            props.setTrustedUsersList([props.address, ...props.trustedUsersList])
-        }}>
-          <UserPlus/>
-          <div>
-            {props.trustedUsersList.includes(props.address) ? 'Remove from trusted users' : 'Add to trusted users'}
-          </div>
-        </ButtonAction>
-      </ButtonsWrapper>
-      <ButtonAll  >
+      <Button
+        myAddress={myAddress}
+        address={address}
+        trustedUsersList={trustedUsersList}
+        setTrustedUsersList={setTrustedUsersList}
+      />
+      <ButtonAll>
         <button onClick={() => {
-          props.setAddressFilter('')
-          props.editSearchQuery('')
-          props.setSelectedList(undefined)
+          setAddressFilter('')
+          editSearchQuery('')
+          setSelectedList(undefined)
         }}>
           Show All
         </button>
       </ButtonAll>
-      {/* <ButtonsWrapper>BUTTONS </ButtonsWrapper> */}
     </Wrapper>
   )
 }

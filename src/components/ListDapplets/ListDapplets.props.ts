@@ -22,4 +22,5 @@ export interface ListDappletsProps {
   isTrustedSort: boolean
   openedList: any
   setOpenedList: any
+  address: string
 }
