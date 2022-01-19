@@ -229,6 +229,10 @@ const App: FC<Props> = ({
             address={address || ""} 
             onLogout={async () => {
               try {
+                setSelectedDappletsList({
+                  listName: Lists.Selected,
+                  dapplets: [],
+                })
                 localStorage['metamask_disabled'] = 'true'
                 const prov: any = provider
                 prov.disconnect()
