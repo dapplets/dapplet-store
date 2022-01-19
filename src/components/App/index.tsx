@@ -456,11 +456,14 @@ const App: FC<Props> = ({
               searchQuery={searchQuery || ""}
               editSearchQuery={(newSearchQuery: string | undefined) => setSort({ searchQuery: newSearchQuery})}
             />
-            <Dropdown 
-              items={dropdownItems}
-              active={sortType || SortTypes.ABC}
-              setActive={(newSortType: SortTypes) => setSort({ sortType: newSortType})}
-            />
+            {
+              !selectedList &&
+              <Dropdown 
+                items={dropdownItems}
+                active={sortType || SortTypes.ABC}
+                setActive={(newSortType: SortTypes) => setSort({ sortType: newSortType})}
+              />
+            }
             <CheckboxWrapper isTrustedSort={isTrustedSort || false} onClick={() => setSort({isTrustedSort: !isTrustedSort})}>
               <div>{isTrustedSort && <div></div>}</div>
               <span>From trusted users</span>

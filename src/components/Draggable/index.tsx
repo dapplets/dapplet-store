@@ -12,6 +12,8 @@ const Draggable = ({ children, ...props }: DraggableProps): React.ReactElement =
     activeId,
     item,
     addressFilter,
+    trustedUsersList,
+    isTrustedSort,
   } = props;
 
   const {attributes, listeners, setNodeRef, transform, transition} = useSortable({
@@ -27,7 +29,7 @@ const Draggable = ({ children, ...props }: DraggableProps): React.ReactElement =
     opacity: id === activeId ? .5 : 1
   };
   if (!!addressFilter && !item.trustedUsers.includes(addressFilter)) return <></>
-
+  if (isTrustedSort && !trustedUsersList.some((user) => item.trustedUsers.includes(user))) return <></>
   return (
     <Item
       className={styles.item}

@@ -46,6 +46,7 @@ const SortableList = (props: SortableListProps) => {
     setOpenedList,
     searchQuery,
     trustedUsersList,
+    isTrustedSort,
   } = props;
 
   const [activeId, setActiveId] = useState<SetStateAction<string> | null>(null);
@@ -94,6 +95,8 @@ const SortableList = (props: SortableListProps) => {
             item={dapplets.find((dapp) => dapp.name === itemName)!}
             addressFilter={addressFilter}
             activeId={activeId}
+            trustedUsersList={trustedUsersList}
+            isTrustedSort={isTrustedSort}
           >
             <ItemDapplet
               key={itemName}

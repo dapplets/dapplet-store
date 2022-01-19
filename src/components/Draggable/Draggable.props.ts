@@ -7,4 +7,6 @@ export interface DraggableProps {
   item: IDapplet
   addressFilter: string
   activeId: SetStateAction<string> | null
+  trustedUsersList: string[]
+  isTrustedSort: boolean
 }

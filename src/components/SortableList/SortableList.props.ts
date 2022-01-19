@@ -16,4 +16,5 @@ export interface SortableListProps {
   setOpenedList: any
   searchQuery: string
   trustedUsersList: string[]
+  isTrustedSort: boolean
 }

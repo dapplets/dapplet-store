@@ -232,6 +232,7 @@ function ListDapplets({
             setOpenedList={setOpenedList}
             searchQuery={searchQuery}
             trustedUsersList={trustedUsersList}
+            isTrustedSort={isTrustedSort}
           />
           : sortedDapplets
             .map((item, i) => (
