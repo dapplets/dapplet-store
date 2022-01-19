@@ -152,6 +152,7 @@ const effects = (dispatch: any) => ({
         const myName = object.get('name');
         const myAddress = object.get('address');
         if (myName === name && myAddress === address)
+          await object.destroy();
           dispatch.dapplets.removeTrustedUserFromDapplet({name, address});
       }
     } catch (error) {
