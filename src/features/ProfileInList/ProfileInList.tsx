@@ -46,6 +46,13 @@ const Avatar = styled.div`
   grid-area: avatar;
 `
 
+const MocedAvatar = styled.div`
+  background: #BBBBBB;
+  width: 164px;
+  height: 164px;
+  border-radius: 54px;
+`
+
 const Address = styled.div`
   grid-area: address;
   cursor: pointer;
@@ -205,6 +212,27 @@ const ProfileInList = ({
 }: ProfileInListProps) => {
   const getAvatar = (loggedIn: string): HTMLDivElement => jazzicon(164, parseInt(loggedIn.slice(2, 10), 16));
   const getAddress = (address: string) => address.replace('0x000000000000000000000000', '0x')
+
+  if (!address) return (
+    <Wrapper>
+      <Avatar><MocedAvatar /></Avatar>
+      <Button
+        myAddress={myAddress}
+        address={address}
+        trustedUsersList={trustedUsersList}
+        setTrustedUsersList={setTrustedUsersList}
+      />
+      <ButtonAll>
+        <button onClick={() => {
+          setAddressFilter('')
+          editSearchQuery('')
+          setSelectedList(undefined)
+        }}>
+          Show All
+        </button>
+      </ButtonAll>
+    </Wrapper>
+  )
 
   return (
     <Wrapper>
