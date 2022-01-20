@@ -218,7 +218,7 @@ const ListDapplets = ({
       >
         {listDappletsHeader}
         {
-          (addressFilter !== '' || selectedList) && 
+          (addressFilter !== '' || selectedList) && selectedList !== Lists.MyDapplets &&
           <ProfileInList
             myAddress={address}
             address={addressFilter !== '' ? addressFilter : address}
