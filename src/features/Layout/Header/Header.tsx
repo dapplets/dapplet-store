@@ -13,6 +13,7 @@ import { Lists } from '../../../models/myLists';
 
 const mapState = (state: RootState) => ({
   address: state.user.address,
+  trigger: state.sort.trigger,
 });
 
 const mapDispatch = (dispatch: RootDispatch) => ({
@@ -95,6 +96,7 @@ const Header: FC<HeaderProps & Props> = ({
   setSort,
   setModalOpen,
   address,
+  trigger,
 }): React.ReactElement => {
 	const [active, setActive] = useState<number>(MENU[0].id);
   const getAvatar = (loggedIn: string): HTMLDivElement => jazzicon(50, parseInt(loggedIn.slice(2, 10), 16));
@@ -103,7 +105,10 @@ const Header: FC<HeaderProps & Props> = ({
 	function handleItemClick(id: number): void {
     switch (id) {
       case 1:
-        setSort(INITIAL_STATE);
+        setSort({
+          ...INITIAL_STATE,
+          trigger: !trigger,
+        });
         break;
       case 2:
         if (!address) {
@@ -205,7 +210,10 @@ const Header: FC<HeaderProps & Props> = ({
       <div className={cn(styles.headerTop)} style={{ height: 84 }}>
         <div className={styles.headerLogo}>
           <button onClick={() => {
-            setSort(INITIAL_STATE);
+            setSort({
+              ...INITIAL_STATE,
+              trigger: !trigger,
+            });
           }}>
             <img src={STORE_LOGO} alt='logo' />
           </button>

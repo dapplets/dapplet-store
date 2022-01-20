@@ -15,6 +15,7 @@ export interface Sort {
     searchQuery?: string
     selectedList?: Lists
     isTrustedSort?: boolean
+    trigger?: boolean
 }
 
 type SortState = Readonly<Sort>

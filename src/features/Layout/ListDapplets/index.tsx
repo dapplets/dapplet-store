@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { Header } from 'semantic-ui-react';
 
 import { saveListToLocalStorage } from '../../../lib/localStorage';
@@ -32,6 +32,7 @@ export interface ListDappletsProps {
   isTrustedSort: boolean
   setOpenedList: any
   address: string
+  trigger: boolean
 }
 
 const ListDapplets = ({
@@ -52,7 +53,9 @@ const ListDapplets = ({
   isTrustedSort,
   setOpenedList,
   address,
+  trigger,
 }: ListDappletsProps): React.ReactElement => {
+  const ref = useRef<HTMLDivElement>(null)
 
   const collator = useMemo(() => (
     new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'})
@@ -183,6 +186,19 @@ const ListDapplets = ({
     [Lists.MyDapplets]: setLocalDapplets,
   }
 
+  useEffect(() => {
+    console.log({r: ref})//  ref!.current!.scrollTop = 0;
+    ref?.current?.scrollTo(0, 0);
+  }, [
+    searchQuery,
+    addressFilter,
+    isTrustedSort,
+    selectedList,
+    sortType,
+    trigger,
+    ref,
+  ])
+
   return (
     <article
       style={{
@@ -192,6 +208,7 @@ const ListDapplets = ({
       }}
     >
       <div
+        ref={ref}
         style={{
           height: 'calc(100vh - 206px)',
           overflow: 'auto',

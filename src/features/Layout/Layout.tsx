@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { IDapplet } from '../../models/dapplets';
 import Header from './Header/Header';
 import Overlay from './Overlay/Overlay';
@@ -110,6 +110,7 @@ const mapState = (state: RootState) => ({
   searchQuery: state.sort.searchQuery,
   selectedList: state.sort.selectedList,
   isTrustedSort: state.sort.isTrustedSort,
+  trigger: state.sort.trigger,
   address: state.user.address,
   trustedUsers: state.trustedUsers.trustedUsers,
   myLists: state.myLists,
@@ -151,6 +152,7 @@ const Layout = ({
   searchQuery,
   selectedList,
   isTrustedSort,
+  trigger,
   address,
   trustedUsers,
   myLists,
@@ -237,6 +239,7 @@ const Layout = ({
           isTrustedSort={isTrustedSort || false}
           setOpenedList={setOpenedList}
           address={address || ""}
+          trigger={trigger || false}
         />}
 			</MainContent>
 
