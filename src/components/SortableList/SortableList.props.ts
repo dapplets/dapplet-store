@@ -9,8 +9,6 @@ export interface SortableListProps {
   localDapplets: IDappletsList
   editLocalDappletsList: (item: IDapplet) => void
   editSelectedDappletsList: (item: IDapplet) => void
-  expandedItems: string[] 
-  setExpandedItems: React.Dispatch<React.SetStateAction<string[]>>
   setAddressFilter: any
   addressFilter: string
   setOpenedList: any

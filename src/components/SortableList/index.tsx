@@ -39,8 +39,6 @@ const SortableList = (props: SortableListProps) => {
     localDapplets,
     editLocalDappletsList,
     editSelectedDappletsList,
-    expandedItems,
-    setExpandedItems,
     setAddressFilter,
     addressFilter,
     setOpenedList,
@@ -105,8 +103,6 @@ const SortableList = (props: SortableListProps) => {
               localDapplets={localDapplets}
               editLocalDappletsList={editLocalDappletsList}
               editSelectedDappletsList={editSelectedDappletsList}
-              expandedItems={expandedItems}
-              setExpandedItems={setExpandedItems}
               setAddressFilter={setAddressFilter}
               setOpenedList={setOpenedList}
               searchQuery={searchQuery}
@@ -134,8 +130,6 @@ const SortableList = (props: SortableListProps) => {
                 localDapplets={localDapplets}
                 editLocalDappletsList={editLocalDappletsList}
                 editSelectedDappletsList={editSelectedDappletsList}
-                expandedItems={expandedItems}
-                setExpandedItems={setExpandedItems}
                 setAddressFilter={setAddressFilter}
                 setOpenedList={setOpenedList}
                 trustedUsersList={trustedUsersList}

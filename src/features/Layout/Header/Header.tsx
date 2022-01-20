@@ -1,15 +1,15 @@
 import React, { DetailedHTMLProps, FC, HTMLAttributes, useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import cn from 'classnames';
-import STORE_LOGO from '../../images/StoreLogo.svg';
+import STORE_LOGO from '../../../images/StoreLogo.svg';
 import jazzicon from '@metamask/jazzicon';
 import styles from './Header.module.scss';
-import { RootState, RootDispatch } from "../../models";
-import { INITIAL_STATE, Sort } from '../../models/sort';
+import { RootState, RootDispatch } from "../../../models";
+import { INITIAL_STATE, Sort } from '../../../models/sort';
 
 import { connect } from 'react-redux';
-import { Lists } from '../../config/types';
-import { ModalsList } from '../../models/modals';
+import { Lists } from '../../../config/types';
+import { ModalsList } from '../../../models/modals';
 
 const mapState = (state: RootState) => ({
   address: state.user.address,
@@ -40,8 +40,6 @@ const Login = styled.button`
 
   width: 90px;
   height: 32px;
-
-
 
   &:hover {
     background: #F26680;
@@ -89,15 +87,11 @@ const MENU2 = [
 
 interface HeaderProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
   selectedList?: Lists
-  setExpandedItems: React.Dispatch<React.SetStateAction<string[]>>
-  loginInfo: string | null
 }
 
 const Header: FC<HeaderProps & Props> = ({
   className,
   selectedList,
-  setExpandedItems,
-  loginInfo,
   setSort,
   setModalOpen,
   address,
@@ -211,7 +205,6 @@ const Header: FC<HeaderProps & Props> = ({
       <div className={cn(styles.headerTop)} style={{ height: 84 }}>
         <div className={styles.headerLogo}>
           <button onClick={() => {
-            setExpandedItems([]);
             setSort(INITIAL_STATE);
           }}>
             <img src={STORE_LOGO} alt='logo' />
@@ -239,7 +232,6 @@ const Header: FC<HeaderProps & Props> = ({
           setModalOpen(ModalsList.User)
         }}
         >
-          {/* <img src={AVATAR} alt='avatar' /> */}
           <VanillaChildren>{getAvatar(addressShort)}</VanillaChildren>
         </div>
         :<Login onClick={() => {

@@ -2,6 +2,7 @@ import { init, RematchRootState } from '@rematch/core';
 import { dapplets } from "./dapplets";
 import { modals } from './modals';
 import { sort } from './sort';
+import { trustedUsers } from './trustedUsers';
 import { user } from './user';
 
 const models = {
@@ -9,6 +10,7 @@ const models = {
   sort,
   modals,
   user,
+  trustedUsers,
 };
 
 const store = init({

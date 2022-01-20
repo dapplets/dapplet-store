@@ -52,7 +52,6 @@ export const DropdownList = styled.ul<{ active: boolean }>`
 interface IDropdownItem {
   id: number;
   text: string;
-  onClick: any,
 }
 
 interface IProps {
@@ -144,7 +143,6 @@ const Dropdown = ({
         {items.map((item, index) => (
           <li key={item.text} onClick={() =>{ 
               focusHandler(item.text)
-              item.onClick()
               setIsOpen(false)
             }}>
               {item.text}

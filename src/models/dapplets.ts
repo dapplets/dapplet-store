@@ -23,6 +23,7 @@ export interface IDapplet {
   timestamp: any
   timestampToShow: string
   trustedUsers: string[]
+  isExpanded: boolean
 }
 
 interface DappletsList {
@@ -65,6 +66,15 @@ const reducers = {
       },
     }
   },
+  setExpanded(state: DappletsState, {name, isExpanded}: {name: string, isExpanded: boolean}) {
+    return {
+      ...state,
+      [name]: {
+        ...state[name],
+        isExpanded,
+      }
+    }
+  },
 }
 
 const effects = (dispatch: any) => ({
@@ -100,6 +110,7 @@ const effects = (dispatch: any) => ({
           timestampToShow: new Date(block.timestamp * 1000).toString(),
           timestamp: block.timestamp,
           trustedUsers: [module.owner],
+          isExpanded: false,
         }
         await dispatch.dapplets.addDapplet(dapplet)
       })

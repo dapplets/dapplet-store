@@ -5,7 +5,7 @@ import { ethers } from 'ethers';
 import styled from 'styled-components';
 
 import styles from './ItemDapplet.module.scss';
-import { DappletButton, DappletButtonTypes } from './atoms/DappletButton';
+import { DappletButton, DappletButtonTypes } from './DappletButton/DappletButton';
 import jazzicon from '@metamask/jazzicon';
 
 import { IDappletsList } from "../../config/types";
@@ -24,6 +24,7 @@ const mapState = (state: RootState) => ({
 const mapDispatch = (dispatch: RootDispatch) => ({
   setSort: (payload: Sort) => dispatch.sort.setSort(payload),
   setModalOpen: (payload: ModalsList | null) => dispatch.modals.setModalOpen(payload),
+  setExpanded: (payload: {name: string, isExpanded: boolean}) => dispatch.dapplets.setExpanded(payload)
 });
 
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
@@ -100,8 +101,6 @@ interface ItemDappletProps {
   localDapplets: IDappletsList
   editLocalDappletsList: (item: IDapplet) => void
   editSelectedDappletsList: (item: IDapplet) => void
-  expandedItems: string[] 
-  setExpandedItems: React.Dispatch<React.SetStateAction<string[]>>
   searchQuery?: string
   setAddressFilter: any
   setOpenedList: any
@@ -115,14 +114,13 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
     localDapplets,
     editLocalDappletsList,
     editSelectedDappletsList,
-    expandedItems,
-    setExpandedItems,
     searchQuery,
     setAddressFilter,
     setSort,
     trustedUsersList,
     address,
     setModalOpen,
+    setExpanded,
   } = props;
 
   const trustedList = useMemo(() => {
@@ -161,15 +159,14 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
     uris: item.icon.uris.map(u => ethers.utils.toUtf8String(u))
   };
 
-  const isOpen = !!expandedItems?.includes(item.name);
+  const isOpen = useMemo(() => item.isExpanded, [item.isExpanded])
 
   const handleClickOnItem = ({ target }: any) => {
     if (target.tagName === 'BUTTON') return;
-    if (isOpen) {
-      setExpandedItems(expandedItems.filter((name) => name !== item.name))
-    } else {
-      setExpandedItems([...expandedItems, item.name])
-    }
+    setExpanded({
+      name: item.name,
+      isExpanded: !isOpen,
+    })
   };
 
   if (!item) return <></>;
