@@ -11,7 +11,6 @@ import WarningModal from "./WarningModal/WarningModal";
 
 import { RootDispatch, RootState } from "../../models";
 import { connect } from "react-redux";
-import { Lists } from "../../models/myLists";
 
 
 const mapState = (state: RootState) => ({

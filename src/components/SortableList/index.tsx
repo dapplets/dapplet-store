@@ -28,7 +28,7 @@ import {
 import { SortableListProps } from './SortableList.props';
 import Draggable from '../Draggable';
 import ItemDapplet from '../ItemDapplet';
-import { Lists, MyListElement } from '../../models/myLists';
+import { MyListElement } from '../../models/myLists';
 
 const SortableList = (props: SortableListProps) => {
   const {

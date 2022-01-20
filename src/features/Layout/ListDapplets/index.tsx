@@ -12,7 +12,7 @@ import ProfileInList from '../../ProfileInList/ProfileInList';
 import { SideLists } from '../SidePanel/SidePanel';
 import { IDapplet } from '../../../models/dapplets';
 import { SortTypes } from '../../../models/sort';
-import { Lists, MyListElement, MyLists } from '../../../models/myLists';
+import { Lists, MyListElement } from '../../../models/myLists';
 
 export interface ListDappletsProps {
   dapplets: IDapplet[]

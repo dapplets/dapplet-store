@@ -13,9 +13,10 @@ import { Sort } from './../models/sort';
 import { ModalsList } from './../models/modals';
 import { Lists, MyListElement } from '../models/myLists';
 import { DappletsListItemTypes } from '../components/DappletsListItem/DappletsListItem';
+import { useMemo } from 'react';
 
 const mapState = (state: RootState) => ({
-  dapplets: Object.values(state.dapplets),
+  dappletsStandard: state.dapplets,
   address: state.user.address,
   trustedUsers: state.trustedUsers.trustedUsers,
   myLists: state.myLists,
@@ -37,7 +38,7 @@ declare global {
 }
 
 const App = ({ 
-  dapplets,
+  dappletsStandard,
   address,
   trustedUsers,
   myLists,
@@ -53,9 +54,7 @@ const App = ({
   // const [localDappletsList, setLocalDappletsList] = useState<MyListElement[]>({ listName: Lists.MyDapplets, dapplets: [] });
   const [openedList, setOpenedList] = useState(null)
 
-  useEffect(() => {
-    console.log({myLists})
-  }, [myLists])
+  const dapplets = useMemo(() => Object.values(dappletsStandard), [dappletsStandard])
 
   useEffect(() => {
     getSort()
@@ -73,50 +72,11 @@ const App = ({
 
 
 
-  // useEffect(() => {
-  //   const getDappletsListFromLocal = (payload: Lists) => {
-  //     const dappletsListStringified = window.localStorage.getItem(payload);
-  //     if (dappletsListStringified) {
-  //       const dappletsListParsed: MyListElement[] = JSON.parse(dappletsListStringified);
-  //       // console.log({dappletsListParsed})
-  //       return dappletsListParsed;
-  //     }
-  //     return []
-  //   }
-  //   if (address) {
-  //     const list: {
-  //       [key: string]: MyListElement
-  //     } = {}
-  //     dapplets.filter((dapp) => dapp.trustedUsers.includes(address) && dapp.owner !== address)
-  //       .forEach(({ name }) => {
-  //         list[name] = { name, type: DappletsListItemTypes.Default}
-  //       })
-  //     getDappletsListFromLocal(Lists.MyListing).forEach((dapp) => {
-  //       list[dapp.name] = dapp
-  //     })
-  //     const sortedList: MyListElement[] = Object.values(list)
-  //     sortedList.sort(({type: typeA}, {type: typeB}) => {
-  //       if (typeA === DappletsListItemTypes.Default && typeB !== DappletsListItemTypes.Default) 
-  //         return 1
-  //       if (typeB === DappletsListItemTypes.Default && typeA !== DappletsListItemTypes.Default) 
-  //         return -1
-  //       return 0
-  //     })
-  //     setMyList({
-  //       name: Lists.MyListing,
-  //       elements: sortedList,
-  //     })
-  //   }
-  // }, [address, dapplets, setMyList])
-
-
-
   useEffect(() => {
     const getDappletsListFromLocal = (payload: Lists) => {
       const dappletsListStringified = window.localStorage.getItem(payload);
       if (dappletsListStringified) {
         const dappletsListParsed: MyListElement[] = JSON.parse(dappletsListStringified);
-        // console.log({dappletsListParsed})
         return dappletsListParsed;
       }
       return []
@@ -140,24 +100,12 @@ const App = ({
           return -1
         return 0
       })
-      // setMyList({
-      //   name: Lists.MyListing,
-      //   elements: sortedList,
-      // })
+      setMyList({
+        name: Lists.MyListing,
+        elements: sortedList,
+      })
     }
   }, [address, dapplets, setMyList])
-
-  useEffect(() => {
-    console.log({address})
-  }, [address])
-
-  useEffect(() => {
-    console.log({setMyList})
-  }, [setMyList])
-
-  useEffect(() => {
-    console.log({dapplets})
-  }, [dapplets])
 
   return (
     <>

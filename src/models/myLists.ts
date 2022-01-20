@@ -41,7 +41,7 @@ const effects = (dispatch: any) => ({
         elements: dappletsListParsed,
       });
     }
-  }
+  },
 })
 
 export const myLists = createModel()({
