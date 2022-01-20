@@ -126,6 +126,7 @@ const SortableList = (props: SortableListProps) => {
                 className={styles.item__draggable}
               />
               <ItemDapplet
+                key={dapplets.find((dapp) => dapp.name === activeId)?.name}
                 item={dapplets.find((dapp) => dapp.name === activeId)!}
                 selectedDapplets={selectedDapplets}
                 localDapplets={localDapplets}

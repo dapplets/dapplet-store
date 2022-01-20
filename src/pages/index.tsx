@@ -19,7 +19,6 @@ const mapState = (state: RootState) => ({
   dappletsStandard: state.dapplets,
   address: state.user.address,
   trustedUsers: state.trustedUsers.trustedUsers,
-  myLists: state.myLists,
 });
 const mapDispatch = (dispatch: RootDispatch) => ({
   getDapplets: () => dispatch.dapplets.getDapplets(),
@@ -41,7 +40,6 @@ const App = ({
   dappletsStandard,
   address,
   trustedUsers,
-  myLists,
   getDapplets,
   getSort,
   setSort,
@@ -50,8 +48,6 @@ const App = ({
   getLists,
   setMyList,
 }: Props) => {
-  // const [selectedDappletsList, setSelectedDappletsList] = useState<MyListElement[]>({ listName: Lists.MyListing, dapplets: [] });
-  // const [localDappletsList, setLocalDappletsList] = useState<MyListElement[]>({ listName: Lists.MyDapplets, dapplets: [] });
   const [openedList, setOpenedList] = useState(null)
 
   const dapplets = useMemo(() => Object.values(dappletsStandard), [dappletsStandard])
