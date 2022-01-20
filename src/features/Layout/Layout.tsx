@@ -69,18 +69,11 @@ const CheckboxWrapper = styled.div<CheckboxWrapperProps>`
   & > div {
     width: 16px;
     height: 16px;
-    background: ${({ isTrustedSort }) => isTrustedSort ?  '#D9304F' : '#ffffff'};
+    background: ${({ isTrustedSort }) => isTrustedSort ?  '#ffffff' : '#ffffff'};
     border-radius: 50%;
     margin-top: 2px;
-    border:  ${({ isTrustedSort }) => isTrustedSort ?  'none' : '1px solid #919191'};
-  }
-
-  & > div > div {
-    width: 6px;
-    height: 6px;
-    background: white;
-    border-radius: 50%;
-    margin: 5px;
+    border:  ${({ isTrustedSort }) => isTrustedSort ?  '5px solid #D9304F' : '1px solid #919191'};
+    position: relative;
   }
 `
 
@@ -216,7 +209,7 @@ const Layout = ({
           {
             !trustedUsers.includes(addressFilter || "") &&
             <CheckboxWrapper isTrustedSort={isTrustedSort || false} onClick={() => setSort({isTrustedSort: !isTrustedSort})}>
-              <div>{isTrustedSort && <div></div>}</div>
+              <div></div>
               <span>From trusted users</span>
             </CheckboxWrapper>
           }
