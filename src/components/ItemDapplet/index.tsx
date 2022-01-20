@@ -8,7 +8,6 @@ import styles from './ItemDapplet.module.scss';
 import { DappletButton, DappletButtonTypes } from './DappletButton/DappletButton';
 import jazzicon from '@metamask/jazzicon';
 
-import { IDappletsList } from "../../config/types";
 import Highlighter from "react-highlight-words";
 import DappletListersPopup from '../../features/DappletListersPopup/DappletListersPopup';
 import { IDapplet } from '../../models/dapplets';
@@ -16,6 +15,7 @@ import { RootDispatch, RootState } from '../../models';
 import { Sort } from '../../models/sort';
 import { connect } from 'react-redux';
 import { ModalsList } from '../../models/modals';
+import { MyListElement } from '../../models/myLists';
 
 const mapState = (state: RootState) => ({
   address: state.user.address,
@@ -97,8 +97,8 @@ const ButtonsWrapper = styled.div`
 
 interface ItemDappletProps {
   item: IDapplet
-  selectedDapplets: IDappletsList
-  localDapplets: IDappletsList
+  selectedDapplets: MyListElement[]
+  localDapplets: MyListElement[]
   editLocalDappletsList: (item: IDapplet) => void
   editSelectedDappletsList: (item: IDapplet) => void
   searchQuery?: string
@@ -135,10 +135,10 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
   const getAvatar = (loggedIn: string): HTMLDivElement => jazzicon(12, parseInt(loggedIn.slice(2, 10), 16));
   const getAddressShort = (address: string) => address ? address.replace('0x000000000000000000000000', '0x') : ''
 
-  const isLocalDapplet = localDapplets.dapplets.some((dapplet) => dapplet.name === item.name);
+  const isLocalDapplet = localDapplets.some((dapplet) => dapplet.name === item.name);
 
   const getSelectedType = () => {
-    const selectedDapplet = selectedDapplets.dapplets.find((dapplet) => dapplet.name === item.name)
+    const selectedDapplet = selectedDapplets.find((dapplet) => dapplet.name === item.name)
     if (selectedDapplet)
       switch (selectedDapplet.type) {
         case 'Adding':

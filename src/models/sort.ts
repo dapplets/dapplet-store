@@ -1,6 +1,6 @@
 import { createModel } from "@rematch/core";
-import { Lists } from "../config/types";
 import { getAnchorParams, setAnchorParams } from "../lib/anchorLink";
+import { Lists } from "./myLists";
 
 export enum SortTypes {
   ABC = 'Sort A-Z',

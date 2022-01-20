@@ -1,6 +1,5 @@
 import React, { DetailedHTMLProps, HTMLAttributes } from 'react';
 
-import { Lists, IDappletsList, IDappletsListElement } from '../../../config/types';
 import { saveListToLocalStorage } from '../../../lib/localStorage';
 import DappletsListSidebar from '../../../components/DappletsListSidebar/DappletsListSidebar'
 import { DappletsListItemTypes } from '../../../components/DappletsListItem/DappletsListItem'
@@ -10,6 +9,7 @@ import { connect } from 'react-redux';
 import { ModalsList } from '../../../models/modals';
 import { IDapplet } from '../../../models/dapplets';
 import styled from 'styled-components';
+import { Lists, MyListElement } from '../../../models/myLists';
 
 const mapState = (state: RootState) => ({
   address: state.user.address,
@@ -58,10 +58,10 @@ export enum SideLists {
   MyTrustedUsers = 'My trusted users',
 }
 export interface SidePanelProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
-  localDappletsList: IDappletsList
-  setLocalDappletsList: React.Dispatch<React.SetStateAction<IDappletsList>>
+  localDappletsList: MyListElement[]
+  setLocalDappletsList: any
   setSelectedList: React.Dispatch<React.SetStateAction<Lists | undefined>>
-  selectedDappletsList: IDappletsList
+  selectedDappletsList: MyListElement[]
   setSelectedDappletsList: any
   trustedUsersList: string[]
   setAddressFilter: any
@@ -89,28 +89,28 @@ const SidePanel = ({
 
   const removeFromLocalList = (name: string) => (e: any) => {
     e.preventDefault();
-    const list = localDappletsList.dapplets
+    const list = localDappletsList
       .filter((dapp) => dapp.name !== name);
-    const newLocalDappletsList: IDappletsList = { listName: localDappletsList.listName, dapplets: list };
-    saveListToLocalStorage(newLocalDappletsList);
+    const newLocalDappletsList: MyListElement[] = list;
+    saveListToLocalStorage(newLocalDappletsList, Lists.MyDapplets);
     setLocalDappletsList(newLocalDappletsList);
   }
 
   const removeFromSelectedList = (name: string) => (e: any) => {
     e.preventDefault();
-    const dappletListIndex = selectedDappletsList.dapplets.findIndex((dapplet) => dapplet.name === name);
-    let list = selectedDappletsList.dapplets
-    if (selectedDappletsList.dapplets[dappletListIndex].type === DappletsListItemTypes.Removing)
+    const dappletListIndex = selectedDappletsList.findIndex((dapplet) => dapplet.name === name);
+    let list = selectedDappletsList
+    if (selectedDappletsList[dappletListIndex].type === DappletsListItemTypes.Removing)
       list[dappletListIndex].type = DappletsListItemTypes.Default
-    if (selectedDappletsList.dapplets[dappletListIndex].type === DappletsListItemTypes.Adding)
+    if (selectedDappletsList[dappletListIndex].type === DappletsListItemTypes.Adding)
       list = list.filter((dapp) => dapp.name !== name);
-    const newSelectedDappletsList: IDappletsList = { listName: selectedDappletsList.listName, dapplets: list };
-    saveListToLocalStorage(newSelectedDappletsList);
+    const newSelectedDappletsList: MyListElement[] = list;
+    saveListToLocalStorage(newSelectedDappletsList, Lists.MyListing);
     setSelectedDappletsList(newSelectedDappletsList);
   }
 
   const pushSelectedDappletsList = () => {
-    const nowDappletsList: IDappletsListElement[] = selectedDappletsList.dapplets.map((dapplet) => {
+    const nowDappletsList: MyListElement[] = selectedDappletsList.map((dapplet) => {
       if (dapplet.type === DappletsListItemTypes.Adding) {
         addTrustedUserToDappletEffect({
           name: dapplet.name,
@@ -123,7 +123,7 @@ const SidePanel = ({
       }
       return dapplet
     })
-    const newDappletsList: IDappletsList = { listName: selectedDappletsList.listName, dapplets: nowDappletsList.filter(({ type, name }) => {
+    const newDappletsList: MyListElement[] = nowDappletsList.filter(({ type, name }) => {
       if (type === DappletsListItemTypes.Removing) {
         removeTrustedUserFromDappletEffect({
           name,
@@ -131,15 +131,15 @@ const SidePanel = ({
         })
       }
       return type !== DappletsListItemTypes.Removing
-    }) };
-    saveListToLocalStorage(newDappletsList);
+    })
+    saveListToLocalStorage(newDappletsList, Lists.MyListing);
     setSelectedDappletsList(newDappletsList);
   };
 
 	return (
 		<Wrapper className={className}>
       <DappletsListSidebar
-        dappletsList={localDappletsList.dapplets.slice(0, 5).map((dapplet) => ({
+        dappletsList={localDappletsList.slice(0, 5).map((dapplet) => ({
           title: dapplets.find(({ name }) => dapplet.name === name)?.title || '',
           type: dapplet.type,
           onClickRemove: () => removeFromLocalList(dapplet.name),
@@ -148,17 +148,17 @@ const SidePanel = ({
         title={SideLists.MyDapplets}
         onOpenList={() => {
           setSort({
-            selectedList: Lists.Local,
+            selectedList: Lists.MyDapplets,
             addressFilter: "",
           });
         }}
-        isMoreShow={localDappletsList.dapplets.length > 0}
+        isMoreShow={localDappletsList.length > 0}
         isOpen={SideLists.MyDapplets === openedList}
         setIsOpen={setOpenedList}
       />
 
       <DappletsListSidebar
-        dappletsList={selectedDappletsList.dapplets.slice(0, 5).map((dapplet) => ({
+        dappletsList={selectedDappletsList.slice(0, 5).map((dapplet) => ({
           title: dapplets.find(({ name }) => dapplet.name === name)?.title || '',
           type: dapplet.type,
           onClickRemove: () => removeFromSelectedList(dapplet.name),
@@ -171,12 +171,12 @@ const SidePanel = ({
             return
           }
           setSort({
-            selectedList: Lists.Selected,
+            selectedList: Lists.MyListing,
             addressFilter: "",
           });
         }}
-        isMoreShow={selectedDappletsList.dapplets.length > 0}
-        titleButton={selectedDappletsList.dapplets.find(({ type }) => type !== DappletsListItemTypes.Default) && {
+        isMoreShow={selectedDappletsList.length > 0}
+        titleButton={selectedDappletsList.find(({ type }) => type !== DappletsListItemTypes.Default) && {
           title: 'Push changes',
           onClick: pushSelectedDappletsList
         }}

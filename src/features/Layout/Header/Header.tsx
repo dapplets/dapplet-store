@@ -8,8 +8,8 @@ import { RootState, RootDispatch } from "../../../models";
 import { INITIAL_STATE, Sort } from '../../../models/sort';
 
 import { connect } from 'react-redux';
-import { Lists } from '../../../config/types';
 import { ModalsList } from '../../../models/modals';
+import { Lists } from '../../../models/myLists';
 
 const mapState = (state: RootState) => ({
   address: state.user.address,
@@ -111,13 +111,13 @@ const Header: FC<HeaderProps & Props> = ({
           return
         }
         setSort({
-          selectedList: Lists.Selected,
+          selectedList: Lists.MyListing,
           addressFilter: "",
         });
         break;
       case 3:
         setSort({
-          selectedList: Lists.Local,
+          selectedList: Lists.MyDapplets,
           addressFilter: "",
         });
         break;
@@ -128,10 +128,10 @@ const Header: FC<HeaderProps & Props> = ({
 
   useEffect(() => {
     switch (selectedList) {
-      case Lists.Local:
+      case Lists.MyDapplets:
         setActive(3);
         break;
-      case Lists.Selected:
+      case Lists.MyListing:
         setActive(2);
         break;
       default:

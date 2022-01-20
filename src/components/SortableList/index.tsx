@@ -1,6 +1,5 @@
 import { useState, SetStateAction } from 'react';
 import { saveListToLocalStorage } from '../../lib/localStorage';
-import { IDappletsList, IDappletsListElement } from '../../config/types';
 import styles from './SortableList.module.scss';
 
 import {
@@ -29,6 +28,7 @@ import {
 import { SortableListProps } from './SortableList.props';
 import Draggable from '../Draggable';
 import ItemDapplet from '../ItemDapplet';
+import { Lists, MyListElement } from '../../models/myLists';
 
 const SortableList = (props: SortableListProps) => {
   const {
@@ -45,6 +45,7 @@ const SortableList = (props: SortableListProps) => {
     searchQuery,
     trustedUsersList,
     isTrustedSort,
+    selectedList,
   } = props;
 
   const [activeId, setActiveId] = useState<SetStateAction<string> | null>(null);
@@ -62,18 +63,18 @@ const SortableList = (props: SortableListProps) => {
   }
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
-    let newArray: IDappletsListElement[];
+    let newArray: MyListElement[];
     if (over !== null && active.id !== over.id) {
-      const itemIds = items!.dapplets.map(({name}) => name);
+      const itemIds = items!.map(({name}) => name);
       const oldIndex = itemIds.indexOf(active.id);
       const newIndex = itemIds.indexOf(over.id);
-      newArray = arrayMove(items!.dapplets, oldIndex, newIndex);
+      newArray = arrayMove(items || [], oldIndex, newIndex);
     } else {
-      newArray = items!.dapplets;
+      newArray = items || [];
     }
-    const newDappletsList: IDappletsList = { listName: items!.listName, dapplets: newArray };
+    const newDappletsList: MyListElement[] = newArray;
     setItems(newDappletsList);
-    saveListToLocalStorage(newDappletsList);
+    saveListToLocalStorage(newDappletsList, selectedList);
     setActiveId(null);
   }
 
@@ -84,8 +85,8 @@ const SortableList = (props: SortableListProps) => {
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <SortableContext items={items!.dapplets.map(({name}) => name)} strategy={verticalListSortingStrategy}>
-        {items?.dapplets.map(({name: itemName}) => (
+      <SortableContext items={items!.map(({name}) => name)} strategy={verticalListSortingStrategy}>
+        {items?.map(({name: itemName}) => (
           dapplets.find((dapp) => dapp.name === itemName) &&
           <Draggable
             key={itemName}

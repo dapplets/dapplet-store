@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { IDappletsList, Lists } from '../../config/types';
 import { IDapplet } from '../../models/dapplets';
 import Header from './Header/Header';
 import Overlay from './Overlay/Overlay';
@@ -12,6 +11,7 @@ import Input from './Input';
 import Dropdown from './Dropdown/Dropdown';
 import { RootDispatch, RootState } from '../../models';
 import { connect } from 'react-redux';
+import { Lists, MyListElement } from '../../models/myLists';
 
 const Wrapper = styled.div`
   display: grid;
@@ -111,20 +111,18 @@ const mapState = (state: RootState) => ({
   selectedList: state.sort.selectedList,
   isTrustedSort: state.sort.isTrustedSort,
   address: state.user.address,
-  trustedUsers: state.trustedUsers.trustedUsers
+  trustedUsers: state.trustedUsers.trustedUsers,
+  myLists: state.myLists,
 });
 const mapDispatch = (dispatch: RootDispatch) => ({
   setSort: (payload: Sort) => dispatch.sort.setSort(payload),
   setTrustedUsers: (payload: string[]) => dispatch.trustedUsers.setTrustedUsers(payload),
+  setMyList: (payload: {name: Lists, elements: MyListElement[]}) => dispatch.myLists.setMyList(payload),
 });
 
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
 
 export interface LayoutProps {
-  selectedDappletsList: IDappletsList
-  setSelectedDappletsList: any
-  localDappletsList: IDappletsList
-  setLocalDappletsList: React.Dispatch<React.SetStateAction<IDappletsList>>
   selectedList?: Lists
   setSelectedList: any
   trustedUsersList: string[]
@@ -134,10 +132,6 @@ export interface LayoutProps {
 }
 
 const Layout = ({
-  selectedDappletsList,
-  setSelectedDappletsList,
-  localDappletsList,
-  setLocalDappletsList,
   setSelectedList,
   trustedUsersList,
   setAddressFilter,
@@ -152,24 +146,31 @@ const Layout = ({
   isTrustedSort,
   address,
   trustedUsers,
+  myLists,
   setSort,
   setTrustedUsers,
+  setMyList,
 }: LayoutProps & Props): React.ReactElement<LayoutProps> => {
 
-  
+  const localDappletsList = myLists[Lists.MyDapplets]
+  const setLocalDappletsList = (elements: MyListElement[]) => setMyList({
+    name: Lists.MyDapplets,
+    elements,
+  })
+  const selectedDappletsList = myLists[Lists.MyListing]
+  const setSelectedDappletsList = (elements: MyListElement[]) => setMyList({
+    name: Lists.MyListing,
+    elements,
+  })
 
   const dappletsByList = useMemo(() => {
     if (!dapplets || !selectedList) return dapplets;
-    const chooseDappletsList = {
-      [Lists.Local]: localDappletsList,
-      [Lists.Selected]: selectedDappletsList,
-    };
-    const dapps = chooseDappletsList[selectedList];
-    return dapps.dapplets
+    const dapps = myLists[selectedList];
+    return dapps
       .map((dapplet) => dapplets.find((dapp) => dapp.name === dapplet.name))
       .filter((dapp): dapp is IDapplet => !!dapp);
 
-  }, [dapplets, localDappletsList, selectedDappletsList, selectedList])
+  }, [dapplets, myLists, selectedList])
   
   return (
     <Wrapper>

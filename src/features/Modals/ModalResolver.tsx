@@ -8,10 +8,10 @@ import { ModalsList } from "../../models/modals";
 import UserModal from "./UserModal/UserModal";
 import LoginModal from "./LoginModal/LoginModal";
 import WarningModal from "./WarningModal/WarningModal";
-import { Lists } from "../../config/types";
 
 import { RootDispatch, RootState } from "../../models";
 import { connect } from "react-redux";
+import { Lists } from "../../models/myLists";
 
 
 const mapState = (state: RootState) => ({
@@ -42,17 +42,12 @@ const ModalWrapper = styled.div`
   background: none;
 `
 
-interface ModalResolverProps {
-  setSelectedDappletsList: any
-}
-
 const ModalResolver = ({
-  setSelectedDappletsList,
   openedModal,
   address,
   setModalOpen,
   setUser,
-}: ModalResolverProps & Props) => {
+}: Props) => {
   const [provider, setProvider] = useState()
   
   const nowModal = useMemo(() => {
@@ -132,10 +127,6 @@ const ModalResolver = ({
             address={address || ""} 
             onLogout={async () => {
               try {
-                setSelectedDappletsList({
-                  listName: Lists.Selected,
-                  dapplets: [],
-                })
                 localStorage['metamask_disabled'] = 'true'
                 const prov: any = provider
                 prov.disconnect()
@@ -157,7 +148,7 @@ const ModalResolver = ({
       default:
         return null
     }
-  }, [address, openedModal, provider, setModalOpen, setSelectedDappletsList, setUser])
+  }, [address, openedModal, provider, setModalOpen, setUser])
 
   if (!openedModal) return <></>
 

@@ -1,12 +1,12 @@
-import { IDappletsList } from "../../config/types";
 import { IDapplet } from "../../models/dapplets";
+import { Lists, MyListElement } from "../../models/myLists";
 
 export interface SortableListProps {
   dapplets: IDapplet[]
-  items?: IDappletsList
-  setItems: React.Dispatch<React.SetStateAction<IDappletsList>>
-  selectedDapplets: IDappletsList
-  localDapplets: IDappletsList
+  items?: MyListElement[]
+  setItems: React.Dispatch<React.SetStateAction<MyListElement[]>>
+  selectedDapplets: MyListElement[]
+  localDapplets: MyListElement[]
   editLocalDappletsList: (item: IDapplet) => void
   editSelectedDappletsList: (item: IDapplet) => void
   setAddressFilter: any
@@ -15,4 +15,5 @@ export interface SortableListProps {
   searchQuery: string
   trustedUsersList: string[]
   isTrustedSort: boolean
+  selectedList: Lists
 }

@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { Header } from 'semantic-ui-react';
 
-import { IDappletsList, IDappletsListElement, Lists } from '../../../config/types';
 import { saveListToLocalStorage } from '../../../lib/localStorage';
 
 import styles from './ListDapplets.module.scss';
@@ -13,13 +12,14 @@ import ProfileInList from '../../ProfileInList/ProfileInList';
 import { SideLists } from '../SidePanel/SidePanel';
 import { IDapplet } from '../../../models/dapplets';
 import { SortTypes } from '../../../models/sort';
+import { Lists, MyListElement, MyLists } from '../../../models/myLists';
 
 export interface ListDappletsProps {
   dapplets: IDapplet[]
-  selectedDapplets: IDappletsList
-  setSelectedDapplets: React.Dispatch<React.SetStateAction<IDappletsList>>
-  localDapplets: IDappletsList
-  setLocalDapplets: React.Dispatch<React.SetStateAction<IDappletsList>>
+  selectedDapplets: MyListElement[]
+  setSelectedDapplets: any
+  localDapplets: MyListElement[]
+  setLocalDapplets: any
   selectedList?: Lists
   setSelectedList: any
   sortType: string
@@ -59,13 +59,13 @@ const ListDapplets = ({
   ), []) 
 
   const editList = useMemo(() => (
-    (item: IDapplet, dappletsList: IDappletsList, type: DappletsListItemTypes) => {
-      const isLocalDapplet = dappletsList.dapplets.some((dapplet) => dapplet.name === item.name);
+    (item: IDapplet, dappletsList: MyListElement[], type: DappletsListItemTypes) => {
+      const isLocalDapplet = dappletsList.some((dapplet) => dapplet.name === item.name);
       const nowDappletsList = isLocalDapplet
-        ? dappletsList.dapplets
+        ? dappletsList
           .filter((dapplet) => dapplet.name !== item.name)
-        : [{name: item.name, type}, ...dappletsList.dapplets];
-      const newDappletsList: IDappletsList = { listName: dappletsList.listName, dapplets: nowDappletsList };
+        : [{name: item.name, type}, ...dappletsList];
+      const newDappletsList: MyListElement[] = nowDappletsList;
       return newDappletsList
     } 
   ), [])
@@ -74,8 +74,8 @@ const ListDapplets = ({
     (item: IDapplet) => {
       setOpenedList(SideLists.MyDapplets)
       const newLocalDappletsList = editList(item, localDapplets, DappletsListItemTypes.Default)
-      saveListToLocalStorage(newLocalDappletsList);
       setLocalDapplets(newLocalDappletsList);
+      saveListToLocalStorage(newLocalDappletsList, Lists.MyDapplets);
     }
   ), [editList, localDapplets, setLocalDapplets, setOpenedList]);
 
@@ -83,7 +83,7 @@ const ListDapplets = ({
     (item: IDapplet) => {
       setOpenedList(SideLists.MyListing)
       
-      let nowDappletsList: IDappletsListElement[] = selectedDapplets.dapplets
+      let nowDappletsList: MyListElement[] = selectedDapplets
       const dappletListIndex = nowDappletsList.findIndex((dapplet) => dapplet.name === item.name);
       if (dappletListIndex >= 0) {
         const nowDapplet = nowDappletsList[dappletListIndex]
@@ -104,18 +104,18 @@ const ListDapplets = ({
       } else {
         nowDappletsList = [{name: item.name, type: DappletsListItemTypes.Adding}, ...nowDappletsList]
       }
-      const newDappletsList: IDappletsList = { listName: selectedDapplets.listName, dapplets: nowDappletsList };
-      saveListToLocalStorage(newDappletsList);
+      const newDappletsList: MyListElement[] = nowDappletsList;
+      saveListToLocalStorage(newDappletsList, Lists.MyListing);
       setSelectedDapplets(newDappletsList);
     }
-  ), [selectedDapplets.dapplets, selectedDapplets.listName, setOpenedList, setSelectedDapplets]);
+  ), [selectedDapplets, setOpenedList, setSelectedDapplets]);
 
   const titleText = useMemo(() => {
     if (selectedList) {
       switch (selectedList) {
-        case Lists.Local:
+        case Lists.MyDapplets:
           return 'My Dapplets'
-        case Lists.Selected:
+        case Lists.MyListing:
           return 'My Listing'
         default:
           return ''
@@ -174,13 +174,13 @@ const ListDapplets = ({
   }, [addressFilter, collator, dapplets, isTrustedSort, selectedList, sortType, trustedUsersList])
 
   const chooseList = {
-    [Lists.Selected]: selectedDapplets,
-    [Lists.Local]: localDapplets,
+    [Lists.MyListing]: selectedDapplets,
+    [Lists.MyDapplets]: localDapplets,
   }
 
   const chooseSetMethod = {
-    [Lists.Selected]: setSelectedDapplets,
-    [Lists.Local]: setLocalDapplets,
+    [Lists.MyListing]: setSelectedDapplets,
+    [Lists.MyDapplets]: setLocalDapplets,
   }
 
   return (
@@ -228,6 +228,7 @@ const ListDapplets = ({
             searchQuery={searchQuery}
             trustedUsersList={trustedUsersList}
             isTrustedSort={isTrustedSort}
+            selectedList={selectedList}
           />
           : sortedDapplets
             .map((item, i) => (
