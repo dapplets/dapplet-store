@@ -133,6 +133,7 @@ interface ListProps {
   onShowMore?: any
   listTitle: string
   onClickSort: any
+  onClose: any
 }
 
 const List = (props: ListProps) => {
@@ -148,7 +149,10 @@ const List = (props: ListProps) => {
         props.usersList.map((address) => (
           <ListUser>
             <Avatar><VanillaChildren>{getAvatar(getAddressShort(address))}</VanillaChildren></Avatar>
-            <Address onClick={() => props.onClickSort(address)}>{address}</Address>
+            <Address onClick={() => {
+              props.onClickSort(address)
+              props.onClose()
+            }}>{address}</Address>
           </ListUser>
         ))
       }
@@ -162,9 +166,9 @@ const List = (props: ListProps) => {
 
 interface DappletListersPopupProps {
   text: string
-  onClickSort: any,
-  trustedList: string[],
-  otherList: string[],
+  onClickSort: any
+  trustedList: string[]
+  otherList: string[]
 }
 
 const DappletListersPopup = (props: DappletListersPopupProps) => {
@@ -200,6 +204,7 @@ const DappletListersPopup = (props: DappletListersPopupProps) => {
           // onShowMore={() => {}}
           listTitle="Your trusted users"
           onClickSort={props.onClickSort}
+          onClose={() => setOpen(false)}
         />
         <Line />
         <List 
@@ -208,6 +213,7 @@ const DappletListersPopup = (props: DappletListersPopupProps) => {
           // onShowMore={() => {}}
           listTitle="Other users"
           onClickSort={props.onClickSort}
+          onClose={() => setOpen(false)}
         />
       </Wrapper>}
 
