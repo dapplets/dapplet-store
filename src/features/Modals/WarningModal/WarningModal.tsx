@@ -59,6 +59,7 @@ const ButtonWrapper = styled.button`
   align-items: center;
   border-radius: 2px;
   margin-top: 10px;
+  cursor: pointer;
 `
 
 const ButtonContainer = styled.div`
@@ -140,6 +141,7 @@ const CloseButton = styled.button`
 	outline: inherit;
   background: none;
   border: none;
+  cursor: pointer;
 `
 
 interface WarningModalProps {

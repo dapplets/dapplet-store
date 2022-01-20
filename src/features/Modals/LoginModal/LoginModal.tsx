@@ -156,8 +156,8 @@ const LoginModal = (props: LoginModalProps) => {
   return(
     <Wrapper>
       <CloseButton onClick={props.onClose}><Close /></CloseButton>
-      <MainText>Sign In</MainText>
-      <SubText>Sed tristique odio fermentum tempus sed.</SubText>
+      <MainText>Login</MainText>
+      <SubText></SubText>
       <ButtonsWrapper>
         {/* <a href='https://docs.dapplets.org/docs/installation' target="_blank">
           <DappletButton icon={<Dapplet />} text='Install Dapplets Extension'/>
@@ -171,8 +171,8 @@ const LoginModal = (props: LoginModalProps) => {
           )
         }
         <ButtonWrapperText>or</ButtonWrapperText>
-        <SignButton icon={<Metamask />} text='Sign in with Metamask' onClick={props.onMetamask}/>
-        <SignButton icon={<Walletconnect />} text='Sign in with WalletConnect' onClick={props.onWalletConnect}/>
+        <SignButton icon={<Metamask />} text='Login with Metamask' onClick={props.onMetamask}/>
+        <SignButton icon={<Walletconnect />} text='Login with WalletConnect' onClick={props.onWalletConnect}/>
       </ButtonsWrapper>
     </Wrapper>
 )}
