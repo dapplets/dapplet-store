@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { IDapplet } from '../../models/dapplets';
 import Header from './Header/Header';
 import Overlay from './Overlay/Overlay';
@@ -122,6 +122,13 @@ const mapDispatch = (dispatch: RootDispatch) => ({
 
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
 
+// const NoneOfTrustedSort = ({setSort}: {setSort: any}) => {
+//   useEffect(() => {
+//     setSort({isTrustedSort: false})
+//   }, [setSort])
+//   return <></>
+// }
+
 export interface LayoutProps {
   selectedList?: Lists
   setSelectedList: any
@@ -204,10 +211,13 @@ const Layout = ({
               setActive={(newSortType: SortTypes) => setSort({ sortType: newSortType})}
             />
           }
-          <CheckboxWrapper isTrustedSort={isTrustedSort || false} onClick={() => setSort({isTrustedSort: !isTrustedSort})}>
-            <div>{isTrustedSort && <div></div>}</div>
-            <span>From trusted users</span>
-          </CheckboxWrapper>
+          {
+            !trustedUsers.includes(addressFilter || "") &&
+            <CheckboxWrapper isTrustedSort={isTrustedSort || false} onClick={() => setSort({isTrustedSort: !isTrustedSort})}>
+              <div>{isTrustedSort && <div></div>}</div>
+              <span>From trusted users</span>
+            </CheckboxWrapper>
+          }
         </MainContentWrapper>
         {dappletsByList && <ListDapplets
           dapplets={dappletsByList}
