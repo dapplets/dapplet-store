@@ -8,7 +8,7 @@ import { ReactComponent as Close } from '../close.svg';
 
 const Wrapper = styled.div`
   width: 380px;
-  height: 421px;
+  /* height: 421px; */
   display: grid;
   grid-row-gap: 10px;
   padding: 40px;
@@ -150,27 +150,24 @@ interface LoginModalProps {
   onClose: any
   onDapplet: any
   isDappletInstall: boolean
+  isDappletLogin?: boolean
 }
 
 const LoginModal = (props: LoginModalProps) => {
   return(
     <Wrapper>
       <CloseButton onClick={props.onClose}><Close /></CloseButton>
-      <MainText>Login</MainText>
-      <SubText></SubText>
+      <MainText>{!props.isDappletLogin && 'Login'}</MainText>
+      <SubText>{props.isDappletLogin && 'You need to install extensions for this action'}</SubText>
       <ButtonsWrapper>
-        {/* <a href='https://docs.dapplets.org/docs/installation' target="_blank">
-          <DappletButton icon={<Dapplet />} text='Install Dapplets Extension'/>
-        </a> */}
         {
-          props.isDappletInstall ? (
+          props.isDappletLogin && (props.isDappletInstall ? (
             <DappletButton icon={<Dapplet />} text='Install Dapplets Extension' href='https://docs.dapplets.org/docs/installation'/>
           ) :
           (
             <DappletButton icon={<Dapplet />} text='Login Dapplets Extension' onClick={props.onDapplet}/>
-          )
+          ))
         }
-        <ButtonWrapperText>or</ButtonWrapperText>
         <SignButton icon={<Metamask />} text='Login with Metamask' onClick={props.onMetamask}/>
         <SignButton icon={<Walletconnect />} text='Login with WalletConnect' onClick={props.onWalletConnect}/>
       </ButtonsWrapper>
