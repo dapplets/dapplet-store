@@ -1,3 +1,4 @@
+import { Lists } from '../models/myLists';
 import { Sort } from '../models/sort'
 
 export const getAnchorParams = () => {
@@ -7,6 +8,7 @@ export const getAnchorParams = () => {
   const params = Object.fromEntries(anchor.split('|').map((param) => param.split('=')))
   if (params.selectedList === 'undefined') params.selectedList = undefined
   params.isTrustedSort = params.isTrustedSort === 'true'
+  if (params.selectedList === Lists.MyListing) params.selectedList = undefined
   return params
 }
 
