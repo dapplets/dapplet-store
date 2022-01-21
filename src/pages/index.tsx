@@ -55,6 +55,7 @@ const App = ({
   
   const isDapplet = useMemo(() => {
     return !window.dapplets
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dappletsStandard])
 
   useEffect(() => {
