@@ -32,7 +32,7 @@ const effects = (dispatch: any) => ({
     console.log({ensNames})
     ensNames?.forEach((ensName, index) => {
       dispatch.ensNames.addEnsNames({
-        ensName: ensName || 'User',
+        ensName: ensName || 'User Listing',
         address: addresses[index],
       })
     });

@@ -142,9 +142,9 @@ const ListDapplets = ({
     if (searchQuery) return 'Search Result'
     if (addressFilter) {
       if (!ensNames[addressFilter]) getEnsNames([addressFilter])
-      return ensNames[addressFilter] || 'User'
+      return ensNames[addressFilter] || 'User Listing'
     }
-    if (isTrustedSort) return 'User Listing'
+    if (isTrustedSort) return 'Dapplets from my trusted users'
     return 'All Dapplets'
   }, [addressFilter, ensNames, getEnsNames, isTrustedSort, searchQuery, selectedList])
 
