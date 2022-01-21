@@ -159,7 +159,7 @@
 }
 
 .title {
-  display: grid;
+  display: flex;
   grid-template-columns: max-content 1fr;
   font-family: 'Montserrat', sans-serif;
   font-style: normal;

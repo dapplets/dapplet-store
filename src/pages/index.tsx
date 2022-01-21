@@ -48,6 +48,25 @@ const App = ({
   getLists,
   setMyList,
 }: Props) => {
+  const [dimensions, setDimensions] = useState({ 
+    height: window.innerHeight,
+    width: window.innerWidth
+  })
+  
+  const isDapplet = useMemo(() => {
+    return !window.dapplets
+  }, [dappletsStandard])
+
+  useEffect(() => {
+    function handleResize() {
+      setDimensions({
+        height: window.innerHeight,
+        width: window.innerWidth
+      })
+    }
+    window.addEventListener('resize', handleResize)
+  }, [])
+  
   const [openedList, setOpenedList] = useState(null)
 
   const dapplets = useMemo(() => Object.values(dappletsStandard), [dappletsStandard])
@@ -112,7 +131,9 @@ const App = ({
         setAddressFilter={(newAddressFilter: string | undefined) => setSort({ addressFilter: newAddressFilter })}
         openedList={openedList}
         setOpenedList={setOpenedList}
-        />
+        windowWidth={dimensions.width}
+        isDapplet={isDapplet}
+      />
     </>
   );
 };

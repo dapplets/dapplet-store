@@ -4,10 +4,19 @@ import { Button, Divider, Message } from 'semantic-ui-react';
 
 import styles from './Overlay.module.scss';
 
+interface OverlayProps {
+  isDapplet: boolean
+}
 
 const Overlay = ({
   className,
-}: DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>) => {
+  isDapplet,
+}: OverlayProps & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>) => {
+  if (!isDapplet) {
+    return (
+      <aside className={cn(styles.overlay, className)}></aside>
+    )
+  }
 
 	return (
 		<aside className={cn(styles.overlay, className)}>

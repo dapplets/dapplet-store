@@ -13,7 +13,11 @@ import { RootDispatch, RootState } from '../../models';
 import { connect } from 'react-redux';
 import { Lists, MyListElement } from '../../models/myLists';
 
-const Wrapper = styled.div`
+interface WrapperProps {
+  isSmall: boolean
+}
+
+const Wrapper = styled.div<WrapperProps>`
   display: grid;
 
   min-height: 100vh;
@@ -23,7 +27,7 @@ const Wrapper = styled.div`
 
   grid-template-areas:
     "header header header"
-    "sidePanel content overlay";
+    ${({ isSmall }) => `"sidePanel content ${isSmall ? 'content' : 'overlay'}"`};
 `
 
 const StyledHeader = styled(Header)`
@@ -130,6 +134,8 @@ export interface LayoutProps {
   setAddressFilter: any
   openedList: any
   setOpenedList: any
+  windowWidth: number
+  isDapplet: boolean
 }
 
 const Layout = ({
@@ -138,6 +144,8 @@ const Layout = ({
   setAddressFilter,
   openedList,
   setOpenedList,
+  windowWidth,
+  isDapplet,
   
   dapplets,
   sortType,
@@ -175,7 +183,7 @@ const Layout = ({
   }, [dapplets, myLists, selectedList])
   
   return (
-    <Wrapper>
+    <Wrapper isSmall={windowWidth <= 1500}>
       <StyledHeader
         selectedList={selectedList}
       />
@@ -236,7 +244,9 @@ const Layout = ({
         />}
 			</MainContent>
 
-			<StyledOverlay/>
+      {
+        windowWidth > 1500 && <StyledOverlay isDapplet={isDapplet}/>
+      }
 		</Wrapper>
 	);
 }

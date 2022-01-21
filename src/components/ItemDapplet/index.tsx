@@ -172,7 +172,7 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
   if (!item) return <></>;
   return (
     <div
-      style={{ display: 'flex', width: '100%' }}
+      style={{ display: 'flex', width: '100%', wordBreak: 'break-all' }}
       onClick={handleClickOnItem}
     >
       {
