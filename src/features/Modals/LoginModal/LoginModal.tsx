@@ -63,11 +63,6 @@ const ButtonsWrapper = styled.div`
   height: 90px;
 `
 
-const ButtonWrapperText = styled.div`
-  align-self: center;
-  justify-self: center;
-`
-
 const ButtonWrapper = styled.button`
   border-radius: 20px;
   display: grid;
