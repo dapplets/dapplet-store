@@ -13,7 +13,19 @@ import { SideLists } from '../SidePanel/SidePanel';
 import { IDapplet } from '../../../models/dapplets';
 import { SortTypes } from '../../../models/sort';
 import { Lists, MyListElement } from '../../../models/myLists';
+import { RootDispatch, RootState } from '../../../models';
+import { connect } from 'react-redux';
 
+
+
+const mapState = (state: RootState) => ({
+  ensNames: state.ensNames
+});
+const mapDispatch = (dispatch: RootDispatch) => ({
+  getEnsNames: (addresses: string[]) => dispatch.ensNames.getEnsNames(addresses)
+});
+
+type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
 export interface ListDappletsProps {
   dapplets: IDapplet[]
   selectedDapplets: MyListElement[]
@@ -54,7 +66,10 @@ const ListDapplets = ({
   setOpenedList,
   address,
   trigger,
-}: ListDappletsProps): React.ReactElement => {
+
+  ensNames,
+  getEnsNames,
+}: ListDappletsProps & Props): React.ReactElement => {
   const ref = useRef<HTMLDivElement>(null)
 
   const collator = useMemo(() => (
@@ -125,10 +140,13 @@ const ListDapplets = ({
       }
     }
     if (searchQuery) return 'Search Result'
-    if (addressFilter) return 'User'
+    if (addressFilter) {
+      if (!ensNames[addressFilter]) getEnsNames([addressFilter])
+      return ensNames[addressFilter] || 'User'
+    }
     if (isTrustedSort) return 'User Listing'
     return 'All Dapplets'
-  }, [addressFilter, isTrustedSort, searchQuery, selectedList])
+  }, [addressFilter, ensNames, getEnsNames, isTrustedSort, searchQuery, selectedList])
 
   const listDappletsHeader = (
     <div
@@ -215,6 +233,7 @@ const ListDapplets = ({
           padding: '0 !important',
           margin: '0 !important',
         }}
+
       >
         {listDappletsHeader}
         {
@@ -272,4 +291,4 @@ const ListDapplets = ({
   );
 }
 
-export default ListDapplets;
+export default connect(mapState, mapDispatch)(ListDapplets);

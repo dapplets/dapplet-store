@@ -2,11 +2,7 @@ import { createModel } from "@rematch/core";
 import { ethers } from 'ethers';
 import abi from '../abi.json';
 import Parse from "parse";
-
-const id = 'dd596d06e4284273a30004fd22e2af80';
-const net = 'goerli';
-
-const PROVIDER_URL = `https://${net}.infura.io/v3/${id}`;
+import { PROVIDER_URL } from "../api/consts";
 
 export interface IDapplet {
   description: string

@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import jazzicon from '@metamask/jazzicon';
 import { ReactComponent as UserPlus } from './userPlus.svg'
 import { ReactComponent as Copy } from './copy.svg'
+import { net } from "../../api/consts";
 
 interface VanillaChildrenProps {
 	children: HTMLElement | HTMLDivElement
@@ -55,10 +56,22 @@ const MocedAvatar = styled.div`
 
 const Address = styled.div`
   grid-area: address;
-  cursor: pointer;
   display: grid;
   grid-template-columns: max-content max-content;
   grid-column-gap: 8px;
+  grid-template-rows: min-content;
+
+  & a {
+    text-decoration: underline;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+`
+
+const StyledCopy = styled(Copy)`
+  cursor: pointer;
 `
 
 // const Description = styled.div`
@@ -238,8 +251,13 @@ const ProfileInList = ({
     <Wrapper>
       <Avatar><VanillaChildren >{getAvatar(getAddress(address))}</VanillaChildren></Avatar>
       <Address>
-        <div>{getAddress(address)}</div>
-        <Copy width={16} height={16} onClick={() => copyTextToClipboard(getAddress(address))} />
+        <a
+          href={`https://${net}.etherscan.io/address/${address}`} 
+          target="_blank" rel="noopener noreferrer"
+        >
+          {getAddress(address)}
+        </a>
+        <StyledCopy width={16} height={16} onClick={() => copyTextToClipboard(getAddress(address))} />
       </Address>
       <Button
         myAddress={myAddress}

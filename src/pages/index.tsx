@@ -14,6 +14,7 @@ import { ModalsList } from './../models/modals';
 import { Lists, MyListElement } from '../models/myLists';
 import { DappletsListItemTypes } from '../components/DappletsListItem/DappletsListItem';
 import { useMemo } from 'react';
+import { getEnsNamesApi } from '../api/ensName/ensName';
 
 const mapState = (state: RootState) => ({
   dappletsStandard: state.dapplets,
@@ -52,6 +53,16 @@ const App = ({
     height: window.innerHeight,
     width: window.innerWidth
   })
+
+  const f = async () => {
+    console.log('')
+    const a = await getEnsNamesApi(['0x1c5BB0361a5EE75f190AfB6DC515c478205A5b4C', '0xF64849376812667BDa7D902666229f8b8dd90687'])
+    console.log({a})
+  }
+
+  useEffect(() => {
+    f()
+  }, [])
   
   const isDapplet = useMemo(() => {
     return !window.dapplets
