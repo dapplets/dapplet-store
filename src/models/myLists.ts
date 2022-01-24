@@ -27,7 +27,12 @@ const reducers = {
       [name]: elements,
     }
   },
-  
+  removeMyList(state: MyListsState, name: Lists) {
+    return {
+      ...state,
+      [name]: [],
+    }
+  },
 }
 
 const effects = (dispatch: any) => ({

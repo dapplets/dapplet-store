@@ -28,6 +28,7 @@ const mapDispatch = (dispatch: RootDispatch) => ({
   setModalOpen: (payload: ModalsList | null) => dispatch.modals.setModalOpen(payload),
   getTrustedUsers: () => dispatch.trustedUsers.getTrustedUsers(),
   getLists: (payload: Lists) => dispatch.myLists.getLists(payload),
+  removeMyList: (payload: Lists) => dispatch.myLists.removeMyList(payload),
   setMyList: (payload: {name: Lists, elements: MyListElement[]}) => dispatch.myLists.setMyList(payload),
 });
 
@@ -47,6 +48,7 @@ const App = ({
   setModalOpen,
   getTrustedUsers,
   getLists,
+  removeMyList,
   setMyList,
 }: Props) => {
   const [dimensions, setDimensions] = useState({ 
@@ -103,7 +105,10 @@ const App = ({
     }
   }, [setModalOpen])
 
-
+  useEffect(() => {
+    if (!address)
+      removeMyList(Lists.MyListing)
+  }, [address, removeMyList])
 
   useEffect(() => {
     const getDappletsListFromLocal = (payload: Lists) => {
