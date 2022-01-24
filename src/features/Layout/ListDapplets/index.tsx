@@ -45,6 +45,7 @@ export interface ListDappletsProps {
   setOpenedList: any
   address: string
   trigger: boolean
+  isDapplet: boolean
 }
 
 const ListDapplets = ({
@@ -66,6 +67,7 @@ const ListDapplets = ({
   setOpenedList,
   address,
   trigger,
+  isDapplet,
 
   ensNames,
   getEnsNames,
@@ -189,10 +191,10 @@ const ListDapplets = ({
     });
     if (addressFilter !== '') 
       sortedList = sortedList.filter(({ trustedUsers }) => trustedUsers.includes(addressFilter))
-    if (isTrustedSort)
+    if (isTrustedSort && !isDapplet)
       sortedList = sortedList.filter(({ trustedUsers }) => trustedUsersList.some((user) => trustedUsers.includes(user)))
     return sortedList
-  }, [addressFilter, collator, dapplets, isTrustedSort, selectedList, sortType, trustedUsersList])
+  }, [addressFilter, collator, dapplets, isDapplet, isTrustedSort, selectedList, sortType, trustedUsersList])
 
   const chooseList = {
     [Lists.MyListing]: selectedDapplets,
@@ -265,6 +267,7 @@ const ListDapplets = ({
             trustedUsersList={trustedUsersList}
             isTrustedSort={isTrustedSort}
             selectedList={selectedList}
+            isDapplet={isDapplet}
           />
           : sortedDapplets
             .map((item, i) => (
@@ -281,6 +284,7 @@ const ListDapplets = ({
                     setAddressFilter={setAddressFilter}
                     setOpenedList={setOpenedList}
                     trustedUsersList={trustedUsersList}
+                    isDapplet={isDapplet}
                   />
                 </div>
               </section>

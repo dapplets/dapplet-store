@@ -75,7 +75,10 @@ const DappletsListSidebar = (props: DappletsListSidebarProps) => {
   return (
     <ListWrapper>
       <TitleWrapper>
-        <Title onClick={() => props.setIsOpen(props.isOpen ? null : props.title)} color={props.isOpen ? '#2A2A2A' : '.#747376'}>{props.isOpen ? '-' : '+'} {props.title}</Title>
+        <Title onClick={() => {
+          if (!!props.dappletsList.length)
+            props.setIsOpen(props.isOpen ? null : props.title)
+        }} color={props.isOpen ? '#2A2A2A' : '.#747376'}>{!!props.dappletsList.length && (props.isOpen ? '-' : '+')} {props.title}</Title>
         {props.isOpen && props.titleButton && <TitleButtonWrapper onClick={props.titleButton?.onClick}>{props.titleButton?.title}</TitleButtonWrapper>}
       </TitleWrapper>
       {

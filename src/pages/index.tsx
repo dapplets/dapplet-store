@@ -87,8 +87,12 @@ const App = ({
     getSort()
     getDapplets()
     getTrustedUsers()
-    getLists(Lists.MyDapplets)
   }, [getDapplets, getLists, getSort, getTrustedUsers])
+
+  useEffect(() => {
+    if (!isDapplet)
+      getLists(Lists.MyDapplets)
+  }, [getLists, isDapplet])
 
   // TODO: test func to open modals
   useEffect(() => {

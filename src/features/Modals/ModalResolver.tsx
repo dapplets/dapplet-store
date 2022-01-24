@@ -120,6 +120,17 @@ const ModalResolver = ({
             onClose={() => setModalOpen(null)}
           />
         )
+      case ModalsList.Install:
+        return (
+          <LoginModal 
+            isDappletInstall={!window.dapplets}
+            onDapplet={onDapplet}
+            onMetamask={web3Init}
+            onWalletConnect={walletConnect}
+            onClose={() => setModalOpen(null)}
+            isDappletLogin={true}
+          />
+        )
       case ModalsList.User:
         return (
           <UserModal 

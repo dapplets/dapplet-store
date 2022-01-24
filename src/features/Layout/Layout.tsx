@@ -161,6 +161,7 @@ const Layout = ({
   setTrustedUsers,
   setMyList,
 }: LayoutProps & Props): React.ReactElement<LayoutProps> => {
+  console.log({isDapplet})
 
   const localDappletsList = myLists[Lists.MyDapplets]
   const setLocalDappletsList = (elements: MyListElement[]) => setMyList({
@@ -186,6 +187,7 @@ const Layout = ({
     <Wrapper isSmall={windowWidth <= 1500}>
       <StyledHeader
         selectedList={selectedList}
+        isDapplet={isDapplet}
       />
       <StyledSidePanel
         localDappletsList={localDappletsList}
@@ -215,7 +217,7 @@ const Layout = ({
             />
           }
           {
-            !trustedUsers.includes(addressFilter || "") &&
+            !isDapplet && !trustedUsers.includes(addressFilter || "") &&
             <CheckboxWrapper isTrustedSort={isTrustedSort || false} onClick={() => setSort({isTrustedSort: !isTrustedSort})}>
               <div></div>
               <span>From trusted users</span>
@@ -241,6 +243,7 @@ const Layout = ({
           setOpenedList={setOpenedList}
           address={address || ""}
           trigger={trigger || false}
+          isDapplet={isDapplet}
         />}
 			</MainContent>
 

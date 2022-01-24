@@ -163,8 +163,14 @@ const LoginModal = (props: LoginModalProps) => {
             <DappletButton icon={<Dapplet />} text='Login Dapplets Extension' onClick={props.onDapplet}/>
           ))
         }
-        <SignButton icon={<Metamask />} text='Login with Metamask' onClick={props.onMetamask}/>
-        <SignButton icon={<Walletconnect />} text='Login with WalletConnect' onClick={props.onWalletConnect}/>
+        {
+          !props.isDappletLogin && (
+            <>
+              <SignButton icon={<Metamask />} text='Login with Metamask' onClick={props.onMetamask}/>
+              <SignButton icon={<Walletconnect />} text='Login with WalletConnect' onClick={props.onWalletConnect}/>
+            </>
+          )
+        }
       </ButtonsWrapper>
     </Wrapper>
 )}

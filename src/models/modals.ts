@@ -2,6 +2,7 @@ import { createModel } from "@rematch/core";
 
 export enum ModalsList {
   Login = "login",
+  Install="install",
   User = "user",
   Warning = "warning",
 }
