@@ -23,16 +23,21 @@ const mapDispatch = (dispatch: RootDispatch) => ({
 });
 
 const Wrapper = styled.aside`
-  padding-bottom: 50px;
-  position: fixed;
-  left: 0;
-  top: 130px;
-  height: 100%;
-  width: 430px;
 	padding: 0 40px;
-  & > div {
-    margin-top: 28px;
-  }
+  padding-bottom: 50px;
+
+  display: grid;
+  grid-template-rows: 1fr max-content;
+  /* & > div { */
+    /* margin-top: 28px;
+  } */
+`
+
+const ListWrapper = styled.div`
+  display: grid;
+  grid-row-gap: 30px;
+  grid-template-rows: repeat(4, max-content);
+  padding-top: 42px;
 `
 
 const Footer = styled.div`
@@ -138,80 +143,82 @@ const SidePanel = ({
 
 	return (
 		<Wrapper className={className}>
-      <DappletsListSidebar
-        dappletsList={localDappletsList.slice(0, 5).map((dapplet) => ({
-          title: dapplets.find(({ name }) => dapplet.name === name)?.title || '',
-          type: dapplet.type,
-          onClickRemove: () => removeFromLocalList(dapplet.name),
-          isRemoved: true,
-        }))}
-        title={SideLists.MyDapplets}
-        onOpenList={() => {
-          setSort({
-            selectedList: Lists.MyDapplets,
-            addressFilter: "",
-          });
-        }}
-        isMoreShow={localDappletsList.length > 0}
-        isOpen={SideLists.MyDapplets === openedList}
-        setIsOpen={setOpenedList}
-      />
+      <ListWrapper>
+        <DappletsListSidebar
+          dappletsList={localDappletsList.slice(0, 5).map((dapplet) => ({
+            title: dapplets.find(({ name }) => dapplet.name === name)?.title || '',
+            type: dapplet.type,
+            onClickRemove: () => removeFromLocalList(dapplet.name),
+            isRemoved: true,
+          }))}
+          title={SideLists.MyDapplets}
+          onOpenList={() => {
+            setSort({
+              selectedList: Lists.MyDapplets,
+              addressFilter: "",
+            });
+          }}
+          isMoreShow={localDappletsList.length > 0}
+          isOpen={SideLists.MyDapplets === openedList}
+          setIsOpen={setOpenedList}
+        />
 
-      <DappletsListSidebar
-        dappletsList={selectedDappletsList.slice(0, 5).map((dapplet) => ({
-          title: dapplets.find(({ name }) => dapplet.name === name)?.title || '',
-          type: dapplet.type,
-          onClickRemove: () => removeFromSelectedList(dapplet.name),
-          isRemoved: dapplet.type !== DappletsListItemTypes.Default,
-        }))}
-        title={SideLists.MyListing}
-        onOpenList={() => {
-          if (!address) {
-            setModalOpen(ModalsList.Login)
-            return
-          }
-          setSort({
-            selectedList: Lists.MyListing,
-            addressFilter: "",
-          });
-        }}
-        isMoreShow={selectedDappletsList.length > 0}
-        titleButton={selectedDappletsList.find(({ type }) => type !== DappletsListItemTypes.Default) && {
-          title: 'Push changes',
-          onClick: pushSelectedDappletsList
-        }}
-        isOpen={SideLists.MyListing === openedList}
-        setIsOpen={setOpenedList}
-      />
-      <DappletsListSidebar
-        dappletsList={trustedUsersList.map((user) => ({
-          title: user.replace('0x000000000000000000000000', '0x'),
-          subTitle: `${user.replace('0x000000000000000000000000', '0x').slice(0, 6)}...${user.replace('0x000000000000000000000000', '0x').slice(-4)}`,
-          id: user,
-          type: DappletsListItemTypes.Default,
-          onClickRemove: () => {},
-          isRemoved: false,
-        }))}
-        title={SideLists.MyTrustedUsers}
-        onOpenList={() => {}}
-        isMoreShow={false}
-        onElementClick={(id: string) => 
-          setSort({
-            addressFilter: id,
-            selectedList: undefined,
-          })}
-        isOpen={SideLists.MyTrustedUsers === openedList}
-        setIsOpen={setOpenedList}
-      />
+        <DappletsListSidebar
+          dappletsList={selectedDappletsList.slice(0, 5).map((dapplet) => ({
+            title: dapplets.find(({ name }) => dapplet.name === name)?.title || '',
+            type: dapplet.type,
+            onClickRemove: () => removeFromSelectedList(dapplet.name),
+            isRemoved: dapplet.type !== DappletsListItemTypes.Default,
+          }))}
+          title={SideLists.MyListing}
+          onOpenList={() => {
+            if (!address) {
+              setModalOpen(ModalsList.Login)
+              return
+            }
+            setSort({
+              selectedList: Lists.MyListing,
+              addressFilter: "",
+            });
+          }}
+          isMoreShow={selectedDappletsList.length > 0}
+          titleButton={selectedDappletsList.find(({ type }) => type !== DappletsListItemTypes.Default) && {
+            title: 'Push changes',
+            onClick: pushSelectedDappletsList
+          }}
+          isOpen={SideLists.MyListing === openedList}
+          setIsOpen={setOpenedList}
+        />
+        <DappletsListSidebar
+          dappletsList={trustedUsersList.map((user) => ({
+            title: user.replace('0x000000000000000000000000', '0x'),
+            subTitle: `${user.replace('0x000000000000000000000000', '0x').slice(0, 6)}...${user.replace('0x000000000000000000000000', '0x').slice(-4)}`,
+            id: user,
+            type: DappletsListItemTypes.Default,
+            onClickRemove: () => {},
+            isRemoved: false,
+          }))}
+          title={SideLists.MyTrustedUsers}
+          onOpenList={() => {}}
+          isMoreShow={false}
+          onElementClick={(id: string) => 
+            setSort({
+              addressFilter: id,
+              selectedList: undefined,
+            })}
+          isOpen={SideLists.MyTrustedUsers === openedList}
+          setIsOpen={setOpenedList}
+        />
 
-      <DappletsListSidebar
-        dappletsList={[]}
-        title={`Popular tags`}
-        onOpenList={() => {}}
-        isMoreShow={false}
-        isOpen={false}
-        setIsOpen={setOpenedList}
-      />
+        <DappletsListSidebar
+          dappletsList={[]}
+          title={`Popular tags`}
+          onOpenList={() => {}}
+          isMoreShow={false}
+          isOpen={false}
+          setIsOpen={setOpenedList}
+        />
+      </ListWrapper>
 
       <Footer>
         <a href='https://dapplets.org/terms-conditions.html'>
@@ -229,7 +236,7 @@ const SidePanel = ({
         <a href='https://docs.dapplets.org'>
           Docs
         </a>
-        <p>© 2019—2021 Dapplets Project</p>
+        <p>© 2019—2022 Dapplets Project</p>
       </Footer>
 
 		</Wrapper>

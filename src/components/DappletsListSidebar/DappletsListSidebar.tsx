@@ -19,6 +19,10 @@ const Title = styled.div<TitleProps>`
   color: ${({ color }) => color};
   user-select: none;
   cursor: pointer;
+  & span {
+    display: inline-block;
+    width: 14px;
+  }
 `
 
 const TitleWrapper = styled.div`
@@ -78,7 +82,7 @@ const DappletsListSidebar = (props: DappletsListSidebarProps) => {
         <Title onClick={() => {
           if (!!props.dappletsList.length)
             props.setIsOpen(props.isOpen ? null : props.title)
-        }} color={props.isOpen ? '#2A2A2A' : '.#747376'}>{!!props.dappletsList.length && (props.isOpen ? '-' : '+')} {props.title}</Title>
+        }} color={props.isOpen ? '#2A2A2A' : '.#747376'}>{!!props.dappletsList.length && (props.isOpen ? <span>-</span> : <span>+</span>)} {props.title}</Title>
         {props.isOpen && props.titleButton && <TitleButtonWrapper onClick={props.titleButton?.onClick}>{props.titleButton?.title}</TitleButtonWrapper>}
       </TitleWrapper>
       {
