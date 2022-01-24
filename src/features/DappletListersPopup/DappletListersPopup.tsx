@@ -198,23 +198,27 @@ const DappletListersPopup = (props: DappletListersPopupProps) => {
         setOpen(!open)
       }}>{props.text}</MainText>
       {open && <Wrapper onClick={(e) => {e.stopPropagation()}}>
-        <List 
-          icon={Trusted}
-          usersList={props.trustedList}
-          // onShowMore={() => {}}
-          listTitle="Your trusted users"
-          onClickSort={props.onClickSort}
-          onClose={() => setOpen(false)}
-        />
-        <Line />
-        <List 
-          icon={Others}
-          usersList={props.otherList}
-          // onShowMore={() => {}}
-          listTitle="Other users"
-          onClickSort={props.onClickSort}
-          onClose={() => setOpen(false)}
-        />
+        {
+          !!props.trustedList.length && <List 
+            icon={Trusted}
+            usersList={props.trustedList}
+            // onShowMore={() => {}}
+            listTitle="Your trusted users"
+            onClickSort={props.onClickSort}
+            onClose={() => setOpen(false)}
+          />
+        }
+        { !(!props.otherList.length || !props.trustedList.length) && <Line />}
+        {
+          !!props.otherList.length && <List 
+            icon={Others}
+            usersList={props.otherList}
+            // onShowMore={() => {}}
+            listTitle="Other users"
+            onClickSort={props.onClickSort}
+            onClose={() => setOpen(false)}
+          />
+        }
       </Wrapper>}
 
     </MainWrapper>

@@ -20,7 +20,7 @@ interface WrapperProps {
 const Wrapper = styled.div<WrapperProps>`
   display: grid;
 
-  min-height: 100vh;
+  height: 100%;
 
   grid-template-columns: 430px 1fr 430px;
   grid-template-rows: 130px 1fr;
