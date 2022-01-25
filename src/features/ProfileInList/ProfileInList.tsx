@@ -30,18 +30,28 @@ const Wrapper = styled.div`
   display: grid;
   grid-template-columns: max-content 1fr max-content;
   grid-column-gap: 11px;
-  grid-template-rows: 38px min-content min-content;
+  grid-template-rows: repeat(3, 1fr);
   grid-template-areas: 
     "avatar title ."
     "avatar address ."
     "avatar buttons all";
   margin: 15px;
-
+  align-items: center;
 `
 
 const Title = styled.div`
   font-size: 26px;
   grid-area: title;
+
+  font-family: Montserrat;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 900;
+  line-height: 24px;
+  letter-spacing: 0em;
+  text-align: left;
+
+  /* align-self: flex-end; */
 `
 
 const Avatar = styled.div`
@@ -82,6 +92,7 @@ const StyledCopy = styled(Copy)`
 const ButtonsWrapper = styled.div`
   grid-area: buttons;
   justify-self: baseline;
+  /* align-self: flex-start; */
 `
 
 const ButtonAll = styled.div`

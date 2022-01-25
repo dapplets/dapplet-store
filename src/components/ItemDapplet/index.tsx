@@ -180,7 +180,7 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
       {
         icon.uris.length > 0 ?
         <Image className={styles.itemImage} src={`https://bee.dapplets.org/bzz/${icon.uris[0].slice(6)}`} style={{ width: 85, height: 85, borderRadius: '50%', marginTop: 10 }} />
-        : <div style={{  width: 85, height: 85, borderRadius:'50%', marginTop: 10, background: "#919191" }}></div>
+        : <div style={{  minWidth: 85, height: 85, borderRadius:'50%', marginTop: 10, background: "#919191" }}></div>
       }
       
 

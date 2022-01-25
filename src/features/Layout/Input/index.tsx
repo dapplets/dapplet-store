@@ -29,7 +29,7 @@ function Input({ searchQuery, editSearchQuery }: InputProps): React.ReactElement
     >
       <Icon name="search" style={{ marginLeft: '8px'}} />
       <input
-        style={{ color: '#2A2A2A', fontSize: 16, borderRadius: 0 }}
+        style={{ color: '#2A2A2A', fontSize: 16, borderRadius: 4, border: '1px solid #E3E3E3' }}
         className="app-input"
       />
       <Button onClick={deleteTextInput} basic size="tiny"

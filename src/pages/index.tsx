@@ -4,6 +4,7 @@ import Layout from './../features/Layout/Layout';
 
 import "@fontsource/roboto"
 import "@fontsource/montserrat"
+import "@fontsource/montserrat/900.css"
 import ModalResolver from '../features/Modals/ModalResolver';
 
 
