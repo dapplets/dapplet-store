@@ -12,6 +12,7 @@ import Dropdown from './Dropdown/Dropdown';
 import { RootDispatch, RootState } from '../../models';
 import { connect } from 'react-redux';
 import { Lists, MyListElement } from '../../models/myLists';
+import { ModalsList } from '../../models/modals';
 
 interface WrapperProps {
   isSmall: boolean
@@ -113,6 +114,7 @@ const mapState = (state: RootState) => ({
   myLists: state.myLists,
 });
 const mapDispatch = (dispatch: RootDispatch) => ({
+  setModalOpen: (payload: ModalsList | null) => dispatch.modals.setModalOpen(payload),
   setSort: (payload: Sort) => dispatch.sort.setSort(payload),
   setTrustedUsers: (payload: string[]) => dispatch.trustedUsers.setTrustedUsers(payload),
   setMyList: (payload: {name: Lists, elements: MyListElement[]}) => dispatch.myLists.setMyList(payload),
@@ -157,6 +159,7 @@ const Layout = ({
   address,
   trustedUsers,
   myLists,
+  setModalOpen,
   setSort,
   setTrustedUsers,
   setMyList,
@@ -244,6 +247,7 @@ const Layout = ({
           address={address || ""}
           trigger={trigger || false}
           isDapplet={isDapplet}
+          setModalOpen={setModalOpen}
         />}
 			</MainContent>
 

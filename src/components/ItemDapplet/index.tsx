@@ -116,7 +116,6 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
     editLocalDappletsList,
     editSelectedDappletsList,
     searchQuery,
-    setAddressFilter,
     setSort,
     trustedUsersList,
     address,
@@ -200,7 +199,13 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
                   trustedList={trustedList}
                   otherList={otherList}
                   text={`+${Math.max(trustedList.length-3, 0) + otherList.length} more lists`}
-                  onClickSort={setAddressFilter}
+                  onClickSort={(address: string) => {
+                    console.log('hello')
+                    setSort({
+                      addressFilter: address,
+                      selectedList: undefined,
+                    })
+                  }}
                 />
               </ImagesWrapper>
             </>
@@ -220,7 +225,13 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
                 trustedList={trustedList}
                 otherList={otherList}
                 text={`+${Math.max(trustedList.length-3, 0) + otherList.length} more lists`}
-                onClickSort={setAddressFilter}
+                onClickSort={(address: string) => {
+                  console.log('hello')
+                  setSort({
+                    addressFilter: address,
+                    selectedList: undefined,
+                  })
+                }}
               />
             </ImagesWrapper>
             {/* <UnderUserInfoSeparator /> */}

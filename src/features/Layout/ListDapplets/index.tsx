@@ -46,6 +46,7 @@ export interface ListDappletsProps {
   address: string
   trigger: boolean
   isDapplet: boolean
+  setModalOpen: any,
 }
 
 const ListDapplets = ({
@@ -68,6 +69,7 @@ const ListDapplets = ({
   address,
   trigger,
   isDapplet,
+  setModalOpen,
 
   ensNames,
   getEnsNames,
@@ -248,6 +250,8 @@ const ListDapplets = ({
             setSelectedList={setSelectedList}
             trustedUsersList={trustedUsersList}
             setTrustedUsersList={setTrustedUsersList}
+            isDapplet={isDapplet}
+            setModalOpen={setModalOpen}
           />
         }
         {selectedList 

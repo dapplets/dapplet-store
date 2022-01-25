@@ -5,6 +5,7 @@ import jazzicon from '@metamask/jazzicon';
 import { ReactComponent as UserPlus } from './userPlus.svg'
 import { ReactComponent as Copy } from './copy.svg'
 import { net } from "../../api/consts";
+import { ModalsList } from "../../models/modals";
 
 interface VanillaChildrenProps {
 	children: HTMLElement | HTMLDivElement
@@ -175,6 +176,8 @@ interface ButtonProps {
   address: string
   trustedUsersList: string[]
   setTrustedUsersList: any
+  isDapplet: boolean
+  setModalOpen: any
 }
 
 const Button = ({
@@ -182,10 +185,16 @@ const Button = ({
   address,
   trustedUsersList,
   setTrustedUsersList,
+  isDapplet,
+  setModalOpen,
 }: ButtonProps) => {
   return (
     <ButtonsWrapper>
       <ButtonAction onClick={() => {
+        if (isDapplet) {
+          setModalOpen(ModalsList.Install)
+          return
+        }
         if (myAddress === address) return
         if (trustedUsersList.includes(address)) 
           setTrustedUsersList(trustedUsersList.filter((user) => user !== address))
@@ -212,6 +221,8 @@ interface ProfileInListProps {
   setSelectedList: any
   trustedUsersList: string[]
   setTrustedUsersList: any
+  isDapplet: boolean
+  setModalOpen: any
 }
 
 const ProfileInList = ({
@@ -222,6 +233,8 @@ const ProfileInList = ({
   setSelectedList,
   trustedUsersList,
   setTrustedUsersList,
+  isDapplet,
+  setModalOpen,
 }: ProfileInListProps) => {
   const getAvatar = (loggedIn: string): HTMLDivElement => jazzicon(164, parseInt(loggedIn.slice(2, 10), 16));
   const getAddress = (address: string) => address.replace('0x000000000000000000000000', '0x')
@@ -234,6 +247,8 @@ const ProfileInList = ({
         address={address}
         trustedUsersList={trustedUsersList}
         setTrustedUsersList={setTrustedUsersList}
+        isDapplet={isDapplet}
+        setModalOpen={setModalOpen}
       />
       <ButtonAll>
         <button onClick={() => {
@@ -264,6 +279,8 @@ const ProfileInList = ({
         address={address}
         trustedUsersList={trustedUsersList}
         setTrustedUsersList={setTrustedUsersList}
+        isDapplet={isDapplet}
+        setModalOpen={setModalOpen}
       />
       <ButtonAll>
         <button onClick={() => {
