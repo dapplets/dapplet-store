@@ -21,6 +21,9 @@ const Wrapper = styled.header`
   background: white;
   width: 100%;
   z-index: 9999;
+  box-shadow: 0px 10px 8px 0px #2675D10A;
+  box-shadow: 0px 3px 4px 0px #00000017;
+
 `
 
 const HeaderTop = styled.div`
