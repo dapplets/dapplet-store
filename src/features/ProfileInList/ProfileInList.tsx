@@ -32,17 +32,17 @@ const Wrapper = styled.div`
   grid-column-gap: 11px;
   grid-template-rows: 38px min-content min-content;
   grid-template-areas: 
-    "avatar title buttons"
-    "avatar address address"
-    "avatar description all";
+    "avatar title ."
+    "avatar address ."
+    "avatar buttons all";
   margin: 15px;
 
 `
 
-// const Title = styled.div`
-//   font-size: 26px;
-//   grid-area: title;
-// `
+const Title = styled.div`
+  font-size: 26px;
+  grid-area: title;
+`
 
 const Avatar = styled.div`
   grid-area: avatar;
@@ -81,6 +81,7 @@ const StyledCopy = styled(Copy)`
 
 const ButtonsWrapper = styled.div`
   grid-area: buttons;
+  justify-self: baseline;
 `
 
 const ButtonAll = styled.div`
@@ -223,6 +224,7 @@ interface ProfileInListProps {
   setTrustedUsersList: any
   isDapplet: boolean
   setModalOpen: any
+  title?: string
 }
 
 const ProfileInList = ({
@@ -235,6 +237,7 @@ const ProfileInList = ({
   setTrustedUsersList,
   isDapplet,
   setModalOpen,
+  title,
 }: ProfileInListProps) => {
   const getAvatar = (loggedIn: string): HTMLDivElement => jazzicon(164, parseInt(loggedIn.slice(2, 10), 16));
   const getAddress = (address: string) => address.replace('0x000000000000000000000000', '0x')
@@ -242,6 +245,7 @@ const ProfileInList = ({
   if (!address) return (
     <Wrapper>
       <Avatar><MocedAvatar /></Avatar>
+      <Title>{title}</Title>
       <Button
         myAddress={myAddress}
         address={address}
@@ -265,6 +269,7 @@ const ProfileInList = ({
   return (
     <Wrapper>
       <Avatar><VanillaChildren >{getAvatar(getAddress(address))}</VanillaChildren></Avatar>
+      <Title>{title}</Title>
       <Address>
         <a
           href={`https://${net}.etherscan.io/address/${address}`} 

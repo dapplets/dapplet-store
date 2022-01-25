@@ -11,18 +11,73 @@ import { DappletsListItemTypes } from '../../../components/DappletsListItem/Dapp
 import ProfileInList from '../../ProfileInList/ProfileInList';
 import { SideLists } from '../SidePanel/SidePanel';
 import { IDapplet } from '../../../models/dapplets';
-import { SortTypes } from '../../../models/sort';
+import { Sort, SortTypes } from '../../../models/sort';
 import { Lists, MyListElement } from '../../../models/myLists';
 import { RootDispatch, RootState } from '../../../models';
 import { connect } from 'react-redux';
+import styled from 'styled-components';
+import Dropdown from '../Dropdown/Dropdown';
+import Input from '../Input';
 
 
+
+const MainContentWrapper = styled.div`
+  display: grid;
+  grid-template-columns: 1fr max-content max-content;
+  grid-column-gap: 20px;
+  align-items: center;
+  border-bottom: 1px solid rgb(227, 227, 227);
+`
+
+interface CheckboxWrapperProps {
+  isTrustedSort: boolean
+}
+
+const CheckboxWrapper = styled.div<CheckboxWrapperProps>`
+  display: grid;
+  grid-template-columns: max-content max-content;
+  grid-column-gap: 8px;
+  padding-right: 15px;
+  cursor: pointer;
+  user-select: none;
+
+  & > div {
+    width: 16px;
+    height: 16px;
+    background: ${({ isTrustedSort }) => isTrustedSort ?  '#ffffff' : '#ffffff'};
+    border-radius: 50%;
+    margin-top: 2px;
+    border:  ${({ isTrustedSort }) => isTrustedSort ?  '5px solid #D9304F' : '1px solid #919191'};
+    position: relative;
+  }
+`
+
+const dropdownItems = [
+  {
+    id: 1,
+    text: SortTypes.ABC,
+  },
+  {
+    id: 2,
+    text: SortTypes.ABCReverse,
+  },
+  {
+    id: 3,
+    text: SortTypes.Newest,
+  },
+  {
+    id: 4,
+    text: SortTypes.Oldest,
+  }
+];
 
 const mapState = (state: RootState) => ({
-  ensNames: state.ensNames
+  ensNames: state.ensNames,
+  trustedUsers: state.trustedUsers.trustedUsers,
 });
 const mapDispatch = (dispatch: RootDispatch) => ({
-  getEnsNames: (addresses: string[]) => dispatch.ensNames.getEnsNames(addresses)
+  getEnsNames: (addresses: string[]) => dispatch.ensNames.getEnsNames(addresses),
+  setSort: (payload: Sort) => dispatch.sort.setSort(payload),
 });
 
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
@@ -72,7 +127,9 @@ const ListDapplets = ({
   setModalOpen,
 
   ensNames,
+  trustedUsers,
   getEnsNames,
+  setSort,
 }: ListDappletsProps & Props): React.ReactElement => {
   const ref = useRef<HTMLDivElement>(null)
 
@@ -239,7 +296,6 @@ const ListDapplets = ({
         }}
 
       >
-        {listDappletsHeader}
         {
           (addressFilter !== '' || selectedList) && selectedList !== Lists.MyDapplets &&
           <ProfileInList
@@ -252,8 +308,31 @@ const ListDapplets = ({
             setTrustedUsersList={setTrustedUsersList}
             isDapplet={isDapplet}
             setModalOpen={setModalOpen}
+            title={titleText}
           />
         }
+        <MainContentWrapper>
+          <Input 
+            searchQuery={searchQuery || ""}
+            editSearchQuery={(newSearchQuery: string | undefined) => setSort({ searchQuery: newSearchQuery})}
+          />
+          {
+            !selectedList &&
+            <Dropdown 
+              items={dropdownItems}
+              active={sortType || SortTypes.ABC}
+              setActive={(newSortType: SortTypes) => setSort({ sortType: newSortType})}
+            />
+          }
+          {
+            !isDapplet && !trustedUsers.includes(addressFilter || "") &&
+            <CheckboxWrapper isTrustedSort={isTrustedSort || false} onClick={() => setSort({isTrustedSort: !isTrustedSort})}>
+              <div></div>
+              <span>From trusted users</span>
+            </CheckboxWrapper>
+          }
+        </MainContentWrapper>
+        {!((addressFilter !== '' || selectedList) && selectedList !== Lists.MyDapplets) && listDappletsHeader}
         {selectedList 
           // ? <></>
           ? <SortableList
