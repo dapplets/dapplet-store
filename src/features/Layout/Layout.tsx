@@ -7,11 +7,10 @@ import SidePanel from './SidePanel/SidePanel';
 import styled from 'styled-components';
 import ListDapplets from './ListDapplets';
 import { Sort, SortTypes } from '../../models/sort';
-import Input from './Input';
-import Dropdown from './Dropdown/Dropdown';
 import { RootDispatch, RootState } from '../../models';
 import { connect } from 'react-redux';
 import { Lists, MyListElement } from '../../models/myLists';
+import { ModalsList } from '../../models/modals';
 
 interface WrapperProps {
   isSmall: boolean
@@ -50,56 +49,6 @@ const StyledOverlay = styled(Overlay)`
   grid-area: overlay;
 `
 
-const MainContentWrapper = styled.div`
-  display: grid;
-  grid-template-columns: 1fr max-content max-content;
-  grid-column-gap: 20px;
-  align-items: center;
-  border-bottom: 1px solid rgb(227, 227, 227);
-`
-
-interface CheckboxWrapperProps {
-  isTrustedSort: boolean
-}
-
-const CheckboxWrapper = styled.div<CheckboxWrapperProps>`
-  display: grid;
-  grid-template-columns: max-content max-content;
-  grid-column-gap: 8px;
-  padding-right: 15px;
-  cursor: pointer;
-  user-select: none;
-
-  & > div {
-    width: 16px;
-    height: 16px;
-    background: ${({ isTrustedSort }) => isTrustedSort ?  '#ffffff' : '#ffffff'};
-    border-radius: 50%;
-    margin-top: 2px;
-    border:  ${({ isTrustedSort }) => isTrustedSort ?  '5px solid #D9304F' : '1px solid #919191'};
-    position: relative;
-  }
-`
-
-const dropdownItems = [
-  {
-    id: 1,
-    text: SortTypes.ABC,
-  },
-  {
-    id: 2,
-    text: SortTypes.ABCReverse,
-  },
-  {
-    id: 3,
-    text: SortTypes.Newest,
-  },
-  {
-    id: 4,
-    text: SortTypes.Oldest,
-  }
-];
-
 const mapState = (state: RootState) => ({
   dapplets: Object.values(state.dapplets),
   sortType: state.sort.sortType,
@@ -113,6 +62,7 @@ const mapState = (state: RootState) => ({
   myLists: state.myLists,
 });
 const mapDispatch = (dispatch: RootDispatch) => ({
+  setModalOpen: (payload: ModalsList | null) => dispatch.modals.setModalOpen(payload),
   setSort: (payload: Sort) => dispatch.sort.setSort(payload),
   setTrustedUsers: (payload: string[]) => dispatch.trustedUsers.setTrustedUsers(payload),
   setMyList: (payload: {name: Lists, elements: MyListElement[]}) => dispatch.myLists.setMyList(payload),
@@ -157,6 +107,7 @@ const Layout = ({
   address,
   trustedUsers,
   myLists,
+  setModalOpen,
   setSort,
   setTrustedUsers,
   setMyList,
@@ -203,27 +154,6 @@ const Layout = ({
       />
 
 			<MainContent>
-        <MainContentWrapper>
-          <Input 
-            searchQuery={searchQuery || ""}
-            editSearchQuery={(newSearchQuery: string | undefined) => setSort({ searchQuery: newSearchQuery})}
-          />
-          {
-            !selectedList &&
-            <Dropdown 
-              items={dropdownItems}
-              active={sortType || SortTypes.ABC}
-              setActive={(newSortType: SortTypes) => setSort({ sortType: newSortType})}
-            />
-          }
-          {
-            !isDapplet && !trustedUsers.includes(addressFilter || "") &&
-            <CheckboxWrapper isTrustedSort={isTrustedSort || false} onClick={() => setSort({isTrustedSort: !isTrustedSort})}>
-              <div></div>
-              <span>From trusted users</span>
-            </CheckboxWrapper>
-          }
-        </MainContentWrapper>
         {dappletsByList && <ListDapplets
           dapplets={dappletsByList}
           selectedDapplets={selectedDappletsList}
@@ -244,6 +174,7 @@ const Layout = ({
           address={address || ""}
           trigger={trigger || false}
           isDapplet={isDapplet}
+          setModalOpen={setModalOpen}
         />}
 			</MainContent>
 

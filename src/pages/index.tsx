@@ -151,7 +151,9 @@ const App = ({
       <Layout
         setSelectedList={(newSelectedList: Lists | undefined) => setSort({ selectedList: newSelectedList })}
         trustedUsersList={trustedUsers}
-        setAddressFilter={(newAddressFilter: string | undefined) => setSort({ addressFilter: newAddressFilter })}
+        setAddressFilter={(newAddressFilter: string | undefined) => {
+          setSort({ addressFilter: newAddressFilter })
+        }}
         openedList={openedList}
         setOpenedList={setOpenedList}
         windowWidth={dimensions.width}

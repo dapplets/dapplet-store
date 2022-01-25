@@ -5,6 +5,7 @@ import jazzicon from '@metamask/jazzicon';
 import { ReactComponent as UserPlus } from './userPlus.svg'
 import { ReactComponent as Copy } from './copy.svg'
 import { net } from "../../api/consts";
+import { ModalsList } from "../../models/modals";
 
 interface VanillaChildrenProps {
 	children: HTMLElement | HTMLDivElement
@@ -31,17 +32,17 @@ const Wrapper = styled.div`
   grid-column-gap: 11px;
   grid-template-rows: 38px min-content min-content;
   grid-template-areas: 
-    "avatar title buttons"
-    "avatar address address"
-    "avatar description all";
+    "avatar title ."
+    "avatar address ."
+    "avatar buttons all";
   margin: 15px;
 
 `
 
-// const Title = styled.div`
-//   font-size: 26px;
-//   grid-area: title;
-// `
+const Title = styled.div`
+  font-size: 26px;
+  grid-area: title;
+`
 
 const Avatar = styled.div`
   grid-area: avatar;
@@ -80,6 +81,7 @@ const StyledCopy = styled(Copy)`
 
 const ButtonsWrapper = styled.div`
   grid-area: buttons;
+  justify-self: baseline;
 `
 
 const ButtonAll = styled.div`
@@ -175,6 +177,8 @@ interface ButtonProps {
   address: string
   trustedUsersList: string[]
   setTrustedUsersList: any
+  isDapplet: boolean
+  setModalOpen: any
 }
 
 const Button = ({
@@ -182,10 +186,16 @@ const Button = ({
   address,
   trustedUsersList,
   setTrustedUsersList,
+  isDapplet,
+  setModalOpen,
 }: ButtonProps) => {
   return (
     <ButtonsWrapper>
       <ButtonAction onClick={() => {
+        if (isDapplet) {
+          setModalOpen(ModalsList.Install)
+          return
+        }
         if (myAddress === address) return
         if (trustedUsersList.includes(address)) 
           setTrustedUsersList(trustedUsersList.filter((user) => user !== address))
@@ -212,6 +222,9 @@ interface ProfileInListProps {
   setSelectedList: any
   trustedUsersList: string[]
   setTrustedUsersList: any
+  isDapplet: boolean
+  setModalOpen: any
+  title?: string
 }
 
 const ProfileInList = ({
@@ -222,6 +235,9 @@ const ProfileInList = ({
   setSelectedList,
   trustedUsersList,
   setTrustedUsersList,
+  isDapplet,
+  setModalOpen,
+  title,
 }: ProfileInListProps) => {
   const getAvatar = (loggedIn: string): HTMLDivElement => jazzicon(164, parseInt(loggedIn.slice(2, 10), 16));
   const getAddress = (address: string) => address.replace('0x000000000000000000000000', '0x')
@@ -229,11 +245,14 @@ const ProfileInList = ({
   if (!address) return (
     <Wrapper>
       <Avatar><MocedAvatar /></Avatar>
+      <Title>{title}</Title>
       <Button
         myAddress={myAddress}
         address={address}
         trustedUsersList={trustedUsersList}
         setTrustedUsersList={setTrustedUsersList}
+        isDapplet={isDapplet}
+        setModalOpen={setModalOpen}
       />
       <ButtonAll>
         <button onClick={() => {
@@ -250,6 +269,7 @@ const ProfileInList = ({
   return (
     <Wrapper>
       <Avatar><VanillaChildren >{getAvatar(getAddress(address))}</VanillaChildren></Avatar>
+      <Title>{title}</Title>
       <Address>
         <a
           href={`https://${net}.etherscan.io/address/${address}`} 
@@ -264,6 +284,8 @@ const ProfileInList = ({
         address={address}
         trustedUsersList={trustedUsersList}
         setTrustedUsersList={setTrustedUsersList}
+        isDapplet={isDapplet}
+        setModalOpen={setModalOpen}
       />
       <ButtonAll>
         <button onClick={() => {
