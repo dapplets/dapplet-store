@@ -22,7 +22,7 @@
 	cursor: pointer;
 
 	border: 1px solid lightgray;
-  border-radius: 0 !important;
+  border-radius: 4px;
 	background: #FFF;
   box-shadow: none;
 
@@ -59,7 +59,7 @@
 .author {
 	margin-top: 4px;
 
-	color: #454545;
+	color: #919191;
 
 	font-size: 14px;
 	line-height: 16px;
@@ -163,7 +163,7 @@
   grid-template-columns: max-content 1fr;
   font-family: 'Montserrat', sans-serif;
   font-style: normal;
-  font-weight: 500;
+  font-weight: 900;
   font-size: 16px !important;
   line-height: 149% !important;
   color: #2A2A2A !important;
