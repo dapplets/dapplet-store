@@ -24,7 +24,7 @@ const mapState = (state: RootState) => ({
 const mapDispatch = (dispatch: RootDispatch) => ({
   setSort: (payload: Sort) => dispatch.sort.setSort(payload),
   setModalOpen: (payload: ModalsList | null) => dispatch.modals.setModalOpen(payload),
-  setExpanded: (payload: {name: string, isExpanded: boolean}) => dispatch.dapplets.setExpanded(payload)
+  setExpanded: (payload: {id: number, isExpanded: boolean}) => dispatch.dapplets.setExpanded(payload)
 });
 
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
@@ -166,7 +166,7 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
   const handleClickOnItem = ({ target }: any) => {
     if (target.tagName === 'BUTTON') return;
     setExpanded({
-      name: item.name,
+      id: item.id,
       isExpanded: !isOpen,
     })
   };

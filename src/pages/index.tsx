@@ -16,6 +16,7 @@ import { Lists, MyListElement } from '../models/myLists';
 import { DappletsListItemTypes } from '../components/DappletsListItem/DappletsListItem';
 import { useMemo } from 'react';
 import { getEnsNamesApi } from '../api/ensName/ensName';
+import { EventPushing, EventType } from '../models/dapplets';
 
 const mapState = (state: RootState) => ({
   dappletsStandard: state.dapplets,
@@ -31,6 +32,7 @@ const mapDispatch = (dispatch: RootDispatch) => ({
   getLists: (payload: Lists) => dispatch.myLists.getLists(payload),
   removeMyList: (payload: Lists) => dispatch.myLists.removeMyList(payload),
   setMyList: (payload: {name: Lists, elements: MyListElement[]}) => dispatch.myLists.setMyList(payload),
+  pushMyListing: (payload: {events: EventPushing[], provider: any}) => dispatch.dapplets.pushMyListing(payload),
 });
 
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
@@ -51,6 +53,7 @@ const App = ({
   getLists,
   removeMyList,
   setMyList,
+  pushMyListing,
 }: Props) => {
   const [dimensions, setDimensions] = useState({ 
     height: window.innerHeight,
@@ -65,7 +68,9 @@ const App = ({
 
   useEffect(() => {
     f()
-  }, [])
+    
+  }, [pushMyListing])
+
   
   const isDapplet = useMemo(() => {
     return !window.dapplets
