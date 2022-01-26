@@ -143,7 +143,7 @@ const ListDapplets = ({
       const nowDappletsList = isLocalDapplet
         ? dappletsList
           .filter((dapplet) => dapplet.name !== item.name)
-        : [{name: item.name, type}, ...dappletsList];
+        : [{name: item.name, type, id: item.id}, ...dappletsList];
       const newDappletsList: MyListElement[] = nowDappletsList;
       return newDappletsList
     } 
@@ -181,7 +181,7 @@ const ListDapplets = ({
             break;
         }
       } else {
-        nowDappletsList = [{name: item.name, type: DappletsListItemTypes.Adding}, ...nowDappletsList]
+        nowDappletsList = [{name: item.name, type: DappletsListItemTypes.Adding, id: item.id}, ...nowDappletsList]
       }
       const newDappletsList: MyListElement[] = nowDappletsList;
       saveListToLocalStorage(newDappletsList, Lists.MyListing);

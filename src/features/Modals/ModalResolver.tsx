@@ -17,11 +17,15 @@ import { EventPushing, EventType } from "../../models/dapplets";
 const mapState = (state: RootState) => ({
   openedModal: state.modals.openedModal,
   address: state.user.address,
+  provider: state.user.provider,
 });
 const mapDispatch = (dispatch: RootDispatch) => ({
   setModalOpen: (payload: ModalsList | null) => dispatch.modals.setModalOpen(payload),
   setUser: (payload: string) => dispatch.user.setUser({
     address: payload
+  }),
+  setProvider: (payload: any) => dispatch.user.setUser({
+    provider: payload
   }),
   pushMyListing: (payload: {events: EventPushing[], provider: any}) => dispatch.dapplets.pushMyListing(payload),
 });
@@ -46,24 +50,26 @@ const ModalWrapper = styled.div`
 const ModalResolver = ({
   openedModal,
   address,
+  provider,
   setModalOpen,
   setUser,
   pushMyListing,
+  setProvider,
 }: Props) => {
-  const [provider, setProvider] = useState()
+  // const [provider, setProvider] = useState()
   
-  useEffect(() => {
-    if (address && provider) {
-      const e: EventPushing = {
-        eventType: EventType.ADD,
-        dappletId: 27,
-      }
-      pushMyListing({
-        events: [e],
-        provider
-      })
-    }
-  }, [address, provider, pushMyListing])
+  // useEffect(() => {
+  //   if (address && provider) {
+  //     const e: EventPushing = {
+  //       eventType: EventType.ADD,
+  //       dappletId: 27,
+  //     }
+  //     pushMyListing({
+  //       events: [e],
+  //       provider
+  //     })
+  //   }
+  // }, [address, provider, pushMyListing])
   
   const nowModal = useMemo(() => {
     const web3Init = async () => {

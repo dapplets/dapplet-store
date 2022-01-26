@@ -6,6 +6,7 @@ export enum Lists {
 }
 
 export interface MyListElement {
+  id: number
   name: string
   type: string
 }

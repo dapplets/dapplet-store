@@ -2,6 +2,7 @@ import { createModel } from "@rematch/core";
 
 export interface User {
   address?: string
+  provider?: any
 }
 
 type UserState = Readonly<User>
@@ -11,7 +12,10 @@ const INITIAL_STATE: UserState = {
 
 const reducers = {
   setUser (state: UserState, payload: UserState) {
-    return payload
+    return {
+      ...state,
+      ...payload,
+    }
   }
 }
 

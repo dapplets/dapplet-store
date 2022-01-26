@@ -16,7 +16,7 @@ import { Lists, MyListElement } from '../models/myLists';
 import { DappletsListItemTypes } from '../components/DappletsListItem/DappletsListItem';
 import { useMemo } from 'react';
 import { getEnsNamesApi } from '../api/ensName/ensName';
-import { EventPushing, EventType } from '../models/dapplets';
+import { EventPushing } from '../models/dapplets';
 
 const mapState = (state: RootState) => ({
   dappletsStandard: state.dapplets,
@@ -130,8 +130,8 @@ const App = ({
         [key: string]: MyListElement
       } = {}
       dapplets.filter((dapp) => dapp.trustedUsers.includes(address) && dapp.owner !== address)
-        .forEach(({ name }) => {
-          list[name] = { name, type: DappletsListItemTypes.Default}
+        .forEach(({ name, id }) => {
+          list[name] = { name, type: DappletsListItemTypes.Default, id}
         })
       getDappletsListFromLocal(Lists.MyListing).forEach((dapp) => {
         list[dapp.name] = dapp

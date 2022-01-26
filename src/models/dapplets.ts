@@ -1,5 +1,5 @@
 import { createModel } from "@rematch/core";
-import { ethers, Signer } from 'ethers';
+import { ethers } from 'ethers';
 import abi from '../abi.json';
 import abiListing from './abi';
 import Parse from "parse";
@@ -166,7 +166,7 @@ const effects = (dispatch: any) => ({ //
     const signer = await ethersProvider.getSigner();
     // const contractProvider = new ethers.providers.JsonRpcProvider(PROVIDER_URL, 0x05);
     const contractListing: any = await new ethers.Contract('0x3470ab240a774e4D461456D51639F033c0cB5363', abiListing, signer);
-    await contractListing.changeMyList([[0,27]])
+    await contractListing.changeMyList([events.map(({eventType, dappletId}) => ([eventType, dappletId]))])
     console.log('EVENT')
     // dispatch.dapplets.addTrustedUserToDapplet({name, address});
   }, 

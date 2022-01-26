@@ -10,9 +10,11 @@ import { ModalsList } from '../../../models/modals';
 import { IDapplet } from '../../../models/dapplets';
 import styled from 'styled-components';
 import { Lists, MyListElement } from '../../../models/myLists';
+import { EventPushing, EventType } from "../../../models/dapplets";
 
 const mapState = (state: RootState) => ({
   address: state.user.address,
+  provider: state.user.provider,
 });
 
 const mapDispatch = (dispatch: RootDispatch) => ({
@@ -20,6 +22,7 @@ const mapDispatch = (dispatch: RootDispatch) => ({
   setSort: (payload: Sort) => dispatch.sort.setSort(payload),
   addTrustedUserToDappletEffect: (payload: {name: string, address: string}) => dispatch.dapplets.addTrustedUserToDappletEffect(payload),
   removeTrustedUserFromDappletEffect: (payload: {name: string, address: string}) => dispatch.dapplets.removeTrustedUserFromDappletEffect(payload),
+  pushMyListing: (payload: {events: EventPushing[], provider: any}) => dispatch.dapplets.pushMyListing(payload),
 });
 
 const Wrapper = styled.aside`
@@ -86,10 +89,12 @@ const SidePanel = ({
   setOpenedList,
   dapplets,
   address,
+  provider,
   setSort,
   setModalOpen,
   addTrustedUserToDappletEffect,
   removeTrustedUserFromDappletEffect,
+  pushMyListing,
 }: SidePanelProps & Props): React.ReactElement => {
 
   const removeFromLocalList = (name: string) => (e: any) => {
@@ -115,8 +120,13 @@ const SidePanel = ({
   }
 
   const pushSelectedDappletsList = () => {
+    const events: EventPushing[] = []
     const nowDappletsList: MyListElement[] = selectedDappletsList.map((dapplet) => {
       if (dapplet.type === DappletsListItemTypes.Adding) {
+        events.push({
+          eventType: EventType.ADD,
+          dappletId: dapplet.id,
+        })
         addTrustedUserToDappletEffect({
           name: dapplet.name,
           address: address || "",
@@ -128,8 +138,12 @@ const SidePanel = ({
       }
       return dapplet
     })
-    const newDappletsList: MyListElement[] = nowDappletsList.filter(({ type, name }) => {
+    const newDappletsList: MyListElement[] = nowDappletsList.filter(({ type, name, id }) => {
       if (type === DappletsListItemTypes.Removing) {
+        events.push({
+          eventType: EventType.REMOVE,
+          dappletId: id,
+        })
         removeTrustedUserFromDappletEffect({
           name,
           address: address || "",
@@ -137,6 +151,7 @@ const SidePanel = ({
       }
       return type !== DappletsListItemTypes.Removing
     })
+    pushMyListing({events, provider});
     saveListToLocalStorage(newDappletsList, Lists.MyListing);
     setSelectedDappletsList(newDappletsList);
   };
