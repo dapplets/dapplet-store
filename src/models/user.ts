@@ -3,11 +3,13 @@ import { createModel } from "@rematch/core";
 export interface User {
   address?: string
   provider?: any
+  isLocked?: boolean
 }
 
 type UserState = Readonly<User>
 const INITIAL_STATE: UserState = {
   address: "",
+  isLocked: false,
 };
 
 const reducers = {

@@ -58,11 +58,13 @@ const TitleButtonWrapper = styled.button`
   letter-spacing: 0em;
   text-align: center;
   padding: 9px 10px;
+  opacity: ${({ disabled }) => disabled ? 0.5 : 1};
 `
 
 interface DappletsListSidebarProps {
   dappletsList: DappletsListItemProps[]
   title: string
+  isPushing?: boolean
   onOpenList: any
   isMoreShow: boolean
   titleButton?: {
@@ -83,12 +85,12 @@ const DappletsListSidebar = (props: DappletsListSidebarProps) => {
           if (!!props.dappletsList.length)
             props.setIsOpen(props.isOpen ? null : props.title)
         }} color={props.isOpen ? '#2A2A2A' : '.#747376'}>{!!props.dappletsList.length && (props.isOpen ? <span>-</span> : <span>+</span>)} {props.title}</Title>
-        {props.isOpen && props.titleButton && <TitleButtonWrapper onClick={props.titleButton?.onClick}>{props.titleButton?.title}</TitleButtonWrapper>}
+        {props.isOpen && props.titleButton && <TitleButtonWrapper disabled={!!props.isPushing} onClick={props.titleButton?.onClick}>{props.titleButton?.title}</TitleButtonWrapper>}
       </TitleWrapper>
       {
         props.isOpen && !!props.dappletsList.length && <DappletsListItemWrapper>
           {props.dappletsList.filter(({ title }) => !!title).map((dapplet) => (
-            <DappletsListItem onClick={props.onElementClick} subTitle={dapplet.subTitle} {...dapplet} key={dapplet.title} />
+            <DappletsListItem onClick={props.onElementClick} subTitle={dapplet.subTitle} {...dapplet} key={dapplet.title} isPushing={!!props.isPushing} />
           ))}
           {props.isMoreShow && <MoreWrapper onClick={props.onOpenList}>show more</MoreWrapper>}
         </DappletsListItemWrapper>

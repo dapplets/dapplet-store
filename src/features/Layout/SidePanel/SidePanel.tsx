@@ -15,6 +15,7 @@ import { EventPushing, EventType } from "../../../models/dapplets";
 const mapState = (state: RootState) => ({
   address: state.user.address,
   provider: state.user.provider,
+  isLocked: state.user.isLocked,
 });
 
 const mapDispatch = (dispatch: RootDispatch) => ({
@@ -23,6 +24,9 @@ const mapDispatch = (dispatch: RootDispatch) => ({
   addTrustedUserToDappletEffect: (payload: {name: string, address: string}) => dispatch.dapplets.addTrustedUserToDappletEffect(payload),
   removeTrustedUserFromDappletEffect: (payload: {name: string, address: string}) => dispatch.dapplets.removeTrustedUserFromDappletEffect(payload),
   pushMyListing: (payload: {events: EventPushing[], provider: any}) => dispatch.dapplets.pushMyListing(payload),
+  setLocked: (payload: boolean) => dispatch.user.setUser({
+    isLocked: payload
+  }),
 });
 
 const Wrapper = styled.aside`
@@ -90,11 +94,13 @@ const SidePanel = ({
   dapplets,
   address,
   provider,
+  isLocked,
   setSort,
   setModalOpen,
   addTrustedUserToDappletEffect,
   removeTrustedUserFromDappletEffect,
   pushMyListing,
+  setLocked,
 }: SidePanelProps & Props): React.ReactElement => {
 
   const removeFromLocalList = (name: string) => (e: any) => {
@@ -119,17 +125,13 @@ const SidePanel = ({
     setSelectedDappletsList(newSelectedDappletsList);
   }
 
-  const pushSelectedDappletsList = () => {
+  const pushSelectedDappletsList = async () => {
     const events: EventPushing[] = []
     const nowDappletsList: MyListElement[] = selectedDappletsList.map((dapplet) => {
       if (dapplet.type === DappletsListItemTypes.Adding) {
         events.push({
           eventType: EventType.ADD,
           dappletId: dapplet.id,
-        })
-        addTrustedUserToDappletEffect({
-          name: dapplet.name,
-          address: address || "",
         })
         return {
           ...dapplet,
@@ -144,16 +146,18 @@ const SidePanel = ({
           eventType: EventType.REMOVE,
           dappletId: id,
         })
-        removeTrustedUserFromDappletEffect({
-          name,
-          address: address || "",
-        })
       }
       return type !== DappletsListItemTypes.Removing
     })
-    pushMyListing({events, provider});
-    saveListToLocalStorage(newDappletsList, Lists.MyListing);
-    setSelectedDappletsList(newDappletsList);
+    try {
+      setLocked(true)
+      await pushMyListing({events, provider});
+      saveListToLocalStorage(newDappletsList, Lists.MyListing);
+      setSelectedDappletsList(newDappletsList);
+    } catch (error) {
+      console.error({error})
+    }
+    setLocked(false)
   };
 
 	return (
@@ -186,6 +190,7 @@ const SidePanel = ({
             isRemoved: dapplet.type !== DappletsListItemTypes.Default,
           }))}
           title={SideLists.MyListing}
+          isPushing={isLocked}
           onOpenList={() => {
             if (!address) {
               setModalOpen(ModalsList.Login)

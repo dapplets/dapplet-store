@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { ReactComponent as DappletListItemPlus } from '../../images/dappletListItemPlus.svg'
 import { ReactComponent as DappletListItemMinus } from '../../images/dappletListItemMinus.svg'
 import { ReactComponent as DappletListItemClose } from '../../images/dappletListItemClose.svg'
@@ -10,7 +10,7 @@ export enum DappletsListItemTypes {
   Removing = 'Removing',
 }
 
-const TitleIcon = (props: { type: string }) => {
+const TitleIcon = (props: { type: DappletsListItemTypes}) => {
   switch (props.type) {
     case DappletsListItemTypes.Adding:
       return <DappletListItemPlus />
@@ -22,7 +22,7 @@ const TitleIcon = (props: { type: string }) => {
 }
 
 interface DappletsListItemWrapperProps {
-  type: string
+  type: DappletsListItemTypes
 }
 
 const DappletsListItemWrapper = styled.div<{ type: string, isClickable: boolean }>`
@@ -35,7 +35,7 @@ const DappletsListItemWrapper = styled.div<{ type: string, isClickable: boolean 
   cursor: ${({ isClickable }) => isClickable ? 'pointer' : 'auto'};
 `
 
-const getColorByType = (type: string) => {
+const getColorByType = (type: DappletsListItemTypes) => {
   switch (type) {
     case DappletsListItemTypes.Adding:
       return '#5EC280'
@@ -56,18 +56,31 @@ const Title = styled.div<DappletsListItemWrapperProps>`
   color: ${({ type }) => getColorByType(type)};
 `
 
-const DappletListItemCloseWrapper = styled.div`
+const rotate = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+`;
+
+const DappletListItemCloseWrapper = styled.button`
+  border: none;
   display: grid;
   align-items: center;
   cursor: pointer;
+  animation: ${({disabled}) => disabled ? rotate : ''} 2s linear infinite;
 `
 
 export interface DappletsListItemProps {
   title: string
   subTitle?: string
-  type: string
+  type: DappletsListItemTypes
   onClickRemove: any
   isRemoved: boolean
+  isPushing?: boolean
   onClick?: any
   id?: string
 }
@@ -90,15 +103,15 @@ const DappletsListItem = (props: DappletsListItemProps) => {
       type={props.type} 
       onClick={() => {
         if (props.onClick) props.onClick(props.id)}
-      } 
+      }
       isClickable={!!props.onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)} 
     >
       <TitleIcon type={props.type}/>
       <Title type={props.type}>{title}</Title>
-      {props.isRemoved && <DappletListItemCloseWrapper>
-        <DappletListItemClose onClick={props.onClickRemove()}/>
+      {props.isRemoved && <DappletListItemCloseWrapper disabled={!!props.isPushing} onClick={props.onClickRemove()}>
+        <DappletListItemClose/>
       </DappletListItemCloseWrapper>}
     </DappletsListItemWrapper>
   )

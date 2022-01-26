@@ -19,6 +19,7 @@ import { Lists, MyListElement } from '../../models/myLists';
 
 const mapState = (state: RootState) => ({
   address: state.user.address,
+  isLocked: state.user.isLocked,
 });
 
 const mapDispatch = (dispatch: RootDispatch) => ({
@@ -123,6 +124,7 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
     setExpanded,
     
     isDapplet,
+    isLocked,
   } = props;
 
   const trustedList = useMemo(() => {
@@ -315,6 +317,7 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
             else 
               editSelectedDappletsList(item)
           }}
+          disabled={isLocked}
         />
       </ButtonsWrapper>
     </div>

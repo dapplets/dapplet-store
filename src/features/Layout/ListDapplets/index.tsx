@@ -74,6 +74,7 @@ const dropdownItems = [
 const mapState = (state: RootState) => ({
   ensNames: state.ensNames,
   trustedUsers: state.trustedUsers.trustedUsers,
+  isLocked: state.user.isLocked,
 });
 const mapDispatch = (dispatch: RootDispatch) => ({
   getEnsNames: (addresses: string[]) => dispatch.ensNames.getEnsNames(addresses),
@@ -128,6 +129,7 @@ const ListDapplets = ({
 
   ensNames,
   trustedUsers,
+  isLocked,
   getEnsNames,
   setSort,
 }: ListDappletsProps & Props): React.ReactElement => {
@@ -333,7 +335,7 @@ const ListDapplets = ({
           }
         </MainContentWrapper>
         {!((addressFilter !== '' || selectedList) && selectedList !== Lists.MyDapplets) && listDappletsHeader}
-        {selectedList 
+        {selectedList && !isLocked
           // ? <></>
           ? <SortableList
             dapplets={dapplets}

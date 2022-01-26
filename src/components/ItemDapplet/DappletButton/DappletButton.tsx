@@ -101,6 +101,8 @@ const ButtonWrapper = styled.button<ButtonWrapperProps>`
   color: ${(props) => getColor(props.buttonType).text};
   border: 1px ${(props) => getBorderType(props.buttonType)} ${(props) => getColor(props.buttonType).border};
   background-color: ${(props) => getColor(props.buttonType).background};
+  
+  opacity: ${({ disabled }) => disabled ? 0.5 : 1};
 `
 
 // const ButtonIcon = (props: { type: string }) => {
@@ -124,6 +126,7 @@ const ButtonWrapper = styled.button<ButtonWrapperProps>`
 interface DappletButtonProps {
   type: string
   onClick: any
+  disabled?: boolean
 }
 
 export const DappletButton = (props: DappletButtonProps) => {
@@ -152,7 +155,7 @@ export const DappletButton = (props: DappletButtonProps) => {
     }
   }, [props.type, hovered])
   return(
-  <ButtonWrapper onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} onClick={props.onClick} buttonType={buttonType}>
+  <ButtonWrapper onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} onClick={props.onClick} buttonType={buttonType} disabled={props.disabled}>
     {/* <ButtonIcon type={buttonType} /> */}
     <div>{buttonType}</div>
   </ButtonWrapper>

@@ -1,4 +1,5 @@
 import { createModel } from "@rematch/core";
+import { DappletsListItemTypes } from "../components/DappletsListItem/DappletsListItem";
 
 export enum Lists {
   MyListing = 'Selected dapplets',
@@ -8,7 +9,7 @@ export enum Lists {
 export interface MyListElement {
   id: number
   name: string
-  type: string
+  type: DappletsListItemTypes
 }
 
 export interface MyLists {
