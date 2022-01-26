@@ -15,7 +15,7 @@ import { RootDispatch, RootState } from '../../models';
 import { Sort } from '../../models/sort';
 import { connect } from 'react-redux';
 import { ModalsList } from '../../models/modals';
-import { MyListElement } from '../../models/myLists';
+import { Lists, MyListElement } from '../../models/myLists';
 
 const mapState = (state: RootState) => ({
   address: state.user.address,
@@ -200,10 +200,17 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
                   trustedList={trustedList}
                   otherList={otherList}
                   text={`+${Math.max(trustedList.length-3, 0) + otherList.length} more lists`}
-                  onClickSort={(address: string) => {
+                  onClickSort={(newAddress: string) => {
                     console.log('hello')
+                    if (newAddress === address) {
+                      setSort({
+                        addressFilter: undefined,
+                        selectedList: Lists.MyListing,
+                      })
+                      return
+                    }
                     setSort({
-                      addressFilter: address,
+                      addressFilter: newAddress,
                       selectedList: undefined,
                     })
                   }}
