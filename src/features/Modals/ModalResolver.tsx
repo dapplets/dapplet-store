@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useMemo } from "react"
 import styled from "styled-components"
 
 import Web3 from "web3";
@@ -11,7 +11,6 @@ import WarningModal from "./WarningModal/WarningModal";
 
 import { RootDispatch, RootState } from "../../models";
 import { connect } from "react-redux";
-import { EventPushing, EventType } from "../../models/dapplets";
 
 
 const mapState = (state: RootState) => ({
@@ -27,7 +26,6 @@ const mapDispatch = (dispatch: RootDispatch) => ({
   setProvider: (payload: any) => dispatch.user.setUser({
     provider: payload
   }),
-  pushMyListing: (payload: {events: EventPushing[], provider: any}) => dispatch.dapplets.pushMyListing(payload),
 });
 
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
@@ -53,23 +51,8 @@ const ModalResolver = ({
   provider,
   setModalOpen,
   setUser,
-  pushMyListing,
   setProvider,
 }: Props) => {
-  // const [provider, setProvider] = useState()
-  
-  // useEffect(() => {
-  //   if (address && provider) {
-  //     const e: EventPushing = {
-  //       eventType: EventType.ADD,
-  //       dappletId: 27,
-  //     }
-  //     pushMyListing({
-  //       events: [e],
-  //       provider
-  //     })
-  //   }
-  // }, [address, provider, pushMyListing])
   
   const nowModal = useMemo(() => {
     const web3Init = async () => {
@@ -180,7 +163,7 @@ const ModalResolver = ({
       default:
         return null
     }
-  }, [address, openedModal, provider, setModalOpen, setUser])
+  }, [address, openedModal, provider, setModalOpen, setProvider, setUser])
 
   if (!openedModal) return <></>
 
