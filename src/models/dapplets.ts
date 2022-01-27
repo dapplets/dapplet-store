@@ -2,7 +2,6 @@ import { createModel } from "@rematch/core";
 import { ethers } from 'ethers';
 import abi from '../abi.json';
 import abiListing from './abi';
-import Parse from "parse";
 import { PROVIDER_URL } from "../api/consts";
 
 export enum EventType { REMOVE, ADD }
@@ -142,69 +141,12 @@ const effects = (dispatch: any) => ({ //
         }
       }
     }
-
-    
-    // Parse.serverURL = 'https://parseapi.back4app.com';
-    // Parse.initialize(
-    //   'WyqwCiBmXDHB7kDdTP3NgjtdAupCRxbdm72VQ6xS',
-    //   '3LpyQhNB0KRTOaBAUHR5z6k5L3KAhR0o140A4vHV',
-    // );
-    // const query = new Parse.Query('dapplets');
-    // const results = await query.find();
-    // try {
-    //   for (const object of results) {
-    //     const name = object.get('name');
-    //     const address = object.get('address');
-    //     // dispatch.dapplets.addTrustedUserToDapplet({name, address});
-    //   }
-    // } catch (error) {
-    //   console.error('Error while fetching MyCustomClassName', error);
-    // }
   },
   pushMyListing: async ({events, provider}: {events: EventPushing[], provider: any}) => {
     const ethersProvider= new ethers.providers.Web3Provider(provider);
     const signer = await ethersProvider.getSigner();
-    // console.log({events})
-    // const contractProvider = new ethers.providers.JsonRpcProvider(PROVIDER_URL, 0x05);
     const contractListing: any = await new ethers.Contract('0x3470ab240a774e4D461456D51639F033c0cB5363', abiListing, signer);
     await contractListing.changeMyList(events.map(({eventType, dappletId}) => ([eventType, dappletId])))
-    // await contractListing.changeMyList([[1, 23]])
-    // console.log('EVENT')
-    // dispatch.dapplets.addTrustedUserToDapplet({name, address});
-  }, 
-  addTrustedUserToDappletEffect: async ({name, address}: {name: string, address: string}) => {
-    Parse.serverURL = 'https://parseapi.back4app.com';
-    Parse.initialize(
-      'WyqwCiBmXDHB7kDdTP3NgjtdAupCRxbdm72VQ6xS',
-      '3LpyQhNB0KRTOaBAUHR5z6k5L3KAhR0o140A4vHV',
-    );
-    const Dapplet = Parse.Object.extend("dapplets");
-    const dapplet = new Dapplet();
-    dapplet.set("name", name);
-    dapplet.set("address", address);
-    await dapplet.save();
-    // dispatch.dapplets.addTrustedUserToDapplet({name, address});
-  },
-  removeTrustedUserFromDappletEffect: async ({name, address}: {name: string, address: string}) => {
-    Parse.serverURL = 'https://parseapi.back4app.com';
-    Parse.initialize(
-      'WyqwCiBmXDHB7kDdTP3NgjtdAupCRxbdm72VQ6xS',
-      '3LpyQhNB0KRTOaBAUHR5z6k5L3KAhR0o140A4vHV',
-    );
-    const query = new Parse.Query('dapplets');
-    const results = await query.find();
-    
-    try {
-      for (const object of results) {
-        const myName = object.get('name');
-        const myAddress = object.get('address');
-        if (myName === name && myAddress === address)
-          await object.destroy();
-          // dispatch.dapplets.removeTrustedUserFromDapplet({name, address});
-      }
-    } catch (error) {
-      console.error('Error while fetching MyCustomClassName', error);
-    }
   },
 })
 

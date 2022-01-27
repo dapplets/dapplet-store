@@ -21,8 +21,6 @@ const mapState = (state: RootState) => ({
 const mapDispatch = (dispatch: RootDispatch) => ({
   setModalOpen: (payload: ModalsList | null) => dispatch.modals.setModalOpen(payload),
   setSort: (payload: Sort) => dispatch.sort.setSort(payload),
-  addTrustedUserToDappletEffect: (payload: {name: string, address: string}) => dispatch.dapplets.addTrustedUserToDappletEffect(payload),
-  removeTrustedUserFromDappletEffect: (payload: {name: string, address: string}) => dispatch.dapplets.removeTrustedUserFromDappletEffect(payload),
   pushMyListing: (payload: {events: EventPushing[], provider: any}) => dispatch.dapplets.pushMyListing(payload),
   setLocked: (payload: boolean) => dispatch.user.setUser({
     isLocked: payload
@@ -97,8 +95,6 @@ const SidePanel = ({
   isLocked,
   setSort,
   setModalOpen,
-  addTrustedUserToDappletEffect,
-  removeTrustedUserFromDappletEffect,
   pushMyListing,
   setLocked,
 }: SidePanelProps & Props): React.ReactElement => {
