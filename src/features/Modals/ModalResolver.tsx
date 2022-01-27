@@ -67,8 +67,8 @@ const ModalResolver = ({
       const provider = await web3Modal.connect();
       
       if (localStorage['metamask_disabled'] === 'true') {
-        localStorage['metamask_disabled'] = '';
         await provider.request({ method: "wallet_requestPermissions", params: [{ eth_accounts: {} }] });
+        localStorage['metamask_disabled'] = '';
       }
       
       provider.on("accountsChanged", (accounts: string[]) => {
