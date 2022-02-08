@@ -10,21 +10,21 @@ export enum SortTypes {
 }
 
 export interface Sort {
-    sortType?: SortTypes
-    addressFilter?: string
-    searchQuery?: string
-    selectedList?: Lists
-    isTrustedSort?: boolean
-    trigger?: boolean
+  sortType?: SortTypes
+  addressFilter?: string
+  searchQuery?: string
+  selectedList?: Lists
+  isTrustedSort?: boolean
+  trigger?: boolean
 }
 
 type SortState = Readonly<Sort>
 export const INITIAL_STATE: SortState = {
-    sortType: SortTypes.ABC,
-    addressFilter: "",
-    searchQuery: "",
-    selectedList: undefined,
-    isTrustedSort: false,
+  sortType: SortTypes.ABC,
+  addressFilter: "",
+  searchQuery: "",
+  selectedList: undefined,
+  isTrustedSort: false,
 };
 
 const reducers = {

@@ -88,7 +88,7 @@ const SortableList = (props: SortableListProps) => {
     >
       <SortableContext items={items!.map(({name}) => name)} strategy={verticalListSortingStrategy}>
         {items?.map(({name: itemName}) => (
-          dapplets.find((dapp) => dapp.name === itemName) &&
+          dapplets.find((dapp) => dapp.name === itemName) && 
           <Draggable
             key={itemName}
             id={itemName}

@@ -250,12 +250,19 @@ const ListDapplets = ({
           return 0;
       }
     });
+    if (searchQuery !== '')
+      sortedList = sortedList.filter((dapplet) => (
+        dapplet.name.includes(searchQuery) ||
+        dapplet.owner.includes(searchQuery) ||
+        dapplet.title.includes(searchQuery) ||
+        dapplet.description.includes(searchQuery)
+      ))
     if (addressFilter !== '') 
       sortedList = sortedList.filter(({ trustedUsers }) => trustedUsers.includes(addressFilter))
     if (isTrustedSort && !isDapplet)
       sortedList = sortedList.filter(({ trustedUsers }) => trustedUsersList.some((user) => trustedUsers.includes(user)))
     return sortedList
-  }, [addressFilter, collator, dapplets, isDapplet, isTrustedSort, selectedList, sortType, trustedUsersList])
+  }, [addressFilter, collator, dapplets, isDapplet, isTrustedSort, searchQuery, selectedList, sortType, trustedUsersList])
 
   const chooseList = {
     [Lists.MyListing]: selectedDapplets,
@@ -338,7 +345,7 @@ const ListDapplets = ({
         {selectedList && !isLocked
           // ? <></>
           ? <SortableList
-            dapplets={dapplets}
+            dapplets={sortedDapplets}
             items={chooseList[selectedList]}
             setItems={chooseSetMethod[selectedList]}
             selectedDapplets={selectedDapplets}
