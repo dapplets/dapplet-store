@@ -206,7 +206,7 @@ const SidePanel = ({
           setIsOpen={setOpenedList}
         />
         <DappletsListSidebar
-          dappletsList={trustedUsersList.map((user) => ({
+          dappletsList={trustedUsersList.filter((user) => !address || address?.replace('0x000000000000000000000000', '0x') !== user.replace('0x000000000000000000000000', '0x')).map((user) => ({
             title: user.replace('0x000000000000000000000000', '0x'),
             subTitle: `${user.replace('0x000000000000000000000000', '0x').slice(0, 6)}...${user.replace('0x000000000000000000000000', '0x').slice(-4)}`,
             id: user,
