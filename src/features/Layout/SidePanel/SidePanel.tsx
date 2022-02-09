@@ -225,18 +225,9 @@ const SidePanel = ({
           isOpen={SideLists.MyTrustedUsers === openedList}
           setIsOpen={setOpenedList}
         />
-
-        <DappletsListSidebar
-          dappletsList={[]}
-          title={`Popular tags`}
-          onOpenList={() => {}}
-          isMoreShow={false}
-          isOpen={false}
-          setIsOpen={setOpenedList}
-        />
       </ListWrapper>
 
-      <Footer>
+      {/* <Footer>
         <a href='https://dapplets.org/terms-conditions.html'>
           Terms & Conditions
         </a>
@@ -253,7 +244,7 @@ const SidePanel = ({
           Docs
         </a>
         <p>© 2019—2022 Dapplets Project</p>
-      </Footer>
+      </Footer> */}
 
 		</Wrapper>
 	);

@@ -46,8 +46,8 @@ const Menu = styled.div`
 const Avatar = styled.div`
   border-radius: 50%;
   margin-left: 20px;
-  width: 50px;
-  height: 50px;
+  width: 30px;
+  height: 30px;
   cursor: pointer;
 `
 
@@ -165,6 +165,8 @@ const Login = styled.button`
   color: white;
   background: #D9304F;
 
+  margin: 0 20px;
+
   width: 90px;
   height: 32px;
 
@@ -228,7 +230,7 @@ const Header: FC<HeaderProps & Props> = ({
   trigger,
 }): React.ReactElement => {
 	const [active, setActive] = useState<number>(MENU[0].id);
-  const getAvatar = (loggedIn: string): HTMLDivElement => jazzicon(50, parseInt(loggedIn.slice(2, 10), 16));
+  const getAvatar = (loggedIn: string): HTMLDivElement => jazzicon(30, parseInt(loggedIn.slice(2, 10), 16));
   const addressShort = useMemo(() => address ? address.replace('0x000000000000000000000000', '0x') : '', [address])
 
 	function handleItemClick(id: number): void {
@@ -282,7 +284,14 @@ const Header: FC<HeaderProps & Props> = ({
 		<Wrapper className={className}>
       <HeaderTop style={{ background: '#F5F5F5'}}>
         <HeaderLogo>
-          {/* Localization */}
+          <button onClick={() => {
+            setSort({
+              ...INITIAL_STATE,
+              trigger: !trigger,
+            });
+          }}>
+            <img src={STORE_LOGO} alt='logo' />
+          </button>
         </HeaderLogo>
 
         <Menu>
@@ -310,7 +319,10 @@ const Header: FC<HeaderProps & Props> = ({
           }
         </Menu>
 
-        <div>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+        }}>
           <ButtonItem
             href="https://github.com/dapplets"
           >
@@ -331,54 +343,26 @@ const Header: FC<HeaderProps & Props> = ({
           >
             <Twitter/>
           </ButtonItem>
+          {
+            address ? 
+              <Avatar 
+                onClick={() => {
+                  setModalOpen(ModalsList.User)
+                }}
+              >
+                <VanillaChildren>{getAvatar(addressShort)}</VanillaChildren>
+              </Avatar>
+              :
+              <Login 
+                onClick={() => {
+                  setModalOpen(ModalsList.Login)
+                }}
+              >
+                login
+              </Login>
+          }
         </div>
 
-      </HeaderTop>
-      <HeaderTop style={{ height: 84 }}>
-        <HeaderLogo>
-          <button onClick={() => {
-            setSort({
-              ...INITIAL_STATE,
-              trigger: !trigger,
-            });
-          }}>
-            <img src={STORE_LOGO} alt='logo' />
-          </button>
-        </HeaderLogo>
-
-        <Menu>
-          {
-            MENU.map(({ id, label }) => {
-              return (
-                <Item
-                  isActive={id === active}
-                  key={id}
-                  onClick={() => handleItemClick(id)}
-                >
-                  {label}
-                </Item>
-              );
-            })
-          }
-        </Menu>
-        {
-          address ? 
-            <Avatar 
-              onClick={() => {
-                setModalOpen(ModalsList.User)
-              }}
-            >
-              <VanillaChildren>{getAvatar(addressShort)}</VanillaChildren>
-            </Avatar>
-            :
-            <Login 
-              onClick={() => {
-                setModalOpen(ModalsList.Login)
-              }}
-            >
-              login
-            </Login>
-        }
       </HeaderTop>
 
 
