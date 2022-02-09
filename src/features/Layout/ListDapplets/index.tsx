@@ -298,7 +298,7 @@ const ListDapplets = ({
       <div
         ref={ref}
         style={{
-          height: 'calc(100vh - 130px)',
+          height: 'calc(100vh - 51px)',
           overflow: 'auto',
           padding: '0 !important',
           margin: '0 !important',
