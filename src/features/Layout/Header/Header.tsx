@@ -9,6 +9,7 @@ import { INITIAL_STATE, Sort } from '../../../models/sort';
 import { ReactComponent as GitHub } from './github.svg'
 import { ReactComponent as Discord } from './discord.svg'
 import { ReactComponent as TG } from './tg.svg'
+import { ReactComponent as Twitter } from './twitter.svg'
 
 import { connect } from 'react-redux';
 import { ModalsList } from '../../../models/modals';
@@ -324,6 +325,11 @@ const Header: FC<HeaderProps & Props> = ({
             href="https://t.me/dapplets"
           >
             <TG/>
+          </ButtonItem>
+          <ButtonItem
+            href="https://twitter.com/dappletsproject"
+          >
+            <Twitter/>
           </ButtonItem>
         </div>
 
