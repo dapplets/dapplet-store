@@ -22,7 +22,7 @@ const Wrapper = styled.div<WrapperProps>`
   height: 100%;
 
   grid-template-columns: 430px 1fr 430px;
-  grid-template-rows: 130px 1fr;
+  grid-template-rows: 51px 1fr;
 
   grid-template-areas:
     "header header header"
