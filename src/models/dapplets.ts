@@ -143,10 +143,19 @@ const effects = (dispatch: any) => ({ //
     }
   },
   pushMyListing: async ({events, provider}: {events: EventPushing[], provider: any}) => {
+    
+    console.log('push')
     const ethersProvider= new ethers.providers.Web3Provider(provider);
     const signer = await ethersProvider.getSigner();
     const contractListing: any = await new ethers.Contract('0x3470ab240a774e4D461456D51639F033c0cB5363', abiListing, signer);
-    await contractListing.changeMyList(events.map(({eventType, dappletId}) => ([eventType, dappletId])))
+    const req = await contractListing.changeMyList(events.map(({eventType, dappletId}) => ([eventType, dappletId])));
+    console.log('start')
+    try {
+      await req.wait() 
+    } catch (error) {
+      console.log({error})
+    }
+    console.log('end')
   },
 })
 

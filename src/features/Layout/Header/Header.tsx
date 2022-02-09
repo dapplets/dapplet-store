@@ -1,4 +1,4 @@
-import React, { DetailedHTMLProps, FC, HTMLAttributes, useEffect, useMemo, useRef, useState } from 'react';
+import React, { DetailedHTMLProps, FC, HTMLAttributes, useEffect, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 import STORE_LOGO from '../../../images/StoreLogo.svg';
 import jazzicon from '@metamask/jazzicon';
@@ -77,25 +77,25 @@ const ItemMain = styled.div`
   }
 `
 
-interface ItemProps {
-  isActive: boolean
-}
+// interface ItemProps {
+//   isActive: boolean
+// }
 
-const Item = styled(ItemMain)<ItemProps>`
-  color: ${({ isActive }) => isActive ? '#d9304f !important' : 'black'};
-  transition: all .2s cubic-bezier(.24,.22,.015,1.56);
-  &::after {
-    width: ${({ isActive }) => isActive ? '90%' : '0'};
-  }
-  &:hover {
-    color: #d9304f !important;
-    transition: all .2s cubic-bezier(.24,.22,.015,1.56);
+// const Item = styled(ItemMain)<ItemProps>`
+//   color: ${({ isActive }) => isActive ? '#d9304f !important' : 'black'};
+//   transition: all .2s cubic-bezier(.24,.22,.015,1.56);
+//   &::after {
+//     width: ${({ isActive }) => isActive ? '90%' : '0'};
+//   }
+//   &:hover {
+//     color: #d9304f !important;
+//     transition: all .2s cubic-bezier(.24,.22,.015,1.56);
 
-    &::after {
-      width: 100%;
-    }
-  }
-`
+//     &::after {
+//       width: 100%;
+//     }
+//   }
+// `
 
 const HeaderTopItem = styled(ItemMain)`
   &::after {
@@ -197,12 +197,12 @@ const VanillaChildren = ({ children }: VanillaChildrenProps): JSX.Element => {
 };
 
 
-const MENU = [
-	{ id: 0, label: 'Home' },
-	{ id: 1, label: 'Store' },
-	{ id: 2, label: 'My List' },
-	{ id: 3, label: 'My Dapplets' },
-];
+// const MENU = [
+// 	{ id: 0, label: 'Home' },
+// 	{ id: 1, label: 'Store' },
+// 	{ id: 2, label: 'My List' },
+// 	{ id: 3, label: 'My Dapplets' },
+// ];
 
 const MENU2 = [
 	{ id: 0, label: 'Developers', href:'https://dapplets.org/index.html' },
@@ -229,56 +229,56 @@ const Header: FC<HeaderProps & Props> = ({
   address,
   trigger,
 }): React.ReactElement => {
-	const [active, setActive] = useState<number>(MENU[0].id);
+	// const [active, setActive] = useState<number>(MENU[0].id);
   const getAvatar = (loggedIn: string): HTMLDivElement => jazzicon(30, parseInt(loggedIn.slice(2, 10), 16));
   const addressShort = useMemo(() => address ? address.replace('0x000000000000000000000000', '0x') : '', [address])
 
-	function handleItemClick(id: number): void {
-    switch (id) {
-      case 1:
-        setSort({
-          ...INITIAL_STATE,
-          trigger: !trigger,
-        });
-        break;
-      case 2:
-        if (!address) {
-          setModalOpen(ModalsList.Login)
-          return
-        }
-        setSort({
-          selectedList: Lists.MyListing,
-          addressFilter: "",
-        });
-        break;
-      case 3:
-        if (isDapplet) {
-          setModalOpen(ModalsList.Install)
-          return
-        }
-        setSort({
-          selectedList: Lists.MyDapplets,
-          addressFilter: "",
-        });
-        break;
-      default:
-        break;
-    }
-	}
+	// function handleItemClick(id: number): void {
+  //   switch (id) {
+  //     case 1:
+  //       setSort({
+  //         ...INITIAL_STATE,
+  //         trigger: !trigger,
+  //       });
+  //       break;
+  //     case 2:
+  //       if (!address) {
+  //         setModalOpen(ModalsList.Login)
+  //         return
+  //       }
+  //       setSort({
+  //         selectedList: Lists.MyListing,
+  //         addressFilter: "",
+  //       });
+  //       break;
+  //     case 3:
+  //       if (isDapplet) {
+  //         setModalOpen(ModalsList.Install)
+  //         return
+  //       }
+  //       setSort({
+  //         selectedList: Lists.MyDapplets,
+  //         addressFilter: "",
+  //       });
+  //       break;
+  //     default:
+  //       break;
+  //   }
+	// }
 
-  useEffect(() => {
-    switch (selectedList) {
-      case Lists.MyDapplets:
-        setActive(3);
-        break;
-      case Lists.MyListing:
-        setActive(2);
-        break;
-      default:
-        setActive(1);
-        break;
-    }
-  }, [selectedList])
+  // useEffect(() => {
+  //   switch (selectedList) {
+  //     case Lists.MyDapplets:
+  //       setActive(3);
+  //       break;
+  //     case Lists.MyListing:
+  //       setActive(2);
+  //       break;
+  //     default:
+  //       setActive(1);
+  //       break;
+  //   }
+  // }, [selectedList])
 
 	return (
 		<Wrapper className={className}>

@@ -45,20 +45,20 @@ const ListWrapper = styled.div`
   padding-top: 42px;
 `
 
-const Footer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  font-size: 12px;
+// const Footer = styled.div`
+//   display: flex;
+//   flex-wrap: wrap;
+//   font-size: 12px;
 
-  & > a {
-    color: inherit;
-    margin-right: 10px;
+//   & > a {
+//     color: inherit;
+//     margin-right: 10px;
 
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-`
+//     &:hover {
+//       text-decoration: underline;
+//     }
+//   }
+// `
 
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
 
