@@ -6,6 +6,7 @@ import "@fontsource/roboto"
 import "@fontsource/montserrat"
 import "@fontsource/montserrat/900.css"
 import ModalResolver from '../features/Modals/ModalResolver';
+import { Toaster } from "react-hot-toast";
 
 
 import { connect } from "react-redux";
@@ -149,6 +150,7 @@ const App = ({
 
   return (
     <>
+      <Toaster position="bottom-left" />
       <ModalResolver/>
       <Layout
         setSelectedList={(newSelectedList: Lists | undefined) => setSort({ selectedList: newSelectedList })}

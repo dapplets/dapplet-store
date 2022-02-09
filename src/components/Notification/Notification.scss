@@ -1,0 +1,80 @@
+@import "./variable";
+@import "./keyframe";
+
+.notification-custom-wrapper {
+	max-width: 500px;
+	padding: 10px 15px;
+
+	pointer-events: auto;
+
+	opacity: 0.8;
+
+	color: #363636;
+	border-radius: 8px;
+	background: rgba(94, 194, 128, 0.2);
+	box-shadow: 0 3px 4px rgba(0, 0, 0, 0.09), 0 10px 8px rgba(38, 117, 209, 0.04);
+
+	font-family: Roboto, sans-serif;
+
+	will-change: transform;
+}
+
+.notification-custom-header {
+	display: flex;
+
+	color: $SuccessPresed;
+
+	font-size: 22px;
+	line-height: 26px;
+
+	h4 {
+		margin-bottom: 0;
+	}
+
+	svg {
+		margin-right: 10px;
+	}
+}
+
+.notification-custom-text {
+	margin-top: 5px;
+	margin-bottom: 0;
+
+	color: $MainBlack;
+
+	font-size: 14px;
+	line-height: 149%;
+}
+
+.notification-custom-link {
+	display: block;
+	overflow: hidden;
+
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.notification-custom-error {
+	background-color: rgba(242, 102, 128, 0.2);
+
+	.notification-custom-header {
+		color: $PrimaryPresed;
+	}
+}
+
+.notification-custom-text-error {
+	display: block;
+
+	overflow: hidden;
+
+	white-space: nowrap;
+	text-overflow: ellipsis;
+
+	&::first-letter {
+		text-transform: uppercase;
+	}
+}
+
+.notification-custom-animate {
+	animation: rotate 2s linear infinite;
+}

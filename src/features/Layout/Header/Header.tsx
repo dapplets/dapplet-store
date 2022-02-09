@@ -46,6 +46,7 @@ const Menu = styled.div`
 const Avatar = styled.div`
   border-radius: 50%;
   margin-left: 20px;
+  margin-bottom: 4px;
   width: 30px;
   height: 30px;
   cursor: pointer;

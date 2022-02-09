@@ -3,6 +3,7 @@ import { ethers } from 'ethers';
 import abi from '../abi.json';
 import abiListing from './abi';
 import { PROVIDER_URL } from "../api/consts";
+import { customToast } from "../components/Notification";
 
 export enum EventType { REMOVE, ADD }
 
@@ -149,12 +150,15 @@ const effects = (dispatch: any) => ({ //
     const signer = await ethersProvider.getSigner();
     const contractListing: any = await new ethers.Contract('0x3470ab240a774e4D461456D51639F033c0cB5363', abiListing, signer);
     const req = await contractListing.changeMyList(events.map(({eventType, dappletId}) => ([eventType, dappletId])));
-    console.log('start')
+    console.log('start', req)
+    customToast(req.hash as string);
     try {
       await req.wait() 
     } catch (error) {
       console.log({error})
+      customToast(req.hash as string, "error");
     }
+    customToast(req.hash as string, "success", "Done");
     console.log('end')
   },
 })
