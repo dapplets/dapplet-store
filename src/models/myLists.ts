@@ -49,6 +49,25 @@ const effects = (dispatch: any) => ({
       });
     }
   },
+  async getMyDapplets() {
+    const dapps = await window.dapplets.getMyDapplets()
+    dispatch.myLists.setMyList({
+      name: Lists.MyDapplets,
+      elements: dapps.map(({name}: {name: string}) => ({
+        name,
+        type: DappletsListItemTypes.Default,
+      })),
+    });
+    console.log({dapps})
+  },
+  async addMyDapplet({registryUrl, moduleName}: {registryUrl: string, moduleName: string}) {
+    await window.dapplets.addMyDapplet(registryUrl, moduleName)
+    // console.log({dapps})
+  },
+  async removeMyDapplet({registryUrl, moduleName}: {registryUrl: string, moduleName: string}) {
+    await window.dapplets.removeMyDapplet(registryUrl, moduleName)
+    console.log({removed: moduleName})
+  },
 })
 
 export const myLists = createModel()({

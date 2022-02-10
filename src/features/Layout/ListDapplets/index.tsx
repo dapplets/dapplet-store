@@ -79,6 +79,10 @@ const mapState = (state: RootState) => ({
 const mapDispatch = (dispatch: RootDispatch) => ({
   getEnsNames: (addresses: string[]) => dispatch.ensNames.getEnsNames(addresses),
   setSort: (payload: Sort) => dispatch.sort.setSort(payload),
+  addTrustedUser: (payload: string) => dispatch.trustedUsers.addTrustedUser(payload),
+  removeTrustedUser: (payload: string) => dispatch.trustedUsers.removeTrustedUser(payload),
+  addMyDapplet: (payload: {registryUrl: string, moduleName: string}) => dispatch.myLists.addMyDapplet(payload),
+  removeMyDapplet: (payload: {registryUrl: string, moduleName: string}) => dispatch.myLists.removeMyDapplet(payload),
 });
 
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
@@ -132,6 +136,10 @@ const ListDapplets = ({
   isLocked,
   getEnsNames,
   setSort,
+  addTrustedUser,
+  removeTrustedUser,
+  addMyDapplet,
+  removeMyDapplet,
 }: ListDappletsProps & Props): React.ReactElement => {
   const ref = useRef<HTMLDivElement>(null)
 
@@ -142,14 +150,24 @@ const ListDapplets = ({
   const editList = useMemo(() => (
     (item: IDapplet, dappletsList: MyListElement[], type: DappletsListItemTypes) => {
       const isLocalDapplet = dappletsList.some((dapplet) => dapplet.name === item.name);
-      const nowDappletsList = isLocalDapplet
-        ? dappletsList
-          .filter((dapplet) => dapplet.name !== item.name)
-        : [{name: item.name, type, id: item.id}, ...dappletsList];
+      let nowDappletsList;
+      if (isLocalDapplet) {
+        nowDappletsList = dappletsList.filter((dapplet) => dapplet.name !== item.name)
+        removeMyDapplet({
+          registryUrl: '',
+          moduleName: item.name,
+        })
+      } else {
+        nowDappletsList = [{name: item.name, type, id: item.id}, ...dappletsList]
+        addMyDapplet({
+          registryUrl: '',
+          moduleName: item.name,
+        })
+      }
       const newDappletsList: MyListElement[] = nowDappletsList;
       return newDappletsList
     } 
-  ), [])
+  ), [addMyDapplet, removeMyDapplet])
 
   const editLocalDappletsList = useMemo(() => (
     (item: IDapplet) => {
@@ -275,7 +293,7 @@ const ListDapplets = ({
   }
 
   useEffect(() => {
-    console.log({r: ref})//  ref!.current!.scrollTop = 0;
+    // console.log({r: ref})//  ref!.current!.scrollTop = 0;
     ref?.current?.scrollTo(0, 0);
   }, [
     searchQuery,
@@ -318,6 +336,8 @@ const ListDapplets = ({
             isDapplet={isDapplet}
             setModalOpen={setModalOpen}
             title={titleText}
+            addTrustedUser={addTrustedUser}
+            removeTrustedUser={removeTrustedUser}
           />
         }
         <MainContentWrapper>

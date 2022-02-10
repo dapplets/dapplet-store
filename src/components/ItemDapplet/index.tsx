@@ -1,12 +1,12 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useMemo } from 'react';
 import { Image } from 'semantic-ui-react';
 import { ethers } from 'ethers';
 import styled from 'styled-components';
 
 import styles from './ItemDapplet.module.scss';
 import { DappletButton, DappletButtonTypes } from './DappletButton/DappletButton';
-import jazzicon from '@metamask/jazzicon';
+// import jazzicon from '@metamask/jazzicon';
 
 import Highlighter from "react-highlight-words";
 import DappletListersPopup from '../../features/DappletListersPopup/DappletListersPopup';
@@ -15,7 +15,7 @@ import { RootDispatch, RootState } from '../../models';
 import { Sort } from '../../models/sort';
 import { connect } from 'react-redux';
 import { ModalsList } from '../../models/modals';
-import { Lists, MyListElement } from '../../models/myLists';
+import { MyListElement } from '../../models/myLists';
 
 const mapState = (state: RootState) => ({
   address: state.user.address,
@@ -31,35 +31,35 @@ const mapDispatch = (dispatch: RootDispatch) => ({
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
 
 
-const ImageItem = styled.div`
-  margin-left: -8px;
-  border: 2px solid white;
-  border-radius: 50%;
-  width: 16px;
-  height: 16px;
-`
-interface VanillaChildrenProps {
-	children: HTMLElement | HTMLDivElement
-}
+// const ImageItem = styled.div`
+//   margin-left: -8px;
+//   border: 2px solid white;
+//   border-radius: 50%;
+//   width: 16px;
+//   height: 16px;
+// `
+// interface VanillaChildrenProps {
+// 	children: HTMLElement | HTMLDivElement
+// }
 
-const VanillaChildren = ({ children }: VanillaChildrenProps): JSX.Element => {
-	const ref = useRef<HTMLDivElement>(null);
+// const VanillaChildren = ({ children }: VanillaChildrenProps): JSX.Element => {
+// 	const ref = useRef<HTMLDivElement>(null);
 
-	useEffect(() => {
-    while (ref.current?.firstChild) {
-      ref.current?.removeChild(ref.current?.firstChild);
-    }
-		ref.current?.appendChild(children);
-	}, [children, ref]);
+// 	useEffect(() => {
+//     while (ref.current?.firstChild) {
+//       ref.current?.removeChild(ref.current?.firstChild);
+//     }
+// 		ref.current?.appendChild(children);
+// 	}, [children, ref]);
 
-	return (
-		<ImageItem style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} ref={ref}/>
-	);
-};
+// 	return (
+// 		<ImageItem style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} ref={ref}/>
+// 	);
+// };
 
 const ImagesWrapper = styled.div<{count: number}>`
   display: grid;
-  grid-template-columns: ${({ count }) => `repeat(${count}, min-content) 1fr`};
+  grid-template-columns: 1fr;
   margin-left: 8px;
   align-items: center;
 
@@ -136,8 +136,8 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
   }, [address, item.trustedUsers, trustedUsersList])
 
   
-  const getAvatar = (loggedIn: string): HTMLDivElement => jazzicon(12, parseInt(loggedIn.slice(2, 10), 16));
-  const getAddressShort = (address: string) => address ? address.replace('0x000000000000000000000000', '0x') : ''
+  // const getAvatar = (loggedIn: string): HTMLDivElement => jazzicon(12, parseInt(loggedIn.slice(2, 10), 16));
+  // const getAddressShort = (address: string) => address ? address.replace('0x000000000000000000000000', '0x') : ''
 
   const isLocalDapplet = localDapplets.some((dapplet) => dapplet.name === item.name);
 
@@ -190,7 +190,7 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
         <h3 className={styles.title}>
           <Highlighter textToHighlight={item.title} searchWords={[searchQuery || ""]} highlightStyle={{ background: '#ffff00', padding: 0 }} />
           
-          {!isOpen && (
+          {/* {!isOpen && (
             <>
               <ImagesWrapper count={trustedList.slice(0,3).length}>
                 {
@@ -219,35 +219,34 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
                 />
               </ImagesWrapper>
             </>
-          )}
+          )} */}
         </h3>
 
         
-        {isOpen && (
-          <UnderUserInfo>
-            <ImagesWrapper count={trustedList.slice(0,3).length}>
-                {
-                  trustedList.slice(0,3).map((address) => (
-                    <VanillaChildren>{getAvatar(getAddressShort(address))}</VanillaChildren>
-                  ))
-                }
-              <DappletListersPopup
-                trustedList={trustedList}
-                otherList={otherList}
-                text={`+${Math.max(trustedList.length-3, 0) + otherList.length} more lists`}
-                onClickSort={(address: string) => {
-                  console.log('hello')
-                  setSort({
-                    addressFilter: address,
-                    selectedList: undefined,
-                  })
-                }}
-              />
-            </ImagesWrapper>
-            {/* <UnderUserInfoSeparator /> */}
-            {/* <div>4 320 214 active users</div> */}
-          </UnderUserInfo>
-          )}
+        
+        <UnderUserInfo>
+          <ImagesWrapper count={trustedList.slice(0,3).length}>
+              {/* {
+                trustedList.slice(0,3).map((address) => (
+                  <VanillaChildren>{getAvatar(getAddressShort(address))}</VanillaChildren>
+                ))
+              } */}
+            <DappletListersPopup
+              trustedList={trustedList}
+              otherList={otherList}
+              text={`+${otherList.length} more lists`}
+              onClickSort={(address: string) => {
+                console.log('hello')
+                setSort({
+                  addressFilter: address,
+                  selectedList: undefined,
+                })
+              }}
+            />
+          </ImagesWrapper>
+          {/* <UnderUserInfoSeparator /> */}
+          {/* <div>4 320 214 active users</div> */}
+        </UnderUserInfo>
 
         <div className={styles.author}>
           {/* Author: <a href={owner}>{owner}</a> */}

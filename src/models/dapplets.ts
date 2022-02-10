@@ -43,7 +43,7 @@ const reducers = {
     return payload
   },
   addDapplet(state: DappletsState, payload: IDapplet) {
-    console.log({payload})
+    // console.log({payload})
     return {
       ...state,
       [payload.id]: payload,
@@ -105,7 +105,7 @@ const effects = (dispatch: any) => ({ //
         const ev = events[i - 1];
         const block = await ev.getBlock();
         const versions = await getVersions(module.name);
-        console.log({module, ev})
+        // console.log({module, ev})
         const dapplet = {
           id:i,
           description: module.description,

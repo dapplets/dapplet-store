@@ -16,7 +16,7 @@ import { ModalsList } from './../models/modals';
 import { Lists, MyListElement } from '../models/myLists';
 import { DappletsListItemTypes } from '../components/DappletsListItem/DappletsListItem';
 import { useMemo } from 'react';
-import { getEnsNamesApi } from '../api/ensName/ensName';
+// import { getEnsNamesApi } from '../api/ensName/ensName';
 
 const mapState = (state: RootState) => ({
   dappletsStandard: state.dapplets,
@@ -32,6 +32,9 @@ const mapDispatch = (dispatch: RootDispatch) => ({
   getLists: (payload: Lists) => dispatch.myLists.getLists(payload),
   removeMyList: (payload: Lists) => dispatch.myLists.removeMyList(payload),
   setMyList: (payload: {name: Lists, elements: MyListElement[]}) => dispatch.myLists.setMyList(payload),
+  getMyDapplets: () => dispatch.myLists.getMyDapplets(),
+  addMyDapplet: (payload: {registryUrl: string, moduleName: string}) => dispatch.myLists.addMyDapplet(payload),
+  removeMyDapplet: (payload: {registryUrl: string, moduleName: string}) => dispatch.myLists.removeMyDapplet(payload),
 });
 
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
@@ -52,28 +55,23 @@ const App = ({
   getLists,
   removeMyList,
   setMyList,
+  getMyDapplets,
+  addMyDapplet,
+  removeMyDapplet,
 }: Props) => {
   const [dimensions, setDimensions] = useState({ 
     height: window.innerHeight,
     width: window.innerWidth
   })
 
-  const f = async () => {
-    console.log('')
-    const a = await getEnsNamesApi(['0x1c5BB0361a5EE75f190AfB6DC515c478205A5b4C', '0xF64849376812667BDa7D902666229f8b8dd90687'])
-    console.log({a})
-  }
+  const [isDapplet, setIsDapplet] = useState(true)
 
   useEffect(() => {
-    f()
+    window.addEventListener('dapplets#initialized', () => {
+      setIsDapplet(false)
+    })
   }, [])
-
   
-  const isDapplet = useMemo(() => {
-    return !window.dapplets
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dappletsStandard])
-
   useEffect(() => {
     function handleResize() {
       setDimensions({
@@ -94,12 +92,15 @@ const App = ({
   }, [getDapplets, getLists, getSort, getTrustedUsers])
 
   useEffect(() => {
+    console.log('try')
     if (!isDapplet)
     {
-      getLists(Lists.MyDapplets)
+      // getLists(Lists.MyDapplets)
+      // removeMyDapplet({registryUrl: '', moduleName: 'test'})
+      getMyDapplets()
       getTrustedUsers()
     }
-  }, [getLists, getTrustedUsers, isDapplet])
+  }, [addMyDapplet, getLists, getMyDapplets, getTrustedUsers, isDapplet, removeMyDapplet])
 
   // TODO: test func to open modals
   useEffect(() => {

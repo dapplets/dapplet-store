@@ -190,6 +190,8 @@ interface ButtonProps {
   setTrustedUsersList: any
   isDapplet: boolean
   setModalOpen: any
+  addTrustedUser: any
+  removeTrustedUser: any
 }
 
 const Button = ({
@@ -199,6 +201,8 @@ const Button = ({
   setTrustedUsersList,
   isDapplet,
   setModalOpen,
+  addTrustedUser,
+  removeTrustedUser,
 }: ButtonProps) => {
   return (
     <ButtonsWrapper>
@@ -208,10 +212,14 @@ const Button = ({
           return
         }
         if (myAddress === address) return
-        if (trustedUsersList.includes(address)) 
+        if (trustedUsersList.includes(address)) {
           setTrustedUsersList(trustedUsersList.filter((user) => user !== address))
-        else
+          removeTrustedUser(address)
+        }
+        else {
           setTrustedUsersList([address, ...trustedUsersList])
+          addTrustedUser(address)
+        }
       }}>
         <UserPlus/>
         <div>
@@ -236,6 +244,8 @@ interface ProfileInListProps {
   isDapplet: boolean
   setModalOpen: any
   title?: string
+  addTrustedUser: any
+  removeTrustedUser: any
 }
 
 const ProfileInList = ({
@@ -249,6 +259,8 @@ const ProfileInList = ({
   isDapplet,
   setModalOpen,
   title,
+  addTrustedUser,
+  removeTrustedUser,
 }: ProfileInListProps) => {
   const getAvatar = (loggedIn: string): HTMLDivElement => jazzicon(164, parseInt(loggedIn.slice(2, 10), 16));
   const getAddress = (address: string) => address.replace('0x000000000000000000000000', '0x')
@@ -264,6 +276,8 @@ const ProfileInList = ({
         setTrustedUsersList={setTrustedUsersList}
         isDapplet={isDapplet}
         setModalOpen={setModalOpen}
+        addTrustedUser={addTrustedUser}
+        removeTrustedUser={removeTrustedUser}
       />
       <ButtonAll>
         <button onClick={() => {
@@ -297,6 +311,8 @@ const ProfileInList = ({
         setTrustedUsersList={setTrustedUsersList}
         isDapplet={isDapplet}
         setModalOpen={setModalOpen}
+        addTrustedUser={addTrustedUser}
+        removeTrustedUser={removeTrustedUser}
       />
       <ButtonAll>
         <button onClick={() => {

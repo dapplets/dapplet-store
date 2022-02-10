@@ -25,6 +25,7 @@ const mapDispatch = (dispatch: RootDispatch) => ({
   setLocked: (payload: boolean) => dispatch.user.setUser({
     isLocked: payload
   }),
+  removeMyDapplet: (payload: {registryUrl: string, moduleName: string}) => dispatch.myLists.removeMyDapplet(payload),
 });
 
 const Wrapper = styled.aside`
@@ -97,6 +98,7 @@ const SidePanel = ({
   setModalOpen,
   pushMyListing,
   setLocked,
+  removeMyDapplet,
 }: SidePanelProps & Props): React.ReactElement => {
 
   const removeFromLocalList = (name: string) => (e: any) => {
@@ -106,6 +108,10 @@ const SidePanel = ({
     const newLocalDappletsList: MyListElement[] = list;
     saveListToLocalStorage(newLocalDappletsList, Lists.MyDapplets);
     setLocalDappletsList(newLocalDappletsList);
+    removeMyDapplet({
+      registryUrl: '',
+      moduleName: name,
+    })
   }
 
   const removeFromSelectedList = (name: string) => (e: any) => {
