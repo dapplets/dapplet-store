@@ -16,6 +16,8 @@ import { ModalsList } from './../models/modals';
 import { Lists, MyListElement } from '../models/myLists';
 import { DappletsListItemTypes } from '../components/DappletsListItem/DappletsListItem';
 import { useMemo } from 'react';
+import { getAnchorParams } from '../lib/anchorLink';
+
 // import { getEnsNamesApi } from '../api/ensName/ensName';
 
 const mapState = (state: RootState) => ({
@@ -33,8 +35,6 @@ const mapDispatch = (dispatch: RootDispatch) => ({
   removeMyList: (payload: Lists) => dispatch.myLists.removeMyList(payload),
   setMyList: (payload: {name: Lists, elements: MyListElement[]}) => dispatch.myLists.setMyList(payload),
   getMyDapplets: () => dispatch.myLists.getMyDapplets(),
-  addMyDapplet: (payload: {registryUrl: string, moduleName: string}) => dispatch.myLists.addMyDapplet(payload),
-  removeMyDapplet: (payload: {registryUrl: string, moduleName: string}) => dispatch.myLists.removeMyDapplet(payload),
 });
 
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
@@ -56,14 +56,11 @@ const App = ({
   removeMyList,
   setMyList,
   getMyDapplets,
-  addMyDapplet,
-  removeMyDapplet,
 }: Props) => {
   const [dimensions, setDimensions] = useState({ 
     height: window.innerHeight,
     width: window.innerWidth
   })
-
   const [isDapplet, setIsDapplet] = useState(true)
 
   useEffect(() => {
@@ -87,20 +84,16 @@ const App = ({
   const dapplets = useMemo(() => Object.values(dappletsStandard), [dappletsStandard])
 
   useEffect(() => {
-    getSort()
     getDapplets()
   }, [getDapplets, getLists, getSort, getTrustedUsers])
 
   useEffect(() => {
-    console.log('try')
     if (!isDapplet)
     {
-      // getLists(Lists.MyDapplets)
-      // removeMyDapplet({registryUrl: '', moduleName: 'test'})
       getMyDapplets()
       getTrustedUsers()
     }
-  }, [addMyDapplet, getLists, getMyDapplets, getTrustedUsers, isDapplet, removeMyDapplet])
+  }, [getLists, getMyDapplets, getTrustedUsers, isDapplet])
 
   // TODO: test func to open modals
   useEffect(() => {
@@ -148,6 +141,19 @@ const App = ({
       })
     }
   }, [address, dapplets, setMyList])
+
+  const [url, setUrl] = useState('')
+
+  useEffect(() => {
+    getSort()
+  }, [getSort, url])
+  
+  useEffect(() => {
+    window.onpopstate = () => {
+      console.log(document.URL, getAnchorParams())
+      setUrl(document.URL as string)
+    };
+  }, [])
 
   return (
     <>
