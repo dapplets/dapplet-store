@@ -81,6 +81,7 @@ const ModalResolver = ({
       
       setProvider(provider)
       setModalOpen(null)
+      localStorage['login'] = 'metamask';
       return web3
     }
       
@@ -89,6 +90,8 @@ const ModalResolver = ({
         const provider: any = new WalletConnectProvider({
           infuraId: "eda881d858ae4a25b2dfbbd0b4629992",
         });
+
+        
         
         //  Enable session (triggers QR Code modal)
         await provider.enable();
@@ -98,6 +101,8 @@ const ModalResolver = ({
         setModalOpen(null)
         
         setProvider(provider)
+        
+        localStorage['login'] = 'walletConnect';
       } catch (error) {
         console.error(error)
       }
@@ -142,6 +147,7 @@ const ModalResolver = ({
             address={address || ""} 
             onLogout={async () => {
               try {
+                localStorage['login'] = '';
                 localStorage['metamask_disabled'] = 'true'
                 const prov: any = provider
                 prov.disconnect()

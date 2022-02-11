@@ -17,6 +17,9 @@ import { Lists, MyListElement } from '../models/myLists';
 import { DappletsListItemTypes } from '../components/DappletsListItem/DappletsListItem';
 import { useMemo } from 'react';
 import { getAnchorParams } from '../lib/anchorLink';
+import WalletConnectProvider from '@walletconnect/web3-provider';
+import Web3 from 'web3';
+import Web3Modal from "web3modal";
 
 // import { getEnsNamesApi } from '../api/ensName/ensName';
 
@@ -35,6 +38,12 @@ const mapDispatch = (dispatch: RootDispatch) => ({
   removeMyList: (payload: Lists) => dispatch.myLists.removeMyList(payload),
   setMyList: (payload: {name: Lists, elements: MyListElement[]}) => dispatch.myLists.setMyList(payload),
   getMyDapplets: () => dispatch.myLists.getMyDapplets(),
+  setUser: (payload: string) => dispatch.user.setUser({
+    address: payload
+  }),
+  setProvider: (payload: any) => dispatch.user.setUser({
+    provider: payload
+  }),
 });
 
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
@@ -56,6 +65,8 @@ const App = ({
   removeMyList,
   setMyList,
   getMyDapplets,
+  setUser,
+  setProvider,
 }: Props) => {
   const [dimensions, setDimensions] = useState({ 
     height: window.innerHeight,
@@ -154,6 +165,69 @@ const App = ({
       setUrl(document.URL as string)
     };
   }, [])
+
+  useEffect(() => {
+    const web3Init = async () => {
+      const providerOptions = {};
+  
+      const web3Modal = new Web3Modal({
+        network: "goerli", // optional
+        cacheProvider: true, // optional
+        providerOptions // required
+      });
+  
+      const provider = await web3Modal.connect();
+      
+      if (localStorage['metamask_disabled'] === 'true') {
+        await provider.request({ method: "wallet_requestPermissions", params: [{ eth_accounts: {} }] });
+        localStorage['metamask_disabled'] = '';
+      }
+      
+      provider.on("accountsChanged", (accounts: string[]) => {
+        setUser(accounts[0])
+      });
+      
+      const web3 = new Web3(provider);
+      const address = await web3.eth.getAccounts()
+      setUser(address[0])
+      
+      setProvider(provider)
+      setModalOpen(null)
+      localStorage['login'] = 'metamask';
+      return web3
+    }
+    const walletConnect = async () => {
+      try {
+        const provider: any = new WalletConnectProvider({
+          infuraId: "eda881d858ae4a25b2dfbbd0b4629992",
+        });
+
+        
+        
+        //  Enable session (triggers QR Code modal)
+        await provider.enable();
+        const web3 = new Web3(provider);
+        const address = await web3.eth.getAccounts()
+        setUser(address[0])
+        setModalOpen(null)
+        
+        setProvider(provider)
+        
+        localStorage['login'] = 'walletConnect';
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    if (localStorage['login'] === 'walletConnect') {
+      walletConnect()
+      return;
+    }
+    if (localStorage['login'] === 'metamask') {
+      web3Init()
+      return;
+    }
+
+  }, [setModalOpen, setProvider, setUser])
 
   return (
     <>
