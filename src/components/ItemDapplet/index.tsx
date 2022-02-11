@@ -224,7 +224,7 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
 
         
         
-        <UnderUserInfo>
+        {otherList.length > 0 && <UnderUserInfo>
           <ImagesWrapper count={trustedList.slice(0,3).length}>
               {/* {
                 trustedList.slice(0,3).map((address) => (
@@ -234,7 +234,7 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
             <DappletListersPopup
               trustedList={trustedList}
               otherList={otherList}
-              text={`+${otherList.length} more lists`}
+              text={`in ${otherList.length} list${otherList.length !== 1 ? 's' : ''}`}
               onClickSort={(address: string) => {
                 console.log('hello')
                 setSort({
@@ -246,7 +246,7 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
           </ImagesWrapper>
           {/* <UnderUserInfoSeparator /> */}
           {/* <div>4 320 214 active users</div> */}
-        </UnderUserInfo>
+        </UnderUserInfo>}
 
         <div className={styles.author}>
           {/* Author: <a href={owner}>{owner}</a> */}
