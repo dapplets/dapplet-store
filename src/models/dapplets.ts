@@ -106,6 +106,8 @@ const effects = (dispatch: any) => ({ //
         const block = await ev.getBlock();
         const versions = await getVersions(module.name);
         // console.log({module, ev})
+        const date = new Date(block.timestamp * 1000)
+        const pad = (n: number,s: number = 2) => (`${new Array(s).fill(0)}${n}`).slice(-s);
         const dapplet = {
           id:i,
           description: module.description,
@@ -115,7 +117,7 @@ const effects = (dispatch: any) => ({ //
           title: module.title,
           versionToShow: versions[versions.length - 1],
           version: versions,
-          timestampToShow: new Date(block.timestamp * 1000).toString(),
+          timestampToShow: `${pad(date.getDay())}.${pad(date.getMonth()+1)}.${pad(date.getFullYear(), 4)}`,
           timestamp: block.timestamp,
           trustedUsers: [module.owner],
           isExpanded: false,

@@ -60,7 +60,7 @@ type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
 const ImagesWrapper = styled.div<{count: number}>`
   display: grid;
   grid-template-columns: 1fr;
-  margin-left: 8px;
+  /* margin-left: 8px; */
   align-items: center;
 
 	a {
@@ -81,6 +81,13 @@ const UnderUserInfo = styled.div`
   grid-template-columns: max-content max-content max-content;
   grid-column-gap: 20px;
   color: #919191;
+`
+
+const Line = styled.div`
+  display: grid;
+  height: 1px;
+  background: #E3E3E3;
+  margin-top: 10px;
 `
 
 
@@ -189,48 +196,20 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
       <div className={styles.left} style={{ flexGrow: 1, padding: '5px 18px' }}>
         <h3 className={styles.title}>
           <Highlighter textToHighlight={item.title} searchWords={[searchQuery || ""]} highlightStyle={{ background: '#ffff00', padding: 0 }} />
-          
-          {/* {!isOpen && (
-            <>
-              <ImagesWrapper count={trustedList.slice(0,3).length}>
-                {
-                  trustedList.slice(0,3).map((address) => (
-                    <VanillaChildren>{getAvatar(getAddressShort(address))}</VanillaChildren>
-                  ))
-                }
-                <DappletListersPopup 
-                  trustedList={trustedList}
-                  otherList={otherList}
-                  text={`+${Math.max(trustedList.length-3, 0) + otherList.length} more lists`}
-                  onClickSort={(newAddress: string) => {
-                    console.log('hello')
-                    if (newAddress === address) {
-                      setSort({
-                        addressFilter: undefined,
-                        selectedList: Lists.MyListing,
-                      })
-                      return
-                    }
-                    setSort({
-                      addressFilter: newAddress,
-                      selectedList: undefined,
-                    })
-                  }}
-                />
-              </ImagesWrapper>
-            </>
-          )} */}
         </h3>
 
+
+        {isOpen && (
+          <>
+            <div className={styles.author}>
+              <Highlighter className={styles.author} textToHighlight={`${item.name}`} searchWords={[searchQuery || ""]} highlightStyle={{ background: '#ffff00', padding: 0 }} />
+            </div>
+          </>
+        )}
         
         
-        {otherList.length > 0 && <UnderUserInfo>
-          <ImagesWrapper count={trustedList.slice(0,3).length}>
-              {/* {
-                trustedList.slice(0,3).map((address) => (
-                  <VanillaChildren>{getAvatar(getAddressShort(address))}</VanillaChildren>
-                ))
-              } */}
+        {[...trustedList, ...otherList].length > 0 && <UnderUserInfo>
+          <ImagesWrapper count={trustedList.slice(0,3).length} className={styles.author}>
             <DappletListersPopup
               trustedList={trustedList}
               otherList={otherList}
@@ -245,13 +224,9 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
               }}
             />
           </ImagesWrapper>
-          {/* <UnderUserInfoSeparator /> */}
-          {/* <div>4 320 214 active users</div> */}
         </UnderUserInfo>}
 
         <div className={styles.author}>
-          {/* Author: <a href={owner}>{owner}</a> */}
-          
           Author: <a onClick={(e) => {
             e.stopPropagation()
             setSort({
@@ -264,36 +239,25 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
           </a>
         </div>
 
-        {
-          searchQuery ? (
-            <Highlighter className={styles.author} textToHighlight={item.description} searchWords={[searchQuery]} highlightStyle={{ background: '#ffff00', padding: 0 }} />
-          ) : (
-            <div className={styles.author}>{item.description}</div>
-          )
-        }
-
         {isOpen && (
           <>
-          {
-            searchQuery ? <>
-              <Highlighter className={styles.author} textToHighlight={`Full name: ${item.name}`} searchWords={[searchQuery]} highlightStyle={{ background: '#ffff00', padding: 0 }} />
-              <Highlighter className={styles.author} textToHighlight={`Last version: ${item.versionToShow}`} searchWords={[searchQuery]} highlightStyle={{ background: '#ffff00', padding: 0 }} />
-              <Highlighter className={styles.author} textToHighlight={`Published since: ${item.timestampToShow}`} searchWords={[searchQuery]} highlightStyle={{ background: '#ffff00', padding: 0 }} />
-            </> :
-            <>
-              <div className={styles.author}>
-                Full name: {item.name}
-              </div>
-              <div className={styles.author}>
-                Last version: {item.versionToShow}
-              </div>
-              <div className={styles.author}>
-                Published since: {item.timestampToShow}
-              </div>
-            </>
-          }
+            {/* <div>
+              <Highlighter className={styles.author} textToHighlight={`Full name: ${item.name}`} searchWords={[searchQuery || ""]} highlightStyle={{ background: '#ffff00', padding: 0 }} />
+            </div> */}
+            <div className={styles.author}>
+              <Highlighter className={styles.author} textToHighlight={`Update: ${item.timestampToShow} (ver. ${item.versionToShow})`} searchWords={[searchQuery || ""]} highlightStyle={{ background: '#ffff00', padding: 0 }} />
+            </div>
+            <Line />
+            {/* <div> */}
+              {/* <Highlighter className={styles.author} textToHighlight={`Published since: `} searchWords={[searchQuery || ""]} highlightStyle={{ background: '#ffff00', padding: 0 }} /> */}
+            {/* </div> */}
           </>
         )}
+
+      <div className={styles.author}>
+        <Highlighter className={styles.author} textToHighlight={item.description} searchWords={[searchQuery || ""]} highlightStyle={{ background: '#ffff00', padding: 0 }} />
+      </div>
+
       </div>
 
       <ButtonsWrapper>
