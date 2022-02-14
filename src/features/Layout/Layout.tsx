@@ -161,7 +161,7 @@ const Layout = ({
           localDapplets={localDappletsList}
           setLocalDapplets={setLocalDappletsList}
           selectedList={selectedList}
-          setSelectedList={(newSelectedList: Lists | undefined) => setSort({ selectedList: newSelectedList })}
+          setSelectedList={(newSelectedList: Lists | undefined) => setSort({ selectedList: newSelectedList, searchQuery: "" })}
           sortType={sortType || SortTypes.ABC}
           searchQuery={searchQuery || ""}
           editSearchQuery={(newtSearchQuery: string) => setSort({ searchQuery: newtSearchQuery })}
