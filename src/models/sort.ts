@@ -41,7 +41,7 @@ const reducers = {
 
 const effects = (dispatch: any) => ({
   getSort: (address: string = '') => {
-    const params = getAnchorParams(true, address)
+    const params = getAnchorParams(address)
     if (!params) return
     dispatch.sort.setSort(params)
   },

@@ -16,6 +16,7 @@ import { Sort } from '../../models/sort';
 import { connect } from 'react-redux';
 import { ModalsList } from '../../models/modals';
 import { MyListElement } from '../../models/myLists';
+import { useEffect } from 'react';
 
 const mapState = (state: RootState) => ({
   address: state.user.address,
@@ -179,6 +180,66 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
       isExpanded: !isOpen,
     })
   };
+
+  useEffect(() => {
+
+    const f = async () => {
+      // try {
+      //   const response = await fetch(
+      //     `https://bee.dapplets.org/bzz/${icon.uris[0].slice(6)}`
+      //   );
+      //   const body = await response.json();
+      //   console.log({body})
+        
+      // } catch (error) {
+      //   console.log({error})
+        
+      // }
+      // const promises = []
+      // promises.push(
+      //   fetch(
+      //     `https://bee.dapplets.org/bzz/${icon.uris[0].slice(6)}`
+      //   ),
+      //   fetch(
+      //     `https://bee.dapplets.org/bzz/${icon.uris[1].slice(6)}`
+      //   ),
+      // )
+      // try {
+      //   const a = await Promise.any(promises)
+      //   console.log({a})
+        
+      // } catch (error) {
+      //   console.log({error})
+        
+      // }
+
+      // let urls = [
+      //   `https://bee.dapplets.org/bzz/${icon.uris[0].slice(6)}`,
+      //   `https://bee.dapplets.org/bzz/${icon.uris[1].slice(6)}`,
+      //   // 'https://api.github.com/users/jeresig'
+      // ];
+      
+      // // Преобразуем каждый URL в промис, возвращённый fetch
+      // let requests = urls.map(url => fetch(url));
+      
+      // // Promise.all будет ожидать выполнения всех промисов
+      // Promise.all(requests)
+      //   .then(responses => responses.forEach(
+      //     response => alert(`${response.url}: ${response.status}`)
+      //   ));
+    }
+    // const imageUrl = "https://bee.dapplets.org/bzz/5067359fb612cc8f083ab35fc7e5c0f3f98fc0ef57856731d6ae6e0b498ee37f/";
+
+    // fetch(imageUrl)
+    //   //                         vvvv
+    //   .then(response => response.blob())
+    //   .then(imageBlob => {
+    //       // Then create a local URL for that image and print it 
+    //       const imageObjectURL = URL.createObjectURL(imageBlob);
+    //       console.log(imageObjectURL);
+    //   });
+    // f()
+  }, [icon.uris])
 
   if (!item) return <></>;
   return (
