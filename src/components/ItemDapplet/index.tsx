@@ -234,7 +234,7 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
             <DappletListersPopup
               trustedList={trustedList}
               otherList={otherList}
-              text={`in ${otherList.length} list${otherList.length !== 1 ? 's' : ''}`}
+              text={`in ${[...trustedList, ...otherList].length} list${[...trustedList, ...otherList].length !== 1 ? 's' : ''}`}
               onClickSort={(address: string) => {
                 console.log('hello')
                 setSort({

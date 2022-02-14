@@ -27,10 +27,11 @@ const mapState = (state: RootState) => ({
   dappletsStandard: state.dapplets,
   address: state.user.address,
   trustedUsers: state.trustedUsers.trustedUsers,
+  addressFilter: state.sort.addressFilter
 });
 const mapDispatch = (dispatch: RootDispatch) => ({
   getDapplets: () => dispatch.dapplets.getDapplets(),
-  getSort: () => dispatch.sort.getSort(),
+  getSort: (address: string) => dispatch.sort.getSort(address),
   setSort: (payload: Sort) => dispatch.sort.setSort(payload),
   setModalOpen: (payload: ModalsList | null) => dispatch.modals.setModalOpen(payload),
   getTrustedUsers: () => dispatch.trustedUsers.getTrustedUsers(),
@@ -56,6 +57,7 @@ const App = ({
   dappletsStandard,
   address,
   trustedUsers,
+  addressFilter,
   getDapplets,
   getSort,
   setSort,
@@ -150,14 +152,20 @@ const App = ({
         name: Lists.MyListing,
         elements: sortedList,
       })
+      if (addressFilter === address)
+      {
+        setSort({
+          selectedList: Lists.MyListing,
+        })
+      }
     }
-  }, [address, dapplets, setMyList])
+  }, [address, addressFilter, dapplets, setMyList, setSort])
 
   const [url, setUrl] = useState('')
 
   useEffect(() => {
-    getSort()
-  }, [getSort, url])
+    getSort(address || '')
+  }, [address, getSort, url])
   
   useEffect(() => {
     window.onpopstate = () => {
