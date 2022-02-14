@@ -177,6 +177,7 @@ const SidePanel = ({
             setSort({
               selectedList: Lists.MyDapplets,
               addressFilter: "",
+              searchQuery: "",
             });
           }}
           isMoreShow={localDappletsList.length > 0}
@@ -201,6 +202,7 @@ const SidePanel = ({
             setSort({
               selectedList: Lists.MyListing,
               addressFilter: "",
+              searchQuery: "",
             });
           }}
           isMoreShow={selectedDappletsList.length > 0}
@@ -227,6 +229,7 @@ const SidePanel = ({
             setSort({
               addressFilter: id,
               selectedList: undefined,
+              searchQuery: "",
             })}
           isOpen={SideLists.MyTrustedUsers === openedList}
           setIsOpen={setOpenedList}

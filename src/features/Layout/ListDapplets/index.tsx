@@ -270,10 +270,10 @@ const ListDapplets = ({
     });
     if (searchQuery !== '')
       sortedList = sortedList.filter((dapplet) => (
-        dapplet.name.includes(searchQuery) ||
-        dapplet.owner.includes(searchQuery) ||
-        dapplet.title.includes(searchQuery) ||
-        dapplet.description.includes(searchQuery)
+        dapplet.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        dapplet.owner.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        dapplet.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        dapplet.description.toLowerCase().includes(searchQuery.toLowerCase())
       ))
     if (addressFilter !== '') 
       sortedList = sortedList.filter(({ trustedUsers }) => trustedUsers.includes(addressFilter))

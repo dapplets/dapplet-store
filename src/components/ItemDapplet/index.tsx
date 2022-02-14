@@ -240,6 +240,7 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
                 setSort({
                   addressFilter: address,
                   selectedList: undefined,
+                  searchQuery: "",
                 })
               }}
             />
@@ -256,6 +257,7 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
             setSort({
               addressFilter: item.owner,
               selectedList: undefined,
+              searchQuery: "",
             })
           }}>
             <Highlighter textToHighlight={owner} searchWords={[searchQuery || ""]} highlightStyle={{ background: '#ffff00', padding: 0 }} />
