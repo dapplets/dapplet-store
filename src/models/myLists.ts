@@ -42,7 +42,7 @@ const effects = (dispatch: any) => ({
     const dappletsListStringified = window.localStorage.getItem(payload);
     if (dappletsListStringified) {
       const dappletsListParsed: MyListElement[] = JSON.parse(dappletsListStringified);
-      console.log({dappletsListParsed})
+      // console.log({dappletsListParsed})
       dispatch.myLists.setMyList({
         name: payload,
         elements: dappletsListParsed,
@@ -58,7 +58,7 @@ const effects = (dispatch: any) => ({
         type: DappletsListItemTypes.Default,
       })),
     });
-    console.log({dapps})
+    // console.log({dapps})
   },
   async addMyDapplet({registryUrl, moduleName}: {registryUrl: string, moduleName: string}) {
     await window.dapplets.addMyDapplet('0x55627158187582228031eD8DF9893d76318D084E', moduleName)
@@ -66,7 +66,7 @@ const effects = (dispatch: any) => ({
   },
   async removeMyDapplet({registryUrl, moduleName}: {registryUrl: string, moduleName: string}) {
     await window.dapplets.removeMyDapplet('0x55627158187582228031eD8DF9893d76318D084E', moduleName)
-    console.log({removed: moduleName})
+    // console.log({removed: moduleName})
   },
 })
 

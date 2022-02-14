@@ -24,7 +24,7 @@ const effects = (dispatch: any) => ({
     // if (trustedUsers) dispatch.trustedUsers.setTrustedUsers(JSON.parse(trustedUsers))
     try {
       const trustedUsers = await window.dapplets.getTrustedUsers()
-      console.log({trustedUsers})
+      // console.log({trustedUsers})
       if (trustedUsers) dispatch.trustedUsers.setTrustedUsers(trustedUsers.map(({account}: {account: string}) => account))
     } catch (error) {
       console.error({error})

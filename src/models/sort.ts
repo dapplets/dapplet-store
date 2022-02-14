@@ -33,7 +33,7 @@ const reducers = {
       ...state,
       ...payload,
     }
-    console.log({state, newSort, b: state === newSort})
+    // console.log({state, newSort, b: state === newSort})
     setAnchorParams(newSort)
     return newSort
   },
