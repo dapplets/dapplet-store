@@ -105,6 +105,20 @@ const ButtonsWrapper = styled.div`
   grid-row-gap: 10px;
 `
 
+const ENDPOINTS: {
+  [key: string]: string
+} = {
+  'bzz': 'https://swarmgateway.mooo.com',
+  'ipfs': 'https://ipfs.kaleido.art',
+  'sia': 'https://siasky.net',
+  's3': 'https://dapplet-api.s3.nl-ams.scw.cloud',
+}
+
+const BZZ_ENDPOINT = 'https://swarmgateway.mooo.com';
+const IPFS_ENDPOINT = 'https://ipfs.kaleido.art';
+const SIA_ENDPOINT = 'https://siasky.net';
+const S3_ENDPOINT = 'https://dapplet-api.s3.nl-ams.scw.cloud';
+
 interface ItemDappletProps {
   item: IDapplet
   selectedDapplets: MyListElement[]
@@ -182,18 +196,77 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
     })
   };
 
+  
+    
+  const _fetchAndCheckHash = async(url: string, controller: AbortController, expectedHash?: string) => {
+    const response = await fetch(url, { signal: controller.signal });
+    if (!response.ok) throw new Error('Cannot fetch ' + url);
+    
+    const blob = await response.blob();
+    const buffer = await blob.arrayBuffer();
+    const recievedHash = ethers.utils.keccak256(new Uint8Array(buffer));
+    
+    if (expectedHash && expectedHash !== recievedHash) {
+        throw new Error('Hash mismatch ' + url);
+    }
+    
+    return blob;
+  }
+
+  type StorageRef = {
+    hash: string;
+    uris: string[];
+  }
+  const _getResource = async(storageRef: StorageRef) => {
+    const promises: Promise<Blob>[] = [];
+    const controller = new AbortController();
+    
+    for (const uri of storageRef.uris) {
+        const protocol = uri.substring(0, uri.indexOf('://'));
+        const reference = uri.substring(uri.indexOf('://') + 3);
+        
+        if (protocol === 'bzz') {
+            promises.push(_fetchAndCheckHash(BZZ_ENDPOINT + '/bzz/' + reference, controller, storageRef.hash));
+        } else if (protocol === 'ipfs') {
+            promises.push(_fetchAndCheckHash(IPFS_ENDPOINT + '/ipfs/' + reference, controller, storageRef.hash));
+        } else if (protocol === 'sia') {
+            promises.push(_fetchAndCheckHash(SIA_ENDPOINT + '/' + reference, controller, storageRef.hash));
+        } else {
+            console.warn('Unsupported protocol ' + uri);
+        }
+    }
+    
+    if (storageRef.hash) {
+        const hash = storageRef.hash.replace('0x', '');
+        promises.push(_fetchAndCheckHash(S3_ENDPOINT + '/' + hash, controller, storageRef.hash));
+    }
+    
+    const blob = await Promise.any(promises);
+    const blobUrl = URL.createObjectURL(blob);
+    
+    // cancel all request
+    controller.abort();
+    
+    return blobUrl;
+  }
+
   const [imgURL, setImgUrl] = useState('')
 
-  useEffect(() => {
-    console.debug('start')
-    const urls = icon.uris.map((url) => `https://bee.dapplets.org/bzz/${url.slice(6)}`);
-    const requests = urls.map(url => fetch(url));
-    Promise.any(requests)
-      .then(response => { 
-        setImgUrl(response.url)
-      })
-      .catch(error => console.warn({error}))
-  }, [icon.uris])
+  // useEffect(() => {
+  //   console.debug('start', item.name)
+  //   console.debug(icon)
+  //   // const urls = icon.uris.map((url) => {
+  //   //   const myUrl: string[] = url.split('://')
+  //   //   return `${ENDPOINTS[myUrl[0]]}/${myUrl[0]}/${myUrl[1]}`
+  //   // });
+  //   // const requests = urls.map(url => fetch(url));
+  //   // Promise.any(requests)
+  //   //   .then(response => { 
+  //   //     setImgUrl(response.url)
+  //   //   })
+  //   //   .catch(error => console.warn({error}))
+  //   _getResource(icon).then((blob) => setImgUrl(blob))
+  // }, [icon])
 
   if (!item) return <></>;
   return (
