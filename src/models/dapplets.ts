@@ -86,7 +86,7 @@ const reducers = {
 const effects = (dispatch: any) => ({ //
   getDapplets: async (): Promise<void> => {
     const provider = new ethers.providers.JsonRpcProvider(PROVIDER_URL, 0x05);
-    const contract: any = new ethers.Contract('0x55627158187582228031eD8DF9893d76318D084E', abi, provider);
+    const contract: any = new ethers.Contract('registry.dapplet-base.eth', abi, provider);
     const events = await contract.queryFilter('ModuleInfoAdded');
 
 

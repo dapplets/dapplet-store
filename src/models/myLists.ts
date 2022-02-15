@@ -61,11 +61,11 @@ const effects = (dispatch: any) => ({
     console.log({dapps})
   },
   async addMyDapplet({registryUrl, moduleName}: {registryUrl: string, moduleName: string}) {
-    await window.dapplets.addMyDapplet('0x55627158187582228031eD8DF9893d76318D084E', moduleName)
+    await window.dapplets.addMyDapplet('registry.dapplet-base.eth', moduleName)
     // console.log({dapps})
   },
   async removeMyDapplet({registryUrl, moduleName}: {registryUrl: string, moduleName: string}) {
-    await window.dapplets.removeMyDapplet('0x55627158187582228031eD8DF9893d76318D084E', moduleName)
+    await window.dapplets.removeMyDapplet('registry.dapplet-base.eth', moduleName)
     console.log({removed: moduleName})
   },
 })
