@@ -63,19 +63,27 @@ const ModalResolver = ({
         cacheProvider: true, // optional
         providerOptions // required
       });
-  
-      const provider = await web3Modal.connect();
-      
-      if (localStorage['metamask_disabled'] === 'true') {
-        await provider.request({ method: "wallet_requestPermissions", params: [{ eth_accounts: {} }] });
-        localStorage['metamask_disabled'] = '';
+
+      let provider: any;
+      try {
+        provider = await web3Modal.connect();
+        
+        if (localStorage['metamask_disabled'] === 'true') {
+          await provider.request({ method: "wallet_requestPermissions", params: [{ eth_accounts: {} }] });
+          localStorage['metamask_disabled'] = '';
+        }
+      } catch (error) {
+        setModalOpen(null)
+        throw error
       }
+  
       
       provider.on("accountsChanged", (accounts: string[]) => {
         setUser(accounts[0])
       });
       
       const web3 = new Web3(provider);
+
       const address = await web3.eth.getAccounts()
       setUser(address[0])
       
