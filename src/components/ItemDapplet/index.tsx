@@ -223,14 +223,17 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
         </UnderUserInfo>}
 
         <div className={styles.author}>
-          Author: <a onClick={(e) => {
-            e.stopPropagation()
-            setSort({
-              addressFilter: item.owner,
-              selectedList: undefined,
-              searchQuery: "",
-            })
-          }}>
+          <span style={{ width: 60, display: 'inline-block' }}>Author:</span> 
+          <a 
+            onClick={(e) => {
+              e.stopPropagation()
+              setSort({
+                addressFilter: item.owner,
+                selectedList: undefined,
+                searchQuery: "",
+              })
+            }}
+          >
             <Highlighter textToHighlight={owner} searchWords={[searchQuery || ""]} highlightStyle={{ background: '#ffff00', padding: 0 }} />
           </a>
         </div>
@@ -241,7 +244,8 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
               <Highlighter className={styles.author} textToHighlight={`Full name: ${item.name}`} searchWords={[searchQuery || ""]} highlightStyle={{ background: '#ffff00', padding: 0 }} />
             </div> */}
             <div className={styles.author}>
-              <Highlighter className={styles.author} textToHighlight={`Update: ${item.timestampToShow} (ver. ${item.versionToShow})`} searchWords={[searchQuery || ""]} highlightStyle={{ background: '#ffff00', padding: 0 }} />
+              <span style={{ width: 60, display: 'inline-block' }}>Update:</span>
+              <Highlighter className={styles.author} textToHighlight={`${item.timestampToShow} (ver. ${item.versionToShow})`} searchWords={[searchQuery || ""]} highlightStyle={{ background: '#ffff00', padding: 0 }} />
             </div>
             <Line />
             {/* <div> */}
