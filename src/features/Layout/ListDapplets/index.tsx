@@ -52,6 +52,28 @@ const CheckboxWrapper = styled.div<CheckboxWrapperProps>`
   }
 `
 
+const ButtonAll = styled.div`
+  grid-area: all;
+  justify-self: end;
+  align-self: end;
+  background: none;
+
+  & button {
+    font-family: Roboto;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 14px;
+    letter-spacing: 0em;
+    text-align: center;
+    padding: 10px;
+    cursor: pointer;
+    border: none;
+    background: none;
+  }
+
+`
+
 const dropdownItems = [
   {
     id: 1,
@@ -249,6 +271,19 @@ const ListDapplets = ({
       >
         {titleText}
       </Header>
+      {
+        titleText === 'My Dapplets' && (
+          <ButtonAll>
+            <button onClick={() => {
+              setAddressFilter('')
+              editSearchQuery('')
+              setSelectedList(undefined)
+            }}>
+              Show All
+            </button>
+          </ButtonAll>
+        )
+      }
     </div>
   );
 
