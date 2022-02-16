@@ -16,7 +16,6 @@ import { ModalsList } from './../models/modals';
 import { Lists, MyListElement } from '../models/myLists';
 import { DappletsListItemTypes } from '../components/DappletsListItem/DappletsListItem';
 import { useMemo } from 'react';
-import { getAnchorParams } from '../lib/anchorLink';
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import Web3 from 'web3';
 import Web3Modal from "web3modal";

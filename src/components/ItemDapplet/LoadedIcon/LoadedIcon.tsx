@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
-import { useMemo } from 'react';
 import { ethers } from 'ethers';
 import { Image } from 'semantic-ui-react';
 import styles from '../ItemDapplet.module.scss';
@@ -10,16 +8,6 @@ const BZZ_ENDPOINT = 'https://swarmgateway.mooo.com';
 const IPFS_ENDPOINT = 'https://ipfs.kaleido.art';
 const SIA_ENDPOINT = 'https://siasky.net';
 const S3_ENDPOINT = 'https://dapplet-api.s3.nl-ams.scw.cloud';
-
-interface ButtonWrapperProps {
-  buttonType: string
-}
-
-const ButtonWrapper = styled.button<ButtonWrapperProps>`
-  
-  opacity: ${({ disabled }) => disabled ? 0.5 : 1};
-`
-
 
 type StorageRef = {
   hash: string;
