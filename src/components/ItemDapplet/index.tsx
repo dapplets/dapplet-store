@@ -16,6 +16,9 @@ import { Sort } from '../../models/sort';
 import { connect } from 'react-redux';
 import { ModalsList } from '../../models/modals';
 import { MyListElement } from '../../models/myLists';
+import { useEffect } from 'react';
+import { useState } from 'react';
+import { LoadedIcon } from './LoadedIcon/LoadedIcon';
 
 const mapState = (state: RootState) => ({
   address: state.user.address,
@@ -165,10 +168,10 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
 
   const owner = item.owner.replace('0x000000000000000000000000', '0x');
 
-  const icon = {
+  const icon =  useMemo(() => ({
     hash: item.icon.hash,
     uris: item.icon.uris.map(u => ethers.utils.toUtf8String(u))
-  };
+  }), [item.icon.hash, item.icon.uris]);
 
   const isOpen = useMemo(() => item.isExpanded, [item.isExpanded])
 
@@ -186,11 +189,7 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
       style={{ display: 'flex', width: '100%', wordBreak: 'break-all' }}
       onClick={handleClickOnItem}
     >
-      {
-        icon.uris.length > 0 ?
-        <Image className={styles.itemImage} src={`https://bee.dapplets.org/bzz/${icon.uris[0].slice(6)}`} style={{ width: 85, height: 85, borderRadius: '50%', marginTop: 10 }} />
-        : <div style={{  minWidth: 85, height: 85, borderRadius:'50%', marginTop: 10, background: "#919191" }}></div>
-      }
+      <LoadedIcon storageRef={icon} />
       
 
       <div className={styles.left} style={{ flexGrow: 1, padding: '5px 18px' }}>
@@ -215,7 +214,7 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
               otherList={otherList}
               text={`in ${[...trustedList, ...otherList].length} list${[...trustedList, ...otherList].length !== 1 ? 's' : ''}`}
               onClickSort={(address: string) => {
-                console.log('hello')
+                // console.log('hello')
                 setSort({
                   addressFilter: address,
                   selectedList: undefined,
@@ -289,4 +288,4 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
   );
 };
 
-export default connect(mapState, mapDispatch)(ItemDapplet);
+export default connect(mapState, mapDispatch)(React.memo(ItemDapplet));

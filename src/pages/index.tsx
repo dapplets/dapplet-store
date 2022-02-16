@@ -169,9 +169,37 @@ const App = ({
   
   useEffect(() => {
     window.onpopstate = () => {
-      console.log(document.URL, getAnchorParams())
+      // console.log(document.URL, getAnchorParams())
       setUrl(document.URL as string)
     };
+  }, [])
+
+  useEffect(() => {
+    
+
+    let urls = [
+      `https://bee.dapplets.org/bzz/5067359fb612cc8f083ab35fc7e5c0f3f98fc0ef57856731d6ae6e0b498ee37f/`,
+      `https://bee.dapplets.org/bzz/5067359fb612cc8f083ab35fc7e5c0f3f98fc0ef57856731d6ae6e0b498ee37d/`,
+      // 'https://api.github.com/users/jeresig'
+    ];
+    
+    // Преобразуем каждый URL в промис, возвращённый fetch
+    let requests = urls.map(url => fetch(url));
+    
+    // Promise.all будет ожидать выполнения всех промисов
+    Promise.any(requests)
+      .then(response => { 
+        console.log({response})
+      });
+    const imageUrl = "https://bee.dapplets.org/bzz/5067359fb612cc8f083ab35fc7e5c0f3f98fc0ef57856731d6ae6e0b498ee37f/";
+
+    fetch(imageUrl)
+      .then(response => response.blob())
+      .then(imageBlob => {
+          // Then create a local URL for that image and print it 
+          const imageObjectURL = URL.createObjectURL(imageBlob);
+          console.log({imageObjectURL});
+      });
   }, [])
 
   useEffect(() => {

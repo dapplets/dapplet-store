@@ -279,8 +279,13 @@ const ListDapplets = ({
       sortedList = sortedList.filter(({ trustedUsers }) => trustedUsers.includes(addressFilter))
     if (isTrustedSort && !isDapplet)
       sortedList = sortedList.filter(({ trustedUsers }) => trustedUsersList.some((user) => trustedUsers.includes(user)))
+    // console.debug('sortedDapplets', sortedList)
     return sortedList
   }, [addressFilter, collator, dapplets, isDapplet, isTrustedSort, searchQuery, selectedList, sortType, trustedUsersList])
+
+  useEffect(() => {
+    console.debug({dapplets})
+  }, [dapplets])
 
   const chooseList = {
     [Lists.MyListing]: selectedDapplets,
@@ -362,7 +367,7 @@ const ListDapplets = ({
           }
         </MainContentWrapper>
         {!((addressFilter !== '' || selectedList) && selectedList !== Lists.MyDapplets) && listDappletsHeader}
-        {selectedList && !isLocked
+        {/* {selectedList && !isLocked
           // ? <></>
           ? <SortableList
             dapplets={sortedDapplets}
@@ -401,7 +406,28 @@ const ListDapplets = ({
                 </div>
               </section>
             )
-          )}
+          )} */}
+
+          {dapplets
+            .map((item) => (
+              <section className={styles.item} key={item.name}>
+                <div className={styles.itemContainer} key={item.name}>
+                  <ItemDapplet
+                    key={item.name}
+                    item={item}
+                    selectedDapplets={selectedDapplets}
+                    localDapplets={localDapplets}
+                    editLocalDappletsList={editLocalDappletsList}
+                    editSelectedDappletsList={editSelectedDappletsList}
+                    searchQuery={searchQuery}
+                    setAddressFilter={setAddressFilter}
+                    setOpenedList={setOpenedList}
+                    trustedUsersList={trustedUsersList}
+                    isDapplet={isDapplet}
+                  />
+                </div>
+              </section>))
+              }
       </div>
     </article>
   );
