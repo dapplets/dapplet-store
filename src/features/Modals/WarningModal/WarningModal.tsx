@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { ReactComponent as Cat } from './cat.svg';
-import { ReactComponent as RotateArrow } from './rotateArrow.svg';
+// import { ReactComponent as RotateArrow } from './rotateArrow.svg';
 import { ReactComponent as XCircle } from './xCircle.svg';
 import { ReactComponent as Close } from '../close.svg';
 
@@ -124,14 +124,14 @@ const ButtonCancel = styled(Button)`
   }
 `
 
-const ButtonRetry = styled(Button)`
-  background: #F5CF6C;
-  color: white;
-  &:hover {
-    background: #FFE299;
-    color: #D5A93B;
-  }
-`
+// const ButtonRetry = styled(Button)`
+//   background: #F5CF6C;
+//   color: white;
+//   &:hover {
+//     background: #FFE299;
+//     color: #D5A93B;
+//   }
+// `
 
 const CloseButton = styled.button`
   position: absolute;
@@ -149,7 +149,7 @@ interface WarningModalProps {
   message?: string
 }
 
-const WarningModal = ({onClose, message = "I can’t push changes to blockchain :("}: WarningModalProps) => {
+const WarningModal = ({onClose, message = "Change yore network to Goerli"}: WarningModalProps) => {
   return(
     <Wrapper>
       <CloseButton onClick={onClose}><Close /></CloseButton>
@@ -160,17 +160,17 @@ const WarningModal = ({onClose, message = "I can’t push changes to blockchain 
         <ButtonCancel
           icon={XCircle}
           onClick={onClose}
-          title='Cancle'
+          title='Close'
         />
-        <ButtonRetry
+        {/* <ButtonRetry
           icon={RotateArrow}
           onClick={() => {}}
-          title='Retry'
+          title='Change network'
           stroke={{
             hovered: '#D5A93B',
             default: '#FFFFFF',
           }}
-        />
+        /> */}
       </ButtonsWrapper>
     </Wrapper>
 )}

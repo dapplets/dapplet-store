@@ -4,6 +4,7 @@ import abi from '../abi.json';
 import abiListing from './abi';
 import { PROVIDER_URL } from "../api/consts";
 import { customToast } from "../components/Notification";
+import { ModalsList } from "./modals";
 
 
 const BZZ_ENDPOINT = 'https://swarmgateway.mooo.com';
@@ -218,7 +219,10 @@ const effects = (dispatch: any) => ({ //
     }
   },
   pushMyListing: async ({events, provider}: {events: EventPushing[], provider: any}) => {
-    
+    if (provider.chainId !== '0x5') {
+      dispatch.modals.setModalOpen(ModalsList.Warning)
+      throw new Error('Change network to Goerli')
+    }
     // console.log('push')
     const ethersProvider= new ethers.providers.Web3Provider(provider);
     const signer = await ethersProvider.getSigner();
