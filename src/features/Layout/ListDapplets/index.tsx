@@ -251,7 +251,7 @@ const ListDapplets = ({
     return 'All Dapplets'
   }, [addressFilter, ensNames, getEnsNames, isTrustedSort, searchQuery, selectedList])
 
-  const listDappletsHeader = (
+  const listDappletsHeader = useMemo(() => (
     <div
       style={{
         display: 'flex',
@@ -285,7 +285,7 @@ const ListDapplets = ({
         )
       }
     </div>
-  );
+  ), [editSearchQuery, setAddressFilter, setSelectedList, titleText]);
 
   const sortedDapplets = useMemo(() => {
     let sortedList =  dapplets.sort((a, b) => {
@@ -322,15 +322,15 @@ const ListDapplets = ({
     console.debug({dapplets})
   }, [dapplets])
 
-  const chooseList = {
+  const chooseList = useMemo(() => ({
     [Lists.MyListing]: selectedDapplets,
     [Lists.MyDapplets]: localDapplets,
-  }
+  }), [localDapplets, selectedDapplets])
 
-  const chooseSetMethod = {
+  const chooseSetMethod = useMemo(() => ({
     [Lists.MyListing]: setSelectedDapplets,
     [Lists.MyDapplets]: setLocalDapplets,
-  }
+  }), [setLocalDapplets, setSelectedDapplets])
 
   useEffect(() => {
     // console.log({r: ref})//  ref!.current!.scrollTop = 0;
@@ -447,4 +447,4 @@ const ListDapplets = ({
   );
 }
 
-export default connect(mapState, mapDispatch)(ListDapplets);
+export default connect(mapState, mapDispatch)(React.memo(ListDapplets));

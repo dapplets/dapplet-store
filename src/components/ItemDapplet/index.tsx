@@ -1,6 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useMemo } from 'react';
-import { ethers } from 'ethers';
 import styled from 'styled-components';
 
 import styles from './ItemDapplet.module.scss';
@@ -15,47 +14,23 @@ import { Sort } from '../../models/sort';
 import { connect } from 'react-redux';
 import { ModalsList } from '../../models/modals';
 import { MyListElement } from '../../models/myLists';
-import { LoadedIcon } from './LoadedIcon/LoadedIcon';
+import { Image } from 'semantic-ui-react';
+import { useCallback } from 'react';
 
 const mapState = (state: RootState) => ({
   address: state.user.address,
   isLocked: state.user.isLocked,
+  blobUrl: state.blobUrl,
 });
 
 const mapDispatch = (dispatch: RootDispatch) => ({
   setSort: (payload: Sort) => dispatch.sort.setSort(payload),
   setModalOpen: (payload: ModalsList | null) => dispatch.modals.setModalOpen(payload),
-  setExpanded: (payload: {id: number, isExpanded: boolean}) => dispatch.dapplets.setExpanded(payload)
+  setExpanded: (payload: {id: number, isExpanded: boolean}) => dispatch.dapplets.setExpanded(payload),
+  setBlobUrl: (payload: {id: number, blobUrl: string}) => dispatch.blobUrl.setBlobUrl(payload),
 });
 
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
-
-
-// const ImageItem = styled.div`
-//   margin-left: -8px;
-//   border: 2px solid white;
-//   border-radius: 50%;
-//   width: 16px;
-//   height: 16px;
-// `
-// interface VanillaChildrenProps {
-// 	children: HTMLElement | HTMLDivElement
-// }
-
-// const VanillaChildren = ({ children }: VanillaChildrenProps): JSX.Element => {
-// 	const ref = useRef<HTMLDivElement>(null);
-
-// 	useEffect(() => {
-//     while (ref.current?.firstChild) {
-//       ref.current?.removeChild(ref.current?.firstChild);
-//     }
-// 		ref.current?.appendChild(children);
-// 	}, [children, ref]);
-
-// 	return (
-// 		<ImageItem style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} ref={ref}/>
-// 	);
-// };
 
 const ImagesWrapper = styled.div<{count: number}>`
   display: grid;
@@ -146,9 +121,9 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
   // const getAvatar = (loggedIn: string): HTMLDivElement => jazzicon(12, parseInt(loggedIn.slice(2, 10), 16));
   // const getAddressShort = (address: string) => address ? address.replace('0x000000000000000000000000', '0x') : ''
 
-  const isLocalDapplet = localDapplets.some((dapplet) => dapplet.name === item.name);
+  const isLocalDapplet = useMemo(() => localDapplets.some((dapplet) => dapplet.name === item.name), [item.name, localDapplets]);
 
-  const getSelectedType = () => {
+  const getSelectedType = useCallback(() => {
     const selectedDapplet = selectedDapplets.find((dapplet) => dapplet.name === item.name)
     if (selectedDapplet)
       switch (selectedDapplet.type) {
@@ -161,14 +136,9 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
           return DappletButtonTypes.InMyList
       }
     return DappletButtonTypes.AddToList
-  }
+  }, [item.name, selectedDapplets])
 
-  const owner = item.owner.replace('0x000000000000000000000000', '0x');
-
-  const icon =  useMemo(() => ({
-    hash: item.icon.hash,
-    uris: item.icon.uris.map(u => ethers.utils.toUtf8String(u))
-  }), [item.icon.hash, item.icon.uris]);
+  const owner =  useMemo(() => item.owner.replace('0x000000000000000000000000', '0x'), [item.owner]);
 
   const isOpen = useMemo(() => item.isExpanded, [item.isExpanded])
 
@@ -186,8 +156,11 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
       style={{ display: 'flex', width: '100%', wordBreak: 'break-all' }}
       onClick={handleClickOnItem}
     >
-      <LoadedIcon storageRef={icon} />
-      
+      {
+        item.icon ?
+        <Image className={styles.itemImage} src={item.icon} style={{ width: 85, height: 85, borderRadius: '50%', marginTop: 10 }} />
+        : <div style={{  minWidth: 85, height: 85, borderRadius:'50%', marginTop: 10, background: "#919191" }}></div>
+      }
 
       <div className={styles.left} style={{ flexGrow: 1, padding: '5px 18px' }}>
         <h3 className={styles.title}>
@@ -240,17 +213,11 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
 
         {isOpen && (
           <>
-            {/* <div>
-              <Highlighter className={styles.author} textToHighlight={`Full name: ${item.name}`} searchWords={[searchQuery || ""]} highlightStyle={{ background: '#ffff00', padding: 0 }} />
-            </div> */}
             <div className={styles.author}>
               <span style={{ width: 60, display: 'inline-block' }}>Update:</span>
               <Highlighter className={styles.author} textToHighlight={`${item.timestampToShow} (ver. ${item.versionToShow})`} searchWords={[searchQuery || ""]} highlightStyle={{ background: '#ffff00', padding: 0 }} />
             </div>
             <Line />
-            {/* <div> */}
-              {/* <Highlighter className={styles.author} textToHighlight={`Published since: `} searchWords={[searchQuery || ""]} highlightStyle={{ background: '#ffff00', padding: 0 }} /> */}
-            {/* </div> */}
           </>
         )}
 
