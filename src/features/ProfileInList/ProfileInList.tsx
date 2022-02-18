@@ -238,7 +238,7 @@ const Button = ({
             return
           }
           if (myAddress === address) {
-            window.dapplets.openDeployOverlay('registry.dapplet-base.eth', '', null, null)
+            window.dapplets.openDeveloperOverlay()
             return
           }
           if (trustedUsersList.includes(address)) {
