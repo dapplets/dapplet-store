@@ -44,6 +44,7 @@ const mapDispatch = (dispatch: RootDispatch) => ({
   setProvider: (payload: any) => dispatch.user.setUser({
     provider: payload
   }),
+  setTrustedUsers: (payload: string[]) => dispatch.trustedUsers.setTrustedUsers(payload),
 });
 
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
@@ -68,6 +69,7 @@ const App = ({
   getMyDapplets,
   setUser,
   setProvider,
+  setTrustedUsers,
 }: Props) => {
   const [dimensions, setDimensions] = useState({ 
     height: window.innerHeight,
@@ -104,8 +106,18 @@ const App = ({
     {
       getMyDapplets()
       getTrustedUsers()
+      window.dapplets.onTrustedUsersChanged(() => getTrustedUsers())
+      window.dapplets.onMyDappletsChanged(() => getMyDapplets())
+      window.dapplets.onUninstall(() => {
+        setIsNotDapplet(true)
+        setMyList({
+          name: Lists.MyDapplets,
+          elements: []
+        })
+        setTrustedUsers([])
+      })
     }
-  }, [getLists, getMyDapplets, getTrustedUsers, isNotDapplet])
+  }, [getLists, getMyDapplets, getTrustedUsers, isNotDapplet, setMyList, setTrustedUsers])
 
   // TODO: test func to open modals
   useEffect(() => {
