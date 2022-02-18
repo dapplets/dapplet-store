@@ -46,7 +46,7 @@ const SortableList = (props: SortableListProps) => {
     trustedUsersList,
     isTrustedSort,
     selectedList,
-    isDapplet,
+    isNotDapplet,
   } = props;
 
   const [activeId, setActiveId] = useState<SetStateAction<string> | null>(null);
@@ -109,7 +109,7 @@ const SortableList = (props: SortableListProps) => {
               setOpenedList={setOpenedList}
               searchQuery={searchQuery}
               trustedUsersList={trustedUsersList}
-              isDapplet={isDapplet}
+              isNotDapplet={isNotDapplet}
             /> 
           </Draggable>
         ))}
@@ -137,7 +137,7 @@ const SortableList = (props: SortableListProps) => {
                 setAddressFilter={setAddressFilter}
                 setOpenedList={setOpenedList}
                 trustedUsersList={trustedUsersList}
-                isDapplet={isDapplet}
+                isNotDapplet={isNotDapplet}
               />
             </div>
           </section>

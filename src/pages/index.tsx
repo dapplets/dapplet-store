@@ -73,11 +73,11 @@ const App = ({
     height: window.innerHeight,
     width: window.innerWidth
   })
-  const [isDapplet, setIsDapplet] = useState(true)
+  const [isNotDapplet, setIsNotDapplet] = useState(true)
 
   useEffect(() => {
     window.addEventListener('dapplets#initialized', () => {
-      setIsDapplet(false)
+      setIsNotDapplet(false)
     })
   }, [])
   
@@ -100,12 +100,12 @@ const App = ({
   }, [getDapplets, getLists, getSort, getTrustedUsers])
 
   useEffect(() => {
-    if (!isDapplet)
+    if (!isNotDapplet)
     {
       getMyDapplets()
       getTrustedUsers()
     }
-  }, [getLists, getMyDapplets, getTrustedUsers, isDapplet])
+  }, [getLists, getMyDapplets, getTrustedUsers, isNotDapplet])
 
   // TODO: test func to open modals
   useEffect(() => {
@@ -249,7 +249,7 @@ const App = ({
         openedList={openedList}
         setOpenedList={setOpenedList}
         windowWidth={dimensions.width}
-        isDapplet={isDapplet}
+        isNotDapplet={isNotDapplet}
       />
     </>
   );

@@ -217,13 +217,13 @@ const MENU2 = [
 
 interface HeaderProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
   selectedList?: Lists
-  isDapplet: boolean
+  isNotDapplet: boolean
 }
 
 const Header: FC<HeaderProps & Props> = ({
   className,
   selectedList,
-  isDapplet,
+  isNotDapplet,
 
   setSort,
   setModalOpen,
@@ -253,7 +253,7 @@ const Header: FC<HeaderProps & Props> = ({
   //       });
   //       break;
   //     case 3:
-  //       if (isDapplet) {
+  //       if (isNotDapplet) {
   //         setModalOpen(ModalsList.Install)
   //         return
   //       }

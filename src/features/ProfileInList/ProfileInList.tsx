@@ -1,5 +1,5 @@
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from 'styled-components';
 import jazzicon from '@metamask/jazzicon';
 import { ReactComponent as UserPlus } from './userPlus.svg'
@@ -90,6 +90,7 @@ const StyledCopy = styled(Copy)`
 // `
 
 const ButtonsWrapper = styled.div`
+  position: relative;
   grid-area: buttons;
   justify-self: baseline;
   /* align-self: flex-start; */
@@ -183,12 +184,27 @@ function copyTextToClipboard(text: string) {
   });
 }
 
+const Tooltip = styled.div`
+  position: absolute;
+  bottom: -20px;
+  width: 100%;
+
+  font-family: Roboto;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 14px;
+  letter-spacing: 0em;
+  text-align: center;
+
+`
+
 interface ButtonProps {
   myAddress: string,
   address: string
   trustedUsersList: string[]
   setTrustedUsersList: any
-  isDapplet: boolean
+  isNotDapplet: boolean
   setModalOpen: any
   addTrustedUser: any
   removeTrustedUser: any
@@ -199,28 +215,41 @@ const Button = ({
   address,
   trustedUsersList,
   setTrustedUsersList,
-  isDapplet,
+  isNotDapplet,
   setModalOpen,
   addTrustedUser,
   removeTrustedUser,
 }: ButtonProps) => {
+  const [hover, setHover] = useState(false)
   return (
     <ButtonsWrapper>
-      <ButtonAction onClick={() => {
-        if (isDapplet) {
-          setModalOpen(ModalsList.Install)
-          return
-        }
-        if (myAddress === address) return
-        if (trustedUsersList.includes(address)) {
-          setTrustedUsersList(trustedUsersList.filter((user) => user !== address))
-          removeTrustedUser(address)
-        }
-        else {
+      {
+        hover && (myAddress === address) && <Tooltip>
+          Publish new dapplet
+        </Tooltip>
+
+      }
+      <ButtonAction
+        onMouseOver={() => setHover(true)}
+        onMouseOut={() => setHover(false)}
+        onClick={() => {
+          if (isNotDapplet) {
+            setModalOpen(ModalsList.Install)
+            return
+          }
+          if (myAddress === address) {
+            window.dapplets.openDeployOverlay('registry.dapplet-base.eth', '', null, null)
+            return
+          }
+          if (trustedUsersList.includes(address)) {
+            setTrustedUsersList(trustedUsersList.filter((user) => user !== address))
+            removeTrustedUser(address)
+            return
+          }
           setTrustedUsersList([address, ...trustedUsersList])
           addTrustedUser(address)
-        }
-      }}>
+        }}
+      >
         <UserPlus/>
         <div>
           {
@@ -241,7 +270,7 @@ interface ProfileInListProps {
   setSelectedList: any
   trustedUsersList: string[]
   setTrustedUsersList: any
-  isDapplet: boolean
+  isNotDapplet: boolean
   setModalOpen: any
   title?: string
   addTrustedUser: any
@@ -256,7 +285,7 @@ const ProfileInList = ({
   setSelectedList,
   trustedUsersList,
   setTrustedUsersList,
-  isDapplet,
+  isNotDapplet,
   setModalOpen,
   title,
   addTrustedUser,
@@ -274,7 +303,7 @@ const ProfileInList = ({
         address={address}
         trustedUsersList={trustedUsersList}
         setTrustedUsersList={setTrustedUsersList}
-        isDapplet={isDapplet}
+        isNotDapplet={isNotDapplet}
         setModalOpen={setModalOpen}
         addTrustedUser={addTrustedUser}
         removeTrustedUser={removeTrustedUser}
@@ -309,7 +338,7 @@ const ProfileInList = ({
         address={address}
         trustedUsersList={trustedUsersList}
         setTrustedUsersList={setTrustedUsersList}
-        isDapplet={isDapplet}
+        isNotDapplet={isNotDapplet}
         setModalOpen={setModalOpen}
         addTrustedUser={addTrustedUser}
         removeTrustedUser={removeTrustedUser}

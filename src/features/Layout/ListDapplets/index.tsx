@@ -127,7 +127,7 @@ export interface ListDappletsProps {
   setOpenedList: any
   address: string
   trigger: boolean
-  isDapplet: boolean
+  isNotDapplet: boolean
   setModalOpen: any,
 }
 
@@ -150,7 +150,7 @@ const ListDapplets = ({
   setOpenedList,
   address,
   trigger,
-  isDapplet,
+  isNotDapplet,
   setModalOpen,
 
   ensNames,
@@ -312,11 +312,11 @@ const ListDapplets = ({
       ))
     if (addressFilter !== '') 
       sortedList = sortedList.filter(({ trustedUsers }) => trustedUsers.includes(addressFilter))
-    if (isTrustedSort && !isDapplet)
+    if (isTrustedSort && !isNotDapplet)
       sortedList = sortedList.filter(({ trustedUsers }) => trustedUsersList.some((user) => trustedUsers.includes(user)))
     // console.debug('sortedDapplets', sortedList)
     return sortedList
-  }, [addressFilter, collator, dapplets, isDapplet, isTrustedSort, searchQuery, selectedList, sortType, trustedUsersList])
+  }, [addressFilter, collator, dapplets, isNotDapplet, isTrustedSort, searchQuery, selectedList, sortType, trustedUsersList])
 
   useEffect(() => {
     console.debug({dapplets})
@@ -373,7 +373,7 @@ const ListDapplets = ({
             setSelectedList={setSelectedList}
             trustedUsersList={trustedUsersList}
             setTrustedUsersList={setTrustedUsersList}
-            isDapplet={isDapplet}
+            isNotDapplet={isNotDapplet}
             setModalOpen={setModalOpen}
             title={titleText}
             addTrustedUser={addTrustedUser}
@@ -394,7 +394,7 @@ const ListDapplets = ({
             />
           }
           {
-            !isDapplet && !trustedUsers.includes(addressFilter || "") &&
+            !isNotDapplet && !trustedUsers.includes(addressFilter || "") &&
             <CheckboxWrapper isTrustedSort={isTrustedSort || false} onClick={() => setSort({isTrustedSort: !isTrustedSort})}>
               <div></div>
               <span>From trusted users</span>
@@ -419,7 +419,7 @@ const ListDapplets = ({
             trustedUsersList={trustedUsersList}
             isTrustedSort={isTrustedSort}
             selectedList={selectedList}
-            isDapplet={isDapplet}
+            isNotDapplet={isNotDapplet}
           />
           : sortedDapplets
             .map((item, i) => (
@@ -436,7 +436,7 @@ const ListDapplets = ({
                     setAddressFilter={setAddressFilter}
                     setOpenedList={setOpenedList}
                     trustedUsersList={trustedUsersList}
-                    isDapplet={isDapplet}
+                    isNotDapplet={isNotDapplet}
                   />
                 </div>
               </section>

@@ -88,7 +88,7 @@ interface ItemDappletProps {
   setAddressFilter: any
   setOpenedList: any
   trustedUsersList: string[]
-  isDapplet: boolean
+  isNotDapplet: boolean
 }
 
 const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
@@ -105,7 +105,7 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
     setModalOpen,
     setExpanded,
     
-    isDapplet,
+    isNotDapplet,
     isLocked,
   } = props;
 
@@ -233,7 +233,7 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
           onClick={(e: any) => {
             e.preventDefault();
             e.stopPropagation();
-            if (isDapplet)
+            if (isNotDapplet)
               setModalOpen(ModalsList.Install)
             else 
               editLocalDappletsList(item)

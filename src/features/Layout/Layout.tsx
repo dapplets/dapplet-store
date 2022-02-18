@@ -85,7 +85,7 @@ export interface LayoutProps {
   openedList: any
   setOpenedList: any
   windowWidth: number
-  isDapplet: boolean
+  isNotDapplet: boolean
 }
 
 const Layout = ({
@@ -95,7 +95,7 @@ const Layout = ({
   openedList,
   setOpenedList,
   windowWidth,
-  isDapplet,
+  isNotDapplet,
   
   dapplets,
   sortType,
@@ -112,7 +112,7 @@ const Layout = ({
   setTrustedUsers,
   setMyList,
 }: LayoutProps & Props): React.ReactElement<LayoutProps> => {
-  // console.log({isDapplet})
+  // console.log({isNotDapplet})
 
   const localDappletsList = myLists[Lists.MyDapplets]
   const setLocalDappletsList = (elements: MyListElement[]) => setMyList({
@@ -138,7 +138,7 @@ const Layout = ({
     <Wrapper isSmall={windowWidth <= 1500}>
       <StyledHeader
         selectedList={selectedList}
-        isDapplet={isDapplet}
+        isNotDapplet={isNotDapplet}
       />
       <StyledSidePanel
         localDappletsList={localDappletsList}
@@ -173,13 +173,13 @@ const Layout = ({
           setOpenedList={setOpenedList}
           address={address || ""}
           trigger={trigger || false}
-          isDapplet={isDapplet}
+          isNotDapplet={isNotDapplet}
           setModalOpen={setModalOpen}
         />}
 			</MainContent>
 
       {
-        windowWidth > 1500 && <StyledOverlay isDapplet={isDapplet}/>
+        windowWidth > 1500 && <StyledOverlay isNotDapplet={isNotDapplet}/>
       }
 		</Wrapper>
 	);

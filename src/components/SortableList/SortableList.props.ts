@@ -16,5 +16,5 @@ export interface SortableListProps {
   trustedUsersList: string[]
   isTrustedSort: boolean
   selectedList: Lists
-  isDapplet: boolean
+  isNotDapplet: boolean
 }
