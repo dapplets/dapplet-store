@@ -234,7 +234,7 @@ const Button = ({
         onMouseOut={() => setHover(false)}
         onClick={() => {
           if (isNotDapplet) {
-            setModalOpen(ModalsList.Install)
+            setModalOpen({openedModal: ModalsList.Install, settings: null})
             return
           }
           if (myAddress === address) {

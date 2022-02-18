@@ -12,7 +12,7 @@ import { IDapplet } from '../../models/dapplets';
 import { RootDispatch, RootState } from '../../models';
 import { Sort } from '../../models/sort';
 import { connect } from 'react-redux';
-import { ModalsList } from '../../models/modals';
+import { Modals, ModalsList } from '../../models/modals';
 import { MyListElement } from '../../models/myLists';
 import { Image } from 'semantic-ui-react';
 import { useCallback } from 'react';
@@ -25,7 +25,7 @@ const mapState = (state: RootState) => ({
 
 const mapDispatch = (dispatch: RootDispatch) => ({
   setSort: (payload: Sort) => dispatch.sort.setSort(payload),
-  setModalOpen: (payload: ModalsList | null) => dispatch.modals.setModalOpen(payload),
+  setModalOpen: (payload: Modals) => dispatch.modals.setModalOpen(payload),
   setExpanded: (payload: {id: number, isExpanded: boolean}) => dispatch.dapplets.setExpanded(payload),
   setBlobUrl: (payload: {id: number, blobUrl: string}) => dispatch.blobUrl.setBlobUrl(payload),
 });
@@ -234,7 +234,7 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
             e.preventDefault();
             e.stopPropagation();
             if (isNotDapplet)
-              setModalOpen(ModalsList.Install)
+              setModalOpen({openedModal: ModalsList.Install, settings: null})
             else 
               editLocalDappletsList(item)
           }}
@@ -245,7 +245,7 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
             e.preventDefault();
             e.stopPropagation();
             if (!address)
-              setModalOpen(ModalsList.Login)
+              setModalOpen({openedModal: ModalsList.Login, settings: null})
             else 
               editSelectedDappletsList(item)
           }}

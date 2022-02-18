@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { ReactComponent as Cat } from './cat.svg';
-// import { ReactComponent as RotateArrow } from './rotateArrow.svg';
+import { ReactComponent as RotateArrow } from './rotateArrow.svg';
 import { ReactComponent as XCircle } from './xCircle.svg';
 import { ReactComponent as Close } from '../close.svg';
 
@@ -124,14 +124,14 @@ const ButtonCancel = styled(Button)`
   }
 `
 
-// const ButtonRetry = styled(Button)`
-//   background: #F5CF6C;
-//   color: white;
-//   &:hover {
-//     background: #FFE299;
-//     color: #D5A93B;
-//   }
-// `
+const ButtonRetry = styled(Button)`
+  background: #F5CF6C;
+  color: white;
+  &:hover {
+    background: #FFE299;
+    color: #D5A93B;
+  }
+`
 
 const CloseButton = styled.button`
   position: absolute;
@@ -147,9 +147,10 @@ const CloseButton = styled.button`
 interface WarningModalProps {
   onClose: any
   message?: string
+  onRetry?: any
 }
 
-const WarningModal = ({onClose, message = "Change yore network to Goerli"}: WarningModalProps) => {
+const WarningModal = ({onClose, message = "Change yore network to Goerli", onRetry}: WarningModalProps) => {
   return(
     <Wrapper>
       <CloseButton onClick={onClose}><Close /></CloseButton>
@@ -162,15 +163,17 @@ const WarningModal = ({onClose, message = "Change yore network to Goerli"}: Warn
           onClick={onClose}
           title='Close'
         />
-        {/* <ButtonRetry
-          icon={RotateArrow}
-          onClick={() => {}}
-          title='Change network'
-          stroke={{
-            hovered: '#D5A93B',
-            default: '#FFFFFF',
-          }}
-        /> */}
+        {
+          onRetry && <ButtonRetry
+            icon={RotateArrow}
+            onClick={onRetry}
+            title='Retry'
+            stroke={{
+              hovered: '#D5A93B',
+              default: '#FFFFFF',
+            }}
+          />
+        }
       </ButtonsWrapper>
     </Wrapper>
 )}

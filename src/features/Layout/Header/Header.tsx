@@ -12,7 +12,7 @@ import { ReactComponent as TG } from './tg.svg'
 import { ReactComponent as Twitter } from './twitter.svg'
 
 import { connect } from 'react-redux';
-import { ModalsList } from '../../../models/modals';
+import { Modals, ModalsList } from '../../../models/modals';
 import { Lists } from '../../../models/myLists';
 
 const Wrapper = styled.header`
@@ -145,7 +145,7 @@ const mapState = (state: RootState) => ({
 
 const mapDispatch = (dispatch: RootDispatch) => ({
   setSort: (payload: Sort) => dispatch.sort.setSort(payload),
-  setModalOpen: (payload: ModalsList | null) => dispatch.modals.setModalOpen(payload),
+  setModalOpen: (payload: Modals) => dispatch.modals.setModalOpen(payload),
 });
 
 const Login = styled.button`
@@ -348,7 +348,7 @@ const Header: FC<HeaderProps & Props> = ({
             address ? 
               <Avatar 
                 onClick={() => {
-                  setModalOpen(ModalsList.User)
+                  setModalOpen({openedModal: ModalsList.User, settings: null})
                 }}
               >
                 <VanillaChildren>{getAvatar(addressShort)}</VanillaChildren>
@@ -356,7 +356,7 @@ const Header: FC<HeaderProps & Props> = ({
               :
               <Login 
                 onClick={() => {
-                  setModalOpen(ModalsList.Login)
+                  setModalOpen({openedModal: ModalsList.Login, settings: null})
                 }}
               >
                 login

@@ -4,7 +4,7 @@ import styled from "styled-components"
 import Web3 from "web3";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { ModalsList } from "../../models/modals";
+import { Modals, ModalsList } from "../../models/modals";
 import UserModal from "./UserModal/UserModal";
 import LoginModal from "./LoginModal/LoginModal";
 import WarningModal from "./WarningModal/WarningModal";
@@ -15,11 +15,12 @@ import { connect } from "react-redux";
 
 const mapState = (state: RootState) => ({
   openedModal: state.modals.openedModal,
+  settings: state.modals.settings,
   address: state.user.address,
   provider: state.user.provider,
 });
 const mapDispatch = (dispatch: RootDispatch) => ({
-  setModalOpen: (payload: ModalsList | null) => dispatch.modals.setModalOpen(payload),
+  setModalOpen: (payload: Modals) => dispatch.modals.setModalOpen(payload),
   setUser: (payload: string) => dispatch.user.setUser({
     address: payload
   }),
@@ -49,6 +50,7 @@ const ModalResolver = ({
   openedModal,
   address,
   provider,
+  settings,
   setModalOpen,
   setUser,
   setProvider,
@@ -73,7 +75,7 @@ const ModalResolver = ({
           localStorage['metamask_disabled'] = '';
         }
       } catch (error) {
-        setModalOpen(null)
+        setModalOpen({openedModal: null, settings: null})
         throw error
       }
   
@@ -88,7 +90,7 @@ const ModalResolver = ({
       setUser(address[0])
       
       setProvider(provider)
-      setModalOpen(null)
+      setModalOpen({openedModal: null, settings: null})
       localStorage['login'] = 'metamask';
       return web3
     }
@@ -106,7 +108,7 @@ const ModalResolver = ({
         const web3 = new Web3(provider);
         const address = await web3.eth.getAccounts()
         setUser(address[0])
-        setModalOpen(null)
+        setModalOpen({openedModal: null, settings: null})
         
         setProvider(provider)
         
@@ -121,7 +123,7 @@ const ModalResolver = ({
         const addressDapps = await window.dapplets.getAccounts()
         if (addressDapps.length > 0) {
           setUser(addressDapps[0].account)
-          setModalOpen(null)
+          setModalOpen({openedModal: null, settings: null})
         }
       } catch (error) {
         console.error(error)
@@ -135,7 +137,7 @@ const ModalResolver = ({
             onDapplet={onDapplet}
             onMetamask={web3Init}
             onWalletConnect={walletConnect}
-            onClose={() => setModalOpen(null)}
+            onClose={() => setModalOpen({openedModal: null, settings: null})}
           />
         )
       case ModalsList.Install:
@@ -145,7 +147,7 @@ const ModalResolver = ({
             onDapplet={onDapplet}
             onMetamask={web3Init}
             onWalletConnect={walletConnect}
-            onClose={() => setModalOpen(null)}
+            onClose={() => setModalOpen({openedModal: null, settings: null})}
             isDappletLogin={true}
           />
         )
@@ -163,26 +165,27 @@ const ModalResolver = ({
                 console.error(error)
               }
               setUser("")
-              setModalOpen(null)
+              setModalOpen({openedModal: null, settings: null})
             }}
-            onClose={() => setModalOpen(null)}
+            onClose={() => setModalOpen({openedModal: null, settings: null})}
           />
         )
         case ModalsList.Warning:
           return (
             <WarningModal
-              onClose={() => setModalOpen(null)}
+              onClose={() => setModalOpen({openedModal: null, settings: null})}
+              onRetry={settings?.onRetry}
             />
           )
       default:
         return null
     }
-  }, [address, openedModal, provider, setModalOpen, setProvider, setUser])
+  }, [address, openedModal, provider, setModalOpen, setProvider, setUser, settings])
 
   if (!openedModal) return <></>
 
   return (
-    <ModalWrapperBg onClick={() => setModalOpen(null)}>
+    <ModalWrapperBg onClick={() => setModalOpen({openedModal: null, settings: null})}>
       <ModalWrapper onClick={(e) => e.stopPropagation()}>
         {nowModal}
       </ModalWrapper>

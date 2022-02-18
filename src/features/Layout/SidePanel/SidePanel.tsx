@@ -6,7 +6,7 @@ import { DappletsListItemTypes } from '../../../components/DappletsListItem/Dapp
 import { RootDispatch, RootState } from '../../../models';
 import { Sort } from '../../../models/sort';
 import { connect } from 'react-redux';
-import { ModalsList } from '../../../models/modals';
+import { Modals, ModalsList } from '../../../models/modals';
 import { IDapplet } from '../../../models/dapplets';
 import styled from 'styled-components';
 import { Lists, MyListElement } from '../../../models/myLists';
@@ -19,7 +19,7 @@ const mapState = (state: RootState) => ({
 });
 
 const mapDispatch = (dispatch: RootDispatch) => ({
-  setModalOpen: (payload: ModalsList | null) => dispatch.modals.setModalOpen(payload),
+  setModalOpen: (payload: Modals) => dispatch.modals.setModalOpen(payload),
   setSort: (payload: Sort) => dispatch.sort.setSort(payload),
   pushMyListing: (payload: {events: EventPushing[], provider: any}) => dispatch.dapplets.pushMyListing(payload),
   setLocked: (payload: boolean) => dispatch.user.setUser({
@@ -196,7 +196,7 @@ const SidePanel = ({
           isPushing={isLocked}
           onOpenList={() => {
             if (!address) {
-              setModalOpen(ModalsList.Login)
+              setModalOpen({openedModal: ModalsList.Login, settings: null})
               return
             }
             setSort({

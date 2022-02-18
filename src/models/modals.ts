@@ -8,18 +8,21 @@ export enum ModalsList {
 }
 
 export interface Modals {
-  openedModal: ModalsList | null
+  openedModal: ModalsList | null,
+  settings: any
 }
 
 type ModalsState = Readonly<Modals>
 const INITIAL_STATE: ModalsState = {
   openedModal: null,
+  settings: null,
 };
 
 const reducers = {
-  setModalOpen(_: ModalsState, payload: ModalsList | null) {
+  setModalOpen(_: ModalsState, {openedModal, settings = null}: {openedModal: ModalsList | null, settings: any}) {
     return {
-      openedModal: payload,
+      openedModal,
+      settings,
     }
   }
 }

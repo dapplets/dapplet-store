@@ -12,7 +12,7 @@ import { Toaster } from "react-hot-toast";
 import { connect } from "react-redux";
 import { RootState, RootDispatch } from "../models";
 import { Sort } from './../models/sort';
-import { ModalsList } from './../models/modals';
+import { Modals, ModalsList } from './../models/modals';
 import { Lists, MyListElement } from '../models/myLists';
 import { DappletsListItemTypes } from '../components/DappletsListItem/DappletsListItem';
 import { useMemo } from 'react';
@@ -32,7 +32,7 @@ const mapDispatch = (dispatch: RootDispatch) => ({
   getDapplets: () => dispatch.dapplets.getDapplets(),
   getSort: (address: string) => dispatch.sort.getSort(address),
   setSort: (payload: Sort) => dispatch.sort.setSort(payload),
-  setModalOpen: (payload: ModalsList | null) => dispatch.modals.setModalOpen(payload),
+  setModalOpen: (payload: Modals) => dispatch.modals.setModalOpen(payload),
   getTrustedUsers: () => dispatch.trustedUsers.getTrustedUsers(),
   getLists: (payload: Lists) => dispatch.myLists.getLists(payload),
   removeMyList: (payload: Lists) => dispatch.myLists.removeMyList(payload),
@@ -122,7 +122,7 @@ const App = ({
   // TODO: test func to open modals
   useEffect(() => {
     window.openModal = (modal: ModalsList) => {
-      setModalOpen(modal)
+      setModalOpen({openedModal: modal, settings: null})
     }
   }, [setModalOpen])
 
@@ -211,7 +211,7 @@ const App = ({
       setUser(address[0])
       
       setProvider(provider)
-      setModalOpen(null)
+      setModalOpen({openedModal: null, settings: null})
       localStorage['login'] = 'metamask';
       return web3
     }
@@ -228,7 +228,7 @@ const App = ({
         const web3 = new Web3(provider);
         const address = await web3.eth.getAccounts()
         setUser(address[0])
-        setModalOpen(null)
+        setModalOpen({openedModal: null, settings: null})
         
         setProvider(provider)
         
