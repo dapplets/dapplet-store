@@ -318,18 +318,20 @@ const ListDapplets = ({
     return sortedList
   }, [addressFilter, collator, dapplets, isNotDapplet, isTrustedSort, searchQuery, selectedList, sortType, trustedUsersList])
 
-  useEffect(() => {
-    console.debug({dapplets})
-  }, [dapplets])
+  // useEffect(() => {
+  //   console.debug({dapplets})
+  // }, [dapplets])
 
   const chooseList = useMemo(() => ({
     [Lists.MyListing]: selectedDapplets,
     [Lists.MyDapplets]: localDapplets,
+    [Lists.MyOldListing]: [],
   }), [localDapplets, selectedDapplets])
 
   const chooseSetMethod = useMemo(() => ({
     [Lists.MyListing]: setSelectedDapplets,
     [Lists.MyDapplets]: setLocalDapplets,
+    [Lists.MyOldListing]: [],
   }), [setLocalDapplets, setSelectedDapplets])
 
   useEffect(() => {

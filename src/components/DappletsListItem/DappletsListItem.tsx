@@ -3,11 +3,13 @@ import styled, { keyframes } from 'styled-components';
 import { ReactComponent as DappletListItemPlus } from '../../images/dappletListItemPlus.svg'
 import { ReactComponent as DappletListItemMinus } from '../../images/dappletListItemMinus.svg'
 import { ReactComponent as DappletListItemClose } from '../../images/dappletListItemClose.svg'
+import { ReactComponent as DappletListItemMoved } from './arrow-down-circle.svg'
 
 export enum DappletsListItemTypes {
   Default = 'Default',
   Adding = 'Adding',
   Removing = 'Removing',
+  Moved = 'Moved',
 }
 
 const TitleIcon = (props: { type: DappletsListItemTypes}) => {
@@ -16,6 +18,8 @@ const TitleIcon = (props: { type: DappletsListItemTypes}) => {
       return <DappletListItemPlus />
     case DappletsListItemTypes.Removing:
       return <DappletListItemMinus />
+    case DappletsListItemTypes.Moved:
+      return <DappletListItemMoved />
     default:
       return <></>
   }
@@ -41,6 +45,8 @@ const getColorByType = (type: DappletsListItemTypes) => {
       return '#5EC280'
     case DappletsListItemTypes.Removing:
       return '#FF6442'
+    case DappletsListItemTypes.Moved:
+      return '#5AB5E8'
     default:
       return '#747376'
   }

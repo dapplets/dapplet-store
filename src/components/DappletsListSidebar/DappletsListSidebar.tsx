@@ -77,6 +77,7 @@ interface DappletsListSidebarProps {
 }
 
 const DappletsListSidebar = (props: DappletsListSidebarProps) => {
+  // console.log({props})
   // const [isOpen, setIsOpen] = useState(false)
   return (
     <ListWrapper>
@@ -85,7 +86,7 @@ const DappletsListSidebar = (props: DappletsListSidebarProps) => {
           if (!!props.dappletsList.length)
             props.setIsOpen(props.isOpen ? null : props.title)
         }} color={props.isOpen ? '#2A2A2A' : '.#747376'}>{!!props.dappletsList.length && (props.isOpen ? <span>-</span> : <span>+</span>)} {props.title}</Title>
-        {props.isOpen && props.titleButton && <TitleButtonWrapper disabled={!!props.isPushing} onClick={props.titleButton?.onClick}>{props.titleButton?.title}</TitleButtonWrapper>}
+        {props.titleButton && <TitleButtonWrapper disabled={!!props.isPushing} onClick={props.titleButton?.onClick}>{props.titleButton?.title}</TitleButtonWrapper>}
       </TitleWrapper>
       {
         props.isOpen && !!props.dappletsList.length && <DappletsListItemWrapper>

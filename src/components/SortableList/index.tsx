@@ -29,6 +29,7 @@ import { SortableListProps } from './SortableList.props';
 import Draggable from '../Draggable';
 import ItemDapplet from '../ItemDapplet';
 import { MyListElement } from '../../models/myLists';
+import { DappletsListItemTypes } from '../DappletsListItem/DappletsListItem';
 
 const SortableList = (props: SortableListProps) => {
   const {
@@ -69,10 +70,39 @@ const SortableList = (props: SortableListProps) => {
       const itemIds = items!.map(({name}) => name);
       const oldIndex = itemIds.indexOf(active.id);
       const newIndex = itemIds.indexOf(over.id);
+      if (items) {
+        items[oldIndex].event = newIndex === 0 ? 0 : items[newIndex-1].id;
+        if (items[oldIndex].eventPrev === undefined)
+          items[oldIndex].eventPrev = oldIndex === 0 ? 0 : items[oldIndex-1].id;
+        console.log({i: items[oldIndex]})
+      }
       newArray = arrayMove(items || [], oldIndex, newIndex);
     } else {
       newArray = items || [];
     }
+    newArray = newArray.map((dapp, index) => {
+      if (dapp.event !== undefined && dapp.eventPrev !== undefined) {
+        if (index > 0) {
+          if (newArray[index-1].id === dapp.eventPrev) {
+            return {
+              ...dapp,
+              event: undefined,
+              eventPrev: undefined,
+            }
+          }
+        }
+        if (index === 0) {
+          if (dapp.eventPrev === 0) {
+            return {
+              ...dapp,
+              event: undefined,
+              eventPrev: undefined,
+            }
+          }
+        }
+      }
+      return dapp
+    })
     const newDappletsList: MyListElement[] = newArray;
     setItems(newDappletsList);
     saveListToLocalStorage(newDappletsList, selectedList);

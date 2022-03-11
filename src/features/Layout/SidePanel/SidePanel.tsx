@@ -1,4 +1,4 @@
-import React, { DetailedHTMLProps, HTMLAttributes } from 'react';
+import React, { DetailedHTMLProps, HTMLAttributes, useEffect, useMemo } from 'react';
 
 import { saveListToLocalStorage } from '../../../lib/localStorage';
 import DappletsListSidebar from '../../../components/DappletsListSidebar/DappletsListSidebar'
@@ -16,12 +16,14 @@ const mapState = (state: RootState) => ({
   address: state.user.address,
   provider: state.user.provider,
   isLocked: state.user.isLocked,
+  myOldListing: state.myLists[Lists.MyOldListing],
+  myListing: state.myLists[Lists.MyListing],
 });
 
 const mapDispatch = (dispatch: RootDispatch) => ({
   setModalOpen: (payload: Modals) => dispatch.modals.setModalOpen(payload),
   setSort: (payload: Sort) => dispatch.sort.setSort(payload),
-  pushMyListing: (payload: {events: EventPushing[], provider: any}) => dispatch.dapplets.pushMyListing(payload),
+  pushMyListing: (payload: {address: string, events: EventPushing[], provider: any, dappletsNames: { [name: number]: string }}) => dispatch.dapplets.pushMyListing(payload),
   setLocked: (payload: boolean) => dispatch.user.setUser({
     isLocked: payload
   }),
@@ -94,6 +96,8 @@ const SidePanel = ({
   address,
   provider,
   isLocked,
+  myOldListing,
+  myListing,
   setSort,
   setModalOpen,
   pushMyListing,
@@ -118,29 +122,55 @@ const SidePanel = ({
     e.preventDefault();
     const dappletListIndex = selectedDappletsList.findIndex((dapplet) => dapplet.name === name);
     let list = selectedDappletsList
+    console.log({sl: selectedDappletsList[dappletListIndex]})
     if (selectedDappletsList[dappletListIndex].type === DappletsListItemTypes.Removing)
       list[dappletListIndex].type = DappletsListItemTypes.Default
     if (selectedDappletsList[dappletListIndex].type === DappletsListItemTypes.Adding)
       list = list.filter((dapp) => dapp.name !== name);
+    if (selectedDappletsList[dappletListIndex].event !== undefined) {
+      if (list[dappletListIndex].eventPrev !== undefined) {
+        if (list[dappletListIndex].eventPrev !== 0) {
+          const swapId = list.findIndex(({id}) => id === list[dappletListIndex].eventPrev)
+          const swap = list[dappletListIndex]
+          console.log({swap, swapId})
+          list[dappletListIndex] = list[swapId];
+          list[swapId] = swap;
+          list[swapId].event = undefined
+          list[swapId].eventPrev = undefined
+        } else {
+          const swap = list[dappletListIndex]
+          list.splice(dappletListIndex, 1)
+          list.unshift(swap)
+          list[0].event = undefined
+          list[0].eventPrev = undefined
+        }
+      }
+    }
     const newSelectedDappletsList: MyListElement[] = list;
     saveListToLocalStorage(newSelectedDappletsList, Lists.MyListing);
     setSelectedDappletsList(newSelectedDappletsList);
   }
 
+  const dappletsStandard = useMemo(() => Object.values(dapplets), [dapplets])
+
+  useEffect(() => {
+    console.log({myOldListing})
+  }, [myOldListing])
+
+  useEffect(() => {
+    console.log({myListing})
+  }, [myListing])
+
   const pushSelectedDappletsList = async () => {
     const events: EventPushing[] = []
-    const nowDappletsList: MyListElement[] = selectedDappletsList.map((dapplet) => {
+    const nowDappletsList: MyListElement[] = selectedDappletsList.filter((dapplet) => {
       if (dapplet.type === DappletsListItemTypes.Adding) {
         events.push({
           eventType: EventType.ADD,
           dappletId: dapplet.id,
         })
-        return {
-          ...dapplet,
-          type: DappletsListItemTypes.Default
-        }
       }
-      return dapplet
+      return dapplet.type !== DappletsListItemTypes.Adding
     })
     const newDappletsList: MyListElement[] = nowDappletsList.filter(({ type, name, id }) => {
       if (type === DappletsListItemTypes.Removing) {
@@ -151,11 +181,35 @@ const SidePanel = ({
       }
       return type !== DappletsListItemTypes.Removing
     })
+
+    const listingOld = {}
+    myOldListing.forEach((dapp) => {
+
+    })
+
+    myListing.filter(({type}) => (
+      type !== DappletsListItemTypes.Removing && type !== DappletsListItemTypes.Adding
+    )).forEach((dapp, index) => {
+      if (dapp.id !== myOldListing[index].id) {
+        events.push({
+          eventType: EventType.REPLACE,
+          dappletId: dapp.id,
+          dappletPrevId: index === 0 ? 0 : newDappletsList[index-1].id,
+        })
+      }
+    })
+    
+    
     try {
+      const dappletsNames: { [name: number]: string } = {}
+  
+      dappletsStandard.forEach(({id, name}) => {
+        dappletsNames[id] = name
+      })
       setLocked(true)
-      await pushMyListing({events, provider});
-      saveListToLocalStorage(newDappletsList, Lists.MyListing);
-      setSelectedDappletsList(newDappletsList);
+      await pushMyListing({address: address || '', events, provider, dappletsNames});
+      // saveListToLocalStorage(newDappletsList, Lists.MyListing);
+      // setSelectedDappletsList(newDappletsList);
     } catch (error) {
       console.error({error})
     }
@@ -188,9 +242,9 @@ const SidePanel = ({
         <DappletsListSidebar
           dappletsList={selectedDappletsList.slice(0, 5).map((dapplet) => ({
             title: dapplets.find(({ name }) => dapplet.name === name)?.title || '',
-            type: dapplet.type,
+            type: dapplet.type === DappletsListItemTypes.Default && dapplet.event !== undefined ? DappletsListItemTypes.Moved : dapplet.type,
             onClickRemove: () => removeFromSelectedList(dapplet.name),
-            isRemoved: dapplet.type !== DappletsListItemTypes.Default,
+            isRemoved: dapplet.type !== DappletsListItemTypes.Default || dapplet.event !== undefined,
           }))}
           title={SideLists.MyListing}
           isPushing={isLocked}
@@ -206,7 +260,7 @@ const SidePanel = ({
             });
           }}
           isMoreShow={selectedDappletsList.length > 0}
-          titleButton={selectedDappletsList.find(({ type }) => type !== DappletsListItemTypes.Default) && {
+          titleButton={selectedDappletsList.find(({ type, event }) => type !== DappletsListItemTypes.Default || event !== undefined) && {
             title: 'Push changes',
             onClick: pushSelectedDappletsList
           }}

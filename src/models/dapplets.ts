@@ -1,10 +1,13 @@
 import { createModel } from "@rematch/core";
 import { ethers } from 'ethers';
 import abi from '../abi.json';
-import abiListing from './abi';
+// import abiListing from './abi';
+import abiListing2 from './abi2';
 import { PROVIDER_URL } from "../api/consts";
 import { customToast } from "../components/Notification";
 import { ModalsList } from "./modals";
+import { Lists, MyListElement } from "./myLists";
+import { DappletsListItemTypes } from "../components/DappletsListItem/DappletsListItem";
 
 
 const BZZ_ENDPOINT = 'https://swarmgateway.mooo.com';
@@ -65,11 +68,17 @@ const _getResource = async(storageRef: StorageRef) => {
   return(blobUrl);
 }
 
-export enum EventType { REMOVE, ADD }
+export enum EventType { REMOVE, ADD, REPLACE }
 
 export interface EventPushing {
   eventType: EventType,
   dappletId: number,
+  dappletPrevId?: number,
+}
+
+export interface EventOrderChange {
+  dappletId: number,
+  dappletPrevId: number,
 }
 
 export interface IDapplet {
@@ -163,7 +172,7 @@ const effects = (dispatch: any) => ({ //
           .map(x => `${parseInt('0x' + x[0] + x[1])}.${parseInt('0x' + x[2] + x[3])}.${parseInt('0x' + x[4] + x[5])}`);
           return result;
     }
-
+    const dapplets: DappletsList = {}
     const myPromises = []
     for (let i = 1; i <= events.length; i++) {
       myPromises.push(contract.modules(i).then(async (module: any) => {
@@ -174,8 +183,13 @@ const effects = (dispatch: any) => ({ //
         // console.log({module, ev})
         const date = new Date(block.timestamp * 1000)
         const pad = (n: number,s: number = 2) => (`${new Array(s).fill(0)}${n}`).slice(-s);
-        const dapplet = {
-          id:i,
+        const icon =  {
+          hash: module.icon.hash,
+          uris: module.icon.uris.map((u: any) => ethers.utils.toUtf8String(u))
+        }
+        // const url: string = await _getResource(icon)
+        const dapplet: IDapplet = {
+          id: i,
           description: module.description,
           icon: '',
           name: module.name,
@@ -183,31 +197,30 @@ const effects = (dispatch: any) => ({ //
           title: module.title,
           versionToShow: versions[versions.length - 1],
           version: versions,
-          timestampToShow: `${pad(date.getDay())}.${pad(date.getMonth()+1)}.${pad(date.getFullYear(), 4)}`,
+          timestampToShow: `${pad(date.getDay())}.${pad(date.getMonth() + 1)}.${pad(date.getFullYear(), 4)}`,
           timestamp: block.timestamp,
           trustedUsers: [module.owner],
           isExpanded: false,
+          interfaces: []
         }
         await dispatch.dapplets.addDapplet(dapplet)
-        const icon =  {
-          hash: module.icon.hash,
-          uris: module.icon.uris.map((u: any) => ethers.utils.toUtf8String(u))
-        }
         _getResource(icon).then((url) => {
           dispatch.dapplets.setBlobUrl({id: i, blobUrl: url})
         })
+        dapplets[`${dapplet.id}`] = dapplet
       })
       )
     }
     await Promise.all(myPromises)
-
-    
-    const contractListing: any = new ethers.Contract('0x3470ab240a774e4D461456D51639F033c0cB5363', abiListing, provider);
+    // console.log('hihihi')
+    //setDapplets
+    // await dispatch.dapplets.setDapplets(dapplets)
+    const contractListing: any = new ethers.Contract('0xc8B80C2509e7fc553929C86Eb54c41CC20Bb05fB', abiListing2, provider);
     const users = await contractListing.getUsers();
-    console.log({users})
+    // console.log({users})
     for (let i = 0; i < users.length; i++) {
       const trustedDapplets = await contractListing.getUserList(users[i]);
-      // console.log({trustedDapplets})
+      // console.log({trustedDapplets, user: users[i]})
       
       for (let j = 0; j < trustedDapplets.length; j++) {
         try {
@@ -217,12 +230,31 @@ const effects = (dispatch: any) => ({ //
         }
       }
     }
+
+    // const myListing = await contractListing.getMyLinkedList();
+    // const myListing2 = await contractListing.getMyList();
+    // const size = await contractListing.getMyLinkedListSize();
+    // console.log({myListing, myListing2, size})
+    // const myNewListing: MyListElement = myListing.map((id: number) => ({
+    //   id,
+    //   name: dapplets[id].name,
+    //   type: DappletsListItemTypes.Default
+    // }))
+
+    // dispatch.myLists.setMyList({
+    //   name: Lists.MyListing, 
+    //   elements: myNewListing,
+    // })
+    // dispatch.myLists.setMyList({
+    //   name: Lists.MyOldListing, 
+    //   elements: myNewListing,
+    // })
   },
-  pushMyListing: async ({events, provider}: {events: EventPushing[], provider: any}) => {
+  pushMyListing: async ({address, events, provider, dappletsNames}: {address: string, events: EventPushing[], provider: any, dappletsNames: { [name: number]: string }}) => {
     if (provider.chainId !== '0x5') {
       dispatch.modals.setModalOpen({openedModal: ModalsList.Warning, settings: { onRetry: async () => {
         try {
-          await dispatch.dapplets.pushMyListing({events, provider})
+          await dispatch.dapplets.pushMyListing({address, events, provider, dappletsNames})
           dispatch.modals.setModalOpen({openedModal: ModalsList.Warning, settings: null})
         } catch (error) {
           console.error(error)
@@ -230,20 +262,24 @@ const effects = (dispatch: any) => ({ //
       }}})
       throw new Error('Change network to Goerli')
     }
-    console.log('push', provider, events)
+    // console.log('push', provider, events, events.map(({eventType, dappletId, dappletPrevId = 0}) => ([eventType, dappletId, dappletPrevId])))
     const ethersProvider= new ethers.providers.Web3Provider(provider);
     const signer = await ethersProvider.getSigner();
-    const contractListing: any = await new ethers.Contract('0x3470ab240a774e4D461456D51639F033c0cB5363', abiListing, signer);
-    const req = await contractListing.changeMyList(events.map(({eventType, dappletId}) => ([eventType, dappletId])));
-    console.log('start', req)
+    const contractListing: any = await new ethers.Contract('0xc8B80C2509e7fc553929C86Eb54c41CC20Bb05fB', abiListing2, signer);//0xc8B80C2509e7fc553929C86Eb54c41CC20Bb05fB //0x3470ab240a774e4D461456D51639F033c0cB5363
+    const req = await contractListing.changeMyList(events.map(({eventType, dappletId, dappletPrevId = 0}) => ([eventType, dappletId, dappletPrevId])));
+    // console.log('start', req)
     customToast(req.hash as string);
     try {
-      await req.wait() 
+      await req.wait()
+      await window.localStorage.setItem(Lists.MyListing, JSON.stringify([]))
+      await dispatch.myLists.getMyListing({address, provider, dappletsNames})
+
     } catch (error) {
       console.error({error})
       customToast(req.hash as string, "error");
     }
     customToast(req.hash as string, "success", "Done");
+    
     // console.log('end')
   },
 })
