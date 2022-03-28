@@ -18,8 +18,15 @@
           center no-repeat;
       background-size: 18px 9px;
 
+      cursor: move; /* fallback if grab cursor is unsupported */
+      cursor: grab;
+      cursor: -moz-grab;
+      cursor: -webkit-grab;
+
       &:active {
         cursor: grabbing;
+        cursor: -moz-grabbing;
+        cursor: -webkit-grabbing;
       }
   }
 }

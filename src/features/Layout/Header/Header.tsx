@@ -5,7 +5,6 @@ import jazzicon from '@metamask/jazzicon';
 import { RootState, RootDispatch } from "../../../models";
 import { INITIAL_STATE, Sort } from '../../../models/sort';
 
-
 import { ReactComponent as GitHub } from './github.svg'
 import { ReactComponent as Discord } from './discord.svg'
 import { ReactComponent as TG } from './tg.svg'
@@ -109,6 +108,11 @@ const HeaderTopItem = styled(ItemMain)`
     content: '';
     background-color: #e3e3e3;
   }
+
+  &:hover {
+    color: #d9304f !important;
+    text-decoration: underline;
+  }
 `
 
 const ButtonItem = styled.a`
@@ -116,7 +120,7 @@ const ButtonItem = styled.a`
   vertical-align: middle;
 
   &:hover svg {
-    fill: red;
+    fill: #d9304f;
   }
 `
 
@@ -179,22 +183,22 @@ const Login = styled.button`
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
 
 interface VanillaChildrenProps {
-	children: HTMLElement | HTMLDivElement
+  children: HTMLElement | HTMLDivElement
 }
 
 const VanillaChildren = ({ children }: VanillaChildrenProps): JSX.Element => {
-	const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
 
-	useEffect(() => {
+  useEffect(() => {
     while (ref.current?.firstChild) {
       ref.current?.removeChild(ref.current?.firstChild);
     }
-		ref.current?.appendChild(children);
-	}, [children, ref]);
+    ref.current?.appendChild(children);
+  }, [children, ref]);
 
-	return (
-		<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} ref={ref}/>
-	);
+  return (
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} ref={ref} />
+  );
 };
 
 
@@ -206,14 +210,13 @@ const VanillaChildren = ({ children }: VanillaChildrenProps): JSX.Element => {
 // ];
 
 const MENU2 = [
-	{ id: 0, label: 'Developers', href:'https://dapplets.org/index.html' },
-	{ id: 1, label: 'Join Us', href:'https://dapplets.org/index.html' },
-	{ id: 2, label: 'Blog', href:'https://dapplets.org/index.html' },
-	{ id: 3, label: 'About', href:'https://dapplets.org/index.html' },
-	{ id: 4, label: 'Docs', href:'https://docs.dapplets.org' },
-	{ id: 5, label: 'Forum', href:'https://forum.dapplets.org' },
+  { id: 0, label: 'Developers', href: 'https://dapplets.org/index.html' },
+  { id: 1, label: 'Join Us', href: 'https://dapplets.org/index.html' },
+  { id: 2, label: 'Blog', href: 'https://dapplets.org/index.html' },
+  { id: 3, label: 'About', href: 'https://dapplets.org/index.html' },
+  { id: 4, label: 'Docs', href: 'https://docs.dapplets.org' },
+  { id: 5, label: 'Forum', href: 'https://forum.dapplets.org' },
 ];
-
 
 interface HeaderProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
   selectedList?: Lists
@@ -230,11 +233,11 @@ const Header: FC<HeaderProps & Props> = ({
   address,
   trigger,
 }): React.ReactElement => {
-	// const [active, setActive] = useState<number>(MENU[0].id);
+  // const [active, setActive] = useState<number>(MENU[0].id);
   const getAvatar = (loggedIn: string): HTMLDivElement => jazzicon(30, parseInt(loggedIn.slice(2, 10), 16));
   const addressShort = useMemo(() => address ? address.replace('0x000000000000000000000000', '0x') : '', [address])
 
-	// function handleItemClick(id: number): void {
+  // function handleItemClick(id: number): void {
   //   switch (id) {
   //     case 1:
   //       setSort({
@@ -265,7 +268,7 @@ const Header: FC<HeaderProps & Props> = ({
   //     default:
   //       break;
   //   }
-	// }
+  // }
 
   // useEffect(() => {
   //   switch (selectedList) {
@@ -281,9 +284,9 @@ const Header: FC<HeaderProps & Props> = ({
   //   }
   // }, [selectedList])
 
-	return (
-		<Wrapper className={className}>
-      <HeaderTop style={{ background: '#F5F5F5'}}>
+  return (
+    <Wrapper className={className}>
+      <HeaderTop style={{ background: '#F5F5F5' }}>
         <HeaderLogo>
           <button onClick={() => {
             setSort({
@@ -327,36 +330,36 @@ const Header: FC<HeaderProps & Props> = ({
           <ButtonItem
             href="https://github.com/dapplets"
           >
-            <GitHub/>
+            <GitHub />
           </ButtonItem>
           <ButtonItem
             href="https://discord.com/invite/YcxbkcyjMV"
           >
-            <Discord/>
+            <Discord />
           </ButtonItem>
           <ButtonItem
             href="https://t.me/dapplets"
           >
-            <TG/>
+            <TG />
           </ButtonItem>
           <ButtonItem
             href="https://twitter.com/dappletsproject"
           >
-            <Twitter/>
+            <Twitter />
           </ButtonItem>
           {
-            address ? 
-              <Avatar 
+            address ?
+              <Avatar
                 onClick={() => {
-                  setModalOpen({openedModal: ModalsList.User, settings: null})
+                  setModalOpen({ openedModal: ModalsList.User, settings: null })
                 }}
               >
                 <VanillaChildren>{getAvatar(addressShort)}</VanillaChildren>
               </Avatar>
               :
-              <Login 
+              <Login
                 onClick={() => {
-                  setModalOpen({openedModal: ModalsList.Login, settings: null})
+                  setModalOpen({ openedModal: ModalsList.Login, settings: null })
                 }}
               >
                 login
@@ -367,8 +370,8 @@ const Header: FC<HeaderProps & Props> = ({
       </HeaderTop>
 
 
-		</Wrapper>
-	);
+    </Wrapper>
+  );
 }
 
 export default connect(mapState, mapDispatch)(Header);

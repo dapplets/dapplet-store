@@ -4,7 +4,7 @@ import abi from '../abi.json';
 // import abiListing from './abi';
 import abiListing2 from './abi2';
 import { PROVIDER_URL } from "../api/consts";
-import { customToast } from "../components/Notification";
+import { customPromiseToast } from "../components/Notification";
 import { ModalsList } from "./modals";
 import { Lists, MyListElement } from "./myLists";
 import { DappletsListItemTypes } from "../components/DappletsListItem/DappletsListItem";
@@ -19,29 +19,29 @@ type StorageRef = {
   hash: string
   uris: string[]
 }
-  
-const _fetchAndCheckHash = async(url: string, controller: AbortController, expectedHash?: string) => {
+
+const _fetchAndCheckHash = async (url: string, controller: AbortController, expectedHash?: string) => {
   const response = await fetch(url, { signal: controller.signal });
   if (!response.ok) throw new Error('Cannot fetch ' + url);
-  
+
   const blob = await response.blob();
   const buffer = await blob.arrayBuffer();
   const recievedHash = ethers.utils.keccak256(new Uint8Array(buffer));
-  
+
   if (expectedHash && expectedHash !== recievedHash) {
-      throw new Error('Hash mismatch ' + url);
+    throw new Error('Hash mismatch ' + url);
   }
-  
+
   return blob;
 }
-const _getResource = async(storageRef: StorageRef) => {
+const _getResource = async (storageRef: StorageRef) => {
   const promises: Promise<Blob>[] = [];
   const controller = new AbortController();
-  
+
   for (const uri of storageRef.uris) {
     const protocol = uri.substring(0, uri.indexOf('://'));
     const reference = uri.substring(uri.indexOf('://') + 3);
-    
+
     if (protocol === 'bzz') {
       promises.push(_fetchAndCheckHash(BZZ_ENDPOINT + '/bzz/' + reference, controller, storageRef.hash));
     } else if (protocol === 'ipfs') {
@@ -52,20 +52,20 @@ const _getResource = async(storageRef: StorageRef) => {
       console.warn('Unsupported protocol ' + uri);
     }
   }
-  
+
   if (storageRef.hash) {
     const hash = storageRef.hash.replace('0x', '');
     if (hash.match(/^0*$/) === null)
       promises.push(_fetchAndCheckHash(S3_ENDPOINT + '/' + hash, controller, storageRef.hash));
   }
-  
+
   const blob = await Promise.any(promises);
   const blobUrl = URL.createObjectURL(blob);
-  
+
   // cancel all request
   controller.abort();
-  
-  return(blobUrl);
+
+  return (blobUrl);
 }
 
 export enum EventType { REMOVE, ADD, REPLACE }
@@ -115,7 +115,7 @@ const reducers = {
       [payload.id]: payload,
     }
   },
-  addTrustedUserToDapplet(state: DappletsState, {id, address}: {id: number, address: string}) {
+  addTrustedUserToDapplet(state: DappletsState, { id, address }: { id: number, address: string }) {
     return {
       ...state,
       [id]: {
@@ -127,7 +127,7 @@ const reducers = {
       },
     }
   },
-  removeTrustedUserFromDapplet(state: DappletsState, {id, address}: {id: number, address: string}) {
+  removeTrustedUserFromDapplet(state: DappletsState, { id, address }: { id: number, address: string }) {
     return {
       ...state,
       [id]: {
@@ -138,7 +138,7 @@ const reducers = {
       },
     }
   },
-  setExpanded(state: DappletsState, {id, isExpanded}: {id: number, isExpanded: boolean}) {
+  setExpanded(state: DappletsState, { id, isExpanded }: { id: number, isExpanded: boolean }) {
     return {
       ...state,
       [id]: {
@@ -147,7 +147,7 @@ const reducers = {
       }
     }
   },
-  setBlobUrl(state: DappletsState, {id, blobUrl}: {id: number, blobUrl: string}) {
+  setBlobUrl(state: DappletsState, { id, blobUrl }: { id: number, blobUrl: string }) {
     return {
       ...state,
       [id]: {
@@ -167,10 +167,10 @@ const effects = (dispatch: any) => ({ //
 
     async function getVersions(name: string) {
       const hex: string = await contract.getVersionNumbers(name, 'default');
-        const result = (hex.replace('0x', '')
-          .match(/.{1,8}/g) ?? [])
-          .map(x => `${parseInt('0x' + x[0] + x[1])}.${parseInt('0x' + x[2] + x[3])}.${parseInt('0x' + x[4] + x[5])}`);
-          return result;
+      const result = (hex.replace('0x', '')
+        .match(/.{1,8}/g) ?? [])
+        .map(x => `${parseInt('0x' + x[0] + x[1])}.${parseInt('0x' + x[2] + x[3])}.${parseInt('0x' + x[4] + x[5])}`);
+      return result;
     }
     const dapplets: DappletsList = {}
     const myPromises = []
@@ -182,8 +182,8 @@ const effects = (dispatch: any) => ({ //
         const versions = await getVersions(module.name);
         // console.log({module, ev})
         const date = new Date(block.timestamp * 1000)
-        const pad = (n: number,s: number = 2) => (`${new Array(s).fill(0)}${n}`).slice(-s);
-        const icon =  {
+        const pad = (n: number, s: number = 2) => (`${new Array(s).fill(0)}${n}`).slice(-s);
+        const icon = {
           hash: module.icon.hash,
           uris: module.icon.uris.map((u: any) => ethers.utils.toUtf8String(u))
         }
@@ -205,7 +205,7 @@ const effects = (dispatch: any) => ({ //
         }
         await dispatch.dapplets.addDapplet(dapplet)
         _getResource(icon).then((url) => {
-          dispatch.dapplets.setBlobUrl({id: i, blobUrl: url})
+          dispatch.dapplets.setBlobUrl({ id: i, blobUrl: url })
         })
         dapplets[`${dapplet.id}`] = dapplet
       })
@@ -221,10 +221,10 @@ const effects = (dispatch: any) => ({ //
     for (let i = 0; i < users.length; i++) {
       const trustedDapplets = await contractListing.getUserList(users[i]);
       // console.log({trustedDapplets, user: users[i]})
-      
+
       for (let j = 0; j < trustedDapplets.length; j++) {
         try {
-          dispatch.dapplets.addTrustedUserToDapplet({id: trustedDapplets[j], address: users[i]});
+          dispatch.dapplets.addTrustedUserToDapplet({ id: trustedDapplets[j], address: users[i] });
         } catch (error) {
           console.error(error)
         }
@@ -250,36 +250,46 @@ const effects = (dispatch: any) => ({ //
     //   elements: myNewListing,
     // })
   },
-  pushMyListing: async ({address, events, provider, dappletsNames}: {address: string, events: EventPushing[], provider: any, dappletsNames: { [name: number]: string }}) => {
+  pushMyListing: async ({ address, events, provider, dappletsNames }: { address: string, events: EventPushing[], provider: any, dappletsNames: { [name: number]: string } }) => {
     if (provider.chainId !== '0x5') {
-      dispatch.modals.setModalOpen({openedModal: ModalsList.Warning, settings: { onRetry: async () => {
-        try {
-          await dispatch.dapplets.pushMyListing({address, events, provider, dappletsNames})
-          dispatch.modals.setModalOpen({openedModal: ModalsList.Warning, settings: null})
-        } catch (error) {
-          console.error(error)
-        }
-      }}})
+      dispatch.modals.setModalOpen(
+        {
+          openedModal: ModalsList.Warning,
+          settings: {
+            onRetry: async () => {
+              try {
+                await dispatch.dapplets.pushMyListing({
+                  address,
+                  events,
+                  provider,
+                  dappletsNames
+                })
+                dispatch.modals.setModalOpen({
+                  openedModal: ModalsList.Warning,
+                  settings: null
+                })
+              } catch (error) {
+                console.error(error)
+              }
+            }
+          }
+        })
       throw new Error('Change network to Goerli')
     }
     // console.log('push', provider, events, events.map(({eventType, dappletId, dappletPrevId = 0}) => ([eventType, dappletId, dappletPrevId])))
-    const ethersProvider= new ethers.providers.Web3Provider(provider);
+    const ethersProvider = new ethers.providers.Web3Provider(provider);
     const signer = await ethersProvider.getSigner();
     const contractListing: any = await new ethers.Contract('0xc8B80C2509e7fc553929C86Eb54c41CC20Bb05fB', abiListing2, signer);//0xc8B80C2509e7fc553929C86Eb54c41CC20Bb05fB //0x3470ab240a774e4D461456D51639F033c0cB5363
-    const req = await contractListing.changeMyList(events.map(({eventType, dappletId, dappletPrevId = 0}) => ([eventType, dappletId, dappletPrevId])));
-    // console.log('start', req)
-    customToast(req.hash as string);
+    const req = await contractListing.changeMyList(events.map(({ eventType, dappletId, dappletPrevId = 0 }) => ([eventType, dappletId, dappletPrevId])));
     try {
-      await req.wait()
+      const transaction = req.wait();
+      await customPromiseToast(transaction, req.hash);
       await window.localStorage.setItem(Lists.MyListing, JSON.stringify([]))
-      await dispatch.myLists.getMyListing({address, provider, dappletsNames})
+      await dispatch.myLists.getMyListing({ address, provider, dappletsNames })
 
     } catch (error) {
-      console.error({error})
-      customToast(req.hash as string, "error");
+      console.error({ error })
     }
-    customToast(req.hash as string, "success", "Done");
-    
     // console.log('end')
   },
 })

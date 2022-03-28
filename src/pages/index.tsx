@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import Layout from './../features/Layout/Layout';
 
@@ -7,7 +7,6 @@ import "@fontsource/montserrat"
 import "@fontsource/montserrat/900.css"
 import ModalResolver from '../features/Modals/ModalResolver';
 import { Toaster } from "react-hot-toast";
-
 
 import { connect } from "react-redux";
 import { RootState, RootDispatch } from "../models";
@@ -37,9 +36,9 @@ const mapDispatch = (dispatch: RootDispatch) => ({//getMyListing
   getTrustedUsers: () => dispatch.trustedUsers.getTrustedUsers(),
   getLists: (payload: Lists) => dispatch.myLists.getLists(payload),
   removeMyList: (payload: Lists) => dispatch.myLists.removeMyList(payload),
-  setMyList: (payload: {name: Lists, elements: MyListElement[]}) => dispatch.myLists.setMyList(payload),
+  setMyList: (payload: { name: Lists, elements: MyListElement[] }) => dispatch.myLists.setMyList(payload),
   getMyDapplets: () => dispatch.myLists.getMyDapplets(),
-  getMyListing: (payload: {address: string, provider: any, dappletsNames: { [name: number]: string }}) => dispatch.myLists.getMyListing(payload),
+  getMyListing: (payload: { address: string, provider: any, dappletsNames: { [name: number]: string } }) => dispatch.myLists.getMyListing(payload),
   setUser: (payload: string) => dispatch.user.setUser({
     address: payload
   }),
@@ -55,7 +54,7 @@ declare global {
   interface Window { dapplets: any; openModal: any; }
 }
 
-const App = ({ 
+const App = ({
   dappletsStandard,
   address,
   trustedUsers,
@@ -75,7 +74,7 @@ const App = ({
   setTrustedUsers,
   getMyListing,
 }: Props) => {
-  const [dimensions, setDimensions] = useState({ 
+  const [dimensions, setDimensions] = useState({
     height: window.innerHeight,
     width: window.innerWidth
   })
@@ -86,7 +85,7 @@ const App = ({
       setIsNotDapplet(false)
     })
   }, [])
-  
+
   useEffect(() => {
     function handleResize() {
       setDimensions({
@@ -96,7 +95,7 @@ const App = ({
     }
     window.addEventListener('resize', handleResize)
   }, [])
-  
+
   const [openedList, setOpenedList] = useState(null)
 
   const dapplets = useMemo(() => Object.values(dappletsStandard), [dappletsStandard])
@@ -105,29 +104,44 @@ const App = ({
     getDapplets()
   }, [getDapplets, getLists, getSort, getTrustedUsers])
 
+  const hangDappletsEvent = useCallback(() => {
+    window.dapplets.onTrustedUsersChanged?.(getTrustedUsers)
+    window.dapplets.onMyDappletsChanged?.(getMyDapplets)
+    window.dapplets.onUninstall?.(() => {
+      setIsNotDapplet(true)
+      setMyList({
+        name: Lists.MyDapplets,
+        elements: []
+      })
+      setTrustedUsers([])
+    })
+  }, [getMyDapplets, getTrustedUsers, setMyList, setTrustedUsers]);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const onLoad = useCallback(() => {
+    if (window.dapplets) {
+      hangDappletsEvent();
+    } else {
+      window.addEventListener("dapplets#initialized", hangDappletsEvent);
+    }
+  }, [hangDappletsEvent]);
+
   useEffect(() => {
-    if (!isNotDapplet)
-    {
-      // console.log('hi', window.dapplets)
+    if (!isNotDapplet) {
       getMyDapplets()
       getTrustedUsers()
-      window.dapplets.onTrustedUsersChanged(() => getTrustedUsers())
-      window.dapplets.onMyDappletsChanged(() => getMyDapplets())
-      window.dapplets.onUninstall(() => {
-        setIsNotDapplet(true)
-        setMyList({
-          name: Lists.MyDapplets,
-          elements: []
-        })
-        setTrustedUsers([])
-      })
+      onLoad();
     }
-  }, [getLists, getMyDapplets, getTrustedUsers, isNotDapplet, setMyList, setTrustedUsers])
+
+    return () => {
+      window.removeEventListener("dapplets#initialized", hangDappletsEvent);
+    }
+  }, [getMyDapplets, getTrustedUsers, hangDappletsEvent, isNotDapplet, onLoad])
 
   // TODO: test func to open modals
   useEffect(() => {
     window.openModal = (modal: ModalsList) => {
-      setModalOpen({openedModal: modal, settings: null})
+      setModalOpen({ openedModal: modal, settings: null })
     }
   }, [setModalOpen])
 
@@ -149,26 +163,26 @@ const App = ({
     if (address && provider) {
       const dappletsNames: { [name: number]: string } = {}
 
-      dapplets.forEach(({id, name}) => {
+      dapplets.forEach(({ id, name }) => {
         dappletsNames[id] = name
       })
-      getMyListing({address, provider, dappletsNames})
+      getMyListing({ address, provider, dappletsNames })
 
       // const list: {
       //   [key: string]: MyListElement
       // } = {}
       // dapplets.filter((dapp) => dapp.trustedUsers.includes(address) && dapp.owner !== address)
       //   .forEach(({ name, id }) => {
-      //     list[name] = { name, type: DappletsListItemTypes.Default, id}
+      //     list[name] = { name, type: DappletsListItemTypes.Default, id }
       //   })
       // getDappletsListFromLocal(Lists.MyListing).forEach((dapp) => {
       //   list[dapp.name] = dapp
       // })
       // const sortedList: MyListElement[] = Object.values(list)
-      // sortedList.sort(({type: typeA}, {type: typeB}) => {
-      //   if (typeA === DappletsListItemTypes.Default && typeB !== DappletsListItemTypes.Default) 
+      // sortedList.sort(({ type: typeA }, { type: typeB }) => {
+      //   if (typeA === DappletsListItemTypes.Default && typeB !== DappletsListItemTypes.Default)
       //     return 1
-      //   if (typeB === DappletsListItemTypes.Default && typeA !== DappletsListItemTypes.Default) 
+      //   if (typeB === DappletsListItemTypes.Default && typeA !== DappletsListItemTypes.Default)
       //     return -1
       //   return 0
       // })
@@ -176,8 +190,7 @@ const App = ({
       //   name: Lists.MyListing,
       //   elements: sortedList,
       // })
-      // if (addressFilter === address)
-      // {
+      // if (addressFilter === address) {
       //   setSort({
       //     selectedList: Lists.MyListing,
       //   })
@@ -190,7 +203,7 @@ const App = ({
   useEffect(() => {
     getSort(address || '')
   }, [address, getSort, url])
-  
+
   useEffect(() => {
     window.onpopstate = () => {
       // console.log(document.URL, getAnchorParams())
@@ -201,30 +214,30 @@ const App = ({
   useEffect(() => {
     const web3Init = async () => {
       const providerOptions = {};
-  
+
       const web3Modal = new Web3Modal({
         network: "goerli", // optional
         cacheProvider: true, // optional
         providerOptions // required
       });
-  
+
       const provider = await web3Modal.connect();
-      
+
       if (localStorage['metamask_disabled'] === 'true') {
         await provider.request({ method: "wallet_requestPermissions", params: [{ eth_accounts: {} }] });
         localStorage['metamask_disabled'] = '';
       }
-      
+
       provider.on("accountsChanged", (accounts: string[]) => {
         setUser(accounts[0])
       });
-      
+
       const web3 = new Web3(provider);
       const address = await web3.eth.getAccounts()
       setUser(address[0])
-      
+
       setProvider(provider)
-      setModalOpen({openedModal: null, settings: null})
+      setModalOpen({ openedModal: null, settings: null })
       localStorage['login'] = 'metamask';
       return web3
     }
@@ -234,17 +247,17 @@ const App = ({
           infuraId: "eda881d858ae4a25b2dfbbd0b4629992",
         });
 
-        
-        
+        console.log("dsad")
+
         //  Enable session (triggers QR Code modal)
         await provider.enable();
         const web3 = new Web3(provider);
         const address = await web3.eth.getAccounts()
         setUser(address[0])
-        setModalOpen({openedModal: null, settings: null})
-        
+        setModalOpen({ openedModal: null, settings: null })
+
         setProvider(provider)
-        
+
         localStorage['login'] = 'walletConnect';
       } catch (error) {
         console.error(error)
@@ -264,7 +277,7 @@ const App = ({
   return (
     <>
       <Toaster position="bottom-left" />
-      <ModalResolver/>
+      <ModalResolver />
       <Layout
         setSelectedList={(newSelectedList: Lists | undefined) => setSort({ selectedList: newSelectedList })}
         trustedUsersList={trustedUsers}

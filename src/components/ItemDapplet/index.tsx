@@ -26,16 +26,15 @@ const mapState = (state: RootState) => ({
 const mapDispatch = (dispatch: RootDispatch) => ({
   setSort: (payload: Sort) => dispatch.sort.setSort(payload),
   setModalOpen: (payload: Modals) => dispatch.modals.setModalOpen(payload),
-  setExpanded: (payload: {id: number, isExpanded: boolean}) => dispatch.dapplets.setExpanded(payload),
-  setBlobUrl: (payload: {id: number, blobUrl: string}) => dispatch.blobUrl.setBlobUrl(payload),
+  setExpanded: (payload: { id: number, isExpanded: boolean }) => dispatch.dapplets.setExpanded(payload),
+  setBlobUrl: (payload: { id: number, blobUrl: string }) => dispatch.blobUrl.setBlobUrl(payload),
 });
 
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
 
-const ImagesWrapper = styled.div<{count: number}>`
+const ImagesWrapper = styled.div<{ count: number }>`
   display: grid;
   grid-template-columns: 1fr;
-  /* margin-left: 8px; */
   align-items: center;
 
 	a {
@@ -104,7 +103,7 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
     address,
     setModalOpen,
     setExpanded,
-    
+
     isNotDapplet,
     isLocked,
   } = props;
@@ -117,7 +116,7 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
     return item.trustedUsers.filter((user) => !(trustedUsersList.includes(user) || user === address))
   }, [address, item.trustedUsers, trustedUsersList])
 
-  
+
   // const getAvatar = (loggedIn: string): HTMLDivElement => jazzicon(12, parseInt(loggedIn.slice(2, 10), 16));
   // const getAddressShort = (address: string) => address ? address.replace('0x000000000000000000000000', '0x') : ''
 
@@ -138,7 +137,7 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
     return DappletButtonTypes.AddToList
   }, [item.name, selectedDapplets])
 
-  const owner =  useMemo(() => item.owner.replace('0x000000000000000000000000', '0x'), [item.owner]);
+  const owner = useMemo(() => item.owner.replace('0x000000000000000000000000', '0x'), [item.owner]);
 
   const isOpen = useMemo(() => item.isExpanded, [item.isExpanded])
 
@@ -158,8 +157,8 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
     >
       {
         item.icon ?
-        <Image className={styles.itemImage} src={item.icon} style={{ width: 85, height: 85, borderRadius: '50%', marginTop: 10 }} />
-        : <div style={{  minWidth: 85, height: 85, borderRadius:'50%', marginTop: 10, background: "#919191" }}></div>
+          <Image className={styles.itemImage} src={item.icon} style={{ width: 85, height: 85, borderRadius: '50%', marginTop: 10 }} />
+          : <div style={{ minWidth: 85, height: 85, borderRadius: '50%', marginTop: 10, background: "#919191" }}></div>
       }
 
       <div className={styles.left} style={{ flexGrow: 1, padding: '5px 18px' }}>
@@ -175,10 +174,10 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
             </div>
           </>
         )}
-        
-        
+
+
         {[...trustedList, ...otherList].length > 0 && <UnderUserInfo>
-          <ImagesWrapper count={trustedList.slice(0,3).length} className={styles.author}>
+          <ImagesWrapper count={trustedList.slice(0, 3).length} className={styles.author}>
             <DappletListersPopup
               trustedList={trustedList}
               otherList={otherList}
@@ -196,8 +195,8 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
         </UnderUserInfo>}
 
         <div className={styles.author}>
-          <span style={{ width: 60, display: 'inline-block' }}>Author:</span> 
-          <a 
+          <span style={{ width: 60, display: 'inline-block' }}>Author:</span>
+          <a
             onClick={(e) => {
               e.stopPropagation()
               setSort({
@@ -221,9 +220,9 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
           </>
         )}
 
-      <div className={styles.author}>
-        <Highlighter className={styles.author} textToHighlight={item.description} searchWords={[searchQuery || ""]} highlightStyle={{ background: '#ffff00', padding: 0 }} />
-      </div>
+        <div className={styles.author}>
+          <Highlighter className={styles.author} textToHighlight={item.description} searchWords={[searchQuery || ""]} highlightStyle={{ background: '#ffff00', padding: 0 }} />
+        </div>
 
       </div>
 
@@ -234,8 +233,8 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
             e.preventDefault();
             e.stopPropagation();
             if (isNotDapplet)
-              setModalOpen({openedModal: ModalsList.Install, settings: null})
-            else 
+              setModalOpen({ openedModal: ModalsList.Install, settings: null })
+            else
               editLocalDappletsList(item)
           }}
         />
@@ -245,8 +244,8 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
             e.preventDefault();
             e.stopPropagation();
             if (!address)
-              setModalOpen({openedModal: ModalsList.Login, settings: null})
-            else 
+              setModalOpen({ openedModal: ModalsList.Login, settings: null })
+            else
               editSelectedDappletsList(item)
           }}
           disabled={isLocked}

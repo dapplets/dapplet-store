@@ -89,6 +89,7 @@ interface ButtonWrapperProps {
 }
 
 const ButtonWrapper = styled.button<ButtonWrapperProps>`
+  cursor: pointer;
   width: 100%;
   min-width: 160px;
   height: 32px;
@@ -139,7 +140,7 @@ export const DappletButton = (props: DappletButtonProps) => {
       case DappletButtonTypes.InMyList:
         if (hovered) return DappletButtonTypes.FromMyList
         return props.type
-      
+
       case DappletButtonTypes.AddToList:
         if (hovered) return DappletButtonTypes.AddToListHovered
         return props.type
@@ -154,9 +155,10 @@ export const DappletButton = (props: DappletButtonProps) => {
         return props.type
     }
   }, [props.type, hovered])
-  return(
-  <ButtonWrapper onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} onClick={props.onClick} buttonType={buttonType} disabled={props.disabled}>
-    {/* <ButtonIcon type={buttonType} /> */}
-    <div>{buttonType}</div>
-  </ButtonWrapper>
-)}
+  return (
+    <ButtonWrapper onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} onClick={props.onClick} buttonType={buttonType} disabled={props.disabled}>
+      {/* <ButtonIcon type={buttonType} /> */}
+      <div>{buttonType}</div>
+    </ButtonWrapper>
+  )
+}

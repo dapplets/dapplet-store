@@ -27,7 +27,7 @@ function Input({ searchQuery, editSearchQuery }: InputProps): React.ReactElement
         paddingRight: 0,
       }}
     >
-      <Icon name="search" style={{ marginLeft: '8px'}} />
+      <Icon name="search" style={{ marginLeft: "15px" }} />
       <input
         style={{ color: '#2A2A2A', fontSize: 16, borderRadius: 4, border: '1px solid #E3E3E3' }}
         className="app-input"

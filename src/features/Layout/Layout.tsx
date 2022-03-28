@@ -14,6 +14,7 @@ import { Modals } from '../../models/modals';
 
 interface WrapperProps {
   isSmall: boolean
+  isNotDapplet: boolean
 }
 
 const Wrapper = styled.div<WrapperProps>`
@@ -21,7 +22,7 @@ const Wrapper = styled.div<WrapperProps>`
 
   height: 100%;
 
-  grid-template-columns: 430px 1fr 430px;
+  grid-template-columns: 430px 1fr ${({ isNotDapplet }) => isNotDapplet ? `430px` : "0"};
   grid-template-rows: 51px 1fr;
 
   grid-template-areas:
@@ -65,7 +66,7 @@ const mapDispatch = (dispatch: RootDispatch) => ({
   setModalOpen: (payload: Modals) => dispatch.modals.setModalOpen(payload),
   setSort: (payload: Sort) => dispatch.sort.setSort(payload),
   setTrustedUsers: (payload: string[]) => dispatch.trustedUsers.setTrustedUsers(payload),
-  setMyList: (payload: {name: Lists, elements: MyListElement[]}) => dispatch.myLists.setMyList(payload),
+  setMyList: (payload: { name: Lists, elements: MyListElement[] }) => dispatch.myLists.setMyList(payload),
 });
 
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
@@ -96,7 +97,7 @@ const Layout = ({
   setOpenedList,
   windowWidth,
   isNotDapplet,
-  
+
   dapplets,
   sortType,
   addressFilter,
@@ -133,9 +134,9 @@ const Layout = ({
       .filter((dapp): dapp is IDapplet => !!dapp);
 
   }, [dapplets, myLists, selectedList])
-  
+
   return (
-    <Wrapper isSmall={windowWidth <= 1500}>
+    <Wrapper isSmall={windowWidth <= 1500} isNotDapplet={isNotDapplet}>
       <StyledHeader
         selectedList={selectedList}
         isNotDapplet={isNotDapplet}
@@ -153,7 +154,7 @@ const Layout = ({
         dapplets={dapplets}
       />
 
-			<MainContent>
+      <MainContent>
         {dappletsByList && <ListDapplets
           dapplets={dappletsByList}
           selectedDapplets={selectedDappletsList}
@@ -176,13 +177,15 @@ const Layout = ({
           isNotDapplet={isNotDapplet}
           setModalOpen={setModalOpen}
         />}
-			</MainContent>
+      </MainContent>
 
       {
-        windowWidth > 1500 && <StyledOverlay isNotDapplet={isNotDapplet}/>
+        isNotDapplet && windowWidth > 1500 && (
+          <StyledOverlay isNotDapplet={isNotDapplet} />
+        )
       }
-		</Wrapper>
-	);
+    </Wrapper>
+  );
 }
 
 export default connect(mapState, mapDispatch)(Layout);

@@ -1,31 +1,20 @@
-@import "./variable";
-@import "./keyframe";
-
 .notification-custom-wrapper {
-	max-width: 500px;
-	padding: 10px 15px;
+	width: 100%;
+	max-width: 308px;
+	padding: 10px;
 
-	pointer-events: auto;
-
-	opacity: 0.8;
-
-	color: #363636;
+	border: 1px solid #E3E3E3;
 	border-radius: 8px;
-	background: rgba(94, 194, 128, 0.2);
-	box-shadow: 0 3px 4px rgba(0, 0, 0, 0.09), 0 10px 8px rgba(38, 117, 209, 0.04);
-
-	font-family: Roboto, sans-serif;
-
-	will-change: transform;
+	background: rgba(255, 255, 255, 0.65);
+	backdrop-filter: blur(10px);
 }
 
 .notification-custom-header {
 	display: flex;
+	align-items: center;
 
-	color: $SuccessPresed;
-
-	font-size: 22px;
-	line-height: 26px;
+	font-size: 16px;
+	line-height: 149%;
 
 	h4 {
 		margin-bottom: 0;
@@ -36,39 +25,74 @@
 	}
 }
 
+.notification-custom-link {
+	display: block;
+	overflow: hidden;
+
+	margin-top: 4px;
+
+	text-align: right;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+
+	font-size: 14px;
+	line-height: 149%;
+
+	text-decoration-line: underline;
+}
+
+.notification-custom-error {
+	.notification-custom-link {
+		color: #FF6442;
+	}
+}
+
+.notification-custom-loading {
+	.notification-custom-link {
+		color: #85CCC7;
+	}
+}
+
+.notification-custom-success {
+	.notification-custom-link {
+		color: #5EC280;
+	}
+}
+
+.notification-custom-title {
+	margin: 0;
+
+	font-size: 16px;
+
+	font-weight: 700;
+	line-height: 149%;
+
+	&.started {
+		color: #85CCC7;
+	}
+
+	&.error {
+		color: #FF6442;
+	}
+
+	&.finished {
+		color: #5EC280;
+	}
+}
+
 .notification-custom-text {
-	margin-top: 5px;
+	overflow: hidden;
+
 	margin-bottom: 0;
 
-	color: $MainBlack;
+	color: #707070;
 
 	font-size: 14px;
 	line-height: 149%;
 }
 
-.notification-custom-link {
-	display: block;
-	overflow: hidden;
-
-	white-space: nowrap;
-	text-overflow: ellipsis;
-}
-
-.notification-custom-error {
-	background-color: rgba(242, 102, 128, 0.2);
-
-	.notification-custom-header {
-		color: $PrimaryPresed;
-	}
-}
-
 .notification-custom-text-error {
 	display: block;
-
-	overflow: hidden;
-
-	white-space: nowrap;
-	text-overflow: ellipsis;
 
 	&::first-letter {
 		text-transform: uppercase;
@@ -77,4 +101,33 @@
 
 .notification-custom-animate {
 	animation: rotate 2s linear infinite;
+}
+
+.go4109123758 {
+	left: 0 !important;
+
+	width: 320px !important;
+}
+
+.go2072408551 {
+	background-color: transparent !important;
+	box-shadow: none !important;
+}
+
+.go685806154 {
+	display: none !important;
+}
+
+.go318386747 {
+	width: 308px !important;
+}
+
+@keyframes rotate {
+	0% {
+		transform: rotate(0deg);
+	}
+
+	100% {
+		transform: rotate(360deg);
+	}
 }

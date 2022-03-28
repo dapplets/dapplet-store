@@ -1,53 +1,69 @@
 import React, { FC } from "react";
-import "./Notification.scss";
 import { ReactComponent as CheckError } from "./check-erorr.svg";
 import { ReactComponent as Loader } from "./loader.svg";
+import { ReactComponent as Installed } from "./installed.svg";
 import cn from "classnames";
 import { net } from "../../api/consts";
+import "./Notification.scss";
+
+const HEADER_MESSAGES = {
+	success: (
+		<React.Fragment>
+			<Installed />
+			<h6 className="notification-custom-title finished">Transaction finished</h6>
+		</React.Fragment>
+	),
+	error: (
+		<React.Fragment>
+			<CheckError />
+			<h6 className="notification-custom-title error">Transaction error</h6>
+		</React.Fragment>
+	),
+	loading: (
+		<React.Fragment>
+			<Loader className="notification-custom-animate" />
+			<h6 className="notification-custom-title started">Transaction started</h6>
+		</React.Fragment>
+	),
+};
 
 interface SuccessToastProps {
 	hash: string | null;
-	type: "success" | "error";
+	type: "success" | "error" | "loading";
 	messageError?: string;
 }
 
-export const Notification: FC<SuccessToastProps> = ({ hash, type, messageError }) => {
-	const network = net;
-
+export const Notification: FC<SuccessToastProps> = ({ hash, type, messageError: messageErrror }) => {
+	const isLoading = type === "loading";
 	const isSuccess = type === "success";
-	const icon = isSuccess ? (
-		<Loader className="notification-custom-animate" />
-	) : (
-		<CheckError stroke="#A6253C" />
-	);
-
-	const message = messageError ? messageError : isSuccess ? "Transaction started" : "An error has occurred!";
+	const isError = type === "error";
 
 	return (
 		<div
 			className={cn("notification-custom-wrapper", {
-				"notification-custom-error": type === "error",
+				"notification-custom-error": isError,
+				"notification-custom-loading": isLoading,
+				"notification-custom-success": isSuccess,
 			})}
 		>
-			<header className="notification-custom-header">
-				{messageError && isSuccess ? <></> : icon}
-				<h4>{message}</h4>
-			</header>
-			<p className="notification-custom-text">
+			<header className={cn("notification-custom-header")}>{HEADER_MESSAGES[type]}</header>
+			<p className={cn("notification-custom-text")}>
 				{hash && hash.length > 0 && (
 					<React.Fragment>
-						You can track your transaction here:
+						You can track your transaction
 						<a
-							href={`https://${network?.toLowerCase()}.etherscan.io/tx/${hash}`}
+							href={`https://${net.toLowerCase()}.etherscan.io/tx/${hash}`}
 							className="notification-custom-link"
 							target="_blank" rel="noreferrer"
 						>
-							https://{network?.toLowerCase()}.etherscan.io/tx/{hash}
+							Show More
 						</a>
 					</React.Fragment>
 				)}
 
-				{/* {!isSuccess && <span className="notification-custom-text-error">{messageError}</span>} */}
+				{isError && messageErrror && messageErrror.length > 0 && (
+					<span className="notification-custom-text-error">{messageErrror}</span>
+				)}
 			</p>
 		</div>
 	);

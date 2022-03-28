@@ -18,15 +18,15 @@ const Overlay = ({
     )
   }
 
-	return (
-		<aside className={cn(styles.overlay, className)}>
+  return (
+    <aside className={cn(styles.overlay, className)}>
       <div style={{
         height: 'calc(100vh - 70px)',
         overflow: 'auto',
         paddingBottom: '20px'
       }}>
 
-        <Message size='large'	className={styles.message}>
+        <Message size='large' className={styles.message}>
           <h2>
             Try out brand new web experience
           </h2>
@@ -54,7 +54,7 @@ const Overlay = ({
 
       </div>
     </aside>
-	);
+  );
 }
 
 export default Overlay

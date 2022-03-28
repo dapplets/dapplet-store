@@ -8,6 +8,7 @@ export const Wrapper = styled.div`
 `;
 
 export const ActivatorButton = styled.button`
+  cursor: pointer;
   align-items: center;
   background-color: inherit;
   border: 1px solid transparent;
@@ -122,7 +123,7 @@ const Dropdown = ({
   };
 
   const currentText = useMemo(() => {
-    const item = items.find(({ text }) => text === active) 
+    const item = items.find(({ text }) => text === active)
     if (item) {
       return item.text
     }
@@ -166,11 +167,11 @@ const Dropdown = ({
       </ActivatorButton>
       <DropdownList id="dropdown1" ref={listRef} active={isOpen} role="list">
         {items.map((item, index) => (
-          <li key={item.text} onClick={() =>{ 
-              focusHandler(item.text)
-              setIsOpen(false)
-            }}>
-              {item.text}
+          <li key={item.text} onClick={() => {
+            focusHandler(item.text)
+            setIsOpen(false)
+          }}>
+            {item.text}
           </li>
         ))}
       </DropdownList>

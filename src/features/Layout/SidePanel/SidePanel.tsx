@@ -23,11 +23,11 @@ const mapState = (state: RootState) => ({
 const mapDispatch = (dispatch: RootDispatch) => ({
   setModalOpen: (payload: Modals) => dispatch.modals.setModalOpen(payload),
   setSort: (payload: Sort) => dispatch.sort.setSort(payload),
-  pushMyListing: (payload: {address: string, events: EventPushing[], provider: any, dappletsNames: { [name: number]: string }}) => dispatch.dapplets.pushMyListing(payload),
+  pushMyListing: (payload: { address: string, events: EventPushing[], provider: any, dappletsNames: { [name: number]: string } }) => dispatch.dapplets.pushMyListing(payload),
   setLocked: (payload: boolean) => dispatch.user.setUser({
     isLocked: payload
   }),
-  removeMyDapplet: (payload: {registryUrl: string, moduleName: string}) => dispatch.myLists.removeMyDapplet(payload),
+  removeMyDapplet: (payload: { registryUrl: string, moduleName: string }) => dispatch.myLists.removeMyDapplet(payload),
 });
 
 const Wrapper = styled.aside`
@@ -122,17 +122,22 @@ const SidePanel = ({
     e.preventDefault();
     const dappletListIndex = selectedDappletsList.findIndex((dapplet) => dapplet.name === name);
     let list = selectedDappletsList
-    console.log({sl: selectedDappletsList[dappletListIndex]})
-    if (selectedDappletsList[dappletListIndex].type === DappletsListItemTypes.Removing)
+    console.log({ sl: selectedDappletsList[dappletListIndex] })
+
+    if (selectedDappletsList[dappletListIndex].type === DappletsListItemTypes.Removing) {
       list[dappletListIndex].type = DappletsListItemTypes.Default
-    if (selectedDappletsList[dappletListIndex].type === DappletsListItemTypes.Adding)
+    }
+
+    if (selectedDappletsList[dappletListIndex].type === DappletsListItemTypes.Adding) {
       list = list.filter((dapp) => dapp.name !== name);
+    }
+
     if (selectedDappletsList[dappletListIndex].event !== undefined) {
       if (list[dappletListIndex].eventPrev !== undefined) {
         if (list[dappletListIndex].eventPrev !== 0) {
-          const swapId = list.findIndex(({id}) => id === list[dappletListIndex].eventPrev)
+          const swapId = list.findIndex(({ id }) => id === list[dappletListIndex].eventPrev)
           const swap = list[dappletListIndex]
-          console.log({swap, swapId})
+          console.log({ swap, swapId })
           list[dappletListIndex] = list[swapId];
           list[swapId] = swap;
           list[swapId].event = undefined
@@ -154,11 +159,11 @@ const SidePanel = ({
   const dappletsStandard = useMemo(() => Object.values(dapplets), [dapplets])
 
   useEffect(() => {
-    console.log({myOldListing})
+    console.log({ myOldListing })
   }, [myOldListing])
 
   useEffect(() => {
-    console.log({myListing})
+    console.log({ myListing })
   }, [myListing])
 
   const pushSelectedDappletsList = async () => {
@@ -187,42 +192,43 @@ const SidePanel = ({
 
     })
 
-    myListing.filter(({type}) => (
+    myListing.filter(({ type }) => (
       type !== DappletsListItemTypes.Removing && type !== DappletsListItemTypes.Adding
     )).forEach((dapp, index) => {
       if (dapp.id !== myOldListing[index].id) {
         events.push({
           eventType: EventType.REPLACE,
           dappletId: dapp.id,
-          dappletPrevId: index === 0 ? 0 : newDappletsList[index-1].id,
+          dappletPrevId: index === 0 ? 0 : newDappletsList[index - 1].id,
         })
       }
     })
-    
-    
+
+
     try {
       const dappletsNames: { [name: number]: string } = {}
-  
-      dappletsStandard.forEach(({id, name}) => {
+
+      dappletsStandard.forEach(({ id, name }) => {
         dappletsNames[id] = name
       })
       setLocked(true)
-      await pushMyListing({address: address || '', events, provider, dappletsNames});
+      await pushMyListing({ address: address || '', events, provider, dappletsNames });
       // saveListToLocalStorage(newDappletsList, Lists.MyListing);
       // setSelectedDappletsList(newDappletsList);
     } catch (error) {
-      console.error({error})
+      console.error({ error })
     }
     setLocked(false)
   };
 
-	return (
-		<Wrapper className={className}>
+  return (
+    <Wrapper className={className}>
       <ListWrapper>
         <DappletsListSidebar
           dappletsList={localDappletsList.slice(0, 5).map((dapplet) => ({
             title: dapplets.find(({ name }) => dapplet.name === name)?.title || '',
             type: dapplet.type,
+            id: dapplet.id.toString(),
             onClickRemove: () => removeFromLocalList(dapplet.name),
             isRemoved: true,
           }))}
@@ -240,17 +246,25 @@ const SidePanel = ({
         />
 
         <DappletsListSidebar
-          dappletsList={selectedDappletsList.slice(0, 5).map((dapplet) => ({
-            title: dapplets.find(({ name }) => dapplet.name === name)?.title || '',
-            type: dapplet.type === DappletsListItemTypes.Default && dapplet.event !== undefined ? DappletsListItemTypes.Moved : dapplet.type,
-            onClickRemove: () => removeFromSelectedList(dapplet.name),
-            isRemoved: dapplet.type !== DappletsListItemTypes.Default || dapplet.event !== undefined,
-          }))}
+          dappletsList={
+            selectedDappletsList
+              .slice(0, 5)
+              .map((dapplet) => ({
+                title: dapplets.find(({ name }) => dapplet.name === name)?.title || '',
+                type: dapplet.type === DappletsListItemTypes.Default
+                  && dapplet.event !== undefined
+                  ? DappletsListItemTypes.Moved
+                  : dapplet.type,
+                id: dapplet.id.toString(),
+                onClickRemove: () => removeFromSelectedList(dapplet.name),
+                isRemoved: dapplet.type !== DappletsListItemTypes.Default
+                  || dapplet.event !== undefined,
+              }))}
           title={SideLists.MyListing}
           isPushing={isLocked}
           onOpenList={() => {
             if (!address) {
-              setModalOpen({openedModal: ModalsList.Login, settings: null})
+              setModalOpen({ openedModal: ModalsList.Login, settings: null })
               return
             }
             setSort({
@@ -273,13 +287,13 @@ const SidePanel = ({
             subTitle: `${user.replace('0x000000000000000000000000', '0x').slice(0, 6)}...${user.replace('0x000000000000000000000000', '0x').slice(-4)}`,
             id: user,
             type: DappletsListItemTypes.Default,
-            onClickRemove: () => {},
+            onClickRemove: () => { },
             isRemoved: false,
           }))}
           title={SideLists.MyTrustedUsers}
-          onOpenList={() => {}}
+          onOpenList={() => { }}
           isMoreShow={false}
-          onElementClick={(id: string) => 
+          onElementClick={(id: string) =>
             setSort({
               addressFilter: id,
               selectedList: undefined,
@@ -309,8 +323,8 @@ const SidePanel = ({
         <p>© 2019—2022 Dapplets Project</p>
       </Footer> */}
 
-		</Wrapper>
-	);
+    </Wrapper>
+  );
 }
 
 export default connect(mapState, mapDispatch)(SidePanel);
