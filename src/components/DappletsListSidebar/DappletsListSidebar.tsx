@@ -46,6 +46,7 @@ const MoreWrapper = styled.div`
 `
 
 const TitleButtonWrapper = styled.button`
+  cursor: pointer;
   height: 32px;
   border-radius: 4px;
   border: 1px solid #5AB5E8;
