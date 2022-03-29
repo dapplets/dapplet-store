@@ -6,8 +6,7 @@ import abiListing2 from './abi2';
 import { PROVIDER_URL } from "../api/consts";
 import { customPromiseToast } from "../components/Notification";
 import { ModalsList } from "./modals";
-import { Lists, MyListElement } from "./myLists";
-import { DappletsListItemTypes } from "../components/DappletsListItem/DappletsListItem";
+import { Lists } from "./myLists";
 
 
 const BZZ_ENDPOINT = 'https://swarmgateway.mooo.com';

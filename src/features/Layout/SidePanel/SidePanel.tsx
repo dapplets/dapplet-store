@@ -187,10 +187,10 @@ const SidePanel = ({
       return type !== DappletsListItemTypes.Removing
     })
 
-    const listingOld = {}
-    myOldListing.forEach((dapp) => {
+    // const listingOld = {}
+    // myOldListing.forEach((dapp) => {
 
-    })
+    // })
 
     myListing.filter(({ type }) => (
       type !== DappletsListItemTypes.Removing && type !== DappletsListItemTypes.Adding

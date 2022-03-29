@@ -1,8 +1,6 @@
 import { createModel } from "@rematch/core";
 import { BigNumber, ethers } from "ethers";
 import { DappletsListItemTypes } from "../components/DappletsListItem/DappletsListItem";
-import { customToast } from "../components/Notification";
-import { EventOrderChange } from "./dapplets";
 import { ModalsList } from "./modals";
 import abiListing2 from './abi2';
 
@@ -32,8 +30,8 @@ const INITIAL_STATE: MyListsState = {
 };
 
 const reducers = {
-  setMyList(state: MyListsState, {name, elements}: {name: Lists, elements: MyListElement[]}) {
-    console.debug({name, elements})
+  setMyList(state: MyListsState, { name, elements }: { name: Lists, elements: MyListElement[] }) {
+    console.debug({ name, elements })
     return {
       ...state,
       [name]: elements,
@@ -59,24 +57,28 @@ const effects = (dispatch: any) => ({
       });
     }
   },
-  async getMyListing({address, provider, dappletsNames}: {address: string, provider: any, dappletsNames: { [name: number]: string }}) {
+  async getMyListing({ address, provider, dappletsNames }: { address: string, provider: any, dappletsNames: { [name: number]: string } }) {
     if (provider.chainId !== '0x5') {
-      dispatch.modals.setModalOpen({openedModal: ModalsList.Warning, settings: { onRetry: async () => {
-        try {
-          await dispatch.myLists.getMyListing({address, provider})
-          dispatch.modals.setModalOpen({openedModal: ModalsList.Warning, settings: null})
-        } catch (error) {
-          console.error(error)
+      dispatch.modals.setModalOpen({
+        openedModal: ModalsList.Warning, settings: {
+          onRetry: async () => {
+            try {
+              await dispatch.myLists.getMyListing({ address, provider })
+              dispatch.modals.setModalOpen({ openedModal: ModalsList.Warning, settings: null })
+            } catch (error) {
+              console.error(error)
+            }
+          }
         }
-      }}})
+      })
       throw new Error('Change network to Goerli')
     }
-    const ethersProvider= new ethers.providers.Web3Provider(provider);
+    const ethersProvider = new ethers.providers.Web3Provider(provider);
     const signer = await ethersProvider.getSigner();
     const contractListing: any = await new ethers.Contract('0xc8B80C2509e7fc553929C86Eb54c41CC20Bb05fB', abiListing2, signer);//0xc8B80C2509e7fc553929C86Eb54c41CC20Bb05fB //0x3470ab240a774e4D461456D51639F033c0cB5363
     const req = await contractListing.getLinkedList(address);
 
-    
+
     const localListing: { [name: string]: MyListElement } = {};
     const dappsFromLocal = window.localStorage.getItem(Lists.MyListing)
     if (dappsFromLocal) {
@@ -98,7 +100,7 @@ const effects = (dispatch: any) => ({
     }).filter((dapp: MyListElement) => !!dapp.name)
     // console.log('start', req, dappletsNames, listing)
     dispatch.myLists.setMyList({
-      name: Lists.MyOldListing, 
+      name: Lists.MyOldListing,
       elements: listing,
     })
     const reversedListing = listing.reverse()
@@ -107,7 +109,7 @@ const effects = (dispatch: any) => ({
       reversedListing.push(dapp)
     })
     dispatch.myLists.setMyList({
-      name: Lists.MyListing, 
+      name: Lists.MyListing,
       elements: reversedListing.reverse(),
     })
 
@@ -118,18 +120,18 @@ const effects = (dispatch: any) => ({
     // console.log({dapps})
     dispatch.myLists.setMyList({
       name: Lists.MyDapplets,
-      elements: dapps.map(({name}: {name: string}) => ({
+      elements: dapps.map(({ name }: { name: string }) => ({
         name,
         type: DappletsListItemTypes.Default,
       })),
     });
     // console.log({dapps})
   },
-  async addMyDapplet({registryUrl, moduleName}: {registryUrl: string, moduleName: string}) {
+  async addMyDapplet({ registryUrl, moduleName }: { registryUrl: string, moduleName: string }) {
     await window.dapplets.addMyDapplet('registry.dapplet-base.eth', moduleName)
     // console.log({dapps})
   },
-  async removeMyDapplet({registryUrl, moduleName}: {registryUrl: string, moduleName: string}) {
+  async removeMyDapplet({ registryUrl, moduleName }: { registryUrl: string, moduleName: string }) {
     await window.dapplets.removeMyDapplet('registry.dapplet-base.eth', moduleName)
     // console.log({removed: moduleName})
   },

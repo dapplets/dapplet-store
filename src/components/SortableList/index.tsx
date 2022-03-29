@@ -29,7 +29,6 @@ import { SortableListProps } from './SortableList.props';
 import Draggable from '../Draggable';
 import ItemDapplet from '../ItemDapplet';
 import { MyListElement } from '../../models/myLists';
-import { DappletsListItemTypes } from '../DappletsListItem/DappletsListItem';
 
 const SortableList = (props: SortableListProps) => {
   const {
@@ -67,14 +66,14 @@ const SortableList = (props: SortableListProps) => {
     const { active, over } = event;
     let newArray: MyListElement[];
     if (over !== null && active.id !== over.id) {
-      const itemIds = items!.map(({name}) => name);
+      const itemIds = items!.map(({ name }) => name);
       const oldIndex = itemIds.indexOf(active.id);
       const newIndex = itemIds.indexOf(over.id);
       if (items) {
-        items[oldIndex].event = newIndex === 0 ? 0 : items[newIndex-1].id;
+        items[oldIndex].event = newIndex === 0 ? 0 : items[newIndex - 1].id;
         if (items[oldIndex].eventPrev === undefined)
-          items[oldIndex].eventPrev = oldIndex === 0 ? 0 : items[oldIndex-1].id;
-        console.log({i: items[oldIndex]})
+          items[oldIndex].eventPrev = oldIndex === 0 ? 0 : items[oldIndex - 1].id;
+        console.log({ i: items[oldIndex] })
       }
       newArray = arrayMove(items || [], oldIndex, newIndex);
     } else {
@@ -83,7 +82,7 @@ const SortableList = (props: SortableListProps) => {
     newArray = newArray.map((dapp, index) => {
       if (dapp.event !== undefined && dapp.eventPrev !== undefined) {
         if (index > 0) {
-          if (newArray[index-1].id === dapp.eventPrev) {
+          if (newArray[index - 1].id === dapp.eventPrev) {
             return {
               ...dapp,
               event: undefined,
@@ -116,9 +115,9 @@ const SortableList = (props: SortableListProps) => {
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <SortableContext items={items!.map(({name}) => name)} strategy={verticalListSortingStrategy}>
-        {items?.map(({name: itemName}) => (
-          dapplets.find((dapp) => dapp.name === itemName) && 
+      <SortableContext items={items!.map(({ name }) => name)} strategy={verticalListSortingStrategy}>
+        {items?.map(({ name: itemName }) => (
+          dapplets.find((dapp) => dapp.name === itemName) &&
           <Draggable
             key={itemName}
             id={itemName}
@@ -140,7 +139,7 @@ const SortableList = (props: SortableListProps) => {
               searchQuery={searchQuery}
               trustedUsersList={trustedUsersList}
               isNotDapplet={isNotDapplet}
-            /> 
+            />
           </Draggable>
         ))}
       </SortableContext>
