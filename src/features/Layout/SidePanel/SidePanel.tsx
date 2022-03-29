@@ -228,7 +228,7 @@ const SidePanel = ({
           dappletsList={localDappletsList.slice(0, 5).map((dapplet) => ({
             title: dapplets.find(({ name }) => dapplet.name === name)?.title || '',
             type: dapplet.type,
-            id: dapplet.id.toString?.(),
+            id: String(dapplet.id),
             onClickRemove: () => removeFromLocalList(dapplet.name),
             isRemoved: true,
           }))}
