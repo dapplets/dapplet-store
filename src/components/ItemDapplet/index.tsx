@@ -1,10 +1,9 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
 
 import styles from './ItemDapplet.module.scss';
 import { DappletButton, DappletButtonTypes } from './DappletButton/DappletButton';
-// import jazzicon from '@metamask/jazzicon';
 
 import Highlighter from "react-highlight-words";
 import DappletListersPopup from '../../features/DappletListersPopup/DappletListersPopup';

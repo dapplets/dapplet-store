@@ -1,4 +1,4 @@
-import React, { DetailedHTMLProps, HTMLAttributes, useEffect, useMemo } from 'react';
+import React, { DetailedHTMLProps, HTMLAttributes, useMemo } from 'react';
 
 import { saveListToLocalStorage } from '../../../lib/localStorage';
 import DappletsListSidebar from '../../../components/DappletsListSidebar/DappletsListSidebar'
