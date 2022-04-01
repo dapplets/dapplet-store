@@ -158,13 +158,13 @@ const SidePanel = ({
 
   const dappletsStandard = useMemo(() => Object.values(dapplets), [dapplets])
 
-  useEffect(() => {
-    console.log({ myOldListing })
-  }, [myOldListing])
+  // useEffect(() => {
+  //   console.log({ myOldListing })
+  // }, [myOldListing])
 
-  useEffect(() => {
-    console.log({ myListing })
-  }, [myListing])
+  // useEffect(() => {
+  //   console.log({ myListing })
+  // }, [myListing])
 
   const pushSelectedDappletsList = async () => {
     const events: EventPushing[] = []
@@ -255,7 +255,7 @@ const SidePanel = ({
                   && dapplet.event !== undefined
                   ? DappletsListItemTypes.Moved
                   : dapplet.type,
-                id: dapplet.id.toString(),
+                id: String(dapplet.id),
                 onClickRemove: () => removeFromSelectedList(dapplet.name),
                 isRemoved: dapplet.type !== DappletsListItemTypes.Default
                   || dapplet.event !== undefined,

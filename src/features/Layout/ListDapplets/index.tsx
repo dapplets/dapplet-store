@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import { Header } from 'semantic-ui-react';
 
 import { saveListToLocalStorage } from '../../../lib/localStorage';
-
 import styles from './ListDapplets.module.scss';
 import SortableList from '../../../components/SortableList';
 import ItemDapplet from '../../../components/ItemDapplet';
@@ -18,8 +17,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import Dropdown from '../Dropdown/Dropdown';
 import Input from '../Input';
-
-
+import cn from 'classnames';
 
 const MainContentWrapper = styled.div`
   display: grid;
@@ -44,10 +42,10 @@ const CheckboxWrapper = styled.div<CheckboxWrapperProps>`
   & > div {
     width: 16px;
     height: 16px;
-    background: ${({ isTrustedSort }) => isTrustedSort ?  '#ffffff' : '#ffffff'};
+    background: ${({ isTrustedSort }) => isTrustedSort ? '#ffffff' : '#ffffff'};
     border-radius: 50%;
     margin-top: 2px;
-    border:  ${({ isTrustedSort }) => isTrustedSort ?  '5px solid #D9304F' : '1px solid #919191'};
+    border:  ${({ isTrustedSort }) => isTrustedSort ? '5px solid #D9304F' : '1px solid #919191'};
     position: relative;
   }
 `
@@ -103,8 +101,8 @@ const mapDispatch = (dispatch: RootDispatch) => ({
   setSort: (payload: Sort) => dispatch.sort.setSort(payload),
   addTrustedUser: (payload: string) => dispatch.trustedUsers.addTrustedUser(payload),
   removeTrustedUser: (payload: string) => dispatch.trustedUsers.removeTrustedUser(payload),
-  addMyDapplet: (payload: {registryUrl: string, moduleName: string}) => dispatch.myLists.addMyDapplet(payload),
-  removeMyDapplet: (payload: {registryUrl: string, moduleName: string}) => dispatch.myLists.removeMyDapplet(payload),
+  addMyDapplet: (payload: { registryUrl: string, moduleName: string }) => dispatch.myLists.addMyDapplet(payload),
+  removeMyDapplet: (payload: { registryUrl: string, moduleName: string }) => dispatch.myLists.removeMyDapplet(payload),
 });
 
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
@@ -166,8 +164,8 @@ const ListDapplets = ({
   const ref = useRef<HTMLDivElement>(null)
 
   const collator = useMemo(() => (
-    new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'})
-  ), []) 
+    new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' })
+  ), [])
 
   const editList = useMemo(() => (
     (item: IDapplet, dappletsList: MyListElement[], type: DappletsListItemTypes) => {
@@ -180,7 +178,7 @@ const ListDapplets = ({
           moduleName: item.name,
         })
       } else {
-        nowDappletsList = [{name: item.name, type, id: item.id}, ...dappletsList]
+        nowDappletsList = [{ name: item.name, type, id: item.id }, ...dappletsList]
         addMyDapplet({
           registryUrl: '',
           moduleName: item.name,
@@ -188,7 +186,7 @@ const ListDapplets = ({
       }
       const newDappletsList: MyListElement[] = nowDappletsList;
       return newDappletsList
-    } 
+    }
   ), [addMyDapplet, removeMyDapplet])
 
   const editLocalDappletsList = useMemo(() => (
@@ -203,12 +201,12 @@ const ListDapplets = ({
   const editSelectedDappletsList = useMemo(() => (
     (item: IDapplet) => {
       setOpenedList(SideLists.MyListing)
-      
+
       let nowDappletsList: MyListElement[] = selectedDapplets
       const dappletListIndex = nowDappletsList.findIndex((dapplet) => dapplet.name === item.name);
       if (dappletListIndex >= 0) {
         const nowDapplet = nowDappletsList[dappletListIndex]
-        
+
         nowDappletsList.splice(dappletListIndex, 1)
         switch (nowDapplet.type) {
           case DappletsListItemTypes.Default:
@@ -223,7 +221,7 @@ const ListDapplets = ({
             break;
         }
       } else {
-        nowDappletsList = [{name: item.name, type: DappletsListItemTypes.Adding, id: item.id}, ...nowDappletsList]
+        nowDappletsList = [{ name: item.name, type: DappletsListItemTypes.Adding, id: item.id }, ...nowDappletsList]
       }
       const newDappletsList: MyListElement[] = nowDappletsList;
       saveListToLocalStorage(newDappletsList, Lists.MyListing);
@@ -288,7 +286,7 @@ const ListDapplets = ({
   ), [editSearchQuery, setAddressFilter, setSelectedList, titleText]);
 
   const sortedDapplets = useMemo(() => {
-    let sortedList =  dapplets.sort((a, b) => {
+    let sortedList = dapplets.sort((a, b) => {
       if (selectedList) return 0;
       switch (sortType) {
         case SortTypes.ABC:
@@ -310,7 +308,7 @@ const ListDapplets = ({
         dapplet.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         dapplet.description.toLowerCase().includes(searchQuery.toLowerCase())
       ))
-    if (addressFilter !== '') 
+    if (addressFilter !== '')
       sortedList = sortedList.filter(({ trustedUsers }) => trustedUsers.includes(addressFilter))
     if (isTrustedSort && !isNotDapplet)
       sortedList = sortedList.filter(({ trustedUsers }) => trustedUsersList.some((user) => trustedUsers.includes(user)))
@@ -383,21 +381,21 @@ const ListDapplets = ({
           />
         }
         <MainContentWrapper>
-          <Input 
+          <Input
             searchQuery={searchQuery || ""}
-            editSearchQuery={(newSearchQuery: string | undefined) => setSort({ searchQuery: newSearchQuery})}
+            editSearchQuery={(newSearchQuery: string | undefined) => setSort({ searchQuery: newSearchQuery })}
           />
           {
             !selectedList &&
-            <Dropdown 
+            <Dropdown
               items={dropdownItems}
               active={sortType || SortTypes.ABC}
-              setActive={(newSortType: SortTypes) => setSort({ sortType: newSortType})}
+              setActive={(newSortType: SortTypes) => setSort({ sortType: newSortType })}
             />
           }
           {
             !isNotDapplet && !trustedUsers.includes(addressFilter || "") &&
-            <CheckboxWrapper isTrustedSort={isTrustedSort || false} onClick={() => setSort({isTrustedSort: !isTrustedSort})}>
+            <CheckboxWrapper isTrustedSort={isTrustedSort || false} onClick={() => setSort({ isTrustedSort: !isTrustedSort })}>
               <div></div>
               <span>From trusted users</span>
             </CheckboxWrapper>
@@ -405,7 +403,6 @@ const ListDapplets = ({
         </MainContentWrapper>
         {!((addressFilter !== '' || selectedList) && selectedList !== Lists.MyDapplets) && listDappletsHeader}
         {selectedList && !isLocked
-          // ? <></>
           ? <SortableList
             dapplets={sortedDapplets}
             items={chooseList[selectedList]}
@@ -424,26 +421,36 @@ const ListDapplets = ({
             isNotDapplet={isNotDapplet}
           />
           : sortedDapplets
-            .map((item, i) => (
-              <section className={styles.item} key={i}>
-                <div className={styles.itemContainer}>
-                  <ItemDapplet
-                    key={item.name}
-                    item={item}
-                    selectedDapplets={selectedDapplets}
-                    localDapplets={localDapplets}
-                    editLocalDappletsList={editLocalDappletsList}
-                    editSelectedDappletsList={editSelectedDappletsList}
-                    searchQuery={searchQuery}
-                    setAddressFilter={setAddressFilter}
-                    setOpenedList={setOpenedList}
-                    trustedUsersList={trustedUsersList}
-                    isNotDapplet={isNotDapplet}
-                  />
-                </div>
-              </section>
-            )
-          )}
+            .map((item, i) => {
+              const selected = selectedDapplets.find((d => d.id === item.id))?.type;
+              const isAdding = selected === "Adding";
+              const isRemoving = selected === "Removing";
+
+              return (
+                // All Dapplets
+                <section className={cn(styles.item, {
+                  [styles.isRemoving]: isRemoving,
+                  [styles.isAdding]: isAdding
+                })} key={i}>
+                  <div className={styles.itemContainer}>
+                    <ItemDapplet
+                      key={item.name}
+                      item={item}
+                      selectedDapplets={selectedDapplets}
+                      localDapplets={localDapplets}
+                      editLocalDappletsList={editLocalDappletsList}
+                      editSelectedDappletsList={editSelectedDappletsList}
+                      searchQuery={searchQuery}
+                      setAddressFilter={setAddressFilter}
+                      setOpenedList={setOpenedList}
+                      trustedUsersList={trustedUsersList}
+                      isNotDapplet={isNotDapplet}
+                    />
+                  </div>
+                </section>
+              )
+            }
+            )}
       </div>
     </article>
   );

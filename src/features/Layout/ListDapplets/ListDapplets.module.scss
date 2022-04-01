@@ -17,4 +17,12 @@
   border-radius: 4px;
 	background: #FFF;
   box-shadow: none;
+
+	&.isRemoving {
+    border: 1px dashed #FF6442;
+  }
+
+  &.isAdding {
+    border: 1px dashed #5EC280;
+  }
 }

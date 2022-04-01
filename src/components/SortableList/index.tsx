@@ -123,6 +123,7 @@ const SortableList = (props: SortableListProps) => {
             id={itemName}
             item={dapplets.find((dapp) => dapp.name === itemName)!}
             addressFilter={addressFilter}
+            selectedDapplets={selectedDapplets}
             activeId={activeId}
             trustedUsersList={trustedUsersList}
             isTrustedSort={isTrustedSort}

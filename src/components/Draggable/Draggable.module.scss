@@ -4,10 +4,18 @@
 
 	cursor: pointer;
 
-	border: 1px solid lightgray;
+	border: 1px solid lightgray;  
   border-radius: 0 !important;
 	background: #FFF;
   box-shadow: none;
+
+  &.isRemoving {
+    border: 1px dashed #FF6442;
+  }
+
+  &.isAdding {
+    border: 1px dashed #5EC280;
+  }
 
   &__draggable {
       cursor: pointer;

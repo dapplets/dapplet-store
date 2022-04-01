@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 
 import styles from './ItemDapplet.module.scss';
@@ -116,7 +116,6 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
     return item.trustedUsers.filter((user) => !(trustedUsersList.includes(user) || user === address))
   }, [address, item.trustedUsers, trustedUsersList])
 
-
   // const getAvatar = (loggedIn: string): HTMLDivElement => jazzicon(12, parseInt(loggedIn.slice(2, 10), 16));
   // const getAddressShort = (address: string) => address ? address.replace('0x000000000000000000000000', '0x') : ''
 
@@ -226,6 +225,8 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
 
       </div>
 
+      {/* TODO: YOU NEED TO CHECK HOW IT WORKS */}
+      {/* TODO: DappletButtonTypes.InMyDapplets : DappletButtonTypes.AddToMy */}
       <ButtonsWrapper>
         <DappletButton
           type={isLocalDapplet ? DappletButtonTypes.InMyDapplets : DappletButtonTypes.AddToMy}

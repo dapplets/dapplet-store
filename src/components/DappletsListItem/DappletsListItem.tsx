@@ -12,7 +12,7 @@ export enum DappletsListItemTypes {
   Moved = 'Moved',
 }
 
-const TitleIcon = (props: { type: DappletsListItemTypes}) => {
+const TitleIcon = (props: { type: DappletsListItemTypes }) => {
   switch (props.type) {
     case DappletsListItemTypes.Adding:
       return <DappletListItemPlus />
@@ -77,7 +77,7 @@ const DappletListItemCloseWrapper = styled.button`
   display: grid;
   align-items: center;
   cursor: pointer;
-  animation: ${({disabled}) => disabled ? rotate : ''} 2s linear infinite;
+  animation: ${({ disabled }) => disabled ? rotate : ''} 2s linear infinite;
 `
 
 export interface DappletsListItemProps {
@@ -103,22 +103,24 @@ const DappletsListItem = (props: DappletsListItemProps) => {
     }
     return props.subTitle
   }, [hovered, props.subTitle, props.title])
-  
+
   return (
-    <DappletsListItemWrapper 
-      type={props.type} 
+    <DappletsListItemWrapper
+      type={props.type}
       onClick={() => {
-        if (props.onClick) props.onClick(props.id)}
+        if (props.onClick) props.onClick(props.id)
+      }
       }
       isClickable={!!props.onClick}
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)} 
+      onMouseLeave={() => setHovered(false)}
     >
-      <TitleIcon type={props.type}/>
+      <TitleIcon type={props.type} />
       <Title type={props.type}>{title}</Title>
       {props.isRemoved && <DappletListItemCloseWrapper disabled={!!props.isPushing} onClick={props.onClickRemove()}>
-        <DappletListItemClose/>
-      </DappletListItemCloseWrapper>}
+        <DappletListItemClose />
+      </DappletListItemCloseWrapper>
+      }
     </DappletsListItemWrapper>
   )
 }

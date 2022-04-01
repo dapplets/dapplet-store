@@ -112,7 +112,6 @@ const effects = (dispatch: any) => ({
       name: Lists.MyListing,
       elements: reversedListing.reverse(),
     })
-
   },
   async getMyDapplets() {
     // console.log('dapp', window.dapplets)

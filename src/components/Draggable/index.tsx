@@ -1,22 +1,24 @@
-import React from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { CSS } from '@dnd-kit/utilities';
 import { useSortable } from '@dnd-kit/sortable';
 
 import styles from './Draggable.module.scss';
 import { DraggableProps } from './Draggable.props';
 import Item from '../SortableOverlayItem/Item';
+import cn from 'classnames';
 
 const Draggable = ({ children, ...props }: DraggableProps): React.ReactElement => {
   const {
     id,
     activeId,
     item,
+    selectedDapplets,
     addressFilter,
     trustedUsersList,
     isTrustedSort,
   } = props;
 
-  const {attributes, listeners, setNodeRef, transform, transition} = useSortable({
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id,
     transition: {
       duration: 500, // milliseconds
@@ -28,11 +30,23 @@ const Draggable = ({ children, ...props }: DraggableProps): React.ReactElement =
     transition,
     opacity: id === activeId ? .5 : 1
   };
+
+  const selectedDapplet = useMemo(() => {
+    return selectedDapplets.find((dapplet) => dapplet.name === item.name)
+  }, [item.name, selectedDapplets]);
+
+
+  const isRemoving = selectedDapplet?.id === item.id && selectedDapplet.type === "Removing";
+  const isAdding = selectedDapplet?.id === item.id && selectedDapplet.type === "Adding";
+
   if (!!addressFilter && !item.trustedUsers.includes(addressFilter)) return <></>
   if (isTrustedSort && !trustedUsersList.some((user) => item.trustedUsers.includes(user))) return <></>
   return (
     <Item
-      className={styles.item}
+      className={cn(styles.item, {
+        [styles.isRemoving]: isRemoving,
+        [styles.isAdding]: isAdding
+      })}
       style={style}
       ref={setNodeRef}
     >
