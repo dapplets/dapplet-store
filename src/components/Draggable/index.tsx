@@ -6,6 +6,7 @@ import styles from './Draggable.module.scss';
 import { DraggableProps } from './Draggable.props';
 import Item from '../SortableOverlayItem/Item';
 import cn from 'classnames';
+import { DappletsListItemTypes } from '../DappletsListItem/DappletsListItem';
 
 const Draggable = ({ children, ...props }: DraggableProps): React.ReactElement => {
   const {
@@ -36,8 +37,13 @@ const Draggable = ({ children, ...props }: DraggableProps): React.ReactElement =
   }, [item.name, selectedDapplets]);
 
 
+  const isType = selectedDapplet?.type === DappletsListItemTypes.Default
+    && selectedDapplet.event !== undefined
+    ? DappletsListItemTypes.Moved
+    : selectedDapplet?.type;
   const isRemoving = selectedDapplet?.id === item.id && selectedDapplet.type === "Removing";
   const isAdding = selectedDapplet?.id === item.id && selectedDapplet.type === "Adding";
+  const isMoved = selectedDapplet?.id === item.id && isType === "Moved";
 
   if (!!addressFilter && !item.trustedUsers.includes(addressFilter)) return <></>
   if (isTrustedSort && !trustedUsersList.some((user) => item.trustedUsers.includes(user))) return <></>
@@ -45,7 +51,8 @@ const Draggable = ({ children, ...props }: DraggableProps): React.ReactElement =
     <Item
       className={cn(styles.item, {
         [styles.isRemoving]: isRemoving,
-        [styles.isAdding]: isAdding
+        [styles.isAdding]: isAdding,
+        [styles.isMoved]: isMoved,
       })}
       style={style}
       ref={setNodeRef}

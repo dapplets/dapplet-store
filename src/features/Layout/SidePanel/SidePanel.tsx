@@ -204,7 +204,6 @@ const SidePanel = ({
       }
     })
 
-
     try {
       const dappletsNames: { [name: number]: string } = {}
 
@@ -225,13 +224,15 @@ const SidePanel = ({
     <Wrapper className={className}>
       <ListWrapper>
         <DappletsListSidebar
-          dappletsList={localDappletsList.slice(0, 5).map((dapplet) => ({
-            title: dapplets.find(({ name }) => dapplet.name === name)?.title || '',
-            type: dapplet.type,
-            id: String(dapplet.id),
-            onClickRemove: () => removeFromLocalList(dapplet.name),
-            isRemoved: true,
-          }))}
+          dappletsList={localDappletsList.slice(0, 5).map((dapplet) => {
+            return ({
+              title: dapplets.find(({ name }) => dapplet.name === name)?.title || '',
+              type: dapplet.type,
+              id: String(dapplet.id),
+              onClickRemove: () => removeFromLocalList(dapplet.name),
+              isRemoved: true,
+            })
+          })}
           title={SideLists.MyDapplets}
           onOpenList={() => {
             setSort({
@@ -245,21 +246,26 @@ const SidePanel = ({
           setIsOpen={setOpenedList}
         />
 
+        {/* My listing */}
         <DappletsListSidebar
           dappletsList={
             selectedDappletsList
               .slice(0, 5)
-              .map((dapplet) => ({
-                title: dapplets.find(({ name }) => dapplet.name === name)?.title || '',
-                type: dapplet.type === DappletsListItemTypes.Default
-                  && dapplet.event !== undefined
-                  ? DappletsListItemTypes.Moved
-                  : dapplet.type,
-                id: String(dapplet.id),
-                onClickRemove: () => removeFromSelectedList(dapplet.name),
-                isRemoved: dapplet.type !== DappletsListItemTypes.Default
-                  || dapplet.event !== undefined,
-              }))}
+              .map((dapplet) => {
+                console.log("[dapplet]", dapplet);
+
+                return ({
+                  title: dapplets.find(({ name }) => dapplet.name === name)?.title || '',
+                  type: dapplet.type === DappletsListItemTypes.Default
+                    && dapplet.event !== undefined
+                    ? DappletsListItemTypes.Moved
+                    : dapplet.type,
+                  id: String(dapplet.id),
+                  onClickRemove: () => removeFromSelectedList(dapplet.name),
+                  isRemoved: dapplet.type !== DappletsListItemTypes.Default
+                    || dapplet.event !== undefined,
+                })
+              })}
           title={SideLists.MyListing}
           isPushing={isLocked}
           onOpenList={() => {
@@ -303,26 +309,6 @@ const SidePanel = ({
           setIsOpen={setOpenedList}
         />
       </ListWrapper>
-
-      {/* <Footer>
-        <a href='https://dapplets.org/terms-conditions.html'>
-          Terms & Conditions
-        </a>
-        <a href='https://dapplets.org/privacy-policy.html'>
-          Privacy Policy
-        </a>
-        <a href='https://dapplets.org/index.html'>
-          About
-        </a>
-        <a href='https://forum.dapplets.org'>
-          Forum
-        </a>
-        <a href='https://docs.dapplets.org'>
-          Docs
-        </a>
-        <p>© 2019—2022 Dapplets Project</p>
-      </Footer> */}
-
     </Wrapper>
   );
 }

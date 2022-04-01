@@ -19,10 +19,10 @@
   box-shadow: none;
 
 	&.isRemoving {
-    border: 1px dashed #FF6442;
+    border: 2px dashed #FF6442;
   }
 
   &.isAdding {
-    border: 1px dashed #5EC280;
+    border: 2px dashed #5EC280;
   }
 }
