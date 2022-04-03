@@ -1,136 +1,148 @@
-.itemImage::before {  
-  content: "";
+.itemImage::before {
   display: block;
+
+  content: "";
 }
 
-.itemImage::after {  
-  content: "" "";
-  display: block;
+.itemImage::after {
   position: absolute;
   z-index: 2;
   top: 0;
   left: 0;
+
+  display: block;
+
   width: 100%;
   height: 100%;
+
+  content: "" "";
+
+  /* stylelint-disable-next-line function-url-quotes */
   background: no-repeat url(https://bee-0.gateway.ethswarm.org/bzz/e891ab0c03acfe168b91d3444ae66d37352db10188ad8eb898581aa132d3f014/) white;
 }
 
 .item {
-	margin: 12px 15px;
-	padding: 7px 18px !important;
+  margin: 12px 15px;
+  padding: 7px 18px !important;
 
-	cursor: pointer;
+  cursor: pointer;
 
-	border: 1px solid lightgray;
+  border: 1px solid lightgray;
   border-radius: 4px;
-	background: #FFF;
+  background: #FFF;
   box-shadow: none;
 
   &__draggable {
-      cursor: pointer;
-      /*grid-area: draggable;*/
-      width: 20px;
-      height: 20px;
-      margin: 23px 18px 0 0;
-      background: transparent url('../../images/draggable.svg')
-          center no-repeat;
-      background-size: 18px 9px;
+    /* grid-area: draggable; */
+    width: 20px;
+    height: 20px;
+    margin: 23px 18px 0 0;
 
-      @media (max-width: 900px) {
-          display: none;
-      }
+    cursor: pointer;
 
-      &:active {
-        cursor: grabbing;
-      }
+    background:
+      transparent url("../../images/draggable.svg")
+      center no-repeat;
+    background-size: 18px 9px;
+
+    &:active {
+      cursor: grabbing;
+    }
+
+    @media (max-width: 900px) {
+      display: none;
+    }
   }
 }
 
 .itemContainer {
-	display: flex;
-
-	min-width: 100%;
+  display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   justify-content: space-between;
+
+  min-width: 100%;
 }
 
 .id,
 .author {
-	margin-top: 4px;
+  margin-top: 4px;
 
-	color: #919191;
+  color: #919191;
 
-	font-size: 14px;
-	line-height: 16px;
+  font-size: 14px;
+  line-height: 16px;
 }
 
 .author {
   margin-top: 10px;
-	a {
-		color: #588CA3;
-		text-decoration-line: underline;
-	}
 
-	&:hover {
-		a {
-			text-decoration: none;
-		}
-	}
+  a {
+    color: #588CA3;
+    text-decoration-line: underline;
+  }
+
+  &:hover {
+    a {
+      text-decoration: none;
+    }
+  }
 }
 
 .id {
-	display: block;
+  display: block;
 
-	margin-top: 4px;
+  margin-top: 4px;
 }
 
 .top {
-	display: flex;
-	align-items: flex-end;
-	justify-content: space-between;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
 }
 
 .version {
-	margin-right: 50px;
+  margin-right: 50px;
 
-	color: #8C8C8C;
+  color: #8C8C8C;
 
-	font-size: 18px;
-	font-weight: 500;
-	line-height: 18px;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 18px;
 }
 
 .description {
-	max-width: 546px;
-	margin-top: 6px;
+  max-width: 546px;
+  margin-top: 6px;
 
-	color: #454545;
+  color: #454545;
 
-	font-size: 14px;
-	line-height: 16px;
+  font-size: 14px;
+  line-height: 16px;
 }
 
 .detailedTitle {
-	display: block;
+  display: block;
 
-	margin-top: 20px;
+  margin-top: 20px;
 
-	font-weight: 700;
+  font-weight: 700;
 }
 
 .button {
   display: block !important;
+
   width: 100px !important;
-  padding: 10px 0 !important;
   margin: 14px 0 0 !important;
+  padding: 10px 0 !important;
+
   border-radius: 0 !important;
 }
 
 .button.add {
   color: #57D983 !important;
-  background: none !important;
   border: 1px solid #57D983 !important;
+  background: none !important;
 
   &:hover {
     color: white !important;
@@ -139,14 +151,14 @@
 
   &:active {
     color: white !important;
-    background: #47b36b !important;
+    background: #47B36B !important;
   }
 }
 
 .button.remove {
   color: #D9304F !important;
-  background: none !important;
   border: 1px solid #D9304F !important;
+  background: none !important;
 
   &:hover {
     color: white !important;
@@ -155,22 +167,40 @@
 
   &:active {
     color: white !important;
-    background: #c42441 !important;
+    background: #C42441 !important;
   }
 }
 
 .title {
   display: flex;
-  grid-template-columns: max-content 1fr;
-  font-family: 'Montserrat', sans-serif;
-  font-style: normal;
-  font-weight: 900;
-  font-size: 16px !important;
-  line-height: 149% !important;
+
+  margin-top: 0;
+
   color: #2A2A2A !important;
-  margin-bottom: 2px !important;
+
+  font-family: Montserrat, sans-serif;
+  font-size: 16px !important;
+  font-weight: 900;
+  font-style: normal;
+  line-height: 149% !important;
+  grid-template-columns: max-content 1fr;
 }
 
 .titleUsers {
   display: flex;
+}
+
+.titleWrapper {
+  display: flex;
+  align-items: center;
+
+  margin-bottom: 2px !important;
+
+  svg {
+    margin-right: 10px;
+  }
+}
+
+.down {
+  transform: rotate(180deg);
 }

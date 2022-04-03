@@ -1,13 +1,13 @@
 * {
-	box-sizing: border-box;
-	margin: 0;
-	padding: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  font-family: 'Montserrat', sans-serif;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
+  font-family: Montserrat, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 #root {
@@ -15,23 +15,23 @@ body {
 }
 
 code {
-	font-family:
-		source-code-pro,
-		Menlo,
-		Monaco,
-		Consolas,
-		'Courier New',
-		monospace;
+  font-family:
+    source-code-pro,
+    Menlo,
+    Monaco,
+    Consolas,
+    "Courier New",
+    monospace;
 }
 
 .ui.basic.button,
 .ui.basic.buttons .message-button {
-	color: #FFF !important;
-	box-shadow: 0 0 0 1px #FFF inset;
+  color: #FFF !important;
+  box-shadow: 0 0 0 1px #FFF inset;
 }
 
 .ui[class*="left icon"].input > .app-input {
-	padding-right: 3em !important;
+  padding-right: 3em !important;
 }
 
 .ui.large.fluid.left.icon.input.Input_input__3rPb3 > button {
@@ -43,63 +43,68 @@ code {
 }
 
 .clearInput {
-  box-shadow: none !important;
   margin: 0 10px !important;
 
-	padding: 8px !important;
+  padding: 8px !important;
 
-	transform: translateY(-50%);
-  background: none !important;
-  border: none;
   cursor: pointer;
 
+  transform: translateY(-50%);
+
+  border: none;
+  background: none !important;
+  box-shadow: none !important;
+
   &:hover {
-    box-shadow: none !important;
     background: none !important;
+    box-shadow: none !important;
   }
 
-	span {
-		position: absolute;
-		top: 0;
-		left: 0;
+  span {
+    position: absolute;
+    top: 0;
+    left: 0;
 
-		display: block;
+    display: block;
 
-		width: 100%;
-		height: 100%;
+    width: 100%;
+    height: 100%;
 
-		&::before,
-		&::after {
-			position: absolute;
+    &::before,
+    &::after {
+      position: absolute;
 
-			width: 70%;
-			height: 2px;
-
-			content: '';
-      
       bottom: -3px;
+
+      width: 70%;
+      height: 2px;
+
+      content: "";
+
       background-color: #980707;
-		}
+    }
 
-		&::before {
-			transform: translate(-50%, -50%) rotate(45deg);
-		}
+    &::before {
+      transform: translate(-50%, -50%) rotate(45deg);
+    }
 
-		&::after {
-			transform: translate(-50%, -50%) rotate(-45deg);
-		}
-	}
+    &::after {
+      transform: translate(-50%, -50%) rotate(-45deg);
+    }
+  }
 }
 
 .infoTitle {
-  font-family: 'Montserrat', sans-serif !important;
-  font-size: 22px !important;
-  font-style: normal !important;
-  font-weight: 700 !important;
-  line-height: 39px !important;
-  letter-spacing: 0em !important;
   text-align: left !important;
-  color: #2a2a2a !important;
+  letter-spacing: 0 !important;
+
+  color: #2A2A2A !important;
+
+  font-family: Montserrat, sans-serif !important;
+  font-size: 22px !important;
+  font-weight: 700 !important;
+  font-style: normal !important;
+  line-height: 39px !important;
 
   &.link {
     cursor: pointer;
@@ -109,7 +114,7 @@ code {
     }
 
     &:active {
-      color: #0a0a0a !important;
+      color: #0A0A0A !important;
     }
   }
 }
@@ -120,19 +125,22 @@ h2.infoTitle {
 }
 
 .small-link {
-  background: none;
-  border: none;
   margin-left: 2rem;
+
   cursor: pointer;
-  font-family: 'Montserrat', sans-serif;
+
+  color: #2A2A2A;
+  border: none;
+  background: none;
+
+  font-family: Montserrat, sans-serif;
   font-weight: 500;
-  color: #2a2a2a;
 
   &:hover {
     color: #686868;
   }
 
   &:active {
-    color: #0a0a0a;
+    color: #0A0A0A;
   }
 }

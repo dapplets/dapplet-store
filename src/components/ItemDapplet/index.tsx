@@ -1,5 +1,7 @@
+/* eslint-disable prettier/prettier */
 import React, { useMemo } from "react";
 import styled from "styled-components";
+import { ReactComponent as DappletListItemMoved } from "../DappletsListItem/arrow-down-circle.svg";
 
 import styles from "./ItemDapplet.module.scss";
 import {
@@ -14,14 +16,17 @@ import { RootDispatch, RootState } from "../../models";
 import { Sort } from "../../models/sort";
 import { connect } from "react-redux";
 import { Modals, ModalsList } from "../../models/modals";
-import { MyListElement } from "../../models/myLists";
+import { Lists, MyListElement, myLists } from "../../models/myLists";
 import { Image } from "semantic-ui-react";
 import { useCallback } from "react";
+import { DappletsListItemTypes, TitleIcon } from "../DappletsListItem/DappletsListItem";
 
 const mapState = (state: RootState) => ({
   address: state.user.address,
   isLocked: state.user.isLocked,
   blobUrl: state.blobUrl,
+  myOldListing: state.myLists[Lists.MyOldListing],
+  myListing: state.myLists[Lists.MyListing],
 });
 
 const mapDispatch = (dispatch: RootDispatch) => ({
@@ -102,6 +107,8 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
     searchQuery,
     setSort,
     trustedUsersList,
+    myOldListing,
+    myListing,
     address,
     setModalOpen,
     setExpanded,
@@ -162,6 +169,23 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
     });
   };
 
+  const dappletIndexOverOldListing = useMemo(() => {
+    return myOldListing.findIndex((i) => i.id === item.id);
+  }, [myOldListing]);
+
+  const dappletIndexOverListing = useMemo(() => {
+    return myListing.findIndex((i) => i.id === item.id);
+  }, [myListing]);
+
+  const currentLocation = useMemo(() => {
+    if (dappletIndexOverOldListing === dappletIndexOverListing) return "";
+
+    return dappletIndexOverListing < dappletIndexOverOldListing
+      ? <DappletListItemMoved className={styles.up} />
+      : <DappletListItemMoved className={styles.down} />
+  }, [dappletIndexOverListing, dappletIndexOverOldListing]);
+
+
   if (!item) return <></>;
   return (
     <div
@@ -187,13 +211,16 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
       )}
 
       <div className={styles.left} style={{ flexGrow: 1, padding: "5px 18px" }}>
-        <h3 className={styles.title}>
-          <Highlighter
-            textToHighlight={item.title}
-            searchWords={[searchQuery || ""]}
-            highlightStyle={{ background: "#ffff00", padding: 0 }}
-          />
-        </h3>
+        <div className={styles.titleWrapper}>
+          {currentLocation}
+          <h3 className={styles.title}>
+            <Highlighter
+              textToHighlight={item.title}
+              searchWords={[searchQuery || ""]}
+              highlightStyle={{ background: "#ffff00", padding: 0 }}
+            />
+          </h3>
+        </div>
 
         {isOpen && (
           <>
@@ -217,9 +244,8 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
               <DappletListersPopup
                 trustedList={trustedList}
                 otherList={otherList}
-                text={`in ${[...trustedList, ...otherList].length} list${
-                  [...trustedList, ...otherList].length !== 1 ? "s" : ""
-                }`}
+                text={`in ${[...trustedList, ...otherList].length} list${[...trustedList, ...otherList].length !== 1 ? "s" : ""
+                  }`}
                 onClickSort={(address: string) => {
                   // console.log('hello')
                   setSort({

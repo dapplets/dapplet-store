@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, { useState, useMemo } from "react";
 import styled, { keyframes } from "styled-components";
 import { ReactComponent as DappletListItemPlus } from "../../images/dappletListItemPlus.svg";
@@ -12,7 +13,7 @@ export enum DappletsListItemTypes {
   Moved = "Moved",
 }
 
-const TitleIcon = (props: { type: DappletsListItemTypes }) => {
+export const TitleIcon = (props: { type: DappletsListItemTypes }) => {
   switch (props.type) {
     case DappletsListItemTypes.Adding:
       return <DappletListItemPlus />;
@@ -35,9 +36,9 @@ const DappletsListItemWrapper = styled.div<{
 }>`
   display: grid;
   grid-template-columns: ${({ type }) =>
-      type === DappletsListItemTypes.Default
-        ? ""
-        : "max-content"} 1fr min-content;
+    type === DappletsListItemTypes.Default
+      ? ""
+      : "max-content"} 1fr min-content;
   height: 41px;
   align-items: center;
   width: 100%;

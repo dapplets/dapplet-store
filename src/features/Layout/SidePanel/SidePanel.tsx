@@ -181,13 +181,13 @@ const SidePanel = ({
 
   const dappletsStandard = useMemo(() => Object.values(dapplets), [dapplets]);
 
-  useEffect(() => {
-    console.log("[myOldListing]", myOldListing);
-  }, [myOldListing]);
+  // useEffect(() => {
+  //   console.log("[myOldListing]", myOldListing);
+  // }, [myOldListing]);
 
-  useEffect(() => {
-    console.log("[myListing]", myListing);
-  }, [myListing]);
+  // useEffect(() => {
+  //   console.log("[myListing]", myListing);
+  // }, [myListing]);
 
   const pushSelectedDappletsList = async () => {
     const events: EventPushing[] = [];
