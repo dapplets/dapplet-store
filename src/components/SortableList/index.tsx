@@ -1,6 +1,7 @@
-import { useState, SetStateAction, useEffect } from 'react';
-import { saveListToLocalStorage } from '../../lib/localStorage';
-import styles from './SortableList.module.scss';
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+import { useState, SetStateAction, useEffect } from "react";
+import { saveListToLocalStorage } from "../../lib/localStorage";
+import styles from "./SortableList.module.scss";
 
 import {
   DndContext,
@@ -12,23 +13,21 @@ import {
   DragOverlay,
   closestCenter,
   DragStartEvent,
-} from '@dnd-kit/core';
+} from "@dnd-kit/core";
 
 import {
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
   arrayMove,
-} from '@dnd-kit/sortable';
+} from "@dnd-kit/sortable";
 
-import {
-  restrictToWindowEdges,
-} from '@dnd-kit/modifiers';
+import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 
-import { SortableListProps } from './SortableList.props';
-import Draggable from '../Draggable';
-import ItemDapplet from '../ItemDapplet';
-import { MyListElement } from '../../models/myLists';
+import { SortableListProps } from "./SortableList.props";
+import Draggable from "../Draggable";
+import ItemDapplet from "../ItemDapplet";
+import { MyListElement } from "../../models/myLists";
 
 const SortableList = (props: SortableListProps) => {
   const {
@@ -72,8 +71,9 @@ const SortableList = (props: SortableListProps) => {
       if (items) {
         items[oldIndex].event = newIndex === 0 ? 0 : items[newIndex - 1].id;
         if (items[oldIndex].eventPrev === undefined)
-          items[oldIndex].eventPrev = oldIndex === 0 ? 0 : items[oldIndex - 1].id;
-        console.log({ i: items[oldIndex], items })
+          items[oldIndex].eventPrev =
+            oldIndex === 0 ? 0 : items[oldIndex - 1].id;
+        console.log({ i: items[oldIndex], items });
       }
       newArray = arrayMove(items || [], oldIndex, newIndex);
     } else {
@@ -87,7 +87,7 @@ const SortableList = (props: SortableListProps) => {
               ...dapp,
               event: undefined,
               eventPrev: undefined,
-            }
+            };
           }
         }
         if (index === 0) {
@@ -96,12 +96,12 @@ const SortableList = (props: SortableListProps) => {
               ...dapp,
               event: undefined,
               eventPrev: undefined,
-            }
+            };
           }
         }
       }
-      return dapp
-    })
+      return dapp;
+    });
     const newDappletsList: MyListElement[] = newArray;
     setItems(newDappletsList);
     saveListToLocalStorage(newDappletsList, selectedList);
@@ -115,48 +115,51 @@ const SortableList = (props: SortableListProps) => {
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <SortableContext items={items!.map(({ name }) => name)} strategy={verticalListSortingStrategy}>
-        {items?.map(({ name: itemName }) => (
-          dapplets.find((dapp) => dapp.name === itemName) &&
-          <Draggable
-            key={itemName}
-            id={itemName}
-            item={dapplets.find((dapp) => dapp.name === itemName)!}
-            addressFilter={addressFilter}
-            selectedDapplets={selectedDapplets}
-            activeId={activeId}
-            trustedUsersList={trustedUsersList}
-            isTrustedSort={isTrustedSort}
-          >
-            <ItemDapplet
-              key={itemName}
-              item={dapplets.find((dapp) => dapp.name === itemName)!}
-              selectedDapplets={selectedDapplets}
-              localDapplets={localDapplets}
-              editLocalDappletsList={editLocalDappletsList}
-              editSelectedDappletsList={editSelectedDappletsList}
-              setAddressFilter={setAddressFilter}
-              setOpenedList={setOpenedList}
-              searchQuery={searchQuery}
-              trustedUsersList={trustedUsersList}
-              isNotDapplet={isNotDapplet}
-            />
-          </Draggable>
-        ))}
+      <SortableContext
+        items={items!.map(({ name }) => name)}
+        strategy={verticalListSortingStrategy}
+      >
+        {items?.map(
+          ({ name: itemName }) =>
+            dapplets.find((dapp) => dapp.name === itemName) && (
+              <Draggable
+                key={itemName}
+                id={itemName}
+                item={dapplets.find((dapp) => dapp.name === itemName)!}
+                addressFilter={addressFilter}
+                selectedDapplets={selectedDapplets}
+                activeId={activeId}
+                trustedUsersList={trustedUsersList}
+                isTrustedSort={isTrustedSort}
+              >
+                <ItemDapplet
+                  key={itemName}
+                  item={dapplets.find((dapp) => dapp.name === itemName)!}
+                  selectedDapplets={selectedDapplets}
+                  localDapplets={localDapplets}
+                  editLocalDappletsList={editLocalDappletsList}
+                  editSelectedDappletsList={editSelectedDappletsList}
+                  setAddressFilter={setAddressFilter}
+                  setOpenedList={setOpenedList}
+                  searchQuery={searchQuery}
+                  trustedUsersList={trustedUsersList}
+                  isNotDapplet={isNotDapplet}
+                />
+              </Draggable>
+            ),
+        )}
       </SortableContext>
       <DragOverlay
         dropAnimation={{
           duration: 500,
-          easing: 'cubic-bezier(0.18, 0.67, 0.6, 1.22)',
+          easing: "cubic-bezier(0.18, 0.67, 0.6, 1.22)",
         }}
         modifiers={[restrictToWindowEdges]}
       >
         {activeId ? (
           <section className={styles.item}>
             <div className={styles.itemContainer}>
-              <div
-                className={styles.item__draggable}
-              />
+              <div className={styles.item__draggable} />
               <ItemDapplet
                 key={dapplets.find((dapp) => dapp.name === activeId)?.name}
                 item={dapplets.find((dapp) => dapp.name === activeId)!}

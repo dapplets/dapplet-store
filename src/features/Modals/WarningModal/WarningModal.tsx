@@ -1,10 +1,10 @@
-import React, { useMemo, useState } from 'react';
-import styled from 'styled-components';
+import React, { useMemo, useState } from "react";
+import styled from "styled-components";
 
-import { ReactComponent as Cat } from './cat.svg';
-import { ReactComponent as RotateArrow } from './rotateArrow.svg';
-import { ReactComponent as XCircle } from './xCircle.svg';
-import { ReactComponent as Close } from '../close.svg';
+import { ReactComponent as Cat } from "./cat.svg";
+import { ReactComponent as RotateArrow } from "./rotateArrow.svg";
+import { ReactComponent as XCircle } from "./xCircle.svg";
+import { ReactComponent as Close } from "../close.svg";
 
 const Wrapper = styled.div`
   width: 380px;
@@ -26,8 +26,8 @@ const Wrapper = styled.div`
   background: white;
 
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15), 0px 4px 35px rgba(0, 0, 0, 0.1);
-  border-radius: 10px; 
-`
+  border-radius: 10px;
+`;
 
 const Title = styled.div`
   font-family: Montserrat;
@@ -38,16 +38,15 @@ const Title = styled.div`
   letter-spacing: 0em;
   text-align: left;
   color: #2a2a2a;
-`
+`;
 
-const SubTitle = styled.div`
-`
+const SubTitle = styled.div``;
 
 const ButtonsWrapper = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-column-gap: 10px;
-`
+`;
 
 const ButtonWrapper = styled.button`
   height: 40px;
@@ -60,7 +59,7 @@ const ButtonWrapper = styled.button`
   border-radius: 2px;
   margin-top: 10px;
   cursor: pointer;
-`
+`;
 
 const ButtonContainer = styled.div`
   display: grid;
@@ -71,17 +70,17 @@ const ButtonContainer = styled.div`
   & div {
     padding-top: 1px;
   }
-`
+`;
 
 interface ButtonProps {
-  icon: any
-  onClick: any
-  title: string
-  className?: any
+  icon: any;
+  onClick: any;
+  title: string;
+  className?: any;
   stroke?: {
-    hovered: string,
-    default: string,
-  }
+    hovered: string;
+    default: string;
+  };
 }
 
 const Button = ({
@@ -90,30 +89,30 @@ const Button = ({
   title,
   className,
   stroke = {
-    hovered: '#ffffff',
-    default: '#ffffff',
+    hovered: "#ffffff",
+    default: "#ffffff",
   },
 }: ButtonProps) => {
-  const [hovered, setHovered] = useState(false)
+  const [hovered, setHovered] = useState(false);
   const nowStroke = useMemo(() => {
-    if (hovered) return stroke?.hovered
-    return stroke.default
-  }, [hovered, stroke.default, stroke.hovered])
-  const Icon = icon
+    if (hovered) return stroke?.hovered;
+    return stroke.default;
+  }, [hovered, stroke.default, stroke.hovered]);
+  const Icon = icon;
   return (
-    <ButtonWrapper 
+    <ButtonWrapper
       onClick={onClick}
       className={className}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
       <ButtonContainer>
-        <Icon stroke={nowStroke} width={16} height={16}/>
+        <Icon stroke={nowStroke} width={16} height={16} />
         <div>{title}</div>
       </ButtonContainer>
     </ButtonWrapper>
-  )
-}
+  );
+};
 
 const ButtonCancel = styled(Button)`
   border: 1px solid #919191;
@@ -122,60 +121,63 @@ const ButtonCancel = styled(Button)`
   &:hover {
     background: #ffffff;
   }
-`
+`;
 
 const ButtonRetry = styled(Button)`
-  background: #F5CF6C;
+  background: #f5cf6c;
   color: white;
   &:hover {
-    background: #FFE299;
-    color: #D5A93B;
+    background: #ffe299;
+    color: #d5a93b;
   }
-`
+`;
 
 const CloseButton = styled.button`
   position: absolute;
   top: 14px;
   right: 14px;
   box-shadow: none;
-	outline: inherit;
+  outline: inherit;
   background: none;
   border: none;
   cursor: pointer;
-`
+`;
 
 interface WarningModalProps {
-  onClose: any
-  message?: string
-  onRetry?: any
+  onClose: any;
+  message?: string;
+  onRetry?: any;
 }
 
-const WarningModal = ({onClose, message = "Change yore network to Goerli", onRetry}: WarningModalProps) => {
-  return(
+const WarningModal = ({
+  onClose,
+  message = "Change yore network to Goerli",
+  onRetry,
+}: WarningModalProps) => {
+  return (
     <Wrapper>
-      <CloseButton onClick={onClose}><Close /></CloseButton>
+      <CloseButton onClick={onClose}>
+        <Close />
+      </CloseButton>
       <Title>Oooops!</Title>
       <SubTitle>{message}</SubTitle>
       <Cat />
       <ButtonsWrapper>
-        <ButtonCancel
-          icon={XCircle}
-          onClick={onClose}
-          title='Close'
-        />
-        {
-          onRetry && <ButtonRetry
+        <ButtonCancel icon={XCircle} onClick={onClose} title="Close" />
+        {onRetry && (
+          <ButtonRetry
             icon={RotateArrow}
             onClick={onRetry}
-            title='Retry'
+            title="Retry"
             stroke={{
-              hovered: '#D5A93B',
-              default: '#FFFFFF',
+              hovered: "#D5A93B",
+              default: "#FFFFFF",
             }}
           />
-        }
+        )}
       </ButtonsWrapper>
     </Wrapper>
-)}
+  );
+};
 
-export default WarningModal
+export default WarningModal;

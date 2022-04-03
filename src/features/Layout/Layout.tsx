@@ -1,20 +1,20 @@
-import React, { useMemo } from 'react';
-import { IDapplet } from '../../models/dapplets';
-import Header from './Header/Header';
-import Overlay from './Overlay/Overlay';
-import SidePanel from './SidePanel/SidePanel';
+import React, { useMemo } from "react";
+import { IDapplet } from "../../models/dapplets";
+import Header from "./Header/Header";
+import Overlay from "./Overlay/Overlay";
+import SidePanel from "./SidePanel/SidePanel";
 
-import styled from 'styled-components';
-import ListDapplets from './ListDapplets';
-import { Sort, SortTypes } from '../../models/sort';
-import { RootDispatch, RootState } from '../../models';
-import { connect } from 'react-redux';
-import { Lists, MyListElement } from '../../models/myLists';
-import { Modals } from '../../models/modals';
+import styled from "styled-components";
+import ListDapplets from "./ListDapplets";
+import { Sort, SortTypes } from "../../models/sort";
+import { RootDispatch, RootState } from "../../models";
+import { connect } from "react-redux";
+import { Lists, MyListElement } from "../../models/myLists";
+import { Modals } from "../../models/modals";
 
 interface WrapperProps {
-  isSmall: boolean
-  isNotDapplet: boolean
+  isSmall: boolean;
+  isNotDapplet: boolean;
 }
 
 const Wrapper = styled.div<WrapperProps>`
@@ -22,33 +22,35 @@ const Wrapper = styled.div<WrapperProps>`
 
   height: 100%;
 
-  grid-template-columns: 430px 1fr ${({ isNotDapplet }) => isNotDapplet ? `430px` : "0"};
+  grid-template-columns: 430px 1fr ${({ isNotDapplet }) =>
+      isNotDapplet ? `430px` : "0"};
   grid-template-rows: 51px 1fr;
 
   grid-template-areas:
     "header header header"
-    ${({ isSmall }) => `"sidePanel content ${isSmall ? 'content' : 'overlay'}"`};
-`
+    ${({ isSmall }) =>
+      `"sidePanel content ${isSmall ? "content" : "overlay"}"`};
+`;
 
 const StyledHeader = styled(Header)`
   grid-area: header;
-`
+`;
 
 const StyledSidePanel = styled(SidePanel)`
-  background-color: #F5F5F5;
-	grid-area: sidePanel;
-`
+  background-color: #f5f5f5;
+  grid-area: sidePanel;
+`;
 
 const MainContent = styled.main`
-	grid-area: content;
+  grid-area: content;
 
   padding: 0 !important;
   width: 100%;
-`
+`;
 
 const StyledOverlay = styled(Overlay)`
   grid-area: overlay;
-`
+`;
 
 const mapState = (state: RootState) => ({
   dapplets: Object.values(state.dapplets),
@@ -65,8 +67,10 @@ const mapState = (state: RootState) => ({
 const mapDispatch = (dispatch: RootDispatch) => ({
   setModalOpen: (payload: Modals) => dispatch.modals.setModalOpen(payload),
   setSort: (payload: Sort) => dispatch.sort.setSort(payload),
-  setTrustedUsers: (payload: string[]) => dispatch.trustedUsers.setTrustedUsers(payload),
-  setMyList: (payload: { name: Lists, elements: MyListElement[] }) => dispatch.myLists.setMyList(payload),
+  setTrustedUsers: (payload: string[]) =>
+    dispatch.trustedUsers.setTrustedUsers(payload),
+  setMyList: (payload: { name: Lists; elements: MyListElement[] }) =>
+    dispatch.myLists.setMyList(payload),
 });
 
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
@@ -79,14 +83,14 @@ type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
 // }
 
 export interface LayoutProps {
-  selectedList?: Lists
-  setSelectedList: any
-  trustedUsersList: string[]
-  setAddressFilter: any
-  openedList: any
-  setOpenedList: any
-  windowWidth: number
-  isNotDapplet: boolean
+  selectedList?: Lists;
+  setSelectedList: any;
+  trustedUsersList: string[];
+  setAddressFilter: any;
+  openedList: any;
+  setOpenedList: any;
+  windowWidth: number;
+  isNotDapplet: boolean;
 }
 
 const Layout = ({
@@ -115,16 +119,18 @@ const Layout = ({
 }: LayoutProps & Props): React.ReactElement<LayoutProps> => {
   // console.log({isNotDapplet})
 
-  const localDappletsList = myLists[Lists.MyDapplets]
-  const setLocalDappletsList = (elements: MyListElement[]) => setMyList({
-    name: Lists.MyDapplets,
-    elements,
-  })
-  const selectedDappletsList = myLists[Lists.MyListing]
-  const setSelectedDappletsList = (elements: MyListElement[]) => setMyList({
-    name: Lists.MyListing,
-    elements,
-  })
+  const localDappletsList = myLists[Lists.MyDapplets];
+  const setLocalDappletsList = (elements: MyListElement[]) =>
+    setMyList({
+      name: Lists.MyDapplets,
+      elements,
+    });
+  const selectedDappletsList = myLists[Lists.MyListing];
+  const setSelectedDappletsList = (elements: MyListElement[]) =>
+    setMyList({
+      name: Lists.MyListing,
+      elements,
+    });
 
   const dappletsByList = useMemo(() => {
     if (!dapplets || !selectedList) return dapplets;
@@ -132,15 +138,11 @@ const Layout = ({
     return dapps
       .map((dapplet) => dapplets.find((dapp) => dapp.name === dapplet.name))
       .filter((dapp): dapp is IDapplet => !!dapp);
-
-  }, [dapplets, myLists, selectedList])
+  }, [dapplets, myLists, selectedList]);
 
   return (
     <Wrapper isSmall={windowWidth <= 1500} isNotDapplet={isNotDapplet}>
-      <StyledHeader
-        selectedList={selectedList}
-        isNotDapplet={isNotDapplet}
-      />
+      <StyledHeader selectedList={selectedList} isNotDapplet={isNotDapplet} />
       <StyledSidePanel
         localDappletsList={localDappletsList}
         setLocalDappletsList={setLocalDappletsList}
@@ -155,37 +157,43 @@ const Layout = ({
       />
 
       <MainContent>
-        {dappletsByList && <ListDapplets
-          dapplets={dappletsByList}
-          selectedDapplets={selectedDappletsList}
-          setSelectedDapplets={setSelectedDappletsList}
-          localDapplets={localDappletsList}
-          setLocalDapplets={setLocalDappletsList}
-          selectedList={selectedList}
-          setSelectedList={(newSelectedList: Lists | undefined) => setSort({ selectedList: newSelectedList, searchQuery: "" })}
-          sortType={sortType || SortTypes.ABC}
-          searchQuery={searchQuery || ""}
-          editSearchQuery={(newtSearchQuery: string) => setSort({ searchQuery: newtSearchQuery })}
-          addressFilter={addressFilter || ""}
-          setAddressFilter={(newAddressFilter: string) => setSort({ addressFilter: newAddressFilter })}
-          trustedUsersList={trustedUsers}
-          setTrustedUsersList={setTrustedUsers}
-          isTrustedSort={isTrustedSort || false}
-          setOpenedList={setOpenedList}
-          address={address || ""}
-          trigger={trigger || false}
-          isNotDapplet={isNotDapplet}
-          setModalOpen={setModalOpen}
-        />}
+        {dappletsByList && (
+          <ListDapplets
+            dapplets={dappletsByList}
+            selectedDapplets={selectedDappletsList}
+            setSelectedDapplets={setSelectedDappletsList}
+            localDapplets={localDappletsList}
+            setLocalDapplets={setLocalDappletsList}
+            selectedList={selectedList}
+            setSelectedList={(newSelectedList: Lists | undefined) =>
+              setSort({ selectedList: newSelectedList, searchQuery: "" })
+            }
+            sortType={sortType || SortTypes.ABC}
+            searchQuery={searchQuery || ""}
+            editSearchQuery={(newtSearchQuery: string) =>
+              setSort({ searchQuery: newtSearchQuery })
+            }
+            addressFilter={addressFilter || ""}
+            setAddressFilter={(newAddressFilter: string) =>
+              setSort({ addressFilter: newAddressFilter })
+            }
+            trustedUsersList={trustedUsers}
+            setTrustedUsersList={setTrustedUsers}
+            isTrustedSort={isTrustedSort || false}
+            setOpenedList={setOpenedList}
+            address={address || ""}
+            trigger={trigger || false}
+            isNotDapplet={isNotDapplet}
+            setModalOpen={setModalOpen}
+          />
+        )}
       </MainContent>
 
-      {
-        isNotDapplet && windowWidth > 1500 && (
-          <StyledOverlay isNotDapplet={isNotDapplet} />
-        )
-      }
+      {isNotDapplet && windowWidth > 1500 && (
+        <StyledOverlay isNotDapplet={isNotDapplet} />
+      )}
     </Wrapper>
   );
-}
+};
 
 export default connect(mapState, mapDispatch)(Layout);

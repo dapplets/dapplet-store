@@ -13,7 +13,7 @@ export const ActivatorButton = styled.button`
   background-color: inherit;
   border: 1px solid transparent;
   border-radius: 4px;
-  border-color: #E3E3E3;
+  border-color: #e3e3e3;
   color: inherit;
   display: flex;
   font-size: inherit;
@@ -29,7 +29,6 @@ export const ActivatorButton = styled.button`
   letter-spacing: 0em;
   text-align: left;
 
-
   &:after {
     content: "";
     border-bottom: 1px solid #000;
@@ -44,23 +43,24 @@ export const ActivatorButton = styled.button`
 export const DropdownList = styled.ul<{ active: boolean }>`
   background-color: white;
   color: black;
-  display: ${props => (props.active ? "grid" : "none")};
+  display: ${(props) => (props.active ? "grid" : "none")};
   margin: 0;
   min-width: 160px;
   padding: 0 10px;
   position: absolute;
   right: 0;
-  border: 1px solid #E3E3E3;
+  border: 1px solid #e3e3e3;
   border-radius: 8px;
   box-sizing: border-box;
-  box-shadow: 0px 3px 4px rgba(0, 0, 0, 0.09), 0px 10px 8px rgba(38, 117, 209, 0.04);
+  box-shadow: 0px 3px 4px rgba(0, 0, 0, 0.09),
+    0px 10px 8px rgba(38, 117, 209, 0.04);
   & li {
     list-style: none;
     margin: 0;
     padding: 10px 8px;
     background: white;
     cursor: pointer;
-    
+
     font-family: Montserrat;
     font-size: 14px;
     font-style: normal;
@@ -81,39 +81,35 @@ interface IDropdownItem {
 }
 
 interface IProps {
-  active: string
-  items: IDropdownItem[]
-  setActive: any
+  active: string;
+  items: IDropdownItem[];
+  setActive: any;
 }
 
 const dropdownItems = [
   {
     id: 1,
     onClick: "myLink",
-    text: "option"
+    text: "option",
   },
   {
     id: 2,
     onClick: "myLink2",
-    text: "option2"
+    text: "option2",
   },
   {
     id: 3,
     onClick: "myLink3",
-    text: "option3"
+    text: "option3",
   },
   {
     id: 4,
     onClick: "myLink4",
-    text: "option4"
-  }
+    text: "option4",
+  },
 ];
 
-const Dropdown = ({
-  active,
-  setActive,
-  items = dropdownItems,
-}: IProps) => {
+const Dropdown = ({ active, setActive, items = dropdownItems }: IProps) => {
   const activatorRef = React.useRef<HTMLButtonElement | null>(null);
   const listRef = React.useRef<HTMLUListElement | null>(null);
   const [isOpen, setIsOpen] = React.useState(false);
@@ -123,17 +119,17 @@ const Dropdown = ({
   };
 
   const currentText = useMemo(() => {
-    const item = items.find(({ text }) => text === active)
+    const item = items.find(({ text }) => text === active);
     if (item) {
-      return item.text
+      return item.text;
     }
-    return 'TITLE'
-  }, [active, items])
+    return "TITLE";
+  }, [active, items]);
 
   const handleClickOutside = (event: any) => {
     if (
-      listRef.current!.contains(event.target) ||
-      activatorRef.current!.contains(event.target)
+      listRef.current?.contains(event.target) ||
+      activatorRef.current?.contains(event.target)
     ) {
       return;
     }
@@ -167,10 +163,13 @@ const Dropdown = ({
       </ActivatorButton>
       <DropdownList id="dropdown1" ref={listRef} active={isOpen} role="list">
         {items.map((item, index) => (
-          <li key={item.text} onClick={() => {
-            focusHandler(item.text)
-            setIsOpen(false)
-          }}>
+          <li
+            key={item.text}
+            onClick={() => {
+              focusHandler(item.text);
+              setIsOpen(false);
+            }}
+          >
             {item.text}
           </li>
         ))}

@@ -3,22 +3,22 @@ import { getAnchorParams, setAnchorParams } from "../lib/anchorLink";
 import { Lists } from "./myLists";
 
 export enum SortTypes {
-  ABC = 'Sort A-Z',
-  ABCReverse = 'Sort Z-A',
-  Newest = 'Sort by newest',
-  Oldest = 'Sort by oldest',
+  ABC = "Sort A-Z",
+  ABCReverse = "Sort Z-A",
+  Newest = "Sort by newest",
+  Oldest = "Sort by oldest",
 }
 
 export interface Sort {
-  sortType?: SortTypes
-  addressFilter?: string
-  searchQuery?: string
-  selectedList?: Lists
-  isTrustedSort?: boolean
-  trigger?: boolean
+  sortType?: SortTypes;
+  addressFilter?: string;
+  searchQuery?: string;
+  selectedList?: Lists;
+  isTrustedSort?: boolean;
+  trigger?: boolean;
 }
 
-type SortState = Readonly<Sort>
+type SortState = Readonly<Sort>;
 export const INITIAL_STATE: SortState = {
   sortType: SortTypes.ABC,
   addressFilter: "",
@@ -32,23 +32,23 @@ const reducers = {
     const newSort = {
       ...state,
       ...payload,
-    }
+    };
     // console.log({state, newSort, b: state === newSort})
-    setAnchorParams(newSort)
-    return newSort
+    setAnchorParams(newSort);
+    return newSort;
   },
-}
+};
 
 const effects = (dispatch: any) => ({
-  getSort: (address: string = '') => {
-    const params = getAnchorParams(address)
-    if (!params) return
-    dispatch.sort.setSort(params)
+  getSort: (address = "") => {
+    const params = getAnchorParams(address);
+    if (!params) return;
+    dispatch.sort.setSort(params);
   },
-})
+});
 
 export const sort = createModel()({
-  name: 'sort',
+  name: "sort",
   state: INITIAL_STATE,
   reducers,
   effects,

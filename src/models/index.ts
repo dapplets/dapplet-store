@@ -1,11 +1,11 @@
-import { init, RematchRootState } from '@rematch/core';
+import { init, RematchRootState } from "@rematch/core";
 import { dapplets } from "./dapplets";
-import { ensNames } from './ensNames';
-import { modals } from './modals';
-import { myLists } from './myLists';
-import { sort } from './sort';
-import { trustedUsers } from './trustedUsers';
-import { user } from './user';
+import { ensNames } from "./ensNames";
+import { modals } from "./modals";
+import { myLists } from "./myLists";
+import { sort } from "./sort";
+import { trustedUsers } from "./trustedUsers";
+import { user } from "./user";
 
 const models = {
   dapplets,

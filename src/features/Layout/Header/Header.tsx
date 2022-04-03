@@ -1,30 +1,36 @@
-import React, { DetailedHTMLProps, FC, HTMLAttributes, useEffect, useMemo, useRef } from 'react';
-import styled from 'styled-components';
-import STORE_LOGO from '../../../images/StoreLogo.svg';
-import jazzicon from '@metamask/jazzicon';
+import React, {
+  DetailedHTMLProps,
+  FC,
+  HTMLAttributes,
+  useEffect,
+  useMemo,
+  useRef,
+} from "react";
+import styled from "styled-components";
+import STORE_LOGO from "../../../images/StoreLogo.svg";
+import jazzicon from "@metamask/jazzicon";
 import { RootState, RootDispatch } from "../../../models";
-import { INITIAL_STATE, Sort } from '../../../models/sort';
+import { INITIAL_STATE, Sort } from "../../../models/sort";
 
-import { ReactComponent as GitHub } from './github.svg'
-import { ReactComponent as Discord } from './discord.svg'
-import { ReactComponent as TG } from './tg.svg'
-import { ReactComponent as Twitter } from './twitter.svg'
+import { ReactComponent as GitHub } from "./github.svg";
+import { ReactComponent as Discord } from "./discord.svg";
+import { ReactComponent as TG } from "./tg.svg";
+import { ReactComponent as Twitter } from "./twitter.svg";
 
-import { connect } from 'react-redux';
-import { Modals, ModalsList } from '../../../models/modals';
-import { Lists } from '../../../models/myLists';
+import { connect } from "react-redux";
+import { Modals, ModalsList } from "../../../models/modals";
+import { Lists } from "../../../models/myLists";
 
 const Wrapper = styled.header`
   position: fixed;
   align-items: center;
-  border-bottom: 1px solid #E3E3E3;
+  border-bottom: 1px solid #e3e3e3;
   background: white;
   width: 100%;
   z-index: 9999;
-  box-shadow: 0px 10px 8px 0px #2675D10A;
+  box-shadow: 0px 10px 8px 0px #2675d10a;
   box-shadow: 0px 3px 4px 0px #00000017;
-
-`
+`;
 
 const HeaderTop = styled.div`
   display: grid;
@@ -35,12 +41,12 @@ const HeaderTop = styled.div`
   width: 100%;
   height: 50px;
   z-index: 9999;
-`
+`;
 
 const Menu = styled.div`
   display: flex;
   justify-self: end;
-`
+`;
 
 const Avatar = styled.div`
   border-radius: 50%;
@@ -49,16 +55,16 @@ const Avatar = styled.div`
   width: 30px;
   height: 30px;
   cursor: pointer;
-`
+`;
 
 const ItemMain = styled.div`
   position: relative;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   font-style: normal;
   font-weight: normal !important;
   font-size: 16px;
   line-height: 149% !important;
-  color: #2A2A2A !important;
+  color: #2a2a2a !important;
   min-width: 100px;
   text-align: center;
   cursor: pointer;
@@ -70,12 +76,12 @@ const ItemMain = styled.div`
     left: 50%;
     width: 0;
     height: 4px;
-    content: '';
+    content: "";
     transform: translateX(-50%);
     background-color: #d9304f;
-    transition: all .2s cubic-bezier(.24,.22,.015,1.56);
+    transition: all 0.2s cubic-bezier(0.24, 0.22, 0.015, 1.56);
   }
-`
+`;
 
 // interface ItemProps {
 //   isActive: boolean
@@ -105,7 +111,7 @@ const HeaderTopItem = styled(ItemMain)`
     right: 0;
     width: 1px;
     height: 20px;
-    content: '';
+    content: "";
     background-color: #e3e3e3;
   }
 
@@ -113,7 +119,7 @@ const HeaderTopItem = styled(ItemMain)`
     color: #d9304f !important;
     text-decoration: underline;
   }
-`
+`;
 
 const ButtonItem = styled.a`
   margin-left: 20px;
@@ -122,7 +128,7 @@ const ButtonItem = styled.a`
   &:hover svg {
     fill: #d9304f;
   }
-`
+`;
 
 const HeaderLogo = styled.div`
   display: block;
@@ -140,7 +146,7 @@ const HeaderLogo = styled.div`
       width: 212px;
     }
   }
-`
+`;
 
 const mapState = (state: RootState) => ({
   address: state.user.address,
@@ -154,7 +160,7 @@ const mapDispatch = (dispatch: RootDispatch) => ({
 
 const Login = styled.button`
   box-shadow: none;
-	outline: inherit;
+  outline: inherit;
   border: none;
   border-radius: 4px;
   display: grid;
@@ -168,7 +174,7 @@ const Login = styled.button`
   letter-spacing: 0em;
   text-align: center;
   color: white;
-  background: #D9304F;
+  background: #d9304f;
 
   margin: 0 20px;
 
@@ -176,14 +182,14 @@ const Login = styled.button`
   height: 32px;
 
   &:hover {
-    background: #F26680;
+    background: #f26680;
   }
-`
+`;
 
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
 
 interface VanillaChildrenProps {
-  children: HTMLElement | HTMLDivElement
+  children: HTMLElement | HTMLDivElement;
 }
 
 const VanillaChildren = ({ children }: VanillaChildrenProps): JSX.Element => {
@@ -197,10 +203,16 @@ const VanillaChildren = ({ children }: VanillaChildrenProps): JSX.Element => {
   }, [children, ref]);
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} ref={ref} />
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+      ref={ref}
+    />
   );
 };
-
 
 // const MENU = [
 // 	{ id: 0, label: 'Home' },
@@ -210,17 +222,18 @@ const VanillaChildren = ({ children }: VanillaChildrenProps): JSX.Element => {
 // ];
 
 const MENU2 = [
-  { id: 0, label: 'Developers', href: 'https://dapplets.org/index.html' },
-  { id: 1, label: 'Join Us', href: 'https://dapplets.org/index.html' },
-  { id: 2, label: 'Blog', href: 'https://dapplets.org/index.html' },
-  { id: 3, label: 'About', href: 'https://dapplets.org/index.html' },
-  { id: 4, label: 'Docs', href: 'https://docs.dapplets.org' },
-  { id: 5, label: 'Forum', href: 'https://forum.dapplets.org' },
+  { id: 0, label: "Developers", href: "https://dapplets.org/index.html" },
+  { id: 1, label: "Join Us", href: "https://dapplets.org/index.html" },
+  { id: 2, label: "Blog", href: "https://dapplets.org/index.html" },
+  { id: 3, label: "About", href: "https://dapplets.org/index.html" },
+  { id: 4, label: "Docs", href: "https://docs.dapplets.org" },
+  { id: 5, label: "Forum", href: "https://forum.dapplets.org" },
 ];
 
-interface HeaderProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
-  selectedList?: Lists
-  isNotDapplet: boolean
+interface HeaderProps
+  extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+  selectedList?: Lists;
+  isNotDapplet: boolean;
 }
 
 const Header: FC<HeaderProps & Props> = ({
@@ -234,8 +247,12 @@ const Header: FC<HeaderProps & Props> = ({
   trigger,
 }): React.ReactElement => {
   // const [active, setActive] = useState<number>(MENU[0].id);
-  const getAvatar = (loggedIn: string): HTMLDivElement => jazzicon(30, parseInt(loggedIn.slice(2, 10), 16));
-  const addressShort = useMemo(() => address ? address.replace('0x000000000000000000000000', '0x') : '', [address])
+  const getAvatar = (loggedIn: string): HTMLDivElement =>
+    jazzicon(30, parseInt(loggedIn.slice(2, 10), 16));
+  const addressShort = useMemo(
+    () => (address ? address.replace("0x000000000000000000000000", "0x") : ""),
+    [address],
+  );
 
   // function handleItemClick(id: number): void {
   //   switch (id) {
@@ -286,92 +303,72 @@ const Header: FC<HeaderProps & Props> = ({
 
   return (
     <Wrapper className={className}>
-      <HeaderTop style={{ background: '#F5F5F5' }}>
+      <HeaderTop style={{ background: "#F5F5F5" }}>
         <HeaderLogo>
-          <button onClick={() => {
-            setSort({
-              ...INITIAL_STATE,
-              trigger: !trigger,
-            });
-          }}>
-            <img src={STORE_LOGO} alt='logo' />
+          <button
+            onClick={() => {
+              setSort({
+                ...INITIAL_STATE,
+                trigger: !trigger,
+              });
+            }}
+          >
+            <img src={STORE_LOGO} alt="logo" />
           </button>
         </HeaderLogo>
 
         <Menu>
-          {
-            MENU2.map(({ id, label, href }) => {
-              if (href) {
-                return (
-                  <a
-                    key={id}
-                    href={href}
-                  >
-                    <HeaderTopItem>
-                      {label}
-                    </HeaderTopItem>
-                  </a>
-
-                )
-              }
+          {MENU2.map(({ id, label, href }) => {
+            if (href) {
               return (
-                <HeaderTopItem key={id}>
-                  {label}
-                </HeaderTopItem>
+                <a key={id} href={href}>
+                  <HeaderTopItem>{label}</HeaderTopItem>
+                </a>
               );
-            })
-          }
+            }
+            return <HeaderTopItem key={id}>{label}</HeaderTopItem>;
+          })}
         </Menu>
 
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-        }}>
-          <ButtonItem
-            href="https://github.com/dapplets"
-          >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <ButtonItem href="https://github.com/dapplets">
             <GitHub />
           </ButtonItem>
-          <ButtonItem
-            href="https://discord.com/invite/YcxbkcyjMV"
-          >
+          <ButtonItem href="https://discord.com/invite/YcxbkcyjMV">
             <Discord />
           </ButtonItem>
-          <ButtonItem
-            href="https://t.me/dapplets"
-          >
+          <ButtonItem href="https://t.me/dapplets">
             <TG />
           </ButtonItem>
-          <ButtonItem
-            href="https://twitter.com/dappletsproject"
-          >
+          <ButtonItem href="https://twitter.com/dappletsproject">
             <Twitter />
           </ButtonItem>
-          {
-            address ?
-              <Avatar
-                onClick={() => {
-                  setModalOpen({ openedModal: ModalsList.User, settings: null })
-                }}
-              >
-                <VanillaChildren>{getAvatar(addressShort)}</VanillaChildren>
-              </Avatar>
-              :
-              <Login
-                onClick={() => {
-                  setModalOpen({ openedModal: ModalsList.Login, settings: null })
-                }}
-              >
-                login
-              </Login>
-          }
+          {address ? (
+            <Avatar
+              onClick={() => {
+                setModalOpen({ openedModal: ModalsList.User, settings: null });
+              }}
+            >
+              <VanillaChildren>{getAvatar(addressShort)}</VanillaChildren>
+            </Avatar>
+          ) : (
+            <Login
+              onClick={() => {
+                setModalOpen({ openedModal: ModalsList.Login, settings: null });
+              }}
+            >
+              login
+            </Login>
+          )}
         </div>
-
       </HeaderTop>
-
-
     </Wrapper>
   );
-}
+};
 
 export default connect(mapState, mapDispatch)(Header);
