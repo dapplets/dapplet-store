@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, { useMemo } from "react";
 import { IDapplet } from "../../models/dapplets";
 import Header from "./Header/Header";
@@ -23,13 +24,13 @@ const Wrapper = styled.div<WrapperProps>`
   height: 100%;
 
   grid-template-columns: 430px 1fr ${({ isNotDapplet }) =>
-      isNotDapplet ? `430px` : "0"};
+    isNotDapplet ? `430px` : "0"};
   grid-template-rows: 51px 1fr;
 
   grid-template-areas:
     "header header header"
     ${({ isSmall }) =>
-      `"sidePanel content ${isSmall ? "content" : "overlay"}"`};
+    `"sidePanel content ${isSmall ? "content" : "overlay"}"`};
 `;
 
 const StyledHeader = styled(Header)`
@@ -74,13 +75,6 @@ const mapDispatch = (dispatch: RootDispatch) => ({
 });
 
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
-
-// const NoneOfTrustedSort = ({setSort}: {setSort: any}) => {
-//   useEffect(() => {
-//     setSort({isTrustedSort: false})
-//   }, [setSort])
-//   return <></>
-// }
 
 export interface LayoutProps {
   selectedList?: Lists;

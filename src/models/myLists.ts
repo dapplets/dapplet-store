@@ -120,7 +120,7 @@ const effects = (dispatch: any) => ({
         return dapp;
       })
       .filter((dapp: MyListElement) => !!dapp.name);
-    // console.log('start', req, dappletsNames, listing)
+    // console.log("start", req, dappletsNames, listing);
     dispatch.myLists.setMyList({
       name: Lists.MyOldListing,
       elements: listing,

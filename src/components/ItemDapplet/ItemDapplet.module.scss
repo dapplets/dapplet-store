@@ -193,11 +193,23 @@
 .titleWrapper {
   display: flex;
   align-items: center;
+}
 
+.order {
+  display: flex;
+  align-items: center;
+
+  margin-right: 10px;
   margin-bottom: 2px !important;
 
+  color: #5AB5E8;
+
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 149%;
+
   svg {
-    margin-right: 10px;
+    margin-right: 2px;
   }
 }
 

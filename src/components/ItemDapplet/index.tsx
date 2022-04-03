@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import styled from "styled-components";
 import { ReactComponent as DappletListItemMoved } from "../DappletsListItem/arrow-down-circle.svg";
 
@@ -36,6 +36,8 @@ const mapDispatch = (dispatch: RootDispatch) => ({
     dispatch.dapplets.setExpanded(payload),
   setBlobUrl: (payload: { id: number; blobUrl: string }) =>
     dispatch.blobUrl.setBlobUrl(payload),
+  setMyList: (payload: { name: Lists; elements: MyListElement[] }) =>
+    dispatch.myLists.setMyList(payload),
 });
 
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
@@ -71,12 +73,6 @@ const Line = styled.div`
   background: #e3e3e3;
   margin-top: 10px;
 `;
-
-// const UnderUserInfoSeparator = styled.div`
-//   width: 2px;
-//   height: 100%;
-//   background-color: #E3E3E3;
-// `
 
 const ButtonsWrapper = styled.div`
   display: grid;
@@ -129,9 +125,6 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
     );
   }, [address, item.trustedUsers, trustedUsersList]);
 
-  // const getAvatar = (loggedIn: string): HTMLDivElement => jazzicon(12, parseInt(loggedIn.slice(2, 10), 16));
-  // const getAddressShort = (address: string) => address ? address.replace('0x000000000000000000000000', '0x') : ''
-
   const isLocalDapplet = useMemo(
     () => localDapplets.some((dapplet) => dapplet.name === item.name),
     [item.name, localDapplets],
@@ -171,19 +164,34 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
 
   const dappletIndexOverOldListing = useMemo(() => {
     return myOldListing.findIndex((i) => i.id === item.id);
-  }, [myOldListing]);
+  }, [myOldListing, editLocalDappletsList, editSelectedDappletsList]);
 
   const dappletIndexOverListing = useMemo(() => {
     return myListing.findIndex((i) => i.id === item.id);
-  }, [myListing]);
+  }, [myListing, editLocalDappletsList, editSelectedDappletsList]);
 
   const currentLocation = useMemo(() => {
     if (dappletIndexOverOldListing === dappletIndexOverListing) return "";
 
-    return dappletIndexOverListing < dappletIndexOverOldListing
-      ? <DappletListItemMoved className={styles.up} />
-      : <DappletListItemMoved className={styles.down} />
-  }, [dappletIndexOverListing, dappletIndexOverOldListing]);
+    return <span className={styles.order}>
+      {
+        dappletIndexOverListing < dappletIndexOverOldListing
+          ? (
+            <>
+              <DappletListItemMoved className={styles.up} />
+              {dappletIndexOverOldListing - dappletIndexOverListing}
+            </>
+          )
+          : (
+            <>
+              <DappletListItemMoved className={styles.down} />
+              {dappletIndexOverListing - dappletIndexOverOldListing}
+            </>
+          )
+      }
+
+    </span>
+  }, [dappletIndexOverListing, dappletIndexOverOldListing, editLocalDappletsList, editSelectedDappletsList]);
 
 
   if (!item) return <></>;
@@ -339,4 +347,4 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
   );
 };
 
-export default connect(mapState, mapDispatch)(React.memo(ItemDapplet));
+export default connect(mapState, mapDispatch)(ItemDapplet);

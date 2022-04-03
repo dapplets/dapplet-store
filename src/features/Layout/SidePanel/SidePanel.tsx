@@ -181,14 +181,6 @@ const SidePanel = ({
 
   const dappletsStandard = useMemo(() => Object.values(dapplets), [dapplets]);
 
-  // useEffect(() => {
-  //   console.log("[myOldListing]", myOldListing);
-  // }, [myOldListing]);
-
-  // useEffect(() => {
-  //   console.log("[myListing]", myListing);
-  // }, [myListing]);
-
   const pushSelectedDappletsList = async () => {
     const events: EventPushing[] = [];
     const nowDappletsList: MyListElement[] = selectedDappletsList.filter(
@@ -213,11 +205,6 @@ const SidePanel = ({
         return type !== DappletsListItemTypes.Removing;
       },
     );
-
-    // const listingOld = {}
-    // myOldListing.forEach((dapp) => {
-
-    // })
 
     myListing
       .filter(

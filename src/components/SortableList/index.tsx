@@ -119,8 +119,8 @@ const SortableList = (props: SortableListProps) => {
         items={items!.map(({ name }) => name)}
         strategy={verticalListSortingStrategy}
       >
-        {items?.map(
-          ({ name: itemName }) =>
+        {items?.map(({ name: itemName }) => {
+          return (
             dapplets.find((dapp) => dapp.name === itemName) && (
               <Draggable
                 key={itemName}
@@ -146,8 +146,9 @@ const SortableList = (props: SortableListProps) => {
                   isNotDapplet={isNotDapplet}
                 />
               </Draggable>
-            ),
-        )}
+            )
+          );
+        })}
       </SortableContext>
       <DragOverlay
         dropAnimation={{
