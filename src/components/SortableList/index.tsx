@@ -1,4 +1,4 @@
-import { useState, SetStateAction } from 'react';
+import { useState, SetStateAction, useEffect } from 'react';
 import { saveListToLocalStorage } from '../../lib/localStorage';
 import styles from './SortableList.module.scss';
 

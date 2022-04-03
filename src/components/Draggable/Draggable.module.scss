@@ -9,12 +9,9 @@
 	background: #FFF;
   box-shadow: none;
 
-  &.isRemoving {
-    border: 2px dashed #FF6442;
-  }
-
-  &.isAdding {
-    border: 2px dashed #5EC280;
+  &.isChanged {
+    border-width: 2px;
+    border-style: dashed;
   }
 
   &.isMoved {

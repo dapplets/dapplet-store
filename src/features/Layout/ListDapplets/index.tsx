@@ -429,8 +429,7 @@ const ListDapplets = ({
               return (
                 // All Dapplets
                 <section className={cn(styles.item, {
-                  [styles.isRemoving]: isRemoving,
-                  [styles.isAdding]: isAdding
+                  [styles.isChanged]: isAdding || isRemoving,
                 })} key={i}>
                   <div className={styles.itemContainer}>
                     <ItemDapplet

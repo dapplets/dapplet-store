@@ -1,4 +1,4 @@
-import React, { DetailedHTMLProps, HTMLAttributes, useMemo } from 'react';
+import React, { DetailedHTMLProps, HTMLAttributes, useEffect, useMemo } from 'react';
 
 import { saveListToLocalStorage } from '../../../lib/localStorage';
 import DappletsListSidebar from '../../../components/DappletsListSidebar/DappletsListSidebar'
@@ -158,13 +158,13 @@ const SidePanel = ({
 
   const dappletsStandard = useMemo(() => Object.values(dapplets), [dapplets])
 
-  // useEffect(() => {
-  //   console.log({ myOldListing })
-  // }, [myOldListing])
+  useEffect(() => {
+    console.log("[myOldListing]", myOldListing)
+  }, [myOldListing])
 
-  // useEffect(() => {
-  //   console.log({ myListing })
-  // }, [myListing])
+  useEffect(() => {
+    console.log("[myListing]", myListing)
+  }, [myListing])
 
   const pushSelectedDappletsList = async () => {
     const events: EventPushing[] = []
@@ -191,6 +191,8 @@ const SidePanel = ({
     // myOldListing.forEach((dapp) => {
 
     // })
+
+
 
     myListing.filter(({ type }) => (
       type !== DappletsListItemTypes.Removing && type !== DappletsListItemTypes.Adding
@@ -252,7 +254,7 @@ const SidePanel = ({
             selectedDappletsList
               .slice(0, 5)
               .map((dapplet) => {
-                console.log("[dapplet]", dapplet);
+                // console.log("[dapplet]", dapplet);
 
                 return ({
                   title: dapplets.find(({ name }) => dapplet.name === name)?.title || '',

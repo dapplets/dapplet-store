@@ -50,8 +50,7 @@ const Draggable = ({ children, ...props }: DraggableProps): React.ReactElement =
   return (
     <Item
       className={cn(styles.item, {
-        [styles.isRemoving]: isRemoving,
-        [styles.isAdding]: isAdding,
+        [styles.isChanged]: isAdding || isRemoving,
         [styles.isMoved]: isMoved,
       })}
       style={style}
