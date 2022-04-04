@@ -25,6 +25,7 @@ const mapState = (state: RootState) => ({
   isLocked: state.user.isLocked,
   myOldListing: state.myLists[Lists.MyOldListing],
   myListing: state.myLists[Lists.MyListing],
+  selectedList: state.sort.selectedList,
 });
 
 const mapDispatch = (dispatch: RootDispatch) => ({
@@ -62,21 +63,6 @@ const ListWrapper = styled.div`
   padding-top: 42px;
 `;
 
-// const Footer = styled.div`
-//   display: flex;
-//   flex-wrap: wrap;
-//   font-size: 12px;
-
-//   & > a {
-//     color: inherit;
-//     margin-right: 10px;
-
-//     &:hover {
-//       text-decoration: underline;
-//     }
-//   }
-// `
-
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
 
 export enum SideLists {
@@ -113,6 +99,7 @@ const SidePanel = ({
   isLocked,
   myOldListing,
   myListing,
+  selectedList,
   setSort,
   setModalOpen,
   pushMyListing,
@@ -243,6 +230,8 @@ const SidePanel = ({
     setLocked(false);
   };
 
+  const isMyListing = selectedList !== undefined;
+
   return (
     <Wrapper className={className}>
       <ListWrapper>
@@ -272,24 +261,24 @@ const SidePanel = ({
 
         {/* My listing */}
         <DappletsListSidebar
-          dappletsList={selectedDappletsList.slice(0, 5).map((dapplet) => {
-            // console.log("[dapplet]", dapplet);
-
-            return {
-              title:
-                dapplets.find(({ name }) => dapplet.name === name)?.title || "",
-              type:
-                dapplet.type === DappletsListItemTypes.Default &&
-                  dapplet.event !== undefined
-                  ? DappletsListItemTypes.Moved
-                  : dapplet.type,
-              id: String(dapplet.id),
-              onClickRemove: () => removeFromSelectedList(dapplet.name),
-              isRemoved:
-                dapplet.type !== DappletsListItemTypes.Default ||
-                dapplet.event !== undefined,
-            };
-          })}
+          dappletsList={selectedDappletsList
+            .slice(0, isMyListing ? selectedDappletsList.length : 5)
+            .map((dapplet) => {
+              return {
+                title:
+                  dapplets.find(({ name }) => dapplet.name === name)?.title || "",
+                type:
+                  dapplet.type === DappletsListItemTypes.Default &&
+                    dapplet.event !== undefined
+                    ? DappletsListItemTypes.Moved
+                    : dapplet.type,
+                id: String(dapplet.id),
+                onClickRemove: () => removeFromSelectedList(dapplet.name),
+                isRemoved:
+                  dapplet.type !== DappletsListItemTypes.Default ||
+                  dapplet.event !== undefined,
+              };
+            })}
           title={SideLists.MyListing}
           isPushing={isLocked}
           onOpenList={() => {

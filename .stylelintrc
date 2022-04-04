@@ -13,6 +13,6 @@
 		"color-hex-case": "upper",
 		"selector-class-pattern": null,
 		"declaration-block-no-redundant-longhand-properties": null,
-		"alpha-value-notation": "percentage"
+		"alpha-value-notation": "number"
 	}
 }

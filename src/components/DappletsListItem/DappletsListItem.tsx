@@ -84,7 +84,8 @@ const DappletListItemCloseWrapper = styled.button`
   display: grid;
   align-items: center;
   cursor: pointer;
-  animation: ${({ disabled }) => (disabled ? rotate : "")} 2s linear infinite;
+  opacity: 0.6;
+  // animation: ${({ disabled }) => (disabled ? rotate : "")} 2s linear infinite;
 `;
 
 export interface DappletsListItemProps {
@@ -125,7 +126,8 @@ const DappletsListItem = (props: DappletsListItemProps) => {
       <Title type={props.type}>{title}</Title>
       {props.isRemoved && (
         <DappletListItemCloseWrapper
-          disabled={!!props.isPushing}
+          disabled={true}
+          title="You can move the dapplet to the old position in the main list"
           onClick={props.onClickRemove()}
         >
           <DappletListItemClose />
