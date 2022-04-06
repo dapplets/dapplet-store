@@ -262,8 +262,6 @@ const App = ({
           infuraId: "eda881d858ae4a25b2dfbbd0b4629992",
         });
 
-        console.log("dsad");
-
         //  Enable session (triggers QR Code modal)
         await provider.enable();
         const web3 = new Web3(provider);

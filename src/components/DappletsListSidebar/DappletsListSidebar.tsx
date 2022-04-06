@@ -37,9 +37,10 @@ const DappletsListItemWrapper = styled.div`
   display: grid;
   padding-left: 30px;
   grid-row-gap: 10px;
-  padding-top: 10px;
+  margin-top: 10px;
   max-height: 390px;
   overflow: auto;
+  padding-right: 15px;
 `;
 
 const MoreWrapper = styled.div`

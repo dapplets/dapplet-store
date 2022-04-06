@@ -118,6 +118,7 @@ const SidePanel = ({
     });
   };
 
+  // TODO: why 
   const removeFromSelectedList = (name: string) => (e: any) => {
     e.preventDefault();
     const dappletListIndex = selectedDappletsList.findIndex(

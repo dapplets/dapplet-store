@@ -114,17 +114,19 @@ const Layout = ({
   // console.log({isNotDapplet})
 
   const localDappletsList = myLists[Lists.MyDapplets];
-  const setLocalDappletsList = (elements: MyListElement[]) =>
+  const setLocalDappletsList = (elements: MyListElement[]) => {
     setMyList({
       name: Lists.MyDapplets,
       elements,
     });
+  }
   const selectedDappletsList = myLists[Lists.MyListing];
-  const setSelectedDappletsList = (elements: MyListElement[]) =>
+  const setSelectedDappletsList = (elements: MyListElement[]) => {
     setMyList({
       name: Lists.MyListing,
       elements,
     });
+  }
 
   const dappletsByList = useMemo(() => {
     if (!dapplets || !selectedList) return dapplets;

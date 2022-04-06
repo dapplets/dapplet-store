@@ -34,7 +34,7 @@ const reducers = {
     state: MyListsState,
     { name, elements }: { name: Lists; elements: MyListElement[] },
   ) {
-    console.debug({ name, elements });
+    console.log("[setMyList]", name, elements);
     return {
       ...state,
       [name]: elements,
@@ -107,6 +107,8 @@ const effects = (dispatch: any) => ({
         localListing[dapp.name] = dapp;
       });
     }
+    console.log("[req]", req);
+
     const listing: MyListElement[] = req
       .map((id: BigNumber) => {
         const dapp = {
@@ -120,12 +122,16 @@ const effects = (dispatch: any) => ({
         return dapp;
       })
       .filter((dapp: MyListElement) => !!dapp.name);
+    console.log("[listing]", listing);
     // console.log("start", req, dappletsNames, listing);
     dispatch.myLists.setMyList({
       name: Lists.MyOldListing,
       elements: listing,
     });
+
+    // TODO: wouldn't "unshift" be faster?
     const reversedListing = listing.reverse();
+
     const addingListing: MyListElement[] = Object.values(localListing).filter(
       ({ type }) => type === DappletsListItemTypes.Adding,
     );
@@ -136,6 +142,7 @@ const effects = (dispatch: any) => ({
       name: Lists.MyListing,
       elements: reversedListing.reverse(),
     });
+    // TODO: wouldn't "unshift" be faster?
   },
   async getMyDapplets() {
     // console.log('dapp', window.dapplets)

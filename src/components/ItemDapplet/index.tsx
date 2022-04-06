@@ -1,4 +1,4 @@
-/* eslint-disable prettier/prettier */
+// /* eslint-disable prettier/prettier */
 import React, { useEffect, useMemo } from "react";
 import styled from "styled-components";
 import { ReactComponent as DappletListItemMoved } from "../DappletsListItem/arrow-down-circle.svg";
@@ -16,10 +16,9 @@ import { RootDispatch, RootState } from "../../models";
 import { Sort } from "../../models/sort";
 import { connect } from "react-redux";
 import { Modals, ModalsList } from "../../models/modals";
-import { Lists, MyListElement, myLists } from "../../models/myLists";
+import { Lists, MyListElement } from "../../models/myLists";
 import { Image } from "semantic-ui-react";
 import { useCallback } from "react";
-import { DappletsListItemTypes, TitleIcon } from "../DappletsListItem/DappletsListItem";
 
 const mapState = (state: RootState) => ({
   address: state.user.address,
@@ -36,8 +35,6 @@ const mapDispatch = (dispatch: RootDispatch) => ({
     dispatch.dapplets.setExpanded(payload),
   setBlobUrl: (payload: { id: number; blobUrl: string }) =>
     dispatch.blobUrl.setBlobUrl(payload),
-  setMyList: (payload: { name: Lists; elements: MyListElement[] }) =>
-    dispatch.myLists.setMyList(payload),
 });
 
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
@@ -164,35 +161,51 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
 
   const dappletIndexOverOldListing = useMemo(() => {
     return myOldListing.findIndex((i) => i.id === item.id);
-  }, [myOldListing, editLocalDappletsList, editSelectedDappletsList]);
+  }, [
+    myOldListing,
+    myListing,
+    selectedDapplets,
+    editLocalDappletsList,
+    editSelectedDappletsList,
+  ]);
 
   const dappletIndexOverListing = useMemo(() => {
     return myListing.findIndex((i) => i.id === item.id);
-  }, [myListing, editLocalDappletsList, editSelectedDappletsList]);
+    // return myListing.findIndex((i) => i.type !== "Removing" && i.id === item.id);
+  }, [
+    myListing,
+    selectedDapplets,
+    editLocalDappletsList,
+    editSelectedDappletsList,
+  ]);
 
   const currentLocation = useMemo(() => {
     if (dappletIndexOverOldListing === dappletIndexOverListing) return "";
 
-    return <span className={styles.order}>
-      {
-        dappletIndexOverListing < dappletIndexOverOldListing
-          ? (
-            <>
-              <DappletListItemMoved className={styles.up} />
-              {dappletIndexOverOldListing - dappletIndexOverListing}
-            </>
-          )
-          : (
-            <>
-              <DappletListItemMoved className={styles.down} />
-              {dappletIndexOverListing - dappletIndexOverOldListing}
-            </>
-          )
-      }
+    return (
+      <span className={styles.order}>
+        {dappletIndexOverListing < dappletIndexOverOldListing ? (
+          <>
+            <DappletListItemMoved className={styles.up} />
+            {dappletIndexOverOldListing - dappletIndexOverListing}
+          </>
+        ) : (
+          <>
+            <DappletListItemMoved className={styles.down} />
+            {dappletIndexOverListing - dappletIndexOverOldListing}
+          </>
+        )}
+      </span>
+    );
+  }, [
+    dappletIndexOverListing,
+    dappletIndexOverOldListing,
+    myListing,
+    editLocalDappletsList,
+    editSelectedDappletsList,
+  ]);
 
-    </span>
-  }, [dappletIndexOverListing, dappletIndexOverOldListing, editLocalDappletsList, editSelectedDappletsList]);
-
+  const listLength = [...trustedList, ...otherList].length;
 
   if (!item) return <></>;
   return (
@@ -204,7 +217,12 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
         <Image
           className={styles.itemImage}
           src={item.icon}
-          style={{ width: 85, height: 85, borderRadius: "50%", marginTop: 10 }}
+          style={{
+            width: 85,
+            height: 85,
+            borderRadius: "50%",
+            marginTop: 10,
+          }}
         />
       ) : (
         <div
@@ -243,7 +261,7 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
           </>
         )}
 
-        {[...trustedList, ...otherList].length > 0 && (
+        {listLength > 0 && (
           <UnderUserInfo>
             <ImagesWrapper
               count={trustedList.slice(0, 3).length}
@@ -252,8 +270,7 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
               <DappletListersPopup
                 trustedList={trustedList}
                 otherList={otherList}
-                text={`in ${[...trustedList, ...otherList].length} list${[...trustedList, ...otherList].length !== 1 ? "s" : ""
-                  }`}
+                text={`in ${listLength} list${listLength !== 1 ? "s" : ""}`}
                 onClickSort={(address: string) => {
                   // console.log('hello')
                   setSort({
@@ -327,7 +344,10 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
             e.preventDefault();
             e.stopPropagation();
             if (isNotDapplet)
-              setModalOpen({ openedModal: ModalsList.Install, settings: null });
+              setModalOpen({
+                openedModal: ModalsList.Install,
+                settings: null,
+              });
             else editLocalDappletsList(item);
           }}
         />
@@ -337,7 +357,10 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
             e.preventDefault();
             e.stopPropagation();
             if (!address)
-              setModalOpen({ openedModal: ModalsList.Login, settings: null });
+              setModalOpen({
+                openedModal: ModalsList.Login,
+                settings: null,
+              });
             else editSelectedDappletsList(item);
           }}
           disabled={isLocked}

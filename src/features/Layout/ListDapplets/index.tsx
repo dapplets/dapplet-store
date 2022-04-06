@@ -18,6 +18,11 @@ import styled from "styled-components";
 import Dropdown from "../Dropdown/Dropdown";
 import Input from "../Input";
 import cn from "classnames";
+import {
+  removeDappletItem,
+  updateDappletItem,
+} from "../../../lib/updateDappletItem";
+import { updateMyListing } from "../../../lib/updateDappletList";
 
 const MainContentWrapper = styled.div`
   display: grid;
@@ -43,11 +48,11 @@ const CheckboxWrapper = styled.div<CheckboxWrapperProps>`
     width: 16px;
     height: 16px;
     background: ${({ isTrustedSort }) =>
-      isTrustedSort ? "#ffffff" : "#ffffff"};
+    isTrustedSort ? "#ffffff" : "#ffffff"};
     border-radius: 50%;
     margin-top: 2px;
     border: ${({ isTrustedSort }) =>
-      isTrustedSort ? "5px solid #D9304F" : "1px solid #919191"};
+    isTrustedSort ? "5px solid #D9304F" : "1px solid #919191"};
     position: relative;
   }
 `;
@@ -223,36 +228,71 @@ const ListDapplets = ({
     [editList, localDapplets, setLocalDapplets, setOpenedList],
   );
 
+  // TODO: most likely here the deleted element becomes up
   const editSelectedDappletsList = useMemo(
     () => (item: IDapplet) => {
       setOpenedList(SideLists.MyListing);
 
       let nowDappletsList: MyListElement[] = selectedDapplets;
-      const dappletListIndex = nowDappletsList.findIndex(
-        (dapplet) => dapplet.name === item.name,
+      const indexSelectedDapplet = nowDappletsList.findIndex(
+        (d) => d.name === item.name,
       );
-      if (dappletListIndex >= 0) {
-        const nowDapplet = nowDappletsList[dappletListIndex];
 
-        nowDappletsList.splice(dappletListIndex, 1);
-        switch (nowDapplet.type) {
-          case DappletsListItemTypes.Default:
-            nowDapplet.type = DappletsListItemTypes.Removing;
-            nowDappletsList = [nowDapplet, ...nowDappletsList];
+      if (indexSelectedDapplet >= 0) {
+        const getDappletByIndex = nowDappletsList[indexSelectedDapplet];
+        const type = getDappletByIndex.type;
+
+        switch (type) {
+          // If we have a DEFAULT when clicked, the dapplet becomes type Removing
+          case DappletsListItemTypes.Default: {
+            const removing = updateDappletItem(
+              getDappletByIndex,
+              "type",
+              DappletsListItemTypes.Removing,
+            );
+
+            nowDappletsList = updateMyListing(
+              nowDappletsList,
+              removing,
+              indexSelectedDapplet,
+            );
             break;
-          case DappletsListItemTypes.Removing:
-            nowDapplet.type = DappletsListItemTypes.Default;
-            nowDappletsList = [nowDapplet, ...nowDappletsList];
+          }
+
+          // If we have a REMOVING when clicked, the dapplet becomes type Default
+          case DappletsListItemTypes.Removing: {
+            const adding = updateDappletItem(
+              getDappletByIndex,
+              "type",
+              DappletsListItemTypes.Default,
+            );
+
+            nowDappletsList = updateMyListing(
+              nowDappletsList,
+              adding,
+              indexSelectedDapplet,
+            );
             break;
+          }
+
+          case DappletsListItemTypes.Adding: {
+            nowDappletsList = removeDappletItem(
+              nowDappletsList,
+              indexSelectedDapplet,
+            );
+            break;
+          }
+
           default:
             break;
         }
       } else {
         nowDappletsList = [
-          { name: item.name, type: DappletsListItemTypes.Adding, id: item.id },
           ...nowDappletsList,
+          { name: item.name, type: DappletsListItemTypes.Adding, id: item.id },
         ];
       }
+
       const newDappletsList: MyListElement[] = nowDappletsList;
       saveListToLocalStorage(newDappletsList, Lists.MyListing);
       setSelectedDapplets(newDappletsList);
