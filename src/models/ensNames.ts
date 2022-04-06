@@ -27,9 +27,7 @@ const reducers = {
 
 const effects = (dispatch: any) => ({
   getEnsNames: async (addresses: string[]): Promise<void> => {
-    // console.log('STARTIT')
     const ensNames = await getEnsNamesApi(addresses);
-    // console.log({ensNames})
     ensNames?.forEach((ensName, index) => {
       dispatch.ensNames.addEnsNames({
         ensName: ensName || "User Listing",

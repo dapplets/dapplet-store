@@ -118,14 +118,12 @@ const SidePanel = ({
     });
   };
 
-  // TODO: why 
   const removeFromSelectedList = (name: string) => (e: any) => {
     e.preventDefault();
     const dappletListIndex = selectedDappletsList.findIndex(
       (dapplet) => dapplet.name === name,
     );
     let list = selectedDappletsList;
-    console.log({ sl: selectedDappletsList[dappletListIndex] });
 
     if (
       selectedDappletsList[dappletListIndex].type ===
@@ -148,7 +146,7 @@ const SidePanel = ({
             ({ id }) => id === list[dappletListIndex].eventPrev,
           );
           const swap = list[dappletListIndex];
-          console.log({ swap, swapId });
+          // console.log({ swap, swapId });
           list[dappletListIndex] = list[swapId];
           list[swapId] = swap;
           list[swapId].event = undefined;

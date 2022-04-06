@@ -111,8 +111,6 @@ const Layout = ({
   setTrustedUsers,
   setMyList,
 }: LayoutProps & Props): React.ReactElement<LayoutProps> => {
-  // console.log({isNotDapplet})
-
   const localDappletsList = myLists[Lists.MyDapplets];
   const setLocalDappletsList = (elements: MyListElement[]) => {
     setMyList({

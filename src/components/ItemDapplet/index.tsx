@@ -276,7 +276,6 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
                 otherList={otherList}
                 text={`in ${listLength} list${listLength !== 1 ? "s" : ""}`}
                 onClickSort={(address: string) => {
-                  // console.log('hello')
                   setSort({
                     addressFilter: address,
                     selectedList: undefined,

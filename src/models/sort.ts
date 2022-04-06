@@ -33,7 +33,6 @@ const reducers = {
       ...state,
       ...payload,
     };
-    console.log("[setSort]:", { state, newSort });
     setAnchorParams(newSort);
     return newSort;
   },

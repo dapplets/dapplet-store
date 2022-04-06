@@ -73,7 +73,7 @@ const SortableList = (props: SortableListProps) => {
         if (items[oldIndex].eventPrev === undefined)
           items[oldIndex].eventPrev =
             oldIndex === 0 ? 0 : items[oldIndex - 1].id;
-        console.log({ i: items[oldIndex], items });
+        // console.log({ i: items[oldIndex], items });
       }
       newArray = arrayMove(items || [], oldIndex, newIndex);
     } else {

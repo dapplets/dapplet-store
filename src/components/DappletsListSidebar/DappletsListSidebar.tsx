@@ -83,8 +83,6 @@ interface DappletsListSidebarProps {
 }
 
 const DappletsListSidebar = (props: DappletsListSidebarProps) => {
-  // console.log({props})
-  // const [isOpen, setIsOpen] = useState(false)
   return (
     <ListWrapper>
       <TitleWrapper>

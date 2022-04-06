@@ -139,7 +139,6 @@ const reducers = {
     return payload;
   },
   addDapplet(state: DappletsState, payload: IDapplet) {
-    // console.log({payload})
     return {
       ...state,
       [payload.id]: payload,
@@ -227,7 +226,6 @@ const effects = (dispatch: any) => ({
           const ev = events[i - 1];
           const block = await ev.getBlock();
           const versions = await getVersions(module.name);
-          // console.log({module, ev})
           const date = new Date(block.timestamp * 1000);
           const pad = (n: number, s = 2) =>
             `${new Array(s).fill(0)}${n}`.slice(-s);
@@ -264,19 +262,14 @@ const effects = (dispatch: any) => ({
       );
     }
     await Promise.all(myPromises);
-    // console.log('hihihi')
-    //setDapplets
-    // await dispatch.dapplets.setDapplets(dapplets)
     const contractListing: any = new ethers.Contract(
       "0xc8B80C2509e7fc553929C86Eb54c41CC20Bb05fB",
       abiListing2,
       provider,
     );
     const users = await contractListing.getUsers();
-    // console.log({users})
     for (let i = 0; i < users.length; i++) {
       const trustedDapplets = await contractListing.getUserList(users[i]);
-      // console.log({trustedDapplets, user: users[i]})
 
       for (let j = 0; j < trustedDapplets.length; j++) {
         try {
@@ -289,25 +282,6 @@ const effects = (dispatch: any) => ({
         }
       }
     }
-
-    // const myListing = await contractListing.getMyLinkedList();
-    // const myListing2 = await contractListing.getMyList();
-    // const size = await contractListing.getMyLinkedListSize();
-    // console.log({myListing, myListing2, size})
-    // const myNewListing: MyListElement = myListing.map((id: number) => ({
-    //   id,
-    //   name: dapplets[id].name,
-    //   type: DappletsListItemTypes.Default
-    // }))
-
-    // dispatch.myLists.setMyList({
-    //   name: Lists.MyListing,
-    //   elements: myNewListing,
-    // })
-    // dispatch.myLists.setMyList({
-    //   name: Lists.MyOldListing,
-    //   elements: myNewListing,
-    // })
   },
   pushMyListing: async ({
     address,
@@ -344,7 +318,6 @@ const effects = (dispatch: any) => ({
       });
       throw new Error("Change network to Goerli");
     }
-    // console.log('push', provider, events, events.map(({eventType, dappletId, dappletPrevId = 0}) => ([eventType, dappletId, dappletPrevId])))
     const ethersProvider = new ethers.providers.Web3Provider(provider);
     const signer = await ethersProvider.getSigner();
     const contractListing: any = await new ethers.Contract(
@@ -367,7 +340,6 @@ const effects = (dispatch: any) => ({
     } catch (error) {
       console.error({ error });
     }
-    // console.log('end')
   },
 });
 

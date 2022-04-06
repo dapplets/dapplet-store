@@ -435,7 +435,6 @@ const ListDapplets = ({
   );
 
   useEffect(() => {
-    // console.log({r: ref})//  ref!.current!.scrollTop = 0;
     ref?.current?.scrollTo(0, 0);
   }, [
     searchQuery,

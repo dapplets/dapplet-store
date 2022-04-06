@@ -163,15 +163,6 @@ const App = ({
   }, [address, removeMyList]);
 
   useEffect(() => {
-    // const getDappletsListFromLocal = (payload: Lists) => {
-    //   const dappletsListStringified = window.localStorage.getItem(payload);
-    //   if (dappletsListStringified) {
-    //     const dappletsListParsed: MyListElement[] = JSON.parse(dappletsListStringified);
-    //     return dappletsListParsed;
-    //   }
-    //   return []
-    // }
-    // console.log({address, provider})
     if (address && provider) {
       const dappletsNames: { [name: number]: string } = {};
 
@@ -218,7 +209,6 @@ const App = ({
 
   useEffect(() => {
     window.onpopstate = () => {
-      // console.log(document.URL, getAnchorParams())
       setUrl(document.URL as string);
     };
   }, []);
