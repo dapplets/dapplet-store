@@ -19,6 +19,7 @@ import { Modals, ModalsList } from "../../models/modals";
 import { Lists, MyListElement } from "../../models/myLists";
 import { Image } from "semantic-ui-react";
 import { useCallback } from "react";
+import { DappletsListItemTypes } from "../DappletsListItem/DappletsListItem";
 
 const mapState = (state: RootState) => ({
   address: state.user.address,
@@ -160,7 +161,9 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
   };
 
   const dappletIndexOverOldListing = useMemo(() => {
-    return myOldListing.findIndex((i) => i.id === item.id);
+    return myOldListing.findIndex(
+      (i) => i.type !== DappletsListItemTypes.Adding && i.id === item.id,
+    );
   }, [
     myOldListing,
     myListing,
@@ -170,8 +173,9 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
   ]);
 
   const dappletIndexOverListing = useMemo(() => {
-    return myListing.findIndex((i) => i.id === item.id);
-    // return myListing.findIndex((i) => i.type !== "Removing" && i.id === item.id);
+    return myListing.findIndex(
+      (i) => i.type !== DappletsListItemTypes.Adding && i.id === item.id,
+    );
   }, [
     myListing,
     selectedDapplets,

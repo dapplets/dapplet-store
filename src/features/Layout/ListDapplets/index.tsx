@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, { useEffect, useMemo, useRef } from "react";
 import { Header } from "semantic-ui-react";
 
@@ -47,8 +48,7 @@ const CheckboxWrapper = styled.div<CheckboxWrapperProps>`
   & > div {
     width: 16px;
     height: 16px;
-    background: ${({ isTrustedSort }) =>
-    isTrustedSort ? "#ffffff" : "#ffffff"};
+    background: #ffffff;
     border-radius: 50%;
     margin-top: 2px;
     border: ${({ isTrustedSort }) =>
@@ -534,8 +534,8 @@ const ListDapplets = ({
             const selected = selectedDapplets.find(
               (d) => d.id === item.id,
             )?.type;
-            const isAdding = selected === "Adding";
-            const isRemoving = selected === "Removing";
+            const isAdding = selected === DappletsListItemTypes.Adding;
+            const isRemoving = selected === DappletsListItemTypes.Removing;
 
             return (
               // All Dapplets

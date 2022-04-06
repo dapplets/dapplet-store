@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, { useMemo } from "react";
 import { CSS } from "@dnd-kit/utilities";
 import { useSortable } from "@dnd-kit/sortable";
@@ -40,16 +41,20 @@ const Draggable = ({
     return selectedDapplets.find((dapplet) => dapplet.name === item.name);
   }, [item.name, selectedDapplets]);
 
+  const isSelectedDapplet = selectedDapplet?.id === item.id;
+
   const isType =
     selectedDapplet?.type === DappletsListItemTypes.Default &&
-    selectedDapplet.event !== undefined
+      selectedDapplet.event !== undefined
       ? DappletsListItemTypes.Moved
       : selectedDapplet?.type;
-  const isRemoving =
-    selectedDapplet?.id === item.id && selectedDapplet.type === "Removing";
+
+  const isRemoving = isSelectedDapplet &&
+    selectedDapplet.type === DappletsListItemTypes.Removing;
+
   const isAdding =
-    selectedDapplet?.id === item.id && selectedDapplet.type === "Adding";
-  const isMoved = selectedDapplet?.id === item.id && isType === "Moved";
+    isSelectedDapplet && selectedDapplet.type === DappletsListItemTypes.Adding;
+  const isMoved = isSelectedDapplet && isType === DappletsListItemTypes.Moved;
 
   if (!!addressFilter && !item.trustedUsers.includes(addressFilter))
     return <></>;
