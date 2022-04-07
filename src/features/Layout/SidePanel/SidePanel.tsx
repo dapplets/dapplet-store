@@ -36,6 +36,7 @@ const mapDispatch = (dispatch: RootDispatch) => ({
     events: EventPushing[];
     provider: any;
     dappletsNames: { [name: number]: string };
+    links: { currentDappletId: number; nextDappletId: number }[];
   }) => dispatch.dapplets.pushMyListing(payload),
   setLocked: (payload: boolean) =>
     dispatch.user.setUser({
@@ -208,6 +209,26 @@ const SidePanel = ({
         }
       });
 
+    const tobeLinks: number[] = [];
+    const tobeIds = myListing.filter(x => x.type !== DappletsListItemTypes.Removing).map(x => x.id);
+    tobeIds.forEach((x, i) => tobeLinks[tobeIds[i - 1] ?? 0] = x);
+
+    const asisLinks: number[] = [];
+    const asisIds = myOldListing.filter(x => x.type !== DappletsListItemTypes.Adding).map(x => x.id);
+    asisIds.forEach((x, i) => asisLinks[asisIds[i - 1] ?? 0] = x);
+
+    const maxLength = (asisLinks.length > tobeLinks.length) ? asisLinks.length : tobeLinks.length;
+
+    const changedLinks = [];
+    for (let i = 0; i < maxLength; i++) {
+      if (asisLinks[i] !== tobeLinks[i]) {
+        changedLinks.push({
+          currentDappletId: i,
+          nextDappletId: tobeLinks[i] ?? 0
+        });
+      }
+    }
+
     try {
       const dappletsNames: { [name: number]: string } = {};
 
@@ -220,6 +241,7 @@ const SidePanel = ({
         events,
         provider,
         dappletsNames,
+        links: changedLinks
       });
       // saveListToLocalStorage(newDappletsList, Lists.MyListing);
       // setSelectedDappletsList(newDappletsList);

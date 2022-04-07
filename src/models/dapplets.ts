@@ -263,13 +263,13 @@ const effects = (dispatch: any) => ({
     }
     await Promise.all(myPromises);
     const contractListing: any = new ethers.Contract(
-      "0xc8B80C2509e7fc553929C86Eb54c41CC20Bb05fB",
+      "0x626Ef3D84A9b0a0b79d4CF0ee353e6F6e0F51426",
       abiListing2,
       provider,
     );
-    const users = await contractListing.getUsers();
+    const users = await contractListing.getListers();
     for (let i = 0; i < users.length; i++) {
-      const trustedDapplets = await contractListing.getUserList(users[i]);
+      const trustedDapplets = await contractListing.getLinkedList(users[i]);
 
       for (let j = 0; j < trustedDapplets.length; j++) {
         try {
@@ -288,11 +288,13 @@ const effects = (dispatch: any) => ({
     events,
     provider,
     dappletsNames,
+    links,
   }: {
     address: string;
     events: EventPushing[];
     provider: any;
     dappletsNames: { [name: number]: string };
+    links: { currentDappletId: number; nextDappletId: number }[];
   }) => {
     if (provider.chainId !== "0x5") {
       dispatch.modals.setModalOpen({
@@ -305,6 +307,7 @@ const effects = (dispatch: any) => ({
                 events,
                 provider,
                 dappletsNames,
+                links,
               });
               dispatch.modals.setModalOpen({
                 openedModal: ModalsList.Warning,
@@ -321,17 +324,11 @@ const effects = (dispatch: any) => ({
     const ethersProvider = new ethers.providers.Web3Provider(provider);
     const signer = await ethersProvider.getSigner();
     const contractListing: any = await new ethers.Contract(
-      "0xc8B80C2509e7fc553929C86Eb54c41CC20Bb05fB",
+      "0x626Ef3D84A9b0a0b79d4CF0ee353e6F6e0F51426",
       abiListing2,
       signer,
     ); //0xc8B80C2509e7fc553929C86Eb54c41CC20Bb05fB //0x3470ab240a774e4D461456D51639F033c0cB5363
-    const req = await contractListing.changeMyList(
-      events.map(({ eventType, dappletId, dappletPrevId = 0 }) => [
-        eventType,
-        dappletId,
-        dappletPrevId,
-      ]),
-    );
+    const req = await contractListing.changeMyList(links);
     try {
       const transaction = req.wait();
       await customPromiseToast(transaction, req.hash);
