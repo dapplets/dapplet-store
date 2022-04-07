@@ -235,8 +235,6 @@ const SidePanel = ({
       }
     }
 
-    console.log({ changedLinks})
-
     try {
       const dappletsNames: { [name: number]: string } = {};
 
