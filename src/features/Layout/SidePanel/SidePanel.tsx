@@ -36,7 +36,7 @@ const mapDispatch = (dispatch: RootDispatch) => ({
     events: EventPushing[];
     provider: any;
     dappletsNames: { [name: number]: string };
-    links: { currentDappletId: number; nextDappletId: number }[];
+    links: { currentModuleIdx: number; nextModuleIdx: number }[];
   }) => dispatch.dapplets.pushMyListing(payload),
   setLocked: (payload: boolean) =>
     dispatch.user.setUser({
@@ -211,11 +211,17 @@ const SidePanel = ({
 
     const tobeLinks: number[] = [];
     const tobeIds = myListing.filter(x => x.type !== DappletsListItemTypes.Removing).map(x => x.id);
-    tobeIds.forEach((x, i) => tobeLinks[tobeIds[i - 1] ?? 0] = x);
+    tobeIds.forEach((x, i) => {
+      tobeLinks[tobeIds[i - 1] ?? 0] = x;
+      tobeLinks[x] = tobeIds[i + 1] ?? 0xFFFFFFFF;
+    });
 
     const asisLinks: number[] = [];
     const asisIds = myOldListing.filter(x => x.type !== DappletsListItemTypes.Adding).map(x => x.id);
-    asisIds.forEach((x, i) => asisLinks[asisIds[i - 1] ?? 0] = x);
+    asisIds.forEach((x, i) => {
+      asisLinks[asisIds[i - 1] ?? 0] = x;
+      asisLinks[x] = asisIds[i + 1] ?? 0xFFFFFFFF;
+    });
 
     const maxLength = (asisLinks.length > tobeLinks.length) ? asisLinks.length : tobeLinks.length;
 
@@ -223,11 +229,13 @@ const SidePanel = ({
     for (let i = 0; i < maxLength; i++) {
       if (asisLinks[i] !== tobeLinks[i]) {
         changedLinks.push({
-          currentDappletId: i,
-          nextDappletId: tobeLinks[i] ?? 0
+          currentModuleIdx: i,
+          nextModuleIdx: tobeLinks[i] ?? 0xFFFFFFFF
         });
       }
     }
+
+    console.log({ changedLinks})
 
     try {
       const dappletsNames: { [name: number]: string } = {};

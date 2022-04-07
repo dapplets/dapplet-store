@@ -91,7 +91,7 @@ const effects = (dispatch: any) => ({
     const ethersProvider = new ethers.providers.Web3Provider(provider);
     const signer = await ethersProvider.getSigner();
     const contractListing: any = await new ethers.Contract(
-      "0x626Ef3D84A9b0a0b79d4CF0ee353e6F6e0F51426",
+      "0x2446a2d38c99e22ea47b02a38d2afa41001618ca",
       abiListing2,
       signer,
     ); //0xc8B80C2509e7fc553929C86Eb54c41CC20Bb05fB //0x3470ab240a774e4D461456D51639F033c0cB5363

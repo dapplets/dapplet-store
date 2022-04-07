@@ -5,12 +5,12 @@ export default [
         components: [
           {
             internalType: "uint32",
-            name: "currentDappletId",
+            name: "currentModuleIdx",
             type: "uint32",
           },
           {
             internalType: "uint32",
-            name: "nextDappletId",
+            name: "nextModuleIdx",
             type: "uint32",
           },
         ],
@@ -28,7 +28,31 @@ export default [
     inputs: [
       {
         internalType: "address",
-        name: "addres",
+        name: "lister",
+        type: "address",
+      },
+      {
+        internalType: "uint32",
+        name: "moduleIdx",
+        type: "uint32",
+      },
+    ],
+    name: "containsModuleInListing",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "lister",
         type: "address",
       },
     ],
@@ -47,7 +71,7 @@ export default [
     inputs: [
       {
         internalType: "address",
-        name: "addres",
+        name: "lister",
         type: "address",
       },
     ],
