@@ -231,8 +231,11 @@ const Button = ({
             removeTrustedUser(address);
             return;
           }
-          setTrustedUsersList([address, ...trustedUsersList]);
+
+          setTrustedUsersList([...trustedUsersList, address]);
           addTrustedUser(address);
+          console.log(trustedUsersList);
+          
         }}
       >
         <UserPlus />
