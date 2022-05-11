@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, { useState, useMemo } from "react";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import { ReactComponent as DappletListItemPlus } from "../../images/dappletListItemPlus.svg";
 import { ReactComponent as DappletListItemMinus } from "../../images/dappletListItemMinus.svg";
 import { ReactComponent as DappletListItemClose } from "../../images/dappletListItemClose.svg";
@@ -69,23 +69,11 @@ const Title = styled.div<DappletsListItemWrapperProps>`
   color: ${({ type }) => getColorByType(type)};
 `;
 
-const rotate = keyframes`
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-`;
-
 const DappletListItemCloseWrapper = styled.button`
   border: none;
   display: grid;
   align-items: center;
   cursor: pointer;
-  opacity: 0.6;
-  // animation: ${({ disabled }) => (disabled ? rotate : "")} 2s linear infinite;
 `;
 
 export interface DappletsListItemProps {
@@ -126,8 +114,6 @@ const DappletsListItem = (props: DappletsListItemProps) => {
       <Title type={props.type}>{title}</Title>
       {props.isRemoved && (
         <DappletListItemCloseWrapper
-          disabled={true}
-          title="You can move the dapplet to the old position in the main list"
           onClick={props.onClickRemove()}
         >
           <DappletListItemClose />
