@@ -268,6 +268,7 @@ const effects = (dispatch: any) => ({
       provider,
     );
     const users = await contractListing.getListers();
+
     for (let i = 0; i < users.length; i++) {
       const trustedDapplets = await contractListing.getLinkedList(users[i]);
 

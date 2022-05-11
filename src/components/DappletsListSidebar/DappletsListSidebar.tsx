@@ -91,7 +91,7 @@ const DappletsListSidebar = (props: DappletsListSidebarProps) => {
             if (props.dappletsList.length)
               props.setIsOpen(props.isOpen ? null : props.title);
           }}
-          color={props.isOpen ? "#2A2A2A" : ".#747376"}
+          color={props.isOpen ? "#2A2A2A" : "#747376"}
         >
           {!!props.dappletsList.length &&
             (props.isOpen ? <span>-</span> : <span>+</span>)}{" "}
@@ -112,11 +112,11 @@ const DappletsListSidebar = (props: DappletsListSidebarProps) => {
             .filter(({ title }) => !!title)
             .map((dapplet) => (
               <DappletsListItem
+                key={dapplet.id}
                 onClick={props.onElementClick}
                 subTitle={dapplet.subTitle}
-                {...dapplet}
-                key={dapplet.id}
                 isPushing={!!props.isPushing}
+                {...dapplet}
               />
             ))}
           {props.isMoreShow && (

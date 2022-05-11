@@ -94,7 +94,9 @@ const effects = (dispatch: any) => ({
       "0x2446a2d38c99e22ea47b02a38d2afa41001618ca",
       abiListing2,
       signer,
-    ); //0xc8B80C2509e7fc553929C86Eb54c41CC20Bb05fB //0x3470ab240a774e4D461456D51639F033c0cB5363
+    );
+    // 0xc8B80C2509e7fc553929C86Eb54c41CC20Bb05fB
+    //0x3470ab240a774e4D461456D51639F033c0cB5363
     const req = await contractListing.getLinkedList(address);
 
     const localListing: { [name: string]: MyListElement } = {};
@@ -119,25 +121,24 @@ const effects = (dispatch: any) => ({
         return dapp;
       })
       .filter((dapp: MyListElement) => !!dapp.name);
+
     dispatch.myLists.setMyList({
       name: Lists.MyOldListing,
       elements: listing,
     });
 
-    // TODO: wouldn't "unshift" be faster?
-    const reversedListing = listing.reverse();
+    const sliceListing = listing.slice();
 
     const addingListing: MyListElement[] = Object.values(localListing).filter(
       ({ type }) => type === DappletsListItemTypes.Adding,
     );
     addingListing.forEach((dapp) => {
-      reversedListing.push(dapp);
+      sliceListing.push(dapp);
     });
     dispatch.myLists.setMyList({
       name: Lists.MyListing,
-      elements: reversedListing.reverse(),
+      elements: sliceListing,
     });
-    // TODO: wouldn't "unshift" be faster?
   },
   async getMyDapplets() {
     const dapps = await window.dapplets.getMyDapplets();

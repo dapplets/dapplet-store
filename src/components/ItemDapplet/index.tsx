@@ -1,7 +1,7 @@
-// /* eslint-disable prettier/prettier */
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import styled from "styled-components";
 import { ReactComponent as DappletListItemMoved } from "../DappletsListItem/arrow-down-circle.svg";
+import cn from 'classnames';
 
 import styles from "./ItemDapplet.module.scss";
 import {
@@ -254,9 +254,9 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
 
         {isOpen && (
           <>
-            <div className={styles.author}>
+            <div className={cn(styles.text)}>
               <Highlighter
-                className={styles.author}
+                className={styles.text}
                 textToHighlight={`${item.name}`}
                 searchWords={[searchQuery || ""]}
                 highlightStyle={{ background: "#ffff00", padding: 0 }}
@@ -269,7 +269,7 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
           <UnderUserInfo>
             <ImagesWrapper
               count={trustedList.slice(0, 3).length}
-              className={styles.author}
+              className={styles.text}
             >
               <DappletListersPopup
                 trustedList={trustedList}
@@ -287,9 +287,10 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
           </UnderUserInfo>
         )}
 
-        <div className={styles.author}>
+        <div className={cn(styles.text, styles.dInlineBlock)}>
           <span style={{ width: 60, display: "inline-block" }}>Author:</span>
           <a
+            style={{ display: "inline" }}
             onClick={(e) => {
               e.stopPropagation();
               setSort({
@@ -309,12 +310,12 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
 
         {isOpen && (
           <>
-            <div className={styles.author}>
+            <div className={styles.text}>
               <span style={{ width: 60, display: "inline-block" }}>
                 Update:
               </span>
               <Highlighter
-                className={styles.author}
+                className={styles.text}
                 textToHighlight={`${item.timestampToShow} (ver. ${item.versionToShow})`}
                 searchWords={[searchQuery || ""]}
                 highlightStyle={{ background: "#ffff00", padding: 0 }}
@@ -324,9 +325,9 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
           </>
         )}
 
-        <div className={styles.author}>
+        <div className={styles.text}>
           <Highlighter
-            className={styles.author}
+            className={styles.text}
             textToHighlight={item.description}
             searchWords={[searchQuery || ""]}
             highlightStyle={{ background: "#ffff00", padding: 0 }}

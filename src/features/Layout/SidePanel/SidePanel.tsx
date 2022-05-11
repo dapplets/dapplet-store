@@ -291,6 +291,8 @@ const SidePanel = ({
           dappletsList={selectedDappletsList
             .slice(0, isMyListing ? selectedDappletsList.length : 5)
             .map((dapplet) => {
+              console.log(dapplet);
+              
               return {
                 title:
                   dapplets.find(({ name }) => dapplet.name === name)?.title || "",

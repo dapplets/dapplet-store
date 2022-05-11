@@ -170,34 +170,6 @@ const App = ({
         dappletsNames[id] = name;
       });
       getMyListing({ address, provider, dappletsNames });
-
-      // const list: {
-      //   [key: string]: MyListElement
-      // } = {}
-      // dapplets.filter((dapp) => dapp.trustedUsers.includes(address) && dapp.owner !== address)
-      //   .forEach(({ name, id }) => {
-      //     list[name] = { name, type: DappletsListItemTypes.Default, id }
-      //   })
-      // getDappletsListFromLocal(Lists.MyListing).forEach((dapp) => {
-      //   list[dapp.name] = dapp
-      // })
-      // const sortedList: MyListElement[] = Object.values(list)
-      // sortedList.sort(({ type: typeA }, { type: typeB }) => {
-      //   if (typeA === DappletsListItemTypes.Default && typeB !== DappletsListItemTypes.Default)
-      //     return 1
-      //   if (typeB === DappletsListItemTypes.Default && typeA !== DappletsListItemTypes.Default)
-      //     return -1
-      //   return 0
-      // })
-      // setMyList({
-      //   name: Lists.MyListing,
-      //   elements: sortedList,
-      // })
-      // if (addressFilter === address) {
-      //   setSort({
-      //     selectedList: Lists.MyListing,
-      //   })
-      // }
     }
   }, [address, dapplets, getMyListing, provider]);
 

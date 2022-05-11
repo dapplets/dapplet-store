@@ -91,10 +91,6 @@ const StyledCopy = styled(Copy)`
   cursor: pointer;
 `;
 
-// const Description = styled.div`
-//   grid-area: description;
-// `
-
 const ButtonsWrapper = styled.div`
   position: relative;
   grid-area: buttons;
@@ -175,21 +171,6 @@ function fallbackCopyTextToClipboard(text: string) {
   }
 
   document.body.removeChild(textArea);
-}
-
-function copyTextToClipboard(text: string) {
-  if (!navigator.clipboard) {
-    fallbackCopyTextToClipboard(text);
-    return;
-  }
-  navigator.clipboard.writeText(text).then(
-    function () {
-      console.log("Async: Copying to clipboard was successful!");
-    },
-    function (err) {
-      console.error("Async: Could not copy text: ", err);
-    },
-  );
 }
 
 const Tooltip = styled.div`
@@ -296,10 +277,29 @@ const ProfileInList = ({
   addTrustedUser,
   removeTrustedUser,
 }: ProfileInListProps) => {
+  const [isCopy, setCopy] = useState<boolean>(false);
+
   const getAvatar = (loggedIn: string): HTMLDivElement =>
     jazzicon(164, parseInt(loggedIn.slice(2, 10), 16));
   const getAddress = (address: string) =>
     address.replace("0x000000000000000000000000", "0x");
+
+  function copyTextToClipboard(text: string) {
+    if (!navigator.clipboard) return fallbackCopyTextToClipboard(text);
+    
+    navigator.clipboard.writeText(text)
+      .then((copiedText)
+    );
+  }
+
+  function copiedText () {
+    setCopy(true);
+
+    const timer = setTimeout(() => {
+      setCopy(false);
+      clearTimeout(timer);
+    }, 1000)
+  }
 
   if (!address)
     return (
@@ -346,11 +346,15 @@ const ProfileInList = ({
         >
           {getAddress(address)}
         </a>
-        <StyledCopy
-          width={16}
-          height={16}
-          onClick={() => copyTextToClipboard(getAddress(address))}
-        />
+        {
+          isCopy
+            ? "Copied"
+            : <StyledCopy
+                width={16}
+                height={16}
+                onClick={() => copyTextToClipboard(getAddress(address))}
+              />
+        }
       </Address>
       <Button
         myAddress={myAddress}

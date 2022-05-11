@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, { useState, useMemo } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { ReactComponent as DappletListItemPlus } from "../../images/dappletListItemPlus.svg";
 import { ReactComponent as DappletListItemMinus } from "../../images/dappletListItemMinus.svg";
 import { ReactComponent as DappletListItemClose } from "../../images/dappletListItemClose.svg";
@@ -88,33 +88,34 @@ export interface DappletsListItemProps {
 }
 
 const DappletsListItem = (props: DappletsListItemProps) => {
-  const [hovered, setHovered] = useState(false);
+  const {
+    isRemoved,
+    onClickRemove,
+    title,
+    type,
+    id,
+    isPushing,
+    onClick,
+    subTitle
+  } = props;
 
-  const title = useMemo(() => {
-    if (!props.subTitle) {
-      return props.title;
-    }
-    if (hovered) {
-      return props.title;
-    }
-    return props.subTitle;
-  }, [hovered, props.subTitle, props.title]);
+  const isSubtitle = subTitle && subTitle.length > 0;
 
   return (
     <DappletsListItemWrapper
       type={props.type}
       onClick={() => {
-        if (props.onClick) props.onClick(props.id);
+        if (onClick) props.onClick(id);
       }}
-      isClickable={!!props.onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      isClickable={!!onClick}
     >
-      <TitleIcon type={props.type} />
-      <Title type={props.type}>{title}</Title>
-      {props.isRemoved && (
+      <TitleIcon type={type} />
+      <Title type={type} title={isSubtitle ? title : ""}>
+        {isSubtitle ? subTitle : title}
+      </Title>
+      {isRemoved && (
         <DappletListItemCloseWrapper
-          onClick={props.onClickRemove()}
+          onClick={onClickRemove()}
         >
           <DappletListItemClose />
         </DappletListItemCloseWrapper>
