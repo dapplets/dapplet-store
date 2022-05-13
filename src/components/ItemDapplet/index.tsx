@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import styled from "styled-components";
 import { ReactComponent as DappletListItemMoved } from "../DappletsListItem/arrow-down-circle.svg";
-import cn from 'classnames';
+import cn from "classnames";
 
 import styles from "./ItemDapplet.module.scss";
 import {

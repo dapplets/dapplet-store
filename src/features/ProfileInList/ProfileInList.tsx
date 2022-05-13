@@ -235,7 +235,6 @@ const Button = ({
           setTrustedUsersList([...trustedUsersList, address]);
           addTrustedUser(address);
           console.log(trustedUsersList);
-          
         }}
       >
         <UserPlus />
@@ -289,19 +288,17 @@ const ProfileInList = ({
 
   function copyTextToClipboard(text: string) {
     if (!navigator.clipboard) return fallbackCopyTextToClipboard(text);
-    
-    navigator.clipboard.writeText(text)
-      .then((copiedText)
-    );
+
+    navigator.clipboard.writeText(text).then(copiedText);
   }
 
-  function copiedText () {
+  function copiedText() {
     setCopy(true);
 
     const timer = setTimeout(() => {
       setCopy(false);
       clearTimeout(timer);
-    }, 1000)
+    }, 1000);
   }
 
   if (!address)
@@ -349,15 +346,15 @@ const ProfileInList = ({
         >
           {getAddress(address)}
         </a>
-        {
-          isCopy
-            ? "Copied"
-            : <StyledCopy
-                width={16}
-                height={16}
-                onClick={() => copyTextToClipboard(getAddress(address))}
-              />
-        }
+        {isCopy ? (
+          "Copied"
+        ) : (
+          <StyledCopy
+            width={16}
+            height={16}
+            onClick={() => copyTextToClipboard(getAddress(address))}
+          />
+        )}
       </Address>
       <Button
         myAddress={myAddress}
