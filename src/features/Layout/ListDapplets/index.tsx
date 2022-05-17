@@ -186,10 +186,9 @@ const ListDapplets = ({
         dappletsList: MyListElement[],
         type: DappletsListItemTypes,
       ) => {
-        const isLocalDapplet = dappletsList.some(
-          (dapplet) => dapplet.name === item.name,
-        );
+        const isLocalDapplet = dappletsList.some(d => d.name === item.name);
         let nowDappletsList;
+
         if (isLocalDapplet) {
           nowDappletsList = dappletsList.filter(
             (dapplet) => dapplet.name !== item.name,
@@ -199,15 +198,21 @@ const ListDapplets = ({
             moduleName: item.name,
           });
         } else {
+          const newDapplet = {
+            name: item.name,
+            id: item.id,
+            type,
+          }
           nowDappletsList = [
-            { name: item.name, type, id: item.id },
             ...dappletsList,
+            newDapplet,
           ];
           addMyDapplet({
             registryUrl: "",
             moduleName: item.name,
           });
         }
+
         const newDappletsList: MyListElement[] = nowDappletsList;
         return newDappletsList;
       },

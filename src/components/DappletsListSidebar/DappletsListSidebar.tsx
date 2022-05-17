@@ -83,44 +83,70 @@ interface DappletsListSidebarProps {
 }
 
 const DappletsListSidebar = (props: DappletsListSidebarProps) => {
+  const {
+    dappletsList,
+    isMoreShow,
+    isOpen,
+    onOpenList,
+    setIsOpen,
+    title,
+    isPushing,
+    onElementClick,
+    titleButton,
+  } = props;
+
   return (
     <ListWrapper>
       <TitleWrapper>
         <Title
           onClick={() => {
-            if (props.dappletsList.length)
-              props.setIsOpen(props.isOpen ? null : props.title);
+            if (dappletsList.length) setIsOpen(isOpen ? null : title);
           }}
-          color={props.isOpen ? "#2A2A2A" : "#747376"}
+          color={isOpen ? "#2A2A2A" : "#747376"}
         >
-          {!!props.dappletsList.length &&
-            (props.isOpen ? <span>-</span> : <span>+</span>)}{" "}
-          {props.title}
+          {!!dappletsList.length && (isOpen ? <span>-</span> : <span>+</span>)}{" "}
+          {title}
         </Title>
-        {props.titleButton && (
+        {titleButton && (
           <TitleButtonWrapper
-            disabled={!!props.isPushing}
-            onClick={props.titleButton?.onClick}
+            disabled={!!isPushing}
+            onClick={titleButton?.onClick}
           >
-            {props.titleButton?.title}
+            {titleButton?.title}
           </TitleButtonWrapper>
         )}
       </TitleWrapper>
-      {props.isOpen && !!props.dappletsList.length && (
+      {isOpen && !!dappletsList.length && (
         <DappletsListItemWrapper>
-          {props.dappletsList
+          {dappletsList
             .filter(({ title }) => !!title)
-            .map((dapplet) => (
-              <DappletsListItem
-                key={dapplet.id}
-                onClick={props.onElementClick}
-                subTitle={dapplet.subTitle}
-                isPushing={!!props.isPushing}
-                {...dapplet}
-              />
-            ))}
-          {props.isMoreShow && (
-            <MoreWrapper onClick={props.onOpenList}>show more</MoreWrapper>
+            .map(
+              ({
+                id,
+                subTitle,
+                isRemoved,
+                onClickRemove,
+                title,
+                type,
+                isPushing,
+              }) => {
+                return (
+                  <DappletsListItem
+                    key={id}
+                    onClick={onElementClick}
+                    subTitle={subTitle}
+                    isPushing={!!isPushing}
+                    isRemoved={isRemoved}
+                    onClickRemove={onClickRemove}
+                    title={title}
+                    type={type}
+                    id={id}
+                  />
+                );
+              },
+            )}
+          {isMoreShow && (
+            <MoreWrapper onClick={onOpenList}>show more</MoreWrapper>
           )}
         </DappletsListItemWrapper>
       )}

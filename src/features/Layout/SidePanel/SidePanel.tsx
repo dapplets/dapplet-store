@@ -262,13 +262,15 @@ const SidePanel = ({
   return (
     <Wrapper className={className}>
       <ListWrapper>
+
+        {/* My Dapplets */}
         <DappletsListSidebar
-          dappletsList={localDappletsList.slice(0, 5).map((dapplet) => {
+          dappletsList={localDappletsList.map((dapplet) => {
             return {
               title:
                 dapplets.find(({ name }) => dapplet.name === name)?.title || "",
               type: dapplet.type,
-              id: String(dapplet.id),
+              id: String(dapplet.id || dapplet.name),
               onClickRemove: () => removeFromLocalList(dapplet.name),
               isRemoved: true,
             };
@@ -299,7 +301,7 @@ const SidePanel = ({
                     dapplet.event !== undefined
                     ? DappletsListItemTypes.Moved
                     : dapplet.type,
-                id: String(dapplet.id),
+                id: String(dapplet.id || dapplet.name),
                 onClickRemove: () => removeFromSelectedList(dapplet.name),
                 isRemoved:
                   dapplet.type !== DappletsListItemTypes.Default ||
