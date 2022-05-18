@@ -263,7 +263,7 @@ const effects = (dispatch: any) => ({
     }
     await Promise.all(myPromises);
     const contractListing: any = new ethers.Contract(
-      "0x2446a2d38c99e22ea47b02a38d2afa41001618ca",
+      "0xD8298EBF33a44e954AeaC125231547A1426Cb412",
       abiListing2,
       provider,
     );
@@ -295,7 +295,7 @@ const effects = (dispatch: any) => ({
     events: EventPushing[];
     provider: any;
     dappletsNames: { [name: number]: string };
-    links: { currentModuleIdx: number; nextModuleIdx: number }[];
+    links: { prev: number; next: number }[];
   }) => {
     if (provider.chainId !== "0x5") {
       dispatch.modals.setModalOpen({
@@ -325,7 +325,7 @@ const effects = (dispatch: any) => ({
     const ethersProvider = new ethers.providers.Web3Provider(provider);
     const signer = await ethersProvider.getSigner();
     const contractListing: any = await new ethers.Contract(
-      "0x2446a2d38c99e22ea47b02a38d2afa41001618ca",
+      "0xD8298EBF33a44e954AeaC125231547A1426Cb412",
       abiListing2,
       signer,
     ); //0xc8B80C2509e7fc553929C86Eb54c41CC20Bb05fB //0x3470ab240a774e4D461456D51639F033c0cB5363

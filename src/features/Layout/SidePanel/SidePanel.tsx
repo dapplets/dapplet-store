@@ -36,7 +36,7 @@ const mapDispatch = (dispatch: RootDispatch) => ({
     events: EventPushing[];
     provider: any;
     dappletsNames: { [name: number]: string };
-    links: { currentModuleIdx: number; nextModuleIdx: number }[];
+    links: { prev: number; next: number }[];
   }) => dispatch.dapplets.pushMyListing(payload),
   setLocked: (payload: boolean) =>
     dispatch.user.setUser({
@@ -229,8 +229,8 @@ const SidePanel = ({
     for (let i = 0; i < maxLength; i++) {
       if (asisLinks[i] !== tobeLinks[i]) {
         changedLinks.push({
-          currentModuleIdx: i,
-          nextModuleIdx: tobeLinks[i] ?? 0xFFFFFFFF
+          prev: i,
+          next: tobeLinks[i] ?? 0x00000000
         });
       }
     }
@@ -241,6 +241,7 @@ const SidePanel = ({
       dappletsStandard.forEach(({ id, name }) => {
         dappletsNames[id] = name;
       });
+      console.log('changedLinks', changedLinks);
       setLocked(true);
       await pushMyListing({
         address: address || "",

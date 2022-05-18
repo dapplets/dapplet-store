@@ -3,18 +3,10 @@ export default [
     inputs: [
       {
         components: [
-          {
-            internalType: "uint32",
-            name: "currentModuleIdx",
-            type: "uint32",
-          },
-          {
-            internalType: "uint32",
-            name: "nextModuleIdx",
-            type: "uint32",
-          },
+          { internalType: "uint32", name: "prev", type: "uint32" },
+          { internalType: "uint32", name: "next", type: "uint32" },
         ],
-        internalType: "struct ListLink[]",
+        internalType: "struct LinkedList.Link[]",
         name: "links",
         type: "tuple[]",
       },
@@ -26,76 +18,32 @@ export default [
   },
   {
     inputs: [
-      {
-        internalType: "address",
-        name: "lister",
-        type: "address",
-      },
-      {
-        internalType: "uint32",
-        name: "moduleIdx",
-        type: "uint32",
-      },
+      { internalType: "address", name: "lister", type: "address" },
+      { internalType: "uint32", name: "moduleIdx", type: "uint32" },
     ],
     name: "containsModuleInListing",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
-    ],
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
     stateMutability: "view",
     type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: "address",
-        name: "lister",
-        type: "address",
-      },
-    ],
+    inputs: [{ internalType: "address", name: "lister", type: "address" }],
     name: "getLinkedList",
-    outputs: [
-      {
-        internalType: "uint32[]",
-        name: "",
-        type: "uint32[]",
-      },
-    ],
+    outputs: [{ internalType: "uint32[]", name: "", type: "uint32[]" }],
     stateMutability: "view",
     type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: "address",
-        name: "lister",
-        type: "address",
-      },
-    ],
+    inputs: [{ internalType: "address", name: "lister", type: "address" }],
     name: "getLinkedListSize",
-    outputs: [
-      {
-        internalType: "uint32",
-        name: "",
-        type: "uint32",
-      },
-    ],
+    outputs: [{ internalType: "uint32", name: "", type: "uint32" }],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [],
     name: "getListers",
-    outputs: [
-      {
-        internalType: "address[]",
-        name: "",
-        type: "address[]",
-      },
-    ],
+    outputs: [{ internalType: "address[]", name: "", type: "address[]" }],
     stateMutability: "view",
     type: "function",
   },
