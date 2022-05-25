@@ -25,7 +25,7 @@ const Wrapper = styled.div<WrapperProps>`
 
   grid-template-columns: 430px 1fr ${({ isNotDapplet }) =>
     isNotDapplet ? `430px` : "0"};
-  grid-template-rows: 51px 1fr;
+  grid-template-rows: 84px 1fr;
 
   grid-template-areas:
     "header header header"
@@ -38,7 +38,6 @@ const StyledHeader = styled(Header)`
 `;
 
 const StyledSidePanel = styled(SidePanel)`
-  background-color: #f5f5f5;
   grid-area: sidePanel;
 `;
 
