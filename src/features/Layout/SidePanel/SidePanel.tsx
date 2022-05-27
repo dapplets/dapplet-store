@@ -5,6 +5,7 @@ import React, {
   HTMLAttributes,
   useEffect,
   useMemo,
+  useRef,
 } from "react";
 
 import { saveListToLocalStorage } from "../../../lib/localStorage";
@@ -18,6 +19,24 @@ import { IDapplet } from "../../../models/dapplets";
 import styled from "styled-components";
 import { Lists, MyListElement } from "../../../models/myLists";
 import { EventPushing, EventType } from "../../../models/dapplets";
+import { ReactComponent as Logout } from "../../../images/logout.svg";
+import jazzicon from "@metamask/jazzicon";
+
+/* TODO: clean those helpers out somewhere after i'll find out where */
+
+const replaceBetween = (
+  string: string,
+  start: number,
+  end: number,
+  replacer: string,
+) => {
+  return string
+    .slice(0, start)
+    .concat(replacer)
+    .concat(string.slice(-1 * end));
+};
+
+const shortendAddress = (addres: string) => replaceBetween(addres, 8, 8, "...");
 
 const mapState = (state: RootState) => ({
   address: state.user.address,
@@ -44,25 +63,122 @@ const mapDispatch = (dispatch: RootDispatch) => ({
     }),
   removeMyDapplet: (payload: { registryUrl: string; moduleName: string }) =>
     dispatch.myLists.removeMyDapplet(payload),
+  setUser: (payload: string) =>
+    dispatch.user.setUser({
+      address: payload,
+    }),
 });
 
 const Wrapper = styled.aside`
-  padding: 0 40px;
-  padding-bottom: 50px;
-
-  display: grid;
-  grid-template-rows: 1fr max-content;
-  /* & > div { */
-  /* margin-top: 28px;
-  } */
+  background-color: #f5f5f5;
+  color: #747376;
 `;
 
 const ListWrapper = styled.div`
   display: grid;
   grid-row-gap: 30px;
   grid-template-rows: repeat(4, max-content);
-  padding-top: 42px;
+  padding-top: 20px;
+  padding-left: 60px;
 `;
+
+const Profile = styled.div`
+  background: #ebebeb;
+  padding-top: 32px;
+  padding-bottom: 32px;
+`;
+
+const Avatar = styled.div`
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  cursor: pointer;
+`;
+
+const UserInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const UserName = styled.span`
+  font-size: 24px;
+`;
+
+const Connected = styled.div`
+  display: flex;
+  padding-left: 60px;
+  padding-right: 24px;
+  gap: 10px;
+  align-items: center;
+`;
+
+const NotConnected = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-left: 60px;
+  padding-right: 34px;
+`;
+
+const InvisibleButton = styled.button`
+  background: transparent;
+  outline: none;
+  display: flex;
+  border: none;
+`;
+
+const ConnectButton = styled.button`
+  box-shadow: none;
+  outline: inherit;
+  border: none;
+  border-radius: 4px;
+  display: grid;
+  justify-content: center;
+  align-content: center;
+  font-family: Roboto;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 14px;
+  letter-spacing: 0em;
+  text-align: center;
+  color: white;
+  background: #d9304f;
+  cursor: pointer;
+
+  width: 130px;
+  height: 32px;
+
+  &:hover {
+    background: #f26680;
+  }
+`;
+
+interface VanillaChildrenProps {
+  children: HTMLElement | HTMLDivElement;
+}
+
+const VanillaChildren = ({ children }: VanillaChildrenProps): JSX.Element => {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    while (ref.current?.firstChild) {
+      ref.current?.removeChild(ref.current?.firstChild);
+    }
+    ref.current?.appendChild(children);
+  }, [children, ref]);
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+      ref={ref}
+    />
+  );
+};
 
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
 
@@ -106,7 +222,16 @@ const SidePanel = ({
   pushMyListing,
   setLocked,
   removeMyDapplet,
+  setUser,
 }: SidePanelProps & Props): React.ReactElement => {
+  const getAvatar = (loggedIn: string): HTMLDivElement =>
+    jazzicon(60, parseInt(loggedIn.slice(2, 10), 16));
+
+  const addressShort = useMemo(
+    () => (address ? address.replace("0x000000000000000000000000", "0x") : ""),
+    [address],
+  );
+
   const removeFromLocalList = (name: string) => (e: any) => {
     e.preventDefault();
     const list = localDappletsList.filter((dapp) => dapp.name !== name);
@@ -210,27 +335,32 @@ const SidePanel = ({
       });
 
     const tobeLinks: number[] = [];
-    const tobeIds = myListing.filter(x => x.type !== DappletsListItemTypes.Removing).map(x => x.id);
+    const tobeIds = myListing
+      .filter((x) => x.type !== DappletsListItemTypes.Removing)
+      .map((x) => x.id);
     tobeIds.forEach((x, i) => {
       tobeLinks[tobeIds[i - 1] ?? 0] = x;
-      tobeLinks[x] = tobeIds[i + 1] ?? 0xFFFFFFFF;
+      tobeLinks[x] = tobeIds[i + 1] ?? 0xffffffff;
     });
 
     const asisLinks: number[] = [];
-    const asisIds = myOldListing.filter(x => x.type !== DappletsListItemTypes.Adding).map(x => x.id);
+    const asisIds = myOldListing
+      .filter((x) => x.type !== DappletsListItemTypes.Adding)
+      .map((x) => x.id);
     asisIds.forEach((x, i) => {
       asisLinks[asisIds[i - 1] ?? 0] = x;
-      asisLinks[x] = asisIds[i + 1] ?? 0xFFFFFFFF;
+      asisLinks[x] = asisIds[i + 1] ?? 0xffffffff;
     });
 
-    const maxLength = (asisLinks.length > tobeLinks.length) ? asisLinks.length : tobeLinks.length;
+    const maxLength =
+      asisLinks.length > tobeLinks.length ? asisLinks.length : tobeLinks.length;
 
     const changedLinks = [];
     for (let i = 0; i < maxLength; i++) {
       if (asisLinks[i] !== tobeLinks[i]) {
         changedLinks.push({
           prev: i,
-          next: tobeLinks[i] ?? 0x00000000
+          next: tobeLinks[i] ?? 0x00000000,
         });
       }
     }
@@ -241,14 +371,14 @@ const SidePanel = ({
       dappletsStandard.forEach(({ id, name }) => {
         dappletsNames[id] = name;
       });
-      console.log('changedLinks', changedLinks);
+      console.log("changedLinks", changedLinks);
       setLocked(true);
       await pushMyListing({
         address: address || "",
         events,
         provider,
         dappletsNames,
-        links: changedLinks
+        links: changedLinks,
       });
       // saveListToLocalStorage(newDappletsList, Lists.MyListing);
       // setSelectedDappletsList(newDappletsList);
@@ -262,8 +392,56 @@ const SidePanel = ({
 
   return (
     <Wrapper className={className}>
-      <ListWrapper>
+      <Profile>
+        {address ? (
+          <Connected>
+            <Avatar
+              onClick={() => {
+                setModalOpen({ openedModal: ModalsList.User, settings: null });
+              }}
+            >
+              <VanillaChildren>{getAvatar(addressShort)}</VanillaChildren>
+            </Avatar>
+            <UserInfo>
+              <UserName>Tobe Namovich</UserName>
+              {shortendAddress(address)}
+            </UserInfo>
+            <InvisibleButton
+              //TODO: CLEAN THE DUCK UP THIS BLOODY MESS!!!
+              onClick={async () => {
+                try {
+                  localStorage["login"] = "";
+                  localStorage["metamask_disabled"] = "true";
+                  const prov: any = provider;
+                  prov.disconnect();
+                } catch (error) {
+                  console.error(error);
+                }
+                setUser("");
+                setModalOpen({ openedModal: null, settings: null });
+              }}
+            >
+              <Logout />
+            </InvisibleButton>
+          </Connected>
+        ) : (
+          <NotConnected>
+            <span>For fully work with the store - connect a wallet</span>
+            <ConnectButton
+              onClick={() => {
+                setModalOpen({
+                  openedModal: ModalsList.Login,
+                  settings: null,
+                });
+              }}
+            >
+              Connect
+            </ConnectButton>
+          </NotConnected>
+        )}
+      </Profile>
 
+      <ListWrapper>
         {/* My Dapplets */}
         <DappletsListSidebar
           dappletsList={localDappletsList.map((dapplet) => {
@@ -293,13 +471,14 @@ const SidePanel = ({
         <DappletsListSidebar
           dappletsList={selectedDappletsList
             .slice(0, isMyListing ? selectedDappletsList.length : 5)
-            .map((dapplet) => {              
+            .map((dapplet) => {
               return {
                 title:
-                  dapplets.find(({ name }) => dapplet.name === name)?.title || "",
+                  dapplets.find(({ name }) => dapplet.name === name)?.title ||
+                  "",
                 type:
                   dapplet.type === DappletsListItemTypes.Default &&
-                    dapplet.event !== undefined
+                  dapplet.event !== undefined
                     ? DappletsListItemTypes.Moved
                     : dapplet.type,
                 id: String(dapplet.id || dapplet.name),
@@ -341,22 +520,22 @@ const SidePanel = ({
               (user) =>
                 !address ||
                 address?.replace("0x000000000000000000000000", "0x") !==
-                user.replace("0x000000000000000000000000", "0x"),
+                  user.replace("0x000000000000000000000000", "0x"),
             )
             .map((user) => ({
               title: user.replace("0x000000000000000000000000", "0x"),
               subTitle: `${user
                 .replace("0x000000000000000000000000", "0x")
                 .slice(0, 6)}...${user
-                  .replace("0x000000000000000000000000", "0x")
-                  .slice(-4)}`,
+                .replace("0x000000000000000000000000", "0x")
+                .slice(-4)}`,
               id: user,
               type: DappletsListItemTypes.Default,
-              onClickRemove: () => { },
+              onClickRemove: () => {},
               isRemoved: false,
             }))}
           title={SideLists.MyTrustedUsers}
-          onOpenList={() => { }}
+          onOpenList={() => {}}
           isMoreShow={false}
           onElementClick={(id: string) =>
             setSort({

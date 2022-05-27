@@ -52,7 +52,7 @@ const CheckboxWrapper = styled.div<CheckboxWrapperProps>`
     border-radius: 50%;
     margin-top: 2px;
     border: ${({ isTrustedSort }) =>
-    isTrustedSort ? "5px solid #D9304F" : "1px solid #919191"};
+      isTrustedSort ? "5px solid #D9304F" : "1px solid #919191"};
     position: relative;
   }
 `;
@@ -186,7 +186,7 @@ const ListDapplets = ({
         dappletsList: MyListElement[],
         type: DappletsListItemTypes,
       ) => {
-        const isLocalDapplet = dappletsList.some(d => d.name === item.name);
+        const isLocalDapplet = dappletsList.some((d) => d.name === item.name);
         let nowDappletsList;
 
         if (isLocalDapplet) {
@@ -202,11 +202,8 @@ const ListDapplets = ({
             name: item.name,
             id: item.id,
             type,
-          }
-          nowDappletsList = [
-            ...dappletsList,
-            newDapplet,
-          ];
+          };
+          nowDappletsList = [...dappletsList, newDapplet];
           addMyDapplet({
             registryUrl: "",
             moduleName: item.name,
@@ -462,7 +459,7 @@ const ListDapplets = ({
       <div
         ref={ref}
         style={{
-          height: "calc(100vh - 51px)",
+          height: "calc(100vh - 84px)",
           overflow: "auto",
           padding: "0 !important",
           margin: "0 !important",
