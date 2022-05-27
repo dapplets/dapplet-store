@@ -33,6 +33,7 @@ const InvisibleButton = styled.button`
   outline: none;
   display: flex;
   border: none;
+  cursor: pointer;
 `;
 
 const Channels = styled.div`

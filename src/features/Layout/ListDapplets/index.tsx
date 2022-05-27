@@ -9,7 +9,7 @@ import ItemDapplet from "../../../components/ItemDapplet";
 import { DappletsListItemTypes } from "../../../components/DappletsListItem/DappletsListItem";
 
 import ProfileInList from "../../ProfileInList/ProfileInList";
-import { SideLists } from "../SidePanel/SidePanel";
+import { LegacySideLists } from "../SidePanel/SidePanel";
 import { IDapplet } from "../../../models/dapplets";
 import { Sort, SortTypes } from "../../../models/sort";
 import { Lists, MyListElement } from "../../../models/myLists";
@@ -218,7 +218,7 @@ const ListDapplets = ({
 
   const editLocalDappletsList = useMemo(
     () => (item: IDapplet) => {
-      setOpenedList(SideLists.MyDapplets);
+      setOpenedList(LegacySideLists.MyDapplets);
       const newLocalDappletsList = editList(
         item,
         localDapplets,
@@ -233,7 +233,7 @@ const ListDapplets = ({
   // TODO: most likely here the deleted element becomes up
   const editSelectedDappletsList = useMemo(
     () => (item: IDapplet) => {
-      setOpenedList(SideLists.MyListing);
+      setOpenedList(LegacySideLists.MyListing);
 
       let nowDappletsList: MyListElement[] = selectedDapplets;
       const indexSelectedDapplet = nowDappletsList.findIndex(

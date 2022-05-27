@@ -23,14 +23,14 @@ const Wrapper = styled.div<WrapperProps>`
 
   height: 100%;
 
-  grid-template-columns: 430px 1fr ${({ isNotDapplet }) =>
-    isNotDapplet ? `430px` : "0"};
+  grid-template-columns: 455px 1fr ${({ isNotDapplet }) =>
+      isNotDapplet ? `455px` : "0"};
   grid-template-rows: 84px 1fr;
 
   grid-template-areas:
     "header header header"
     ${({ isSmall }) =>
-    `"sidePanel content ${isSmall ? "content" : "overlay"}"`};
+      `"sidePanel content ${isSmall ? "content" : "overlay"}"`};
 `;
 
 const StyledHeader = styled(Header)`
@@ -94,7 +94,6 @@ const Layout = ({
   setOpenedList,
   windowWidth,
   isNotDapplet,
-
   dapplets,
   sortType,
   addressFilter,
@@ -116,14 +115,14 @@ const Layout = ({
       name: Lists.MyDapplets,
       elements,
     });
-  }
+  };
   const selectedDappletsList = myLists[Lists.MyListing];
   const setSelectedDappletsList = (elements: MyListElement[]) => {
     setMyList({
       name: Lists.MyListing,
       elements,
     });
-  }
+  };
 
   const dappletsByList = useMemo(() => {
     if (!dapplets || !selectedList) return dapplets;
