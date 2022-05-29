@@ -1,14 +1,8 @@
 import React, { useMemo } from "react";
 import styled from "styled-components";
 import { ReactComponent as DappletListItemMoved } from "../DappletsListItem/arrow-down-circle.svg";
+import { DAPPLET_LISTING_STAGES } from "../../Constants";
 import cn from "classnames";
-
-import styles from "./ItemDapplet.module.scss";
-import {
-  DappletButton,
-  DappletButtonTypes,
-} from "./DappletButton/DappletButton";
-
 import Highlighter from "react-highlight-words";
 import DappletListersPopup from "../../features/DappletListersPopup/DappletListersPopup";
 import { IDapplet } from "../../models/dapplets";
@@ -20,6 +14,9 @@ import { Lists, MyListElement } from "../../models/myLists";
 import { Image } from "semantic-ui-react";
 import { useCallback } from "react";
 import { DappletsListItemTypes } from "../DappletsListItem/DappletsListItem";
+import Button from "./Button";
+
+import styles from "./ItemDapplet.module.scss";
 
 const mapState = (state: RootState) => ({
   address: state.user.address,
@@ -135,14 +132,14 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
     if (selectedDapplet)
       switch (selectedDapplet.type) {
         case "Adding":
-          return DappletButtonTypes.AddingToList;
+          return DAPPLET_LISTING_STAGES.PENIDNG_ADD;
         case "Removing":
-          return DappletButtonTypes.RemovingFromList;
+          return DAPPLET_LISTING_STAGES.PENDING_REMOVE;
         default:
         case "Default":
-          return DappletButtonTypes.InMyList;
+          return DAPPLET_LISTING_STAGES.PRESENTED;
       }
-    return DappletButtonTypes.AddToList;
+    return DAPPLET_LISTING_STAGES.ADD;
   }, [item.name, selectedDapplets]);
 
   const owner = useMemo(
@@ -210,6 +207,28 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
   ]);
 
   const listLength = [...trustedList, ...otherList].length;
+
+  const onLocalListingButtonClick = (e: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (isNotDapplet)
+      setModalOpen({
+        openedModal: ModalsList.Install,
+        settings: null,
+      });
+    else editLocalDappletsList(item);
+  };
+
+  const onPublicListingButtonClick = (e: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!address)
+      setModalOpen({
+        openedModal: ModalsList.Login,
+        settings: null,
+      });
+    else editSelectedDappletsList(item);
+  };
 
   if (!item) return <></>;
   return (
@@ -338,36 +357,20 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
       {/* TODO: YOU NEED TO CHECK HOW IT WORKS */}
       {/* TODO: DappletButtonTypes.InMyDapplets : DappletButtonTypes.AddToMy */}
       <ButtonsWrapper>
-        <DappletButton
-          type={
+        <Button
+          onClick={onLocalListingButtonClick}
+          listing="local"
+          stage={
             isLocalDapplet
-              ? DappletButtonTypes.InMyDapplets
-              : DappletButtonTypes.AddToMy
+              ? DAPPLET_LISTING_STAGES.PRESENTED
+              : DAPPLET_LISTING_STAGES.ADD
           }
-          onClick={(e: any) => {
-            e.preventDefault();
-            e.stopPropagation();
-            if (isNotDapplet)
-              setModalOpen({
-                openedModal: ModalsList.Install,
-                settings: null,
-              });
-            else editLocalDappletsList(item);
-          }}
         />
-        <DappletButton
-          type={getSelectedType()}
-          onClick={(e: any) => {
-            e.preventDefault();
-            e.stopPropagation();
-            if (!address)
-              setModalOpen({
-                openedModal: ModalsList.Login,
-                settings: null,
-              });
-            else editSelectedDappletsList(item);
-          }}
-          disabled={isLocked}
+
+        <Button
+          onClick={onPublicListingButtonClick}
+          listing="public"
+          stage={getSelectedType()}
         />
       </ButtonsWrapper>
     </div>
