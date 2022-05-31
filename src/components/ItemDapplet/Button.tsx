@@ -1,18 +1,23 @@
-import React, { ReactNode, useRef } from "react";
+import React, { ReactNode, useRef, useState } from "react";
 import styled, { css } from "styled-components";
-import addIcon from "../../images/plus.svg";
-import inLocalListIcon from "../../images/cpu.svg";
-import inPublicListIcon from "../../images/alignCenter.svg";
-import removeIcon from "../../images/remove.svg";
+
+import { ReactComponent as AddIcon } from "../../images/plus.svg";
+import { ReactComponent as InLocalListIcon } from "../../images/cpu.svg";
+import { ReactComponent as InPublicListIcon } from "../../images/alignCenter.svg";
+import { ReactComponent as RemoveIcon } from "../../images/remove.svg";
+
 import {
   DAPPLET_BUTTON_TEXT as ButtonText,
   DAPPLET_LISTING_STAGES,
   DAPPLET_LISTINGS_NAMES,
 } from "../../Constants";
 
-const Basic = styled.button`
+const Basic = styled.button<{
+  listing: string;
+}>`
   display: flex;
   justify-content: center;
+  gap: 5px;
   align-items: center;
   border-radius: 40px;
   width: 188px;
@@ -20,7 +25,26 @@ const Basic = styled.button`
   cursor: pointer;
 `;
 
-const Add = styled(Basic)`
+const addToPublic = css`
+  border: 1px solid #588ca3;
+  color: #588ca3;
+  background-color: transparent;
+
+  &:hover {
+    background-color: #588ca3;
+    color: white;
+
+    & svg {
+      stroke: white;
+    }
+  }
+
+  & svg {
+    stroke: #588ca3;
+  }
+`;
+
+const addToLocal = css`
   color: white;
   background-color: #d9304f;
   border: 1px solid #d9304f;
@@ -30,18 +54,14 @@ const Add = styled(Basic)`
     border-color: #f26680;
   }
 
-  &::before {
-    content: url(${addIcon});
-    display: inline-block;
-    vertical-align: middle;
-    height: 16px;
-    line-height: normal;
-    margin-right: 10px;
-  }
-
   & svg {
     stroke: white;
   }
+`;
+
+const Add = styled(Basic)`
+  ${(props) =>
+    props.listing === DAPPLET_LISTINGS_NAMES.LOCAL ? addToLocal : addToPublic}
 `;
 
 const Adding = styled(Basic)`
@@ -56,10 +76,8 @@ const Adding = styled(Basic)`
   }
 `;
 
-const Presented = styled(Basic)<{
-  icon: string;
-}>`
-  border-color: transparent;
+const Presented = styled(Basic)`
+  border: 1px solid #e3e3e3;
   background-color: transparent;
   color: #5ab5e8;
 
@@ -67,24 +85,6 @@ const Presented = styled(Basic)<{
     border: 1px solid #919191;
     background-color: transparent;
     color: #919191;
-
-    &::before {
-      content: url(${removeIcon});
-      display: inline-block;
-      vertical-align: middle;
-      height: 16px;
-      line-height: normal;
-      margin-right: 6px;
-    }
-  }
-
-  &::before {
-    content: url(${(props) => props.icon});
-    display: inline-block;
-    vertical-align: middle;
-    height: 16px;
-    line-height: normal;
-    margin-right: 10px;
   }
 `;
 
@@ -100,11 +100,54 @@ const Removing = styled(Basic)`
   }
 `;
 
-const StyledButtons = {
+const styledButtons = {
   add: Add,
   adding: Adding,
   presented: Presented,
   removing: Removing,
+};
+
+const ICON_MAP = {
+  add: {
+    local: {
+      base: AddIcon,
+      hover: AddIcon,
+    },
+    public: {
+      base: AddIcon,
+      hover: AddIcon,
+    },
+  },
+  adding: {
+    local: {
+      base: null,
+      hover: null,
+    },
+    public: {
+      base: null,
+      hover: null,
+    },
+  },
+  presented: {
+    local: {
+      base: InLocalListIcon,
+      hover: RemoveIcon,
+    },
+    public: {
+      base: InPublicListIcon,
+      hover: RemoveIcon,
+    },
+  },
+  removing: {
+    local: {
+      base: null,
+      hover: null,
+    },
+    public: {
+      base: null,
+      hover: null,
+    },
+  },
 };
 
 type stagesKeys = keyof typeof DAPPLET_LISTING_STAGES;
@@ -119,34 +162,34 @@ type ButtonProps = {
   onClick: (e: any) => void;
 };
 
-const Button = ({ stage, listing: list, onClick }: ButtonProps) => {
-  const ref = useRef<HTMLButtonElement>(null);
-
-  const Button = StyledButtons[stage];
-  const textList = ButtonText[list];
+const Button = ({ stage, listing, onClick }: ButtonProps) => {
+  const Button = styledButtons[stage];
+  const textList = ButtonText[listing];
   const { base: basicText, hover: hoverText } = textList[stage];
 
-  const icon = list === "local" ? inLocalListIcon : inPublicListIcon;
-
-  const shouldHandleHover = ref.current !== null;
+  const [buttonText, setButtonText] = useState(basicText);
+  const [icon, setIcon] = useState({ svgEl: ICON_MAP[stage][listing].base });
+  const Icon = icon.svgEl;
 
   const handleOnMouseOver = () => {
-    if (shouldHandleHover) ref.current.innerText = hoverText;
+    setButtonText(hoverText);
+    setIcon({ svgEl: ICON_MAP[stage][listing].hover });
   };
 
   const handleOnMouseLeave = () => {
-    if (shouldHandleHover) ref.current.innerText = basicText;
+    setButtonText(basicText);
+    setIcon({ svgEl: ICON_MAP[stage][listing].base });
   };
 
   return (
     <Button
+      listing={listing}
       onClick={onClick}
-      ref={ref}
       onMouseOver={handleOnMouseOver}
       onMouseLeave={handleOnMouseLeave}
-      icon={icon}
     >
-      {basicText}
+      {Icon && <Icon></Icon>}
+      {buttonText}
     </Button>
   );
 };
