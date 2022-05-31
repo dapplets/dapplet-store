@@ -1,4 +1,4 @@
-import React, { ReactNode, useRef, useState } from "react";
+import React, { useState } from "react";
 import styled, { css } from "styled-components";
 
 import { ReactComponent as AddIcon } from "../../images/plus.svg";
