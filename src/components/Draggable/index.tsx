@@ -45,11 +45,12 @@ const Draggable = ({
 
   const isType =
     selectedDapplet?.type === DappletsListItemTypes.Default &&
-      selectedDapplet.event !== undefined
+    selectedDapplet.event !== undefined
       ? DappletsListItemTypes.Moved
       : selectedDapplet?.type;
 
-  const isRemoving = isSelectedDapplet &&
+  const isRemoving =
+    isSelectedDapplet &&
     selectedDapplet.type === DappletsListItemTypes.Removing;
 
   const isAdding =
@@ -71,7 +72,7 @@ const Draggable = ({
       })}
       style={style}
       ref={setNodeRef}
-    >1
+    >
       <div className={styles.itemContainer}>
         <div
           className={styles.item__draggable}
