@@ -71,7 +71,7 @@ const Draggable = ({
       })}
       style={style}
       ref={setNodeRef}
-    >
+    >1
       <div className={styles.itemContainer}>
         <div
           className={styles.item__draggable}

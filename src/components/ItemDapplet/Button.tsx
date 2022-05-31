@@ -1,4 +1,11 @@
-import React, { useState } from "react";
+import React, {
+  useState,
+  useEffect,
+  FunctionComponent,
+  SVGProps,
+  useRef,
+  MouseEvent,
+} from "react";
 import styled, { css } from "styled-components";
 
 import { ReactComponent as AddIcon } from "../../images/plus.svg";
@@ -11,6 +18,7 @@ import {
   DAPPLET_LISTING_STAGES,
   DAPPLET_LISTINGS_NAMES,
 } from "../../Constants";
+import simulateOnMouseHover from "../../lib/simulateOnMouseHover";
 
 const Basic = styled.button<{
   listing: string;
@@ -85,6 +93,14 @@ const Presented = styled(Basic)`
     border: 1px solid #919191;
     background-color: transparent;
     color: #919191;
+
+    & svg {
+      stroke: #919191;
+    }
+  }
+
+  & svg {
+    stroke: #5ab5e8;
   }
 `;
 
@@ -110,41 +126,41 @@ const styledButtons = {
 const ICON_MAP = {
   add: {
     local: {
-      base: AddIcon,
+      initial: AddIcon,
       hover: AddIcon,
     },
     public: {
-      base: AddIcon,
+      initial: AddIcon,
       hover: AddIcon,
     },
   },
   adding: {
     local: {
-      base: null,
+      initial: null,
       hover: null,
     },
     public: {
-      base: null,
+      initial: null,
       hover: null,
     },
   },
   presented: {
     local: {
-      base: InLocalListIcon,
+      initial: InLocalListIcon,
       hover: RemoveIcon,
     },
     public: {
-      base: InPublicListIcon,
+      initial: InPublicListIcon,
       hover: RemoveIcon,
     },
   },
   removing: {
     local: {
-      base: null,
+      initial: null,
       hover: null,
     },
     public: {
-      base: null,
+      initial: null,
       hover: null,
     },
   },
@@ -159,16 +175,31 @@ type Listings = typeof DAPPLET_LISTINGS_NAMES[listingKeys];
 type ButtonProps = {
   stage: Stages;
   listing: Listings;
-  onClick: (e: any) => void;
+  onClick: (e: MouseEvent<HTMLButtonElement>) => void;
+};
+
+type Icon = {
+  svgEl: FunctionComponent<
+    SVGProps<SVGSVGElement> & { title?: string | undefined }
+  > | null;
 };
 
 const Button = ({ stage, listing, onClick }: ButtonProps) => {
+  const ref = useRef<HTMLButtonElement>(null);
   const Button = styledButtons[stage];
-  const textList = ButtonText[listing];
-  const { base: basicText, hover: hoverText } = textList[stage];
+  const { initial: initialText, hover: hoverText } = ButtonText[listing][stage];
 
-  const [buttonText, setButtonText] = useState(basicText);
-  const [icon, setIcon] = useState({ svgEl: ICON_MAP[stage][listing].base });
+  const [buttonText, setButtonText] = useState("");
+  const [icon, setIcon] = useState<Icon>({ svgEl: null });
+
+  useEffect(() => {
+    setButtonText(ButtonText[listing][stage].initial);
+  }, [listing, stage]);
+
+  useEffect(() => {
+    setIcon({ svgEl: ICON_MAP[stage][listing].initial });
+  }, [listing, stage]);
+
   const Icon = icon.svgEl;
 
   const handleOnMouseOver = () => {
@@ -177,15 +208,24 @@ const Button = ({ stage, listing, onClick }: ButtonProps) => {
   };
 
   const handleOnMouseLeave = () => {
-    setButtonText(basicText);
-    setIcon({ svgEl: ICON_MAP[stage][listing].base });
+    setButtonText(initialText);
+    setIcon({ svgEl: ICON_MAP[stage][listing].initial });
   };
 
   return (
     <Button
+      ref={ref}
       listing={listing}
-      onClick={onClick}
-      onMouseOver={handleOnMouseOver}
+      onClick={(e) => {
+        if (ref.current) {
+          setTimeout(() => {
+            simulateOnMouseHover(ref.current);
+          }, 0);
+        }
+
+        onClick(e);
+      }}
+      onMouseEnter={handleOnMouseOver}
       onMouseLeave={handleOnMouseLeave}
     >
       {Icon && <Icon></Icon>}

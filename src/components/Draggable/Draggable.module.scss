@@ -10,12 +10,12 @@
   box-shadow: none;
 
   &.isChanged {
-    border-width: 2px;
+    border-width: 1px;
     border-style: dashed;
   }
 
   &.isMoved {
-    border: 2px dashed #5AB5E8;
+    border: 1px dashed #5AB5E8;
   }
 
   &__draggable {

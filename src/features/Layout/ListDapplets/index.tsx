@@ -306,9 +306,9 @@ const ListDapplets = ({
     if (selectedList) {
       switch (selectedList) {
         case Lists.MyDapplets:
-          return "My Dapplets";
+          return "Local list";
         case Lists.MyListing:
-          return "My Listing";
+          return "Public list";
         default:
           return "";
       }
@@ -546,6 +546,7 @@ const ListDapplets = ({
                 })}
                 key={i}
               >
+                
                 <div className={styles.itemContainer}>
                   <ItemDapplet
                     key={item.name}
