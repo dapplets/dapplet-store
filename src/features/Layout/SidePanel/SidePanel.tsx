@@ -247,7 +247,7 @@ const SidePanel = ({
       if (asisLinks[i] !== tobeLinks[i]) {
         changedLinks.push({
           prev: i,
-          next: tobeLinks[i] ?? (i === 0) ? 0xffffffff : 0x00000000,
+          next: tobeLinks[i] ?? ((i === 0) ? 0xffffffff : 0x00000000),
         });
       }
     }
