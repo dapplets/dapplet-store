@@ -34,9 +34,12 @@ const MenuItem = styled.li`
   justify-content: space-between;
 `;
 
-const MenuItemLabel = styled.span`
+const MenuItemLabel = styled.span<{
+  disabled?: boolean;
+}>`
   cursor: pointer;
   min-width: 300px;
+  pointer-events: ${({ disabled }) => (disabled ? "none" : "auto")};
 `;
 
 const PublicListingActionButton = styled.button`
@@ -90,8 +93,6 @@ const SideNav = ({
 }: MenuProps) => {
   const myDapplets = myLists[Lists.MyDapplets];
   const myListing = myLists[Lists.MyListing];
-
-  console.log(myDapplets);
 
   const pendingActions = useMemo(
     () =>
@@ -159,35 +160,21 @@ const SideNav = ({
     else setOpenedList(LegacySideLists.TrustedUsers);
   };
 
+  const isMyListingEmpty = myListing.length === 0;
+  const isMyDappletEmpty = myDapplets.length === 0;
+  const isTrustedUSersListEmpty = formattedTrustedUsers.length === 0;
+
   return (
     <Wrapper>
       <MenuItem>
         <Tooltip
-          isOn={myDapplets.length === 0}
-          tipText={"Add dapplets here for local use from dapplets card"}
-        >
-          <MenuItemLabel
-            onClick={() => {
-              setSort({
-                selectedList: Lists.MyDapplets,
-                addressFilter: "",
-                searchQuery: "",
-              });
-            }}
-          >
-            Local list
-          </MenuItemLabel>
-        </Tooltip>
-      </MenuItem>
-
-      <MenuItem>
-        <Tooltip
-          isOn={myListing.length === 0}
+          isOn={isMyListingEmpty}
           tipText={
             "Add dapplets here for public use and for share it to your followers"
           }
         >
           <MenuItemLabel
+            disabled={isMyListingEmpty}
             onClick={() => {
               setSort({
                 selectedList: Lists.MyListing,
@@ -213,17 +200,39 @@ const SideNav = ({
 
       <MenuItem>
         <Tooltip
-          isOn={formattedTrustedUsers.length === 0}
-          tipText={
-            "Add dapplets here for public use and for share it to your followers"
-          }
+          isOn={isMyDappletEmpty}
+          tipText={"Add dapplets here for local use from dapplets card"}
         >
-          <MenuItemLabel>
-            <TrustedList
-              users={formattedTrustedUsers}
-              isOpen={isOpen}
-              onToggle={onTrustedUsersListToggle}
-            ></TrustedList>
+          <MenuItemLabel
+            disabled={isMyDappletEmpty}
+            onClick={() => {
+              setSort({
+                selectedList: Lists.MyDapplets,
+                addressFilter: "",
+                searchQuery: "",
+              });
+            }}
+          >
+            Local list
+          </MenuItemLabel>
+        </Tooltip>
+      </MenuItem>
+
+      <MenuItem>
+        <Tooltip
+          isOn={isTrustedUSersListEmpty}
+          tipText={"Add users here to follow them"}
+        >
+          <MenuItemLabel disabled={isTrustedUSersListEmpty}>
+            {isTrustedUSersListEmpty ? (
+              "Trusted Users"
+            ) : (
+              <TrustedList
+                users={formattedTrustedUsers}
+                isOpen={isOpen}
+                onToggle={onTrustedUsersListToggle}
+              ></TrustedList>
+            )}
           </MenuItemLabel>
         </Tooltip>
       </MenuItem>

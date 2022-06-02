@@ -1,45 +1,45 @@
 const DAPPLET_BUTTON_TEXT = {
   local: {
     add: {
-      base: "Add to local list",
+      initial: "Add to local list",
       hover: "Add to local list",
     },
     adding: {
-      base: "Add to local list",
+      initial: "Add to local list",
       hover: "Cancel",
     },
     removing: {
-      base: "Removing from local list",
+      initial: "Removing from local list",
       hover: "Cancel",
     },
     presented: {
-      base: "In local list",
+      initial: "In local list",
       hover: "Remove from local list",
     },
     remove: {
-      base: "Remove from local list",
+      initial: "Remove from local list",
       hover: "Remove from local list",
     },
   },
   public: {
     add: {
-      base: "Add to public list",
+      initial: "Add to public list",
       hover: "Add to public list",
     },
     adding: {
-      base: "Adding to public list",
+      initial: "Adding to public list",
       hover: "Cancel",
     },
     removing: {
-      base: "Removing from public list",
+      initial: "Removing from public list",
       hover: "Cancel",
     },
     presented: {
-      base: "In public list",
+      initial: "In public list",
       hover: "Remove from public list",
     },
     remove: {
-      base: "Remove from public list",
+      initial: "Remove from public list",
       hover: "Remove from public list",
     },
   },
