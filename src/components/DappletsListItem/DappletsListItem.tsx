@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, { useState, useMemo } from "react";
-import styled, { keyframes } from "styled-components";
+import styled, { keyframes } from "styled-components/macro";
 import { ReactComponent as DappletListItemPlus } from "../../images/dappletListItemPlus.svg";
 import { ReactComponent as DappletListItemMinus } from "../../images/dappletListItemMinus.svg";
 import { ReactComponent as DappletListItemClose } from "../../images/dappletListItemClose.svg";
@@ -27,7 +27,8 @@ export const TitleIcon = (props: { type: DappletsListItemTypes }) => {
 };
 
 interface DappletsListItemWrapperProps {
-  type: DappletsListItemTypes;
+  // type: DappletsListItemTypes;
+  isActive: boolean;
 }
 
 const DappletsListItemWrapper = styled.div<{
@@ -36,9 +37,9 @@ const DappletsListItemWrapper = styled.div<{
 }>`
   display: grid;
   grid-template-columns: ${({ type }) =>
-    type === DappletsListItemTypes.Default
-      ? ""
-      : "max-content"} 1fr min-content;
+      type === DappletsListItemTypes.Default
+        ? ""
+        : "max-content"} 1fr min-content;
   height: 41px;
   align-items: center;
   width: 100%;
@@ -59,14 +60,16 @@ const getColorByType = (type: DappletsListItemTypes) => {
   }
 };
 
-const Title = styled.div<DappletsListItemWrapperProps>`
+const Title = styled.div<{
+  isActive: boolean;
+}>`
   font-family: Montserrat;
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
   line-height: 21px;
   letter-spacing: 0em;
-  color: ${({ type }) => getColorByType(type)};
+  color: ${(props) => props.isActive && "#2A2A2A"};
 `;
 
 const DappletListItemCloseWrapper = styled.button`
@@ -85,6 +88,7 @@ export interface DappletsListItemProps {
   isPushing?: boolean;
   onClick?: any;
   id?: string;
+  isActive: boolean;
 }
 
 const DappletsListItem = (props: DappletsListItemProps) => {
@@ -96,7 +100,8 @@ const DappletsListItem = (props: DappletsListItemProps) => {
     id,
     isPushing,
     onClick,
-    subTitle
+    subTitle,
+    isActive,
   } = props;
 
   const isSubtitle = subTitle && subTitle.length > 0;
@@ -110,13 +115,11 @@ const DappletsListItem = (props: DappletsListItemProps) => {
       isClickable={!!onClick}
     >
       <TitleIcon type={type} />
-      <Title type={type} title={isSubtitle ? title : ""}>
+      <Title isActive={isActive} title={isSubtitle ? title : ""}>
         {isSubtitle ? subTitle : title}
       </Title>
       {isRemoved && (
-        <DappletListItemCloseWrapper
-          onClick={onClickRemove()}
-        >
+        <DappletListItemCloseWrapper onClick={onClickRemove()}>
           <DappletListItemClose />
         </DappletListItemCloseWrapper>
       )}

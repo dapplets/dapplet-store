@@ -8,7 +8,7 @@ import DappletsListItem, {
 } from "../../../components/DappletsListItem/DappletsListItem";
 import { LegacySideLists } from "../SidePanel/SidePanel";
 import { RootDispatch, RootState } from "../../../models";
-import styled from "styled-components";
+import styled from "styled-components/macro";
 import TrustedList from "../TrustedList/TrustedList";
 
 const Wrapper = styled.ul`
@@ -43,7 +43,7 @@ const MenuItemLabel = styled.span<{
 `;
 
 const PublicListingActionButton = styled.button`
-  min-width: 128px;
+  min-width: 138px;
   cursor: pointer;
   height: 32px;
   border-radius: 4px;
@@ -65,6 +65,7 @@ const mapState = (state: RootState) => ({
   isLocked: state.user.isLocked,
   trustedUsers: state.trustedUsers.trustedUsers,
   address: state.user.address,
+  filter: state.sort.addressFilter,
 });
 
 const mapDispatch = (dispatch: RootDispatch) => ({
@@ -90,6 +91,7 @@ const SideNav = ({
   openedList,
   setOpenedList,
   myLists,
+  filter,
 }: MenuProps) => {
   const myDapplets = myLists[Lists.MyDapplets];
   const myListing = myLists[Lists.MyListing];
@@ -133,6 +135,7 @@ const SideNav = ({
         .map(({ id, subTitle, isRemoved, onClickRemove, title, type }) => {
           return (
             <DappletsListItem
+              isActive={filter === id}
               key={id}
               onClick={(id: string) =>
                 setSort({
@@ -150,7 +153,7 @@ const SideNav = ({
             />
           );
         }),
-    [trustedUsers],
+    [trustedUsers, filter],
   );
 
   const isOpen = LegacySideLists.TrustedUsers === openedList;

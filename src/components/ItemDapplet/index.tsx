@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import styled from "styled-components";
+import styled from "styled-components/macro";
 import { ReactComponent as DappletListItemMoved } from "../DappletsListItem/arrow-down-circle.svg";
 import { DAPPLET_LISTING_STAGES } from "../../Constants";
 import cn from "classnames";
@@ -107,6 +107,9 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
     isNotDapplet,
     isLocked,
   } = props;
+
+  const isLocalListEmpty = localDapplets.length === 0;
+  const isPublicListEmpty = myListing.length === 0;
 
   const trustedList = useMemo(() => {
     return item.trustedUsers.filter(
@@ -216,7 +219,23 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
         openedModal: ModalsList.Install,
         settings: null,
       });
-    else editLocalDappletsList(item);
+    else {
+      if (isLocalListEmpty) {
+        setModalOpen({
+          openedModal: ModalsList.FirstLocalDapplet,
+          settings: {
+            onAccept: () => {
+              editLocalDappletsList(item);
+              setModalOpen({ openedModal: null, settings: null });
+            },
+            onCancel: () => setModalOpen({ openedModal: null, settings: null }),
+            dapplet: item,
+          },
+        });
+        return;
+      }
+      editLocalDappletsList(item);
+    }
   };
 
   const onPublicListingButtonClick = (e: any) => {
@@ -227,7 +246,23 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
         openedModal: ModalsList.Login,
         settings: null,
       });
-    else editSelectedDappletsList(item);
+    else {
+      if (isPublicListEmpty) {
+        setModalOpen({
+          openedModal: ModalsList.FirstPublicDapplet,
+          settings: {
+            onAccept: () => {
+              editSelectedDappletsList(item);
+              setModalOpen({ openedModal: null, settings: null });
+            },
+            onCancel: () => setModalOpen({ openedModal: null, settings: null }),
+            dapplet: item,
+          },
+        });
+        return;
+      }
+      editSelectedDappletsList(item);
+    }
   };
 
   if (!item) return <></>;
@@ -358,6 +393,7 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
       {/* TODO: DappletButtonTypes.InMyDapplets : DappletButtonTypes.AddToMy */}
       <ButtonsWrapper>
         <Button
+          isFirstPress={isLocalListEmpty}
           onClick={onLocalListingButtonClick}
           listing="local"
           stage={
@@ -368,6 +404,7 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
         />
 
         <Button
+          isFirstPress={isPublicListEmpty}
           onClick={onPublicListingButtonClick}
           listing="public"
           stage={getSelectedType()}

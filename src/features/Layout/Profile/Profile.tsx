@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef } from "react";
-import styled from "styled-components";
+import styled from "styled-components/macro";
 import { RootDispatch, RootState } from "../../../models";
 import { Modals, ModalsList } from "../../../models/modals";
 import jazzicon from "@metamask/jazzicon";
@@ -166,7 +166,7 @@ const Profile = ({
             <VanillaChildren>{getAvatar(addressShort)}</VanillaChildren>
           </Avatar>
           <UserInfo>
-            <UserAddress>{shortenAddress(address)}</UserAddress>
+            <UserAddress>{shortenAddress(address, 8)}</UserAddress>
           </UserInfo>
           <InvisibleButton
             //TODO: CLEAN THE DUCK UP THIS BLOODY MESS!!!

@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import styled from "styled-components";
+import styled from "styled-components/macro";
 import jazzicon from "@metamask/jazzicon";
 import { ReactComponent as UserPlus } from "./userPlus.svg";
 import { ReactComponent as Copy } from "./copy.svg";
 import { net } from "../../api/consts";
 import { ModalsList } from "../../models/modals";
+import shortenAddress from "../../lib/shortenAddress";
 
 interface VanillaChildrenProps {
   children: HTMLElement | HTMLDivElement;
@@ -209,6 +210,9 @@ const Button = ({
   removeTrustedUser,
 }: ButtonProps) => {
   const [hover, setHover] = useState(false);
+
+  const isUserListEmpty = trustedUsersList.length === 0;
+  
   return (
     <ButtonsWrapper>
       {hover && myAddress === address && <Tooltip>Publish new dapplet</Tooltip>}
@@ -229,6 +233,23 @@ const Button = ({
               trustedUsersList.filter((user) => user !== address),
             );
             removeTrustedUser(address);
+            return;
+          }
+
+          if (isUserListEmpty) {
+            setModalOpen({
+              openedModal: ModalsList.FirstTrustedUser,
+              settings: {
+                onAccept: () => {
+                  setTrustedUsersList([...trustedUsersList, address]);
+                  addTrustedUser(address);
+                  setModalOpen({ openedModal: null, settings: null });
+                },
+                onCancel: () =>
+                  setModalOpen({ openedModal: null, settings: null }),
+                address: shortenAddress(address, 5),
+              },
+            });
             return;
           }
 

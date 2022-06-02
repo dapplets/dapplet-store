@@ -6,19 +6,18 @@ import React, {
   useRef,
   MouseEvent,
 } from "react";
-import styled, { css } from "styled-components";
-
 import { ReactComponent as AddIcon } from "../../images/plus.svg";
 import { ReactComponent as InLocalListIcon } from "../../images/cpu.svg";
 import { ReactComponent as InPublicListIcon } from "../../images/alignCenter.svg";
 import { ReactComponent as RemoveIcon } from "../../images/remove.svg";
-
 import {
   DAPPLET_BUTTON_TEXT as ButtonText,
   DAPPLET_LISTING_STAGES,
   DAPPLET_LISTINGS_NAMES,
 } from "../../Constants";
-import simulateOnMouseHover from "../../lib/simulateOnMouseHover";
+import simulateOnMouseOver from "../../lib/simulateOnMouseOver";
+import simulateOnMouseOut from "../../lib/simulateOnMouseOut";
+import styled, { css } from "styled-components/macro";
 
 const Basic = styled.button<{
   listing: string;
@@ -175,6 +174,7 @@ type Listings = typeof DAPPLET_LISTINGS_NAMES[listingKeys];
 type ButtonProps = {
   stage: Stages;
   listing: Listings;
+  isFirstPress: boolean;
   onClick: (e: MouseEvent<HTMLButtonElement>) => void;
 };
 
@@ -184,7 +184,7 @@ type Icon = {
   > | null;
 };
 
-const Button = ({ stage, listing, onClick }: ButtonProps) => {
+const Button = ({ stage, listing, isFirstPress, onClick }: ButtonProps) => {
   const ref = useRef<HTMLButtonElement>(null);
   const Button = styledButtons[stage];
   const { initial: initialText, hover: hoverText } = ButtonText[listing][stage];
@@ -202,7 +202,7 @@ const Button = ({ stage, listing, onClick }: ButtonProps) => {
 
   const Icon = icon.svgEl;
 
-  const handleOnMouseOver = () => {
+  const handleOnMouseEnter = () => {
     setButtonText(hoverText);
     setIcon({ svgEl: ICON_MAP[stage][listing].hover });
   };
@@ -212,21 +212,29 @@ const Button = ({ stage, listing, onClick }: ButtonProps) => {
     setIcon({ svgEl: ICON_MAP[stage][listing].initial });
   };
 
+  const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
+    if (ref.current) {
+      setTimeout(() => {
+        // TODO: reconsider this approach, may be
+        simulateOnMouseOver(ref.current);
+
+        if (isFirstPress) {
+          simulateOnMouseOut(ref.current);
+        }
+      }, 0);
+    }
+    onClick(e);
+  };
+
   return (
     <Button
+      onMouseOver={handleOnMouseEnter}
+      onMouseLeave={handleOnMouseLeave}
       ref={ref}
       listing={listing}
       onClick={(e) => {
-        if (ref.current) {
-          setTimeout(() => {
-            simulateOnMouseHover(ref.current);
-          }, 0);
-        }
-
-        onClick(e);
+        handleClick(e);
       }}
-      onMouseEnter={handleOnMouseOver}
-      onMouseLeave={handleOnMouseLeave}
     >
       {Icon && <Icon></Icon>}
       {buttonText}
