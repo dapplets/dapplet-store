@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef } from "react";
-import styled from "styled-components";
+import styled from "styled-components/macro";
 import jazzicon from "@metamask/jazzicon";
 
 import { ReactComponent as Close } from "../close.svg";

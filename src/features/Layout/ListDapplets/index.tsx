@@ -15,7 +15,7 @@ import { Sort, SortTypes } from "../../../models/sort";
 import { Lists, MyListElement } from "../../../models/myLists";
 import { RootDispatch, RootState } from "../../../models";
 import { connect } from "react-redux";
-import styled from "styled-components";
+import styled from "styled-components/macro";
 import Dropdown from "../Dropdown/Dropdown";
 import Input from "../Input";
 import cn from "classnames";
@@ -546,7 +546,6 @@ const ListDapplets = ({
                 })}
                 key={i}
               >
-                
                 <div className={styles.itemContainer}>
                   <ItemDapplet
                     key={item.name}

@@ -1,21 +1,15 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-empty-function */
-import React, {
-  DetailedHTMLProps,
-  HTMLAttributes,
-  useMemo,
-} from "react";
+import React, { DetailedHTMLProps, HTMLAttributes, useMemo } from "react";
 
 import { saveListToLocalStorage } from "../../../lib/localStorage";
-import {
-  DappletsListItemTypes,
-} from "../../../components/DappletsListItem/DappletsListItem";
+import { DappletsListItemTypes } from "../../../components/DappletsListItem/DappletsListItem";
 import { RootDispatch, RootState } from "../../../models";
 import { Sort } from "../../../models/sort";
 import { connect } from "react-redux";
 import { Modals } from "../../../models/modals";
 import { IDapplet } from "../../../models/dapplets";
-import styled from "styled-components";
+import styled from "styled-components/macro";
 import { Lists, MyListElement } from "../../../models/myLists";
 import { EventPushing, EventType } from "../../../models/dapplets";
 import SideNav from "./SideNav";
@@ -116,7 +110,7 @@ const SidePanel = ({
   setLocked,
   removeMyDapplet,
 }: SidePanelProps & Props): React.ReactElement => {
-
+  
   /* TODO: purge these, but keep for now, probably need them for research */
   /* const removeFromLocalList = (name: string) => (e: any) => {
     e.preventDefault();

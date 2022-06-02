@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import styled from "styled-components";
+import styled from "styled-components/macro";
 
 import { ReactComponent as Cat } from "./cat.svg";
 import { ReactComponent as RotateArrow } from "./rotateArrow.svg";
