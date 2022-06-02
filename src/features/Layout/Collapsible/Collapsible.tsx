@@ -1,5 +1,6 @@
 import React, { ReactNode, useEffect, useRef, useState } from "react";
-import styled from "styled-components";
+import { ReactComponent as CollapseIcon } from "../../../images/arrow-down.svg";
+import styled from "styled-components/macro";
 
 type CollapsibleProps = {
   isOpen?: boolean;
@@ -21,9 +22,27 @@ const Container = styled.div`
 
 const Content = styled.div`
   padding-left: 30px;
-  padding-top: 10px;
   overflow: auto;
   padding-right: 15px;
+`;
+
+const Label = styled.div`
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  & svg {
+    transition: transform 0.1s;
+  }
+`;
+
+const CollapseIndicator = styled.div`
+  position: absolute;
+  left: -14px;
+  display: flex;
+  align-items: center;
+  height: 100%;
 `;
 
 const Collapsible: React.FC<CollapsibleProps> = ({
@@ -41,6 +60,7 @@ const Collapsible: React.FC<CollapsibleProps> = ({
   );
 
   const ref = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const toggle = () => {
     if (onToggle) onToggle();
@@ -55,6 +75,14 @@ const Collapsible: React.FC<CollapsibleProps> = ({
     });
 
     resizeObserver.observe(ref.current);
+
+    /* hide scroll until the container become overflown */
+    if (containerRef.current) {
+      containerRef.current.style.overflow = `${
+        height && maxHeight && height <= maxHeight ? "hidden" : "auto"
+      }`;
+    }
+
     return () => {
       resizeObserver.disconnect();
     };
@@ -67,11 +95,23 @@ const Collapsible: React.FC<CollapsibleProps> = ({
 
   return (
     <div>
-      <div style={{ cursor: "pointer" }} onClick={toggle}>
-        <Prefix>{`${openState ? "-" : "+"}`}</Prefix> {title}
-      </div>
-
-      <Container style={{ height, maxHeight: `${maxHeight}px` }}>
+      <Label onClick={toggle}>
+        <CollapseIndicator>
+          {openState ? (
+            <CollapseIcon style={{ transform: "rotate(-180deg)" }} />
+          ) : (
+            <CollapseIcon />
+          )}
+        </CollapseIndicator>
+        {title}
+      </Label>
+      <Container
+        ref={containerRef}
+        style={{
+          height,
+          maxHeight: `${maxHeight}px`,
+        }}
+      >
         <div ref={ref}>
           <Content>{children}</Content>
         </div>
