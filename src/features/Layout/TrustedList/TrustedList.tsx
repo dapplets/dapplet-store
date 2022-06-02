@@ -12,7 +12,7 @@ const TrustedList = ({ users, isOpen, onToggle }: TrustedListProps) => {
     <Collapsible
       isOpen={isOpen}
       onToggle={onToggle}
-      title="Trusted Users"
+      title="Trusted users"
       maxHeight={164}
     >
       {users}
