@@ -212,7 +212,7 @@ const Button = ({
   const [hover, setHover] = useState(false);
 
   const isUserListEmpty = trustedUsersList.length === 0;
-  
+
   return (
     <ButtonsWrapper>
       {hover && myAddress === address && <Tooltip>Publish new dapplet</Tooltip>}
