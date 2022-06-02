@@ -225,7 +225,7 @@ const Button = ({
             return;
           }
           if (myAddress === address) {
-            window.dapplets.openDeveloperOverlay();
+            window.dapplets.openOverlay();
             return;
           }
           if (trustedUsersList.includes(address)) {
@@ -257,13 +257,17 @@ const Button = ({
           addTrustedUser(address);
         }}
       >
-        <UserPlus />
         <div>
-          {myAddress === address
-            ? "Publish"
-            : trustedUsersList.includes(address)
-            ? "Remove from trusted users"
-            : "Add to trusted users"}
+          {myAddress === address ? (
+            <div>Create dupplet under construction</div>
+          ) : trustedUsersList.includes(address) ? (
+            "Remove from trusted users"
+          ) : (
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <UserPlus />
+              Add to trusted users
+            </div>
+          )}
         </div>
       </ButtonAction>
     </ButtonsWrapper>
