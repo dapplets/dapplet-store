@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled from "styled-components/macro";
 import DappletsListItem, {
   DappletsListItemProps,
 } from "../DappletsListItem/DappletsListItem";
@@ -132,6 +132,7 @@ const DappletsListSidebar = (props: DappletsListSidebarProps) => {
               }) => {
                 return (
                   <DappletsListItem
+                    isActive={false}
                     key={id}
                     onClick={onElementClick}
                     subTitle={subTitle}
