@@ -1,5 +1,6 @@
 import replaceBetween from "./replaceBetween";
 
-const shortenAddress = (addres: string) => replaceBetween(addres, 8, 8, "...");
+const shortenAddress = (addres: string, length: number) =>
+  replaceBetween(addres, length, length, "...");
 
 export default shortenAddress;

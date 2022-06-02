@@ -5,6 +5,9 @@ export enum ModalsList {
   Install = "install",
   User = "user",
   Warning = "warning",
+  FirstLocalDapplet = "firstlocaldapplet",
+  FirstPublicDapplet = "firstpublicdapplet",
+  FirstTrustedUser = "firstTrustedUser",
 }
 
 export interface Modals {

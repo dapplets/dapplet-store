@@ -5,7 +5,7 @@ import Header from "./Header/Header";
 import Overlay from "./Overlay/Overlay";
 import SidePanel from "./SidePanel/SidePanel";
 
-import styled from "styled-components";
+import styled from "styled-components/macro";
 import ListDapplets from "./ListDapplets";
 import { Sort, SortTypes } from "../../models/sort";
 import { RootDispatch, RootState } from "../../models";

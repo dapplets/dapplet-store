@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import styled from "styled-components";
+import styled from "styled-components/macro";
 import jazzicon from "@metamask/jazzicon";
 
 import { ReactComponent as Trusted } from "./trusted.svg";

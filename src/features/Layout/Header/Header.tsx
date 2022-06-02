@@ -1,5 +1,5 @@
 import React, { DetailedHTMLProps, FC, HTMLAttributes } from "react";
-import styled from "styled-components";
+import styled from "styled-components/macro";
 import { RootState, RootDispatch } from "../../../models";
 import { INITIAL_STATE, Sort } from "../../../models/sort";
 

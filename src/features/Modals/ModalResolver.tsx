@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import styled from "styled-components";
+import styled from "styled-components/macro";
 
 import Web3 from "web3";
 import Web3Modal from "web3modal";
@@ -11,6 +11,9 @@ import WarningModal from "./WarningModal/WarningModal";
 
 import { RootDispatch, RootState } from "../../models";
 import { connect } from "react-redux";
+import FirstLocalDapplet from "./FirstTimer/FirstLocalDapplet";
+import FirstPublicDapplet from "./FirstTimer/FirstPublicDapplet";
+import FirstTrustedUser from "./FirstTimer/FirstTrustedUser";
 
 const mapState = (state: RootState) => ({
   openedModal: state.modals.openedModal,
@@ -177,6 +180,12 @@ const ModalResolver = ({
             onRetry={settings?.onRetry}
           />
         );
+      case ModalsList.FirstLocalDapplet:
+        return <FirstLocalDapplet settings={settings} />;
+      case ModalsList.FirstPublicDapplet:
+        return <FirstPublicDapplet settings={settings} />;
+      case ModalsList.FirstTrustedUser:
+        return <FirstTrustedUser settings={settings} />;
       default:
         return null;
     }
