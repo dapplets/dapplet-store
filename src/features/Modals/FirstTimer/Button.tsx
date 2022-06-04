@@ -58,7 +58,7 @@ const Invisible = css`
 `;
 
 type WrapperProps = {
-  cacnel?: boolean;
+  cancel?: boolean;
   accept?: boolean;
   invisible?: boolean;
 };
@@ -80,7 +80,7 @@ const Wrapper = styled.button<WrapperProps>`
   cursor: pointer;
 
   ${(props) => props.accept && Accept}
-  ${(props) => props.cacnel && Cancel}
+  ${(props) => props.cancel && Cancel}
   ${(props) => props.invisible && Invisible}
 `;
 
@@ -92,14 +92,14 @@ type ButtonProps = {
 const Button = ({
   children,
   accept,
-  cacnel,
+  cancel,
   invisible,
   onClick,
 }: ButtonProps) => {
   return (
     <Wrapper
       accept={accept}
-      cacnel={cacnel}
+      cancel={cancel}
       invisible={invisible}
       onClick={onClick}
     >

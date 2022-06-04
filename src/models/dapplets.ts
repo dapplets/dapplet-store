@@ -303,6 +303,10 @@ const effects = (dispatch: any) => ({
         settings: {
           onRetry: async () => {
             try {
+              dispatch.modals.setModalOpen({
+                openedModal: null,
+                settings: null,
+              });
               await dispatch.dapplets.pushMyListing({
                 address,
                 events,
@@ -310,16 +314,13 @@ const effects = (dispatch: any) => ({
                 dappletsNames,
                 links,
               });
-              dispatch.modals.setModalOpen({
-                openedModal: ModalsList.Warning,
-                settings: null,
-              });
             } catch (error) {
               console.error(error);
             }
           },
         },
       });
+      // return;
       throw new Error("Change network to Goerli");
     }
     const ethersProvider = new ethers.providers.Web3Provider(provider);

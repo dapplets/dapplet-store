@@ -61,7 +61,7 @@ const FirstPublicDapplet = ({ settings }: FirstPublicDappletProps) => {
           list.
         </Message>
         <Controls>
-          <Button cacnel onClick={onCancel}>
+          <Button cancel onClick={onCancel}>
             <CancelIcon />
             Cancel
           </Button>
