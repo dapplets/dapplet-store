@@ -27,7 +27,8 @@ const Wrapper = styled.div<WrapperProps>`
 
   grid-template-areas:
     "header header header"
-    "sidePanel content overlay";
+    ${({ isNotDapplet }) =>
+      `"sidePanel content ${!isNotDapplet ? "content" : "overlay"}"`}; ;
 `;
 
 /* probabaly need those again */
@@ -130,7 +131,7 @@ const Layout = ({
 
   const dappletsByList = useMemo(() => {
     // If addressFilter is not empty,
-    // return all dapplets  
+    // return all dapplets
     // and filter it inside ListDapplets in filterDappletsByCondition
     if (!dapplets || !selectedList || addressFilter) return dapplets;
 

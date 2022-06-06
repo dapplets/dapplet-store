@@ -502,105 +502,107 @@ const ListDapplets = ({
           margin: "0 !important",
         }}
       >
-        {(addressFilter !== "" || selectedList) &&
-          selectedList !== Lists.MyDapplets && (
-            <ProfileInList
-              myAddress={address}
-              address={addressFilter !== "" ? addressFilter : address}
-              setAddressFilter={setAddressFilter}
-              editSearchQuery={editSearchQuery}
-              setSelectedList={setSelectedList}
-              trustedUsersList={trustedUsersList}
-              setTrustedUsersList={setTrustedUsersList}
-              isNotDapplet={isNotDapplet}
-              setModalOpen={setModalOpen}
-              title={titleText}
-              addTrustedUser={addTrustedUser}
-              removeTrustedUser={removeTrustedUser}
-            />
-          )}
-        <MainContentWrapper>
-          <Input
-            searchQuery={searchQuery || ""}
-            editSearchQuery={(newSearchQuery: string | undefined) =>
-              setSort({ searchQuery: newSearchQuery })
-            }
-          />
-          {!selectedList && (
-            <Dropdown
-              items={dropdownItems}
-              active={sortType || SortTypes.ABC}
-              setActive={(newSortType: SortTypes) =>
-                setSort({ sortType: newSortType })
+        <div style={{ maxWidth: "calc(100vw - 910px)" }}>
+          {(addressFilter !== "" || selectedList) &&
+            selectedList !== Lists.MyDapplets && (
+              <ProfileInList
+                myAddress={address}
+                address={addressFilter !== "" ? addressFilter : address}
+                setAddressFilter={setAddressFilter}
+                editSearchQuery={editSearchQuery}
+                setSelectedList={setSelectedList}
+                trustedUsersList={trustedUsersList}
+                setTrustedUsersList={setTrustedUsersList}
+                isNotDapplet={isNotDapplet}
+                setModalOpen={setModalOpen}
+                title={titleText}
+                addTrustedUser={addTrustedUser}
+                removeTrustedUser={removeTrustedUser}
+              />
+            )}
+          <MainContentWrapper>
+            <Input
+              searchQuery={searchQuery || ""}
+              editSearchQuery={(newSearchQuery: string | undefined) =>
+                setSort({ searchQuery: newSearchQuery })
               }
             />
-          )}
-          {!isNotDapplet && !trustedUsers.includes(addressFilter || "") && (
-            <CheckboxWrapper
-              isTrustedSort={isTrustedSort || false}
-              onClick={() => setSort({ isTrustedSort: !isTrustedSort })}
-            >
-              <div></div>
-              <span>From trusted users</span>
-            </CheckboxWrapper>
-          )}
-        </MainContentWrapper>
-        {!(
-          (addressFilter !== "" || selectedList) &&
-          selectedList !== Lists.MyDapplets
-        ) && listDappletsHeader}
-        {selectedList && !isLocked && !addressFilter ? (
-          <SortableList
-            dapplets={sortedDapplets}
-            items={chooseList[selectedList]}
-            setItems={chooseSetMethod[selectedList]}
-            selectedDapplets={selectedDapplets}
-            localDapplets={localDapplets}
-            editLocalDappletsList={editLocalDappletsList}
-            editSelectedDappletsList={editSelectedDappletsList}
-            setAddressFilter={setAddressFilter}
-            addressFilter={addressFilter}
-            setOpenedList={setOpenedList}
-            searchQuery={searchQuery}
-            trustedUsersList={trustedUsersList}
-            isTrustedSort={isTrustedSort}
-            selectedList={selectedList}
-            isNotDapplet={isNotDapplet}
-          />
-        ) : (
-          sortedDapplets.map((item, i) => {
-            const selected = selectedDapplets.find(
-              (d) => d.id === item.id,
-            )?.type;
-            const isAdding = selected === DappletsListItemTypes.Adding;
-            const isRemoving = selected === DappletsListItemTypes.Removing;
-
-            return (
-              <section
-                className={cn(styles.item, {
-                  [styles.isChanged]: isAdding || isRemoving,
-                })}
-                key={item.name}
+            {!selectedList && (
+              <Dropdown
+                items={dropdownItems}
+                active={sortType || SortTypes.ABC}
+                setActive={(newSortType: SortTypes) =>
+                  setSort({ sortType: newSortType })
+                }
+              />
+            )}
+            {!isNotDapplet && !trustedUsers.includes(addressFilter || "") && (
+              <CheckboxWrapper
+                isTrustedSort={isTrustedSort || false}
+                onClick={() => setSort({ isTrustedSort: !isTrustedSort })}
               >
-                <div className={styles.itemContainer}>
-                  <ItemDapplet
-                    key={item.name}
-                    item={item}
-                    selectedDapplets={selectedDapplets}
-                    localDapplets={localDapplets}
-                    editLocalDappletsList={editLocalDappletsList}
-                    editSelectedDappletsList={editSelectedDappletsList}
-                    searchQuery={searchQuery}
-                    setAddressFilter={setAddressFilter}
-                    setOpenedList={setOpenedList}
-                    trustedUsersList={trustedUsersList}
-                    isNotDapplet={isNotDapplet}
-                  />
-                </div>
-              </section>
-            );
-          })
-        )}
+                <div></div>
+                <span>From trusted users</span>
+              </CheckboxWrapper>
+            )}
+          </MainContentWrapper>
+          {!(
+            (addressFilter !== "" || selectedList) &&
+            selectedList !== Lists.MyDapplets
+          ) && listDappletsHeader}
+          {selectedList && !isLocked && !addressFilter ? (
+            <SortableList
+              dapplets={sortedDapplets}
+              items={chooseList[selectedList]}
+              setItems={chooseSetMethod[selectedList]}
+              selectedDapplets={selectedDapplets}
+              localDapplets={localDapplets}
+              editLocalDappletsList={editLocalDappletsList}
+              editSelectedDappletsList={editSelectedDappletsList}
+              setAddressFilter={setAddressFilter}
+              addressFilter={addressFilter}
+              setOpenedList={setOpenedList}
+              searchQuery={searchQuery}
+              trustedUsersList={trustedUsersList}
+              isTrustedSort={isTrustedSort}
+              selectedList={selectedList}
+              isNotDapplet={isNotDapplet}
+            />
+          ) : (
+            sortedDapplets.map((item, i) => {
+              const selected = selectedDapplets.find(
+                (d) => d.id === item.id,
+              )?.type;
+              const isAdding = selected === DappletsListItemTypes.Adding;
+              const isRemoving = selected === DappletsListItemTypes.Removing;
+
+              return (
+                <section
+                  className={cn(styles.item, {
+                    [styles.isChanged]: isAdding || isRemoving,
+                  })}
+                  key={item.name}
+                >
+                  <div className={styles.itemContainer}>
+                    <ItemDapplet
+                      key={item.name}
+                      item={item}
+                      selectedDapplets={selectedDapplets}
+                      localDapplets={localDapplets}
+                      editLocalDappletsList={editLocalDappletsList}
+                      editSelectedDappletsList={editSelectedDappletsList}
+                      searchQuery={searchQuery}
+                      setAddressFilter={setAddressFilter}
+                      setOpenedList={setOpenedList}
+                      trustedUsersList={trustedUsersList}
+                      isNotDapplet={isNotDapplet}
+                    />
+                  </div>
+                </section>
+              );
+            })
+          )}
+        </div>
       </div>
     </article>
   );
