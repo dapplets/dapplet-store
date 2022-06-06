@@ -36,19 +36,20 @@ const MenuItem = styled.li`
 
 const MenuItemLabel = styled.span<{
   disabled?: boolean;
+  isActive?: boolean;
 }>`
   cursor: pointer;
   min-width: 300px;
   pointer-events: ${({ disabled }) => (disabled ? "none" : "auto")};
+  color: ${({ isActive }) => (isActive ? "#2A2A2A" : "auto")};
 `;
 
 const PublicListingActionButton = styled.button`
-  min-width: 138px;
+  min-width: 158px;
   cursor: pointer;
   height: 32px;
   border-radius: 4px;
   border: 1px solid #5ab5e8;
-  color: #5ab5e8;
   font-family: Roboto;
   font-size: 14px;
   font-style: normal;
@@ -57,7 +58,9 @@ const PublicListingActionButton = styled.button`
   letter-spacing: 0em;
   text-align: center;
   padding: 9px 10px;
-  opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
+  color: ${({ disabled }) => (disabled ? "#747376" : "#5ab5e8")};
+  border-color: ${({ disabled }) => (disabled ? "#747376" : "#5ab5e8")};
+  pointer-events: ${({ disabled }) => (disabled ? "none" : "auto")};
 `;
 
 const mapState = (state: RootState) => ({
@@ -66,6 +69,7 @@ const mapState = (state: RootState) => ({
   trustedUsers: state.trustedUsers.trustedUsers,
   address: state.user.address,
   filter: state.sort.addressFilter,
+  selectedList: state.sort.selectedList,
 });
 
 const mapDispatch = (dispatch: RootDispatch) => ({
@@ -92,6 +96,7 @@ const SideNav = ({
   setOpenedList,
   myLists,
   filter,
+  selectedList,
 }: MenuProps) => {
   const myDapplets = myLists[Lists.MyDapplets];
   const myListing = myLists[Lists.MyListing];
@@ -177,6 +182,7 @@ const SideNav = ({
           }
         >
           <MenuItemLabel
+            isActive={selectedList === Lists.MyListing}
             disabled={isMyListingEmpty}
             onClick={() => {
               setSort({
@@ -195,7 +201,7 @@ const SideNav = ({
             disabled={Boolean(isLocked)}
             onClick={onPush}
           >
-            Push {pendingActions.length} change
+            Push{isLocked ? "ing" : ""} {pendingActions.length} change
             {pendingActions.length > 1 ? "s" : ""}
           </PublicListingActionButton>
         )}
@@ -207,6 +213,7 @@ const SideNav = ({
           tipText={"Add dapplets here for local use from dapplets card"}
         >
           <MenuItemLabel
+            isActive={selectedList === Lists.MyDapplets}
             disabled={isMyDappletEmpty}
             onClick={() => {
               setSort({
