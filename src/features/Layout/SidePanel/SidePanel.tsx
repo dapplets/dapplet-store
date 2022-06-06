@@ -110,7 +110,6 @@ const SidePanel = ({
   setLocked,
   removeMyDapplet,
 }: SidePanelProps & Props): React.ReactElement => {
-  
   /* TODO: purge these, but keep for now, probably need them for research */
   /* const removeFromLocalList = (name: string) => (e: any) => {
     e.preventDefault();
@@ -175,6 +174,7 @@ const SidePanel = ({
   const dappletsStandard = useMemo(() => Object.values(dapplets), [dapplets]);
 
   const pushSelectedDappletsList = async () => {
+    setLocked(true);
     const events: EventPushing[] = [];
     const nowDappletsList: MyListElement[] = selectedDappletsList.filter(
       (dapplet) => {
@@ -241,7 +241,7 @@ const SidePanel = ({
       if (asisLinks[i] !== tobeLinks[i]) {
         changedLinks.push({
           prev: i,
-          next: tobeLinks[i] ?? ((i === 0) ? 0xffffffff : 0x00000000),
+          next: tobeLinks[i] ?? (i === 0 ? 0xffffffff : 0x00000000),
         });
       }
     }
