@@ -183,34 +183,6 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
     editSelectedDappletsList,
   ]);
 
-  const currentLocationByIndex = useMemo(() => {
-    if (!address) return "";
-    if (dappletIndexOverOldListing === dappletIndexOverListing) return "";
-
-    return (
-      <span className={styles.order}>
-        {dappletIndexOverListing < dappletIndexOverOldListing ? (
-          <>
-            <DappletListItemMoved className={styles.up} />
-            {dappletIndexOverOldListing - dappletIndexOverListing}
-          </>
-        ) : (
-          <>
-            <DappletListItemMoved className={styles.down} />
-            {dappletIndexOverListing - dappletIndexOverOldListing}
-          </>
-        )}
-      </span>
-    );
-  }, [
-    address,
-    dappletIndexOverListing,
-    dappletIndexOverOldListing,
-    myListing,
-    editLocalDappletsList,
-    editSelectedDappletsList,
-  ]);
-
   const listLength = [...trustedList, ...otherList].length;
 
   const onLocalListingButtonClick = (e: any) => {
@@ -267,6 +239,9 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
     }
   };
 
+  const isIndexUpdated = dappletIndexOverOldListing === dappletIndexOverListing;
+  const isNewIndexLesser = dappletIndexOverListing < dappletIndexOverOldListing;
+
   if (!item) return <></>;
   return (
     <div
@@ -298,7 +273,14 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
 
       <div className={styles.left} style={{ flexGrow: 1, padding: "5px 18px" }}>
         <div className={styles.titleWrapper}>
-          {currentLocationByIndex}
+          {!isIndexUpdated && address && (
+            <div className={styles.order}>
+              <DappletListItemMoved
+                className={isNewIndexLesser ? styles.up : styles.down}
+              />
+              {dappletIndexOverOldListing - dappletIndexOverListing}
+            </div>
+          )}
           <h3 className={styles.title}>
             <Highlighter
               textToHighlight={item.title}
