@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import React, { useEffect, useMemo, useRef } from "react";
 import { Header } from "semantic-ui-react";
 
@@ -117,6 +116,15 @@ const mapDispatch = (dispatch: RootDispatch) => ({
 });
 
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
+
+interface FilterDappletsByCondition {
+  sortedList: IDapplet[];
+  searchQuery: string;
+  addressFilter: string;
+  isTrustedSort: boolean;
+  isNotDapplet: any;
+}
+
 export interface ListDappletsProps {
   dapplets: IDapplet[];
   selectedDapplets: MyListElement[];
@@ -368,23 +376,41 @@ const ListDapplets = ({
     [editSearchQuery, setAddressFilter, setSelectedList, titleText],
   );
 
-  const sortedDapplets = useMemo(() => {
-    let sortedList = dapplets.sort((a, b) => {
+  const sortDappletsByType = (
+    dapplets: IDapplet[],
+    sortType: string,
+    selectedList?: Lists,
+  ): IDapplet[] => {
+    return [...dapplets].sort((a, b) => {
       if (selectedList) return 0;
+
       switch (sortType) {
         case SortTypes.ABC:
           return collator.compare(a.title, b.title);
+
         case SortTypes.ABCReverse:
           return collator.compare(b.title, a.title);
+
         case SortTypes.Newest:
           return collator.compare(b.timestamp, a.timestamp);
+
         case SortTypes.Oldest:
           return collator.compare(a.timestamp, b.timestamp);
+
         default:
           return 0;
       }
     });
-    if (searchQuery !== "")
+  };
+
+  const filterDappletsByCondition = ({
+    sortedList,
+    searchQuery,
+    addressFilter,
+    isTrustedSort,
+    isNotDapplet,
+  }: FilterDappletsByCondition): IDapplet[] => {
+    if (searchQuery) {
       sortedList = sortedList.filter(
         (dapplet) =>
           dapplet.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -392,19 +418,34 @@ const ListDapplets = ({
           dapplet.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
           dapplet.description.toLowerCase().includes(searchQuery.toLowerCase()),
       );
-    if (addressFilter !== "")
-      sortedList = sortedList.filter(({ trustedUsers }) =>
-        trustedUsers.includes(addressFilter),
-      );
-    if (isTrustedSort && !isNotDapplet)
+    }
+
+    if (addressFilter) {
+      sortedList = sortedList
+        .filter(({ trustedUsers }) => trustedUsers.includes(addressFilter))
+        .sort((a, b) => a.id - b.id);
+    }
+
+    if (isTrustedSort && !isNotDapplet) {
       sortedList = sortedList.filter(({ trustedUsers }) =>
         trustedUsersList.some((user) => trustedUsers.includes(user)),
       );
-    // console.debug('sortedDapplets', sortedList)
+    }
+
     return sortedList;
+  };
+
+  const sortedDapplets = useMemo(() => {
+    const sortedList = sortDappletsByType(dapplets, sortType, selectedList);
+    return filterDappletsByCondition({
+      sortedList,
+      addressFilter,
+      isNotDapplet,
+      isTrustedSort,
+      searchQuery,
+    });
   }, [
     addressFilter,
-    collator,
     dapplets,
     isNotDapplet,
     isTrustedSort,
@@ -413,10 +454,6 @@ const ListDapplets = ({
     sortType,
     trustedUsersList,
   ]);
-
-  // useEffect(() => {
-  //   console.debug({dapplets})
-  // }, [dapplets])
 
   const chooseList = useMemo(
     () => ({
@@ -512,7 +549,7 @@ const ListDapplets = ({
           (addressFilter !== "" || selectedList) &&
           selectedList !== Lists.MyDapplets
         ) && listDappletsHeader}
-        {selectedList && !isLocked ? (
+        {selectedList && !isLocked && !addressFilter ? (
           <SortableList
             dapplets={sortedDapplets}
             items={chooseList[selectedList]}
@@ -539,12 +576,11 @@ const ListDapplets = ({
             const isRemoving = selected === DappletsListItemTypes.Removing;
 
             return (
-              // All Dapplets
               <section
                 className={cn(styles.item, {
                   [styles.isChanged]: isAdding || isRemoving,
                 })}
-                key={i}
+                key={item.name}
               >
                 <div className={styles.itemContainer}>
                   <ItemDapplet

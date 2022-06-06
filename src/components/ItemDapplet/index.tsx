@@ -183,7 +183,8 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
     editSelectedDappletsList,
   ]);
 
-  const currentLocation = useMemo(() => {
+  const currentLocationByIndex = useMemo(() => {
+    if (!address) return "";
     if (dappletIndexOverOldListing === dappletIndexOverListing) return "";
 
     return (
@@ -202,6 +203,7 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
       </span>
     );
   }, [
+    address,
     dappletIndexOverListing,
     dappletIndexOverOldListing,
     myListing,
@@ -296,7 +298,7 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
 
       <div className={styles.left} style={{ flexGrow: 1, padding: "5px 18px" }}>
         <div className={styles.titleWrapper}>
-          {currentLocation}
+          {currentLocationByIndex}
           <h3 className={styles.title}>
             <Highlighter
               textToHighlight={item.title}
