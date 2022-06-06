@@ -64,7 +64,7 @@ const FirstPublicDapplet = ({ settings }: FirstPublicDappletProps) => {
           require a transaction signature, but which is local.
         </Message>
         <Controls>
-          <Button cacnel onClick={onCancel}>
+          <Button cancel onClick={onCancel}>
             <CancelIcon />
             Cancel
           </Button>

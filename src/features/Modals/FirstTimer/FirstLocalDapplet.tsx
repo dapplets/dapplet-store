@@ -63,12 +63,12 @@ const FirstLocalDapplet = ({ settings }: FirstLocalDappletProps) => {
           different computers, you need to add the Dapplet to the Public List.
         </Message>
         <Controls>
-          <Button cacnel onClick={onCancel}>
+          <Button cancel onClick={onCancel}>
             <CancelIcon />
             Cancel
           </Button>
           <Button accept onClick={onAccept}>
-            Create Extension List
+            Create list
           </Button>
         </Controls>
       </Body>

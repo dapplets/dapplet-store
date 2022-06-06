@@ -151,7 +151,7 @@ interface WarningModalProps {
 
 const WarningModal = ({
   onClose,
-  message = "Change yore network to Goerli",
+  message = "Change your network to Goerli",
   onRetry,
 }: WarningModalProps) => {
   return (
