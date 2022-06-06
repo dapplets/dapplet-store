@@ -129,9 +129,12 @@ const Layout = ({
   };
 
   const dappletsByList = useMemo(() => {
-    if (!dapplets || !selectedList) return dapplets;
-    const dapps = myLists[selectedList];
-    return dapps
+    // If addressFilter is not empty,
+    // return all dapplets  
+    // and filter it inside ListDapplets in filterDappletsByCondition
+    if (!dapplets || !selectedList || addressFilter) return dapplets;
+
+    return myLists[selectedList]
       .map((dapplet) => dapplets.find((dapp) => dapp.name === dapplet.name))
       .filter((dapp): dapp is IDapplet => !!dapp);
   }, [dapplets, myLists, selectedList]);
