@@ -14,7 +14,6 @@ import { Lists, MyListElement } from "../../models/myLists";
 import { Modals } from "../../models/modals";
 
 interface WrapperProps {
-  isSmall: boolean;
   isNotDapplet: boolean;
 }
 
@@ -23,15 +22,20 @@ const Wrapper = styled.div<WrapperProps>`
 
   height: 100%;
 
-  grid-template-columns: 455px 1fr ${({ isNotDapplet }) =>
-      isNotDapplet ? `455px` : "0"};
+  grid-template-columns: 455px 1fr 455px;
   grid-template-rows: 84px 1fr;
 
   grid-template-areas:
     "header header header"
-    ${({ isSmall }) =>
-      `"sidePanel content ${isSmall ? "content" : "overlay"}"`};
+    "sidePanel content overlay";
 `;
+
+/* probabaly need those again */
+/* ${({ isNotDapplet }) =>
+      isNotDapplet ? `455px` : "0"}; */
+
+/* ${({ isSmall }) =>
+      `"sidePanel content ${isSmall ? "content" : "overlay"}"`}; */
 
 const StyledHeader = styled(Header)`
   grid-area: header;
@@ -133,7 +137,7 @@ const Layout = ({
   }, [dapplets, myLists, selectedList]);
 
   return (
-    <Wrapper isSmall={windowWidth <= 1500} isNotDapplet={isNotDapplet}>
+    <Wrapper isNotDapplet={isNotDapplet}>
       <StyledHeader selectedList={selectedList} isNotDapplet={isNotDapplet} />
       <StyledSidePanel
         localDappletsList={localDappletsList}
@@ -181,9 +185,7 @@ const Layout = ({
         )}
       </MainContent>
 
-      {isNotDapplet && windowWidth > 1500 && (
-        <StyledOverlay isNotDapplet={isNotDapplet} />
-      )}
+      {isNotDapplet && <StyledOverlay isNotDapplet={isNotDapplet} />}
     </Wrapper>
   );
 };
