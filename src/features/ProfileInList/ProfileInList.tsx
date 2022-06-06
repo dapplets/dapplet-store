@@ -259,7 +259,7 @@ const Button = ({
       >
         <div>
           {myAddress === address ? (
-            <div>Create dupplet under construction</div>
+            <div>Create dapplet under construction</div>
           ) : trustedUsersList.includes(address) ? (
             "Remove from trusted users"
           ) : (
