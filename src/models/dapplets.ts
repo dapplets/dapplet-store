@@ -297,6 +297,9 @@ const effects = (dispatch: any) => ({
     dappletsNames: { [name: number]: string };
     links: { prev: number; next: number }[];
   }) => {
+    dispatch.user.setUser({
+      isLocked: true,
+    });
     if (provider.chainId !== "0x5") {
       dispatch.modals.setModalOpen({
         openedModal: ModalsList.Warning,
@@ -320,7 +323,6 @@ const effects = (dispatch: any) => ({
           },
         },
       });
-      // return;
       throw new Error("Change network to Goerli");
     }
     const ethersProvider = new ethers.providers.Web3Provider(provider);
@@ -339,6 +341,9 @@ const effects = (dispatch: any) => ({
     } catch (error) {
       console.error({ error });
     }
+    dispatch.user.setUser({
+      isLocked: false,
+    });
   },
 });
 

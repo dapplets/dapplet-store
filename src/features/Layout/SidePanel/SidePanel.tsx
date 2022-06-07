@@ -174,7 +174,6 @@ const SidePanel = ({
   const dappletsStandard = useMemo(() => Object.values(dapplets), [dapplets]);
 
   const pushSelectedDappletsList = async () => {
-    setLocked(true);
     const events: EventPushing[] = [];
     const nowDappletsList: MyListElement[] = selectedDappletsList.filter(
       (dapplet) => {
