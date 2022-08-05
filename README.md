@@ -1,3 +1,5 @@
+![dapplet-store](https://user-images.githubusercontent.com/51093278/183043106-71e25338-b749-4ac2-a9d4-ced0e0d7fb18.png)
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
