@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import styled from "styled-components/macro";
 import { ReactComponent as DappletListItemMoved } from "../DappletsListItem/arrow-down-circle.svg";
-import { DAPPLET_LISTING_STAGES } from "../../Constants";
+import { DAPPLET_LISTING_STAGES } from "../../constants";
 import cn from "classnames";
 import Highlighter from "react-highlight-words";
 import DappletListersPopup from "../../features/DappletListersPopup/DappletListersPopup";

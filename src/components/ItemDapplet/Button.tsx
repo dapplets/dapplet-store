@@ -14,7 +14,7 @@ import {
   DAPPLET_BUTTON_TEXT as ButtonText,
   DAPPLET_LISTING_STAGES,
   DAPPLET_LISTINGS_NAMES,
-} from "../../Constants";
+} from "../../constants";
 import simulateOnMouseOver from "../../lib/simulateOnMouseOver";
 import simulateOnMouseOut from "../../lib/simulateOnMouseOut";
 import styled, { css } from "styled-components/macro";
