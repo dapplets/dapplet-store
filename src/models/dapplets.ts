@@ -240,23 +240,27 @@ const effects = (dispatch: any) => ({
       (module: IRawDapplet) => module.moduleType === MODULE_TYPES.DAPPLET,
     );
 
-    const dapplets = rawDapplets.map((module: IRawDapplet, i: number) => {
-      return {
-        id: i + 1,
-        description: module.description,
-        icon: "",
-        name: module.name,
-        owner: data.owners[i],
-        title: module.title,
-        versionToShow: "unknown",
-        version: "unknown",
-        /* TODO: timestamp to be implemented */
-        timestampToShow: "no info",
-        timestamp: "no info",
-        trustedUsers: [data.owners[i]],
-        isExpanded: false,
-        interfaces: [],
-      };
+    const dapplets = data.modules.flatMap((module: IRawDapplet, i: number) => {
+      if (module.moduleType === MODULE_TYPES.DAPPLET) {
+        return {
+          id: i + 1,
+          description: module.description,
+          icon: "",
+          name: module.name,
+          owner: data.owners[i],
+          title: module.title,
+          versionToShow: "unknown",
+          version: "unknown",
+          /* TODO: timestamp to be implemented */
+          timestampToShow: "no info",
+          timestamp: "no info",
+          trustedUsers: [data.owners[i]],
+          isExpanded: false,
+          interfaces: [],
+        };
+      } else {
+        return [];
+      }
     });
 
     const versionatedDapplets = await Promise.all(
