@@ -14,6 +14,7 @@ import { Lists, MyListElement } from "../../../models/myLists";
 import { EventPushing, EventType } from "../../../models/dapplets";
 import SideNav from "./SideNav";
 import Profile from "../Profile/Profile";
+import { PUBLIC_LIST } from "../../../constants";
 
 const mapState = (state: RootState) => ({
   address: state.user.address,
@@ -21,7 +22,6 @@ const mapState = (state: RootState) => ({
   isLocked: state.user.isLocked,
   myOldListing: state.myLists[Lists.MyOldListing],
   myListing: state.myLists[Lists.MyListing],
-  selectedList: state.sort.selectedList,
 });
 
 const mapDispatch = (dispatch: RootDispatch) => ({
@@ -29,10 +29,9 @@ const mapDispatch = (dispatch: RootDispatch) => ({
   setSort: (payload: Sort) => dispatch.sort.setSort(payload),
   pushMyListing: (payload: {
     address: string;
-    events: EventPushing[];
     provider: any;
     dappletsNames: { [name: number]: string };
-    links: { prev: number; next: number }[];
+    links: { prev: string; next: string }[];
   }) => dispatch.dapplets.pushMyListing(payload),
   setLocked: (payload: boolean) =>
     dispatch.user.setUser({
@@ -85,7 +84,7 @@ export interface SidePanelProps
   setLocalDappletsList: any;
   setSelectedList: React.Dispatch<React.SetStateAction<Lists | undefined>>;
   selectedDappletsList: MyListElement[];
-  setSelectedDappletsList: any;
+  // setSelectedDappletsList: any;
   trustedUsersList: string[];
   setAddressFilter: any;
   openedList: any;
@@ -98,14 +97,14 @@ const SidePanel = ({
   localDappletsList,
   setLocalDappletsList,
   selectedDappletsList,
-  setSelectedDappletsList,
+  // setSelectedDappletsList,
   openedList,
   setOpenedList,
   dapplets,
   address,
   provider,
   myOldListing,
-  myListing,
+  myListing: listingEvents,
   pushMyListing,
   setLocked,
   removeMyDapplet,
@@ -174,62 +173,169 @@ const SidePanel = ({
   const dappletsStandard = useMemo(() => Object.values(dapplets), [dapplets]);
 
   const pushSelectedDappletsList = async () => {
-    const events: EventPushing[] = [];
-    const nowDappletsList: MyListElement[] = selectedDappletsList.filter(
-      (dapplet) => {
-        if (dapplet.type === DappletsListItemTypes.Adding) {
-          events.push({
-            eventType: EventType.ADD,
-            dappletId: dapplet.id,
-          });
-        }
-        return dapplet.type !== DappletsListItemTypes.Adding;
-      },
-    );
-    const newDappletsList: MyListElement[] = nowDappletsList.filter(
-      ({ type, name, id }) => {
-        if (type === DappletsListItemTypes.Removing) {
-          events.push({
-            eventType: EventType.REMOVE,
-            dappletId: id,
-          });
-        }
-        return type !== DappletsListItemTypes.Removing;
-      },
+    console.log(listingEvents);
+
+    const links: any[] = [];
+    /* persisting = default + add */
+    const persistingEvents = listingEvents.filter(
+      (event) => event.type !== DappletsListItemTypes.Removing,
     );
 
-    myListing
-      .filter(
-        ({ type }) =>
-          type !== DappletsListItemTypes.Removing &&
-          type !== DappletsListItemTypes.Adding,
-      )
-      .forEach((dapp, index) => {
-        if (dapp.id !== myOldListing[index].id) {
-          events.push({
-            eventType: EventType.REPLACE,
-            dappletId: dapp.id,
-            dappletPrevId: index === 0 ? 0 : newDappletsList[index - 1].id,
+    /* Loop the list for it become empty */
+    const shouldClearList = persistingEvents.length === 0;
+    if (shouldClearList)
+      links.push({ prev: PUBLIC_LIST.HEADER, next: PUBLIC_LIST.TAIL });
+
+    const defaultEvents = listingEvents.filter(
+      (event) => event.type === DappletsListItemTypes.Default,
+    );
+
+    const currentListLastDappletName =
+      defaultEvents.length > 0
+        ? defaultEvents[defaultEvents.length - 1].name
+        : PUBLIC_LIST.HEADER;
+
+    let lastAdded: any = null;
+
+    listingEvents.forEach((listingEvent, i) => {
+      if (listingEvent.type === DappletsListItemTypes.Removing) {
+        if (!shouldClearList) {
+          const isInitialEvent = i === 0;
+          if (isInitialEvent) {
+            links.push({
+              prev: PUBLIC_LIST.HEADER,
+              next: defaultEvents[0].name,
+            });
+          } else {
+            const listingEventsReversedCopy = listingEvents.slice().reverse();
+            const exPrev = listingEventsReversedCopy.find((ev, evIndex) => {
+              const indexFromBehind = listingEvents.length - 1 - i;
+              return (
+                evIndex > indexFromBehind &&
+                ev.type === DappletsListItemTypes.Default
+              );
+            });
+
+            const exNext = listingEvents.find(
+              (ev, evIndex) =>
+                evIndex > i && ev.type === DappletsListItemTypes.Default,
+            );
+
+            links.push({
+              prev: exPrev?.name || PUBLIC_LIST.HEADER,
+              next: exNext?.name || PUBLIC_LIST.TAIL,
+            });
+          }
+        }
+
+        links.push({ prev: listingEvent.name, next: PUBLIC_LIST.HEADER });
+      }
+
+      if (listingEvent.type === DappletsListItemTypes.Adding) {
+        if (!lastAdded) {
+          links.push({
+            prev: currentListLastDappletName,
+            next: listingEvent.name,
+          });
+
+          links.push({
+            prev: listingEvent.name,
+            next: PUBLIC_LIST.TAIL,
+          });
+
+          lastAdded = links[links.length - 1];
+        } else {
+          lastAdded.next = listingEvent.name;
+
+          links.push({
+            prev: listingEvent.name,
+            next: PUBLIC_LIST.TAIL,
+          });
+
+          lastAdded = links[links.length - 1];
+        }
+      }
+    });
+
+    persistingEvents.forEach((persistingEvent, i) => {
+      const isRearangeEvent = Boolean(persistingEvent.event);
+      if (isRearangeEvent) {
+        // eslint-disable-next-line no-debugger
+        debugger;
+
+        links.push({
+          prev: persistingEvents[i - 1]
+            ? persistingEvents[i - 1].name
+            : PUBLIC_LIST.HEADER,
+          next: persistingEvent.name,
+        });
+
+        links.push({
+          prev: persistingEvent.name,
+          next: persistingEvents[i + 1]
+            ? persistingEvents[i + 1].name
+            : PUBLIC_LIST.TAIL,
+        });
+
+        /* const nextIndex = persistingEvents.findIndex(
+          (closedPersistingEvent) =>
+            closedPersistingEvent.name === persistingEvent.eventPrev,
+        );
+
+        const afterNext = persistingEvents[nextIndex - 1];
+
+         */
+
+        // eslint-disable-next-line no-debugger
+        debugger;
+
+        if (persistingEvent.indexDiff && persistingEvent.indexDiff < 0) {
+          const indexDiff = persistingEvent?.indexDiff
+            ? persistingEvent.indexDiff
+            : 0;
+
+          const index = i + indexDiff;
+
+          links.push({
+            prev: persistingEvent.eventPrev,
+            next: persistingEvents[index].name,
+          });
+        } else {
+          const indexDiff = persistingEvent?.indexDiff
+            ? persistingEvent.indexDiff
+            : 0;
+
+          const index = i + indexDiff;
+
+          links.push({
+            prev: persistingEvents[index].name,
+            next: persistingEvents[index + 1].name,
           });
         }
-      });
+      }
+    });
 
-    const tobeLinks: number[] = [];
-    const tobeIds = myListing
+    console.log("links: ", links);
+
+    /* Legacy */
+
+    /* const tobeLinks: number[] = [];
+    const tobeIds = listingEvents
       .filter((x) => x.type !== DappletsListItemTypes.Removing)
       .map((x) => x.id);
     tobeIds.forEach((x, i) => {
       tobeLinks[tobeIds[i - 1] ?? 0] = x;
-      tobeLinks[x] = tobeIds[i + 1] ?? 0xffffffff;
+      tobeLinks[x] = tobeIds[i + 1] ?? PUBLIC_LIST.TAIL;
     });
 
     const asisLinks: number[] = [];
     const asisIds = myOldListing
       .filter((x) => x.type !== DappletsListItemTypes.Adding)
       .map((x) => x.id);
+
     asisIds.forEach((x, i) => {
       asisLinks[asisIds[i - 1] ?? 0] = x;
-      asisLinks[x] = asisIds[i + 1] ?? 0xffffffff;
+      asisLinks[x] = asisIds[i + 1] ?? PUBLIC_LIST.TAIL;
     });
 
     const maxLength =
@@ -239,11 +345,14 @@ const SidePanel = ({
     for (let i = 0; i < maxLength; i++) {
       if (asisLinks[i] !== tobeLinks[i]) {
         changedLinks.push({
-          prev: i,
-          next: tobeLinks[i] ?? (i === 0 ? 0xffffffff : 0x00000000),
+          prev: i === 0 ? PUBLIC_LIST.HEADER : i,
+          next:
+            tobeLinks[i] ?? (i === 0 ? PUBLIC_LIST.TAIL : PUBLIC_LIST.HEADER),
         });
       }
     }
+
+    console.log("changedLinks: ", changedLinks); */
 
     try {
       const dappletsNames: { [name: number]: string } = {};
@@ -251,15 +360,17 @@ const SidePanel = ({
       dappletsStandard.forEach(({ id, name }) => {
         dappletsNames[id] = name;
       });
-      console.log("changedLinks", changedLinks);
+
+      const shouldPush = 1;
+
       setLocked(true);
-      await pushMyListing({
-        address: address || "",
-        events,
-        provider,
-        dappletsNames,
-        links: changedLinks,
-      });
+      shouldPush &&
+        (await pushMyListing({
+          address: address || "",
+          provider,
+          dappletsNames,
+          links: links,
+        }));
     } catch (error) {
       console.error({ error });
     }

@@ -1,8 +1,10 @@
 import { createModel } from "@rematch/core";
 import { BigNumber, ethers } from "ethers";
+import dappletsRegistryABI from "../dappletsRegistryABI.json";
 import { DappletsListItemTypes } from "../components/DappletsListItem/DappletsListItem";
 import { ModalsList } from "./modals";
-import abiListing2 from "./abi2";
+import abiListing2 from "./listingContractAbi";
+import { DAPPLET_REGISTRY_ADDRESS } from "../constants";
 
 export enum Lists {
   MyListing = "Selected dapplets",
@@ -14,8 +16,9 @@ export interface MyListElement {
   id: number;
   name: string;
   type: DappletsListItemTypes;
-  event?: number;
-  eventPrev?: number;
+  event?: string;
+  eventPrev?: string;
+  indexDiff?: number;
 }
 
 export interface MyLists {
@@ -88,16 +91,17 @@ const effects = (dispatch: any) => ({
       });
       throw new Error("Change network to Goerli");
     }
+
     const ethersProvider = new ethers.providers.Web3Provider(provider);
     const signer = await ethersProvider.getSigner();
-    const contractListing: any = await new ethers.Contract(
-      "0xD8298EBF33a44e954AeaC125231547A1426Cb412",
-      abiListing2,
+
+    const dappletsRegistry = new ethers.Contract(
+      DAPPLET_REGISTRY_ADDRESS,
+      dappletsRegistryABI,
       signer,
     );
-    // 0xc8B80C2509e7fc553929C86Eb54c41CC20Bb05fB
-    //0x3470ab240a774e4D461456D51639F033c0cB5363
-    const req = await contractListing.getLinkedList(address);
+
+    const req = await dappletsRegistry.getModulesOfListing(address);
 
     const localListing: { [name: string]: MyListElement } = {};
     const dappsFromLocal = window.localStorage.getItem(Lists.MyListing);
@@ -109,10 +113,12 @@ const effects = (dispatch: any) => ({
     }
 
     const listing: MyListElement[] = req
-      .map((id: number) => {
+      .map((name: string) => {
         const dapp = {
-          id: id,
-          name: dappletsNames[id],
+          id: Object.keys(dappletsNames).find(
+            (key: any) => dappletsNames[key] === name,
+          ),
+          name: name,
           type: DappletsListItemTypes.Default,
         };
         if (localListing && localListing[dapp.name]) {
@@ -135,11 +141,13 @@ const effects = (dispatch: any) => ({
     addingListing.forEach((dapp) => {
       sliceListing.push(dapp);
     });
+
     dispatch.myLists.setMyList({
       name: Lists.MyListing,
       elements: sliceListing,
     });
   },
+
   async getMyDapplets() {
     const dapps = await window.dapplets.getMyDapplets();
     dispatch.myLists.setMyList({

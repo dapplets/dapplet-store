@@ -1,22 +1,38 @@
 import { createModel } from "@rematch/core";
 import { ethers } from "ethers";
-import abi from "../abi.json";
+import dappletsRegistryABI from "../dappletsRegistryABI.json";
 // import abiListing from './abi';
-import abiListing2 from "./abi2";
-import { PROVIDER_URL } from "../api/consts";
+import { PROVIDER_URL } from "../api/constants";
 import { customPromiseToast } from "../components/Notification";
 import { ModalsList } from "./modals";
 import { Lists } from "./myLists";
+import {
+  DAPPLET_REGISTRY_ADDRESS,
+  MODULE_TYPES,
+  REGISTRY_BRANCHES,
+} from "../constants";
 
 const BZZ_ENDPOINT = "https://swarmgateway.mooo.com";
 const IPFS_ENDPOINT = "https://ipfs.kaleido.art";
 const SIA_ENDPOINT = "https://siasky.net";
 const S3_ENDPOINT = "https://dapplet-api.s3.nl-ams.scw.cloud";
 
+const MAX_MODULES_COUNTER = 99;
+
 type StorageRef = {
   hash: string;
   uris: string[];
 };
+
+function formatVersion(hex: string) {
+  const result = (hex.replace("0x", "").match(/.{1,8}/g) ?? []).map(
+    (x) =>
+      `${parseInt("0x" + x[0] + x[1])}.${parseInt(
+        "0x" + x[2] + x[3],
+      )}.${parseInt("0x" + x[4] + x[5])}`,
+  );
+  return result;
+}
 
 const _fetchAndCheckHash = async (
   url: string,
@@ -36,6 +52,7 @@ const _fetchAndCheckHash = async (
 
   return blob;
 };
+
 const _getResource = async (storageRef: StorageRef) => {
   const promises: Promise<Blob>[] = [];
   const controller = new AbortController();
@@ -109,6 +126,17 @@ export interface EventPushing {
 export interface EventOrderChange {
   dappletId: number;
   dappletPrevId: number;
+}
+
+export interface IRawDapplet {
+  description: string;
+  flags: any; // {_hex: '0x00', _isBigNumber: true}
+  fullDescription: { hash: string; uris: any[] };
+  icon: { hash: string; uris: any[] };
+  interfaces: [];
+  moduleType: 3;
+  name: string;
+  title: string;
 }
 
 export interface IDapplet {
@@ -197,105 +225,103 @@ const reducers = {
 };
 
 const effects = (dispatch: any) => ({
-  //
-  getDapplets: async (): Promise<void> => {
+  getDapplets: async (payload: number, rootState: any): Promise<void> => {
     const provider = new ethers.providers.JsonRpcProvider(PROVIDER_URL, 0x05);
-    const contract: any = new ethers.Contract(
-      "registry.dapplet-base.eth",
-      abi,
+
+    const dappletsRegistry = new ethers.Contract(
+      DAPPLET_REGISTRY_ADDRESS,
+      dappletsRegistryABI,
       provider,
     );
-    const events = await contract.queryFilter("ModuleInfoAdded");
 
-    async function getVersions(name: string) {
-      const hex: string = await contract.getVersionNumbers(name, "default");
-      const result = (hex.replace("0x", "").match(/.{1,8}/g) ?? []).map(
-        (x) =>
-          `${parseInt("0x" + x[0] + x[1])}.${parseInt(
-            "0x" + x[2] + x[3],
-          )}.${parseInt("0x" + x[4] + x[5])}`,
-      );
-      return result;
-    }
-    const dapplets: DappletsList = {};
-    const myPromises = [];
-    for (let i = 1; i <= events.length; i++) {
-      myPromises.push(
-        contract.modules(i).then(async (module: any) => {
-          if (module.moduleType !== 1) return;
-          const ev = events[i - 1];
-          const block = await ev.getBlock();
-          const versions = await getVersions(module.name);
-          const date = new Date(block.timestamp * 1000);
-          const pad = (n: number, s = 2) =>
-            `${new Array(s).fill(0)}${n}`.slice(-s);
-          const icon = {
-            hash: module.icon.hash,
-            uris: module.icon.uris.map((u: any) =>
-              ethers.utils.toUtf8String(u),
-            ),
-          };
-          // const url: string = await _getResource(icon)
-          const dapplet: IDapplet = {
-            id: i,
-            description: module.description,
-            icon: "",
-            name: module.name,
-            owner: module.owner,
-            title: module.title,
-            versionToShow: versions[versions.length - 1],
-            version: versions,
-            timestampToShow: `${pad(date.getDay())}.${pad(
-              date.getMonth() + 1,
-            )}.${pad(date.getFullYear(), 4)}`,
-            timestamp: block.timestamp,
-            trustedUsers: [module.owner],
-            isExpanded: false,
-            interfaces: [],
-          };
-          await dispatch.dapplets.addDapplet(dapplet);
-          _getResource(icon).then((url) => {
-            dispatch.dapplets.setBlobUrl({ id: i, blobUrl: url });
-          });
-          dapplets[`${dapplet.id}`] = dapplet;
-        }),
-      );
-    }
-    await Promise.all(myPromises);
-    const contractListing: any = new ethers.Contract(
-      "0xD8298EBF33a44e954AeaC125231547A1426Cb412",
-      abiListing2,
-      provider,
+    const data = await dappletsRegistry.getModules(0, MAX_MODULES_COUNTER);
+
+    const rawDapplets = data.modules.filter(
+      (module: IRawDapplet) => module.moduleType === MODULE_TYPES.DAPPLET,
     );
-    const users = await contractListing.getListers();
 
-    for (let i = 0; i < users.length; i++) {
-      const trustedDapplets = await contractListing.getLinkedList(users[i]);
+    const dapplets = rawDapplets.map((module: IRawDapplet, i: number) => {
+      return {
+        id: i + 1,
+        description: module.description,
+        icon: "",
+        name: module.name,
+        owner: data.owners[i],
+        title: module.title,
+        versionToShow: "unknown",
+        version: "unknown",
+        /* TODO: timestamp to be implemented */
+        timestampToShow: "no info",
+        timestamp: "no info",
+        trustedUsers: [data.owners[i]],
+        isExpanded: false,
+        interfaces: [],
+      };
+    });
 
-      for (let j = 0; j < trustedDapplets.length; j++) {
-        try {
-          dispatch.dapplets.addTrustedUserToDapplet({
-            id: trustedDapplets[j],
-            address: users[i],
-          });
-        } catch (error) {
-          console.error(error);
-        }
+    const versionatedDapplets = await Promise.all(
+      dapplets.map(async (dapplet: IDapplet) => {
+        const version = await dappletsRegistry.getVersionNumbers(
+          dapplet.name,
+          REGISTRY_BRANCHES.DEFAULT,
+        );
+
+        const formattedVersions = formatVersion(version);
+
+        return {
+          ...dapplet,
+          versionToShow: formattedVersions[formattedVersions.length - 1],
+          version: formattedVersions,
+        };
+      }),
+    );
+
+    await dispatch.dapplets.setDapplets(versionatedDapplets);
+
+    rawDapplets.forEach(async (dapplet: IRawDapplet, i: number) => {
+      const icon = {
+        hash: dapplet.icon.hash,
+        uris: dapplet.icon.uris.map((u: any) => ethers.utils.toUtf8String(u)),
+      };
+
+      const url = await _getResource(icon);
+      dispatch.dapplets.setBlobUrl({ id: i, blobUrl: url });
+    });
+
+    const listers = await dappletsRegistry.getListers();
+
+    listers.forEach(async (lister: any, listerIndex: number) => {
+      if (listers[listerIndex]) {
+        const listersDapplets = await dappletsRegistry.getModulesOfListing(
+          listers[listerIndex],
+        );
+
+        listersDapplets.forEach((dapplet: any, dappletIndex: number) => {
+          if (listersDapplets[dappletIndex]) {
+            const { id } = versionatedDapplets.find(
+              (dapplet) => (dapplet.name = listersDapplets[dappletIndex]),
+            );
+
+            dispatch.dapplets.addTrustedUserToDapplet({
+              id: id,
+              address: listers[listerIndex],
+            });
+          }
+        });
       }
-    }
+    });
   },
+
   pushMyListing: async ({
     address,
-    events,
     provider,
     dappletsNames,
     links,
   }: {
     address: string;
-    events: EventPushing[];
     provider: any;
     dappletsNames: { [name: number]: string };
-    links: { prev: number; next: number }[];
+    links: { prev: string; next: string }[];
   }) => {
     dispatch.user.setUser({
       isLocked: true,
@@ -312,7 +338,6 @@ const effects = (dispatch: any) => ({
               });
               await dispatch.dapplets.pushMyListing({
                 address,
-                events,
                 provider,
                 dappletsNames,
                 links,
@@ -327,12 +352,15 @@ const effects = (dispatch: any) => ({
     }
     const ethersProvider = new ethers.providers.Web3Provider(provider);
     const signer = await ethersProvider.getSigner();
+
     const contractListing: any = await new ethers.Contract(
-      "0xD8298EBF33a44e954AeaC125231547A1426Cb412",
-      abiListing2,
+      DAPPLET_REGISTRY_ADDRESS,
+      dappletsRegistryABI,
       signer,
-    ); //0xc8B80C2509e7fc553929C86Eb54c41CC20Bb05fB //0x3470ab240a774e4D461456D51639F033c0cB5363
-    const req = await contractListing.changeMyList(links);
+    );
+
+    const req = await contractListing.changeMyListing(links);
+
     try {
       const transaction = req.wait();
       await customPromiseToast(transaction, req.hash);

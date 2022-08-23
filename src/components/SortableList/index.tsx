@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { useState, SetStateAction, useEffect } from "react";
+import { useState, SetStateAction, useEffect, useMemo } from "react";
 import { saveListToLocalStorage } from "../../lib/localStorage";
 import styles from "./SortableList.module.scss";
 
@@ -27,27 +27,37 @@ import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 import { SortableListProps } from "./SortableList.props";
 import Draggable from "../Draggable";
 import ItemDapplet from "../ItemDapplet";
-import { MyListElement } from "../../models/myLists";
+import { Lists, MyListElement } from "../../models/myLists";
+import { RootDispatch, RootState } from "../../models";
+import { DappletsListItemTypes } from "../DappletsListItem/DappletsListItem";
+import { connect } from "react-redux";
 
-const SortableList = (props: SortableListProps) => {
-  const {
-    dapplets,
-    items,
-    setItems,
-    selectedDapplets,
-    localDapplets,
-    editLocalDappletsList,
-    editSelectedDappletsList,
-    setAddressFilter,
-    addressFilter,
-    setOpenedList,
-    searchQuery,
-    trustedUsersList,
-    isTrustedSort,
-    selectedList,
-    isNotDapplet,
-  } = props;
+const mapState = (state: RootState) => ({
+  myOldListing: state.myLists[Lists.MyOldListing],
+  myListing: state.myLists[Lists.MyListing],
+});
 
+type Props = ReturnType<typeof mapState>;
+
+const SortableList = ({
+  dapplets,
+  items,
+  setItems,
+  selectedDapplets,
+  localDapplets,
+  editLocalDappletsList,
+  editSelectedDappletsList,
+  setAddressFilter,
+  addressFilter,
+  setOpenedList,
+  searchQuery,
+  trustedUsersList,
+  isTrustedSort,
+  selectedList,
+  isNotDapplet,
+  myOldListing,
+  myListing,
+}: SortableListProps & Props) => {
   const [activeId, setActiveId] = useState<SetStateAction<string> | null>(null);
 
   const sensors = useSensors(
@@ -68,11 +78,15 @@ const SortableList = (props: SortableListProps) => {
       const itemIds = items!.map(({ name }) => name);
       const oldIndex = itemIds.indexOf(active.id);
       const newIndex = itemIds.indexOf(over.id);
+
       if (items) {
-        items[oldIndex].event = newIndex === 0 ? 0 : items[newIndex - 1].id;
+        items[oldIndex].indexDiff = oldIndex - newIndex;
+        items[oldIndex].event =
+          newIndex === 0 ? items[0].name : items[newIndex - 1].name;
         if (items[oldIndex].eventPrev === undefined)
           items[oldIndex].eventPrev =
-            oldIndex === 0 ? 0 : items[oldIndex - 1].id;
+            oldIndex === 0 ? items[0].name : items[oldIndex - 1].name;
+
         // console.log({ i: items[oldIndex], items });
       }
       newArray = arrayMove(items || [], oldIndex, newIndex);
@@ -82,7 +96,7 @@ const SortableList = (props: SortableListProps) => {
     newArray = newArray.map((dapp, index) => {
       if (dapp.event !== undefined && dapp.eventPrev !== undefined) {
         if (index > 0) {
-          if (newArray[index - 1].id === dapp.eventPrev) {
+          if (`${newArray[index - 1].id}` === dapp.eventPrev) {
             return {
               ...dapp,
               event: undefined,
@@ -91,7 +105,7 @@ const SortableList = (props: SortableListProps) => {
           }
         }
         if (index === 0) {
-          if (dapp.eventPrev === 0) {
+          if (dapp.eventPrev === "0") {
             return {
               ...dapp,
               event: undefined,
@@ -181,4 +195,4 @@ const SortableList = (props: SortableListProps) => {
   );
 };
 
-export default SortableList;
+export default connect(mapState)(SortableList);

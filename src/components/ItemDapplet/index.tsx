@@ -88,26 +88,23 @@ interface ItemDappletProps {
   isNotDapplet: boolean;
 }
 
-const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
-  const {
-    item,
-    selectedDapplets,
-    localDapplets,
-    editLocalDappletsList,
-    editSelectedDappletsList,
-    searchQuery,
-    setSort,
-    trustedUsersList,
-    myOldListing,
-    myListing,
-    address,
-    setModalOpen,
-    setExpanded,
-
-    isNotDapplet,
-    isLocked,
-  } = props;
-
+const ItemDapplet = ({
+  item,
+  selectedDapplets,
+  localDapplets,
+  editLocalDappletsList,
+  editSelectedDappletsList,
+  searchQuery,
+  setSort,
+  trustedUsersList,
+  myOldListing,
+  myListing,
+  address,
+  setModalOpen,
+  setExpanded,
+  isNotDapplet,
+  isLocked,
+}: ItemDappletProps & Props): React.ReactElement => {
   const isLocalListEmpty = localDapplets.length === 0;
   const isPublicListEmpty = myListing.length === 0;
 
@@ -248,6 +245,11 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
       style={{ display: "flex", width: "100%", wordBreak: "break-all" }}
       onClick={handleClickOnItem}
     >
+      {/* debug */}
+      {/* {item.id} <br />
+      {item.name} <br />
+      {dappletIndexOverOldListing} <br />
+      {dappletIndexOverListing} <br /> */}
       {item.icon ? (
         <Image
           className={styles.itemImage}

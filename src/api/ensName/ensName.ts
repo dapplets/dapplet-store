@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { PROVIDER_URL } from "../consts";
+import { PROVIDER_URL } from "../constants";
 import abi from "./abi";
 
 export const getEnsNamesApi = async (addresses: string[]) => {

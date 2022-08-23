@@ -147,7 +147,6 @@ const Layout = ({
         localDappletsList={localDappletsList}
         setLocalDappletsList={setLocalDappletsList}
         selectedDappletsList={selectedDappletsList}
-        setSelectedDappletsList={setSelectedDappletsList}
         setSelectedList={setSelectedList}
         trustedUsersList={trustedUsersList}
         setAddressFilter={setAddressFilter}

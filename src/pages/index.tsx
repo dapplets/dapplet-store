@@ -28,8 +28,7 @@ const mapState = (state: RootState) => ({
   provider: state.user.provider,
 });
 const mapDispatch = (dispatch: RootDispatch) => ({
-  //getMyListing
-  getDapplets: () => dispatch.dapplets.getDapplets(),
+  getDapplets: (payload: any) => dispatch.dapplets.getDapplets(payload),
   getSort: (address: string) => dispatch.sort.getSort(address),
   setSort: (payload: Sort) => dispatch.sort.setSort(payload),
   setModalOpen: (payload: Modals) => dispatch.modals.setModalOpen(payload),
@@ -115,7 +114,7 @@ const App = ({
   );
 
   useEffect(() => {
-    getDapplets();
+    getDapplets(null);
   }, [getDapplets, getLists, getSort, getTrustedUsers]);
 
   const hangDappletsEvent = useCallback(() => {
