@@ -159,7 +159,7 @@ const ItemDapplet = ({
 
   const dappletIndexOverOldListing = useMemo(() => {
     return myOldListing.findIndex(
-      (i) => i.type !== DappletsListItemTypes.Adding && i.id === item.id,
+      (i) => i.type !== DappletsListItemTypes.Adding && i.name === item.name,
     );
   }, [
     myOldListing,
@@ -171,7 +171,7 @@ const ItemDapplet = ({
 
   const dappletIndexOverListing = useMemo(() => {
     return myListing.findIndex(
-      (i) => i.type !== DappletsListItemTypes.Adding && i.id === item.id,
+      (i) => i.type !== DappletsListItemTypes.Adding && i.name === item.name,
     );
   }, [
     myListing,
@@ -290,6 +290,7 @@ const ItemDapplet = ({
               highlightStyle={{ background: "#ffff00", padding: 0 }}
             />
           </h3>
+          {address === item.owner && <div className={styles.label}>dev</div>}
         </div>
 
         {isOpen && (
