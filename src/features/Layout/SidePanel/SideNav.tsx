@@ -104,9 +104,13 @@ const SideNav = ({
   const pendingActions = useMemo(
     () =>
       selectedDappletsList.filter((d) => {
-        return (
-          d.type !== DappletsListItemTypes.Default || d.event !== undefined
-        );
+        const isInOutAction = d.type !== DappletsListItemTypes.Default;
+        const isIndexDiffSet = d.indexDiff !== undefined;
+        const isRearranged = d.indexDiff !== 0;
+        const shouldRearrange = isIndexDiffSet && isRearranged;
+
+        /* Action is pending if it's I/O event OR it's position is changed */
+        return isInOutAction || shouldRearrange;
       }),
     [selectedDappletsList],
   );

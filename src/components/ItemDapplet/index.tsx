@@ -280,7 +280,7 @@ const ItemDapplet = ({
               <DappletListItemMoved
                 className={isNewIndexLesser ? styles.up : styles.down}
               />
-              {dappletIndexOverOldListing - dappletIndexOverListing}
+              {Math.abs(dappletIndexOverOldListing - dappletIndexOverListing)}
             </div>
           )}
           <h3 className={styles.title}>

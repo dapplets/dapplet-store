@@ -162,6 +162,8 @@ interface DappletsList {
 type DappletsState = Readonly<DappletsList>;
 const INITIAL_STATE: DappletsState = {};
 
+export type LinkedListDiff = { prev: string; next: string };
+
 const reducers = {
   setDapplets(_: DappletsState, payload: DappletsList) {
     return payload;
@@ -292,7 +294,7 @@ const effects = (dispatch: any) => ({
       dispatch.dapplets.setBlobUrl({ id: i, blobUrl: url });
     });
 
-    const listers = await dappletsRegistry.getListers();
+    /* const listers = await dappletsRegistry.getListers();
 
     listers.forEach(async (lister: any, listerIndex: number) => {
       if (listers[listerIndex]) {
@@ -313,7 +315,7 @@ const effects = (dispatch: any) => ({
           }
         });
       }
-    });
+    }); */
   },
 
   pushMyListing: async ({
@@ -325,7 +327,7 @@ const effects = (dispatch: any) => ({
     address: string;
     provider: any;
     dappletsNames: { [name: number]: string };
-    links: { prev: string; next: string }[];
+    links: LinkedListDiff[];
   }) => {
     dispatch.user.setUser({
       isLocked: true,

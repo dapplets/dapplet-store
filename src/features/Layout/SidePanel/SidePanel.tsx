@@ -1,20 +1,16 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/no-empty-function */
 import React, { DetailedHTMLProps, HTMLAttributes, useMemo } from "react";
 
-import { saveListToLocalStorage } from "../../../lib/localStorage";
 import { DappletsListItemTypes } from "../../../components/DappletsListItem/DappletsListItem";
 import { RootDispatch, RootState } from "../../../models";
 import { Sort } from "../../../models/sort";
 import { connect } from "react-redux";
 import { Modals } from "../../../models/modals";
-import { IDapplet } from "../../../models/dapplets";
+import { IDapplet, LinkedListDiff } from "../../../models/dapplets";
 import styled from "styled-components/macro";
 import { Lists, MyListElement } from "../../../models/myLists";
-import { EventPushing, EventType } from "../../../models/dapplets";
 import SideNav from "./SideNav";
-import Profile from "../Profile/Profile";
 import { PUBLIC_LIST } from "../../../constants";
+import Profile from "../Profile/Profile";
 
 const mapState = (state: RootState) => ({
   address: state.user.address,
@@ -31,7 +27,7 @@ const mapDispatch = (dispatch: RootDispatch) => ({
     address: string;
     provider: any;
     dappletsNames: { [name: number]: string };
-    links: { prev: string; next: string }[];
+    links: LinkedListDiff[];
   }) => dispatch.dapplets.pushMyListing(payload),
   setLocked: (payload: boolean) =>
     dispatch.user.setUser({
@@ -84,7 +80,6 @@ export interface SidePanelProps
   setLocalDappletsList: any;
   setSelectedList: React.Dispatch<React.SetStateAction<Lists | undefined>>;
   selectedDappletsList: MyListElement[];
-  // setSelectedDappletsList: any;
   trustedUsersList: string[];
   setAddressFilter: any;
   openedList: any;
@@ -94,109 +89,41 @@ export interface SidePanelProps
 
 const SidePanel = ({
   className,
-  localDappletsList,
-  setLocalDappletsList,
   selectedDappletsList,
-  // setSelectedDappletsList,
   openedList,
   setOpenedList,
   dapplets,
   address,
   provider,
-  myOldListing,
   myListing: listingEvents,
   pushMyListing,
   setLocked,
   removeMyDapplet,
 }: SidePanelProps & Props): React.ReactElement => {
-  /* TODO: purge these, but keep for now, probably need them for research */
-  /* const removeFromLocalList = (name: string) => (e: any) => {
-    e.preventDefault();
-    const list = localDappletsList.filter((dapp) => dapp.name !== name);
-    const newLocalDappletsList: MyListElement[] = list;
-    saveListToLocalStorage(newLocalDappletsList, Lists.MyDapplets);
-    setLocalDappletsList(newLocalDappletsList);
-    removeMyDapplet({
-      registryUrl: "",
-      moduleName: name,
-    });
-  }; */
-
-  /* const removeFromSelectedList = (name: string) => (e: any) => {
-    e.preventDefault();
-    const dappletListIndex = selectedDappletsList.findIndex(
-      (dapplet) => dapplet.name === name,
-    );
-    let list = selectedDappletsList;
-
-    if (
-      selectedDappletsList[dappletListIndex].type ===
-      DappletsListItemTypes.Removing
-    ) {
-      list[dappletListIndex].type = DappletsListItemTypes.Default;
-    }
-
-    if (
-      selectedDappletsList[dappletListIndex].type ===
-      DappletsListItemTypes.Adding
-    ) {
-      list = list.filter((dapp) => dapp.name !== name);
-    }
-
-    if (selectedDappletsList[dappletListIndex].event !== undefined) {
-      if (list[dappletListIndex].eventPrev !== undefined) {
-        if (list[dappletListIndex].eventPrev !== 0) {
-          const swapId = list.findIndex(
-            ({ id }) => id === list[dappletListIndex].eventPrev,
-          );
-          const swap = list[dappletListIndex];
-          // console.log({ swap, swapId });
-          list[dappletListIndex] = list[swapId];
-          list[swapId] = swap;
-          list[swapId].event = undefined;
-          list[swapId].eventPrev = undefined;
-        } else {
-          const swap = list[dappletListIndex];
-          list.splice(dappletListIndex, 1);
-          list.unshift(swap);
-          list[0].event = undefined;
-          list[0].eventPrev = undefined;
-        }
-      }
-    }
-
-    const newSelectedDappletsList: MyListElement[] = list;
-    saveListToLocalStorage(newSelectedDappletsList, Lists.MyListing);
-    setSelectedDappletsList(newSelectedDappletsList);
-  }; */
-
   const dappletsStandard = useMemo(() => Object.values(dapplets), [dapplets]);
 
   const pushSelectedDappletsList = async () => {
-    console.log(listingEvents);
-
-    const links: any[] = [];
-    /* persisting = default + add */
+    const links: LinkedListDiff[] = [];
+    /* persisting = default(rearranging) + add */
     const persistingEvents = listingEvents.filter(
       (event) => event.type !== DappletsListItemTypes.Removing,
     );
 
-    /* Loop the list for it become empty */
+    /* Loop the list for it be interpreted as empty */
     const shouldClearList = persistingEvents.length === 0;
     if (shouldClearList)
       links.push({ prev: PUBLIC_LIST.HEADER, next: PUBLIC_LIST.TAIL });
 
-    const defaultEvents = listingEvents.filter(
+    const rearrangingEvents = listingEvents.filter(
       (event) => event.type === DappletsListItemTypes.Default,
     );
 
     const currentListLastDappletName =
-      defaultEvents.length > 0
-        ? defaultEvents[defaultEvents.length - 1].name
+      rearrangingEvents.length > 0
+        ? rearrangingEvents[rearrangingEvents.length - 1].name
         : PUBLIC_LIST.HEADER;
 
-    let lastAdded: any = null;
-
+    let lastAdded: LinkedListDiff | null = null;
     listingEvents.forEach((listingEvent, i) => {
       if (listingEvent.type === DappletsListItemTypes.Removing) {
         if (!shouldClearList) {
@@ -204,7 +131,7 @@ const SidePanel = ({
           if (isInitialEvent) {
             links.push({
               prev: PUBLIC_LIST.HEADER,
-              next: defaultEvents[0].name,
+              next: rearrangingEvents[0].name,
             });
           } else {
             const listingEventsReversedCopy = listingEvents.slice().reverse();
@@ -257,102 +184,38 @@ const SidePanel = ({
       }
     });
 
-    persistingEvents.forEach((persistingEvent, i) => {
-      const isRearangeEvent = Boolean(persistingEvent.event);
-      if (isRearangeEvent) {
-        // eslint-disable-next-line no-debugger
-        debugger;
+    persistingEvents.forEach((persistingEvent, newIndex) => {
+      const isInitialEl = newIndex === 0;
 
+      const indexDiff = persistingEvent.indexDiff || 0;
+      const isRearrangedEl = indexDiff !== 0;
+
+      if (isInitialEl && isRearrangedEl) {
         links.push({
-          prev: persistingEvents[i - 1]
-            ? persistingEvents[i - 1].name
-            : PUBLIC_LIST.HEADER,
+          prev: PUBLIC_LIST.HEADER,
           next: persistingEvent.name,
         });
+      }
 
+      const nextElement = persistingEvents[newIndex + 1];
+      const shouldSetNext = nextElement && indexDiff !== nextElement.indexDiff;
+
+      if (shouldSetNext) {
         links.push({
           prev: persistingEvent.name,
-          next: persistingEvents[i + 1]
-            ? persistingEvents[i + 1].name
-            : PUBLIC_LIST.TAIL,
-        });
-
-        /* const nextIndex = persistingEvents.findIndex(
-          (closedPersistingEvent) =>
-            closedPersistingEvent.name === persistingEvent.eventPrev,
-        );
-
-        const afterNext = persistingEvents[nextIndex - 1];
-
-         */
-
-        // eslint-disable-next-line no-debugger
-        debugger;
-
-        if (persistingEvent.indexDiff && persistingEvent.indexDiff < 0) {
-          const indexDiff = persistingEvent?.indexDiff
-            ? persistingEvent.indexDiff
-            : 0;
-
-          const index = i + indexDiff;
-
-          links.push({
-            prev: persistingEvent.eventPrev,
-            next: persistingEvents[index].name,
-          });
-        } else {
-          const indexDiff = persistingEvent?.indexDiff
-            ? persistingEvent.indexDiff
-            : 0;
-
-          const index = i + indexDiff;
-
-          links.push({
-            prev: persistingEvents[index].name,
-            next: persistingEvents[index + 1].name,
-          });
-        }
-      }
-    });
-
-    console.log("links: ", links);
-
-    /* Legacy */
-
-    /* const tobeLinks: number[] = [];
-    const tobeIds = listingEvents
-      .filter((x) => x.type !== DappletsListItemTypes.Removing)
-      .map((x) => x.id);
-    tobeIds.forEach((x, i) => {
-      tobeLinks[tobeIds[i - 1] ?? 0] = x;
-      tobeLinks[x] = tobeIds[i + 1] ?? PUBLIC_LIST.TAIL;
-    });
-
-    const asisLinks: number[] = [];
-    const asisIds = myOldListing
-      .filter((x) => x.type !== DappletsListItemTypes.Adding)
-      .map((x) => x.id);
-
-    asisIds.forEach((x, i) => {
-      asisLinks[asisIds[i - 1] ?? 0] = x;
-      asisLinks[x] = asisIds[i + 1] ?? PUBLIC_LIST.TAIL;
-    });
-
-    const maxLength =
-      asisLinks.length > tobeLinks.length ? asisLinks.length : tobeLinks.length;
-
-    const changedLinks = [];
-    for (let i = 0; i < maxLength; i++) {
-      if (asisLinks[i] !== tobeLinks[i]) {
-        changedLinks.push({
-          prev: i === 0 ? PUBLIC_LIST.HEADER : i,
-          next:
-            tobeLinks[i] ?? (i === 0 ? PUBLIC_LIST.TAIL : PUBLIC_LIST.HEADER),
+          next: nextElement.name,
         });
       }
-    }
 
-    console.log("changedLinks: ", changedLinks); */
+      const isLastEl = newIndex === persistingEvents.length - 1;
+
+      if (isLastEl) {
+        links.push({
+          prev: persistingEvent.name,
+          next: PUBLIC_LIST.TAIL,
+        });
+      }
+    });
 
     try {
       const dappletsNames: { [name: number]: string } = {};
@@ -361,16 +224,13 @@ const SidePanel = ({
         dappletsNames[id] = name;
       });
 
-      const shouldPush = 1;
-
       setLocked(true);
-      shouldPush &&
-        (await pushMyListing({
-          address: address || "",
-          provider,
-          dappletsNames,
-          links: links,
-        }));
+      await pushMyListing({
+        address: address || "",
+        provider,
+        dappletsNames,
+        links,
+      });
     } catch (error) {
       console.error({ error });
     }

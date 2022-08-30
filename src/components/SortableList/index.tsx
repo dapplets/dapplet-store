@@ -1,8 +1,12 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { useState, SetStateAction, useEffect, useMemo } from "react";
+import { useState, SetStateAction } from "react";
 import { saveListToLocalStorage } from "../../lib/localStorage";
 import styles from "./SortableList.module.scss";
-
+import { restrictToWindowEdges } from "@dnd-kit/modifiers";
+import { SortableListProps } from "./SortableList.props";
+import Draggable from "../Draggable";
+import ItemDapplet from "../ItemDapplet";
+import { MyListElement } from "../../models/myLists";
 import {
   DndContext,
   KeyboardSensor,
@@ -14,30 +18,12 @@ import {
   closestCenter,
   DragStartEvent,
 } from "@dnd-kit/core";
-
 import {
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
   arrayMove,
 } from "@dnd-kit/sortable";
-
-import { restrictToWindowEdges } from "@dnd-kit/modifiers";
-
-import { SortableListProps } from "./SortableList.props";
-import Draggable from "../Draggable";
-import ItemDapplet from "../ItemDapplet";
-import { Lists, MyListElement } from "../../models/myLists";
-import { RootDispatch, RootState } from "../../models";
-import { DappletsListItemTypes } from "../DappletsListItem/DappletsListItem";
-import { connect } from "react-redux";
-
-const mapState = (state: RootState) => ({
-  myOldListing: state.myLists[Lists.MyOldListing],
-  myListing: state.myLists[Lists.MyListing],
-});
-
-type Props = ReturnType<typeof mapState>;
 
 const SortableList = ({
   dapplets,
@@ -55,10 +41,9 @@ const SortableList = ({
   isTrustedSort,
   selectedList,
   isNotDapplet,
-  myOldListing,
-  myListing,
-}: SortableListProps & Props) => {
+}: SortableListProps) => {
   const [activeId, setActiveId] = useState<SetStateAction<string> | null>(null);
+  const [initialItems, setInitialItems] = useState<MyListElement[]>(items);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -71,56 +56,46 @@ const SortableList = ({
     const { active } = event;
     setActiveId(active.id);
   }
-  function handleDragEnd(event: DragEndEvent) {
-    const { active, over } = event;
-    let newArray: MyListElement[];
-    if (over !== null && active.id !== over.id) {
-      const itemIds = items!.map(({ name }) => name);
-      const oldIndex = itemIds.indexOf(active.id);
-      const newIndex = itemIds.indexOf(over.id);
 
-      if (items) {
-        items[oldIndex].indexDiff = oldIndex - newIndex;
-        items[oldIndex].event =
-          newIndex === 0 ? items[0].name : items[newIndex - 1].name;
-        if (items[oldIndex].eventPrev === undefined)
-          items[oldIndex].eventPrev =
-            oldIndex === 0 ? items[0].name : items[oldIndex - 1].name;
-
-        // console.log({ i: items[oldIndex], items });
-      }
-      newArray = arrayMove(items || [], oldIndex, newIndex);
-    } else {
-      newArray = items || [];
+  const handleDragEnd = (event: DragEndEvent) => {
+    if (initialItems.length === 0) {
+      setInitialItems(items);
     }
-    newArray = newArray.map((dapp, index) => {
-      if (dapp.event !== undefined && dapp.eventPrev !== undefined) {
-        if (index > 0) {
-          if (`${newArray[index - 1].id}` === dapp.eventPrev) {
-            return {
-              ...dapp,
-              event: undefined,
-              eventPrev: undefined,
-            };
-          }
-        }
-        if (index === 0) {
-          if (dapp.eventPrev === "0") {
-            return {
-              ...dapp,
-              event: undefined,
-              eventPrev: undefined,
-            };
-          }
-        }
-      }
-      return dapp;
-    });
-    const newDappletsList: MyListElement[] = newArray;
-    setItems(newDappletsList);
-    saveListToLocalStorage(newDappletsList, selectedList);
+
+    const { active: activeItem, over: overItem } = event;
+
+    const isDroppedInsideSortableContainer = overItem !== null;
+    const shouldHandleDragEnd =
+      isDroppedInsideSortableContainer && activeItem.id !== overItem.id;
+
+    let indexedItems: MyListElement[] = items;
+
+    if (shouldHandleDragEnd) {
+      const itemNames = items.map(({ name }) => name);
+      const oldIndex = itemNames.indexOf(activeItem.id);
+      const newIndex = itemNames.indexOf(overItem.id);
+
+      const shiftedItems = arrayMove(items, oldIndex, newIndex);
+
+      const currentInitialItems =
+        initialItems.length > 0 ? initialItems : items;
+
+      indexedItems = shiftedItems.map((item, oldIndex) => {
+        const newIndex = currentInitialItems.findIndex(
+          (shiftedItem) => shiftedItem.name === item.name,
+        );
+
+        const indexDiff = oldIndex - newIndex;
+        return { ...item, indexDiff };
+      });
+    }
+
+    setItems(indexedItems);
+    saveListToLocalStorage(indexedItems, selectedList);
     setActiveId(null);
-  }
+  };
+
+  if (!items || items.length === 0) return null;
 
   return (
     <DndContext
@@ -195,4 +170,4 @@ const SortableList = ({
   );
 };
 
-export default connect(mapState)(SortableList);
+export default SortableList;
