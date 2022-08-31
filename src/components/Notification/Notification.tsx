@@ -3,7 +3,7 @@ import { ReactComponent as CheckError } from "./check-erorr.svg";
 import { ReactComponent as Loader } from "./loader.svg";
 import { ReactComponent as Installed } from "./installed.svg";
 import cn from "classnames";
-import { net } from "../../api/consts";
+import { net } from "../../api/constants";
 import "./Notification.scss";
 
 const HEADER_MESSAGES = {

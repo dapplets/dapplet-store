@@ -3,7 +3,7 @@ import { Lists, MyListElement } from "../../models/myLists";
 
 export interface SortableListProps {
   dapplets: IDapplet[];
-  items?: MyListElement[];
+  items: MyListElement[];
   setItems: React.Dispatch<React.SetStateAction<MyListElement[]>>;
   selectedDapplets: MyListElement[];
   localDapplets: MyListElement[];

@@ -3,7 +3,7 @@ import styled from "styled-components/macro";
 import jazzicon from "@metamask/jazzicon";
 import { ReactComponent as UserPlus } from "./userPlus.svg";
 import { ReactComponent as Copy } from "./copy.svg";
-import { net } from "../../api/consts";
+import { net } from "../../api/constants";
 import { ModalsList } from "../../models/modals";
 import shortenAddress from "../../lib/shortenAddress";
 

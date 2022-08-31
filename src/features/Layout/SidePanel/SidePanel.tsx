@@ -1,18 +1,15 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/no-empty-function */
 import React, { DetailedHTMLProps, HTMLAttributes, useMemo } from "react";
 
-import { saveListToLocalStorage } from "../../../lib/localStorage";
 import { DappletsListItemTypes } from "../../../components/DappletsListItem/DappletsListItem";
 import { RootDispatch, RootState } from "../../../models";
 import { Sort } from "../../../models/sort";
 import { connect } from "react-redux";
 import { Modals } from "../../../models/modals";
-import { IDapplet } from "../../../models/dapplets";
+import { IDapplet, LinkedListDiff } from "../../../models/dapplets";
 import styled from "styled-components/macro";
 import { Lists, MyListElement } from "../../../models/myLists";
-import { EventPushing, EventType } from "../../../models/dapplets";
 import SideNav from "./SideNav";
+import { PUBLIC_LIST } from "../../../constants";
 import Profile from "../Profile/Profile";
 
 const mapState = (state: RootState) => ({
@@ -21,7 +18,6 @@ const mapState = (state: RootState) => ({
   isLocked: state.user.isLocked,
   myOldListing: state.myLists[Lists.MyOldListing],
   myListing: state.myLists[Lists.MyListing],
-  selectedList: state.sort.selectedList,
 });
 
 const mapDispatch = (dispatch: RootDispatch) => ({
@@ -29,10 +25,9 @@ const mapDispatch = (dispatch: RootDispatch) => ({
   setSort: (payload: Sort) => dispatch.sort.setSort(payload),
   pushMyListing: (payload: {
     address: string;
-    events: EventPushing[];
     provider: any;
     dappletsNames: { [name: number]: string };
-    links: { prev: number; next: number }[];
+    links: LinkedListDiff[];
   }) => dispatch.dapplets.pushMyListing(payload),
   setLocked: (payload: boolean) =>
     dispatch.user.setUser({
@@ -85,7 +80,6 @@ export interface SidePanelProps
   setLocalDappletsList: any;
   setSelectedList: React.Dispatch<React.SetStateAction<Lists | undefined>>;
   selectedDappletsList: MyListElement[];
-  setSelectedDappletsList: any;
   trustedUsersList: string[];
   setAddressFilter: any;
   openedList: any;
@@ -95,155 +89,133 @@ export interface SidePanelProps
 
 const SidePanel = ({
   className,
-  localDappletsList,
-  setLocalDappletsList,
   selectedDappletsList,
-  setSelectedDappletsList,
   openedList,
   setOpenedList,
   dapplets,
   address,
   provider,
-  myOldListing,
-  myListing,
+  myListing: listingEvents,
   pushMyListing,
   setLocked,
   removeMyDapplet,
 }: SidePanelProps & Props): React.ReactElement => {
-  /* TODO: purge these, but keep for now, probably need them for research */
-  /* const removeFromLocalList = (name: string) => (e: any) => {
-    e.preventDefault();
-    const list = localDappletsList.filter((dapp) => dapp.name !== name);
-    const newLocalDappletsList: MyListElement[] = list;
-    saveListToLocalStorage(newLocalDappletsList, Lists.MyDapplets);
-    setLocalDappletsList(newLocalDappletsList);
-    removeMyDapplet({
-      registryUrl: "",
-      moduleName: name,
-    });
-  }; */
-
-  /* const removeFromSelectedList = (name: string) => (e: any) => {
-    e.preventDefault();
-    const dappletListIndex = selectedDappletsList.findIndex(
-      (dapplet) => dapplet.name === name,
-    );
-    let list = selectedDappletsList;
-
-    if (
-      selectedDappletsList[dappletListIndex].type ===
-      DappletsListItemTypes.Removing
-    ) {
-      list[dappletListIndex].type = DappletsListItemTypes.Default;
-    }
-
-    if (
-      selectedDappletsList[dappletListIndex].type ===
-      DappletsListItemTypes.Adding
-    ) {
-      list = list.filter((dapp) => dapp.name !== name);
-    }
-
-    if (selectedDappletsList[dappletListIndex].event !== undefined) {
-      if (list[dappletListIndex].eventPrev !== undefined) {
-        if (list[dappletListIndex].eventPrev !== 0) {
-          const swapId = list.findIndex(
-            ({ id }) => id === list[dappletListIndex].eventPrev,
-          );
-          const swap = list[dappletListIndex];
-          // console.log({ swap, swapId });
-          list[dappletListIndex] = list[swapId];
-          list[swapId] = swap;
-          list[swapId].event = undefined;
-          list[swapId].eventPrev = undefined;
-        } else {
-          const swap = list[dappletListIndex];
-          list.splice(dappletListIndex, 1);
-          list.unshift(swap);
-          list[0].event = undefined;
-          list[0].eventPrev = undefined;
-        }
-      }
-    }
-
-    const newSelectedDappletsList: MyListElement[] = list;
-    saveListToLocalStorage(newSelectedDappletsList, Lists.MyListing);
-    setSelectedDappletsList(newSelectedDappletsList);
-  }; */
-
   const dappletsStandard = useMemo(() => Object.values(dapplets), [dapplets]);
 
   const pushSelectedDappletsList = async () => {
-    const events: EventPushing[] = [];
-    const nowDappletsList: MyListElement[] = selectedDappletsList.filter(
-      (dapplet) => {
-        if (dapplet.type === DappletsListItemTypes.Adding) {
-          events.push({
-            eventType: EventType.ADD,
-            dappletId: dapplet.id,
-          });
-        }
-        return dapplet.type !== DappletsListItemTypes.Adding;
-      },
-    );
-    const newDappletsList: MyListElement[] = nowDappletsList.filter(
-      ({ type, name, id }) => {
-        if (type === DappletsListItemTypes.Removing) {
-          events.push({
-            eventType: EventType.REMOVE,
-            dappletId: id,
-          });
-        }
-        return type !== DappletsListItemTypes.Removing;
-      },
+    const links: LinkedListDiff[] = [];
+    /* persisting = default(rearranging) + add */
+    const persistingEvents = listingEvents.filter(
+      (event) => event.type !== DappletsListItemTypes.Removing,
     );
 
-    myListing
-      .filter(
-        ({ type }) =>
-          type !== DappletsListItemTypes.Removing &&
-          type !== DappletsListItemTypes.Adding,
-      )
-      .forEach((dapp, index) => {
-        if (dapp.id !== myOldListing[index].id) {
-          events.push({
-            eventType: EventType.REPLACE,
-            dappletId: dapp.id,
-            dappletPrevId: index === 0 ? 0 : newDappletsList[index - 1].id,
-          });
+    /* Loop the list for it be interpreted as empty */
+    const shouldClearList = persistingEvents.length === 0;
+    if (shouldClearList)
+      links.push({ prev: PUBLIC_LIST.HEADER, next: PUBLIC_LIST.TAIL });
+
+    const rearrangingEvents = listingEvents.filter(
+      (event) => event.type === DappletsListItemTypes.Default,
+    );
+
+    const currentListLastDappletName =
+      rearrangingEvents.length > 0
+        ? rearrangingEvents[rearrangingEvents.length - 1].name
+        : PUBLIC_LIST.HEADER;
+
+    let lastAdded: LinkedListDiff | null = null;
+    listingEvents.forEach((listingEvent, i) => {
+      if (listingEvent.type === DappletsListItemTypes.Removing) {
+        if (!shouldClearList) {
+          const isInitialEvent = i === 0;
+          if (isInitialEvent) {
+            links.push({
+              prev: PUBLIC_LIST.HEADER,
+              next: rearrangingEvents[0].name,
+            });
+          } else {
+            const listingEventsReversedCopy = listingEvents.slice().reverse();
+            const exPrev = listingEventsReversedCopy.find((ev, evIndex) => {
+              const indexFromBehind = listingEvents.length - 1 - i;
+              return (
+                evIndex > indexFromBehind &&
+                ev.type === DappletsListItemTypes.Default
+              );
+            });
+
+            const exNext = listingEvents.find(
+              (ev, evIndex) =>
+                evIndex > i && ev.type === DappletsListItemTypes.Default,
+            );
+
+            links.push({
+              prev: exPrev?.name || PUBLIC_LIST.HEADER,
+              next: exNext?.name || PUBLIC_LIST.TAIL,
+            });
+          }
         }
-      });
 
-    const tobeLinks: number[] = [];
-    const tobeIds = myListing
-      .filter((x) => x.type !== DappletsListItemTypes.Removing)
-      .map((x) => x.id);
-    tobeIds.forEach((x, i) => {
-      tobeLinks[tobeIds[i - 1] ?? 0] = x;
-      tobeLinks[x] = tobeIds[i + 1] ?? 0xffffffff;
+        links.push({ prev: listingEvent.name, next: PUBLIC_LIST.HEADER });
+      }
+
+      if (listingEvent.type === DappletsListItemTypes.Adding) {
+        if (!lastAdded) {
+          links.push({
+            prev: currentListLastDappletName,
+            next: listingEvent.name,
+          });
+
+          links.push({
+            prev: listingEvent.name,
+            next: PUBLIC_LIST.TAIL,
+          });
+
+          lastAdded = links[links.length - 1];
+        } else {
+          lastAdded.next = listingEvent.name;
+
+          links.push({
+            prev: listingEvent.name,
+            next: PUBLIC_LIST.TAIL,
+          });
+
+          lastAdded = links[links.length - 1];
+        }
+      }
     });
 
-    const asisLinks: number[] = [];
-    const asisIds = myOldListing
-      .filter((x) => x.type !== DappletsListItemTypes.Adding)
-      .map((x) => x.id);
-    asisIds.forEach((x, i) => {
-      asisLinks[asisIds[i - 1] ?? 0] = x;
-      asisLinks[x] = asisIds[i + 1] ?? 0xffffffff;
-    });
+    persistingEvents.forEach((persistingEvent, newIndex) => {
+      const isInitialEl = newIndex === 0;
 
-    const maxLength =
-      asisLinks.length > tobeLinks.length ? asisLinks.length : tobeLinks.length;
+      const indexDiff = persistingEvent.indexDiff || 0;
+      const isRearrangedEl = indexDiff !== 0;
 
-    const changedLinks = [];
-    for (let i = 0; i < maxLength; i++) {
-      if (asisLinks[i] !== tobeLinks[i]) {
-        changedLinks.push({
-          prev: i,
-          next: tobeLinks[i] ?? (i === 0 ? 0xffffffff : 0x00000000),
+      if (isInitialEl && isRearrangedEl) {
+        links.push({
+          prev: PUBLIC_LIST.HEADER,
+          next: persistingEvent.name,
         });
       }
-    }
+
+      const nextElement = persistingEvents[newIndex + 1];
+      const shouldSetNext = nextElement && indexDiff !== nextElement.indexDiff;
+
+      if (shouldSetNext) {
+        links.push({
+          prev: persistingEvent.name,
+          next: nextElement.name,
+        });
+      }
+
+      const isLastEl = newIndex === persistingEvents.length - 1;
+
+      if (isLastEl) {
+        links.push({
+          prev: persistingEvent.name,
+          next: PUBLIC_LIST.TAIL,
+        });
+      }
+    });
 
     try {
       const dappletsNames: { [name: number]: string } = {};
@@ -251,14 +223,13 @@ const SidePanel = ({
       dappletsStandard.forEach(({ id, name }) => {
         dappletsNames[id] = name;
       });
-      console.log("changedLinks", changedLinks);
+
       setLocked(true);
       await pushMyListing({
         address: address || "",
-        events,
         provider,
         dappletsNames,
-        links: changedLinks,
+        links,
       });
     } catch (error) {
       console.error({ error });

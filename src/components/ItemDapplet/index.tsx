@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import styled from "styled-components/macro";
 import { ReactComponent as DappletListItemMoved } from "../DappletsListItem/arrow-down-circle.svg";
-import { DAPPLET_LISTING_STAGES } from "../../Constants";
+import { DAPPLET_LISTING_STAGES } from "../../constants";
 import cn from "classnames";
 import Highlighter from "react-highlight-words";
 import DappletListersPopup from "../../features/DappletListersPopup/DappletListersPopup";
@@ -88,26 +88,23 @@ interface ItemDappletProps {
   isNotDapplet: boolean;
 }
 
-const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
-  const {
-    item,
-    selectedDapplets,
-    localDapplets,
-    editLocalDappletsList,
-    editSelectedDappletsList,
-    searchQuery,
-    setSort,
-    trustedUsersList,
-    myOldListing,
-    myListing,
-    address,
-    setModalOpen,
-    setExpanded,
-
-    isNotDapplet,
-    isLocked,
-  } = props;
-
+const ItemDapplet = ({
+  item,
+  selectedDapplets,
+  localDapplets,
+  editLocalDappletsList,
+  editSelectedDappletsList,
+  searchQuery,
+  setSort,
+  trustedUsersList,
+  myOldListing,
+  myListing,
+  address,
+  setModalOpen,
+  setExpanded,
+  isNotDapplet,
+  isLocked,
+}: ItemDappletProps & Props): React.ReactElement => {
   const isLocalListEmpty = localDapplets.length === 0;
   const isPublicListEmpty = myListing.length === 0;
 
@@ -162,7 +159,7 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
 
   const dappletIndexOverOldListing = useMemo(() => {
     return myOldListing.findIndex(
-      (i) => i.type !== DappletsListItemTypes.Adding && i.id === item.id,
+      (i) => i.type !== DappletsListItemTypes.Adding && i.name === item.name,
     );
   }, [
     myOldListing,
@@ -174,7 +171,7 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
 
   const dappletIndexOverListing = useMemo(() => {
     return myListing.findIndex(
-      (i) => i.type !== DappletsListItemTypes.Adding && i.id === item.id,
+      (i) => i.type !== DappletsListItemTypes.Adding && i.name === item.name,
     );
   }, [
     myListing,
@@ -248,6 +245,11 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
       style={{ display: "flex", width: "100%", wordBreak: "break-all" }}
       onClick={handleClickOnItem}
     >
+      {/* debug */}
+      {/* {item.id} <br />
+      {item.name} <br />
+      {dappletIndexOverOldListing} <br />
+      {dappletIndexOverListing} <br /> */}
       {item.icon ? (
         <Image
           className={styles.itemImage}
@@ -278,7 +280,7 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
               <DappletListItemMoved
                 className={isNewIndexLesser ? styles.up : styles.down}
               />
-              {dappletIndexOverOldListing - dappletIndexOverListing}
+              {Math.abs(dappletIndexOverOldListing - dappletIndexOverListing)}
             </div>
           )}
           <h3 className={styles.title}>
@@ -288,6 +290,7 @@ const ItemDapplet = (props: ItemDappletProps & Props): React.ReactElement => {
               highlightStyle={{ background: "#ffff00", padding: 0 }}
             />
           </h3>
+          {address === item.owner && <div className={styles.label}>dev</div>}
         </div>
 
         {isOpen && (
