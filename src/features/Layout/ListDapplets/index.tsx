@@ -169,6 +169,7 @@ const ListDapplets = ({
   trigger,
   isNotDapplet,
   setModalOpen,
+
   ensNames,
   trustedUsers,
   isLocked,

@@ -236,92 +236,86 @@ const effects = (dispatch: any) => ({
       provider,
     );
 
-    const offset = 0;
-    const limit = MAX_MODULES_COUNTER;
-    const data = await dappletsRegistry.getModules(
-      REGISTRY_BRANCHES.DEFAULT,
-      offset,
-      limit,
-      false,
-    );
+    const data = await dappletsRegistry.getModules(0, MAX_MODULES_COUNTER);
 
     const rawDapplets = data.modules.filter(
       (module: IRawDapplet) => module.moduleType === MODULE_TYPES.DAPPLET,
     );
 
-    const dapplets: IDapplet[] = data.modules.flatMap(
-      (module: IRawDapplet, i: number) => {
-        const icon = {
-          hash: module.icon.hash,
-          uris: module.icon.uris,
+    const dapplets = data.modules.flatMap((module: IRawDapplet, i: number) => {
+      if (module.moduleType === MODULE_TYPES.DAPPLET) {
+        return {
+          id: i + 1,
+          description: module.description,
+          icon: "",
+          name: module.name,
+          owner: data.owners[i],
+          title: module.title,
+          versionToShow: "unknown",
+          version: "unknown",
+          /* TODO: timestamp to be implemented */
+          timestampToShow: "no info",
+          timestamp: "no info",
+          trustedUsers: [data.owners[i]],
+          isExpanded: false,
+          interfaces: [],
         };
+      } else {
+        return [];
+      }
+    });
 
-        if (module.moduleType === MODULE_TYPES.DAPPLET) {
-          return {
-            id: i + 1,
-            description: module.description,
-            icon: icon,
-            name: module.name,
-            owner: data.owners[i],
-            title: module.title,
-            versionToShow: formatVersion(data.lastVersions[i].version),
-            version: formatVersion(data.lastVersions[i].version),
-            /* TODO: timestamp to be implemented */
-            timestampToShow: "no info",
-            timestamp: "no info",
-            trustedUsers: [data.owners[i]],
-            isExpanded: false,
-            interfaces: [],
-          };
-        } else {
-          return [];
-        }
-      },
+    const versionatedDapplets = await Promise.all(
+      dapplets.map(async (dapplet: IDapplet) => {
+        const version = await dappletsRegistry.getVersionNumbers(
+          dapplet.name,
+          REGISTRY_BRANCHES.DEFAULT,
+        );
+
+        const formattedVersions = formatVersion(version);
+
+        return {
+          ...dapplet,
+          versionToShow: formattedVersions[formattedVersions.length - 1],
+          version: formattedVersions,
+        };
+      }),
     );
 
-    await dispatch.dapplets.setDapplets(dapplets);
+    await dispatch.dapplets.setDapplets(versionatedDapplets);
 
     rawDapplets.forEach(async (dapplet: IRawDapplet, i: number) => {
       const icon = {
         hash: dapplet.icon.hash,
-        uris: dapplet.icon.uris,
+        uris: dapplet.icon.uris.map((u: any) => ethers.utils.toUtf8String(u)),
       };
 
       const url = await _getResource(icon);
       dispatch.dapplets.setBlobUrl({ id: i, blobUrl: url });
     });
 
-    const { listers } = await dappletsRegistry.getListers(
-      0,
-      MAX_MODULES_COUNTER,
-    );
+    /* const listers = await dappletsRegistry.getListers();
 
     listers.forEach(async (lister: any, listerIndex: number) => {
-      if (lister) {
-        const dappsByLister = await dappletsRegistry.getModulesOfListing(
-          lister,
-          REGISTRY_BRANCHES.DEFAULT,
-          offset,
-          limit,
-          false,
+      if (listers[listerIndex]) {
+        const listersDapplets = await dappletsRegistry.getModulesOfListing(
+          listers[listerIndex],
         );
 
-        dappsByLister.forEach((dappByLister: any, dappletIndex: number) => {
-          if (dappByLister) {
-            const listedDapplet = dapplets.find(
-              (dapplet) => (dapplet.name = dappByLister),
+        listersDapplets.forEach((dapplet: any, dappletIndex: number) => {
+          if (listersDapplets[dappletIndex]) {
+            const { id } = versionatedDapplets.find(
+              (dapplet) => (dapplet.name = listersDapplets[dappletIndex]),
             );
 
-            if (listedDapplet) {
-              dispatch.dapplets.addTrustedUserToDapplet({
-                id: listedDapplet.id,
-                address: listers[listerIndex],
-              });
-            }
+            dispatch.dapplets.addTrustedUserToDapplet({
+              id: id,
+              address: listers[listerIndex],
+            });
           }
         });
       }
-    });
+    }); */
   },
 
   pushMyListing: async ({

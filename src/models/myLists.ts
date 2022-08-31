@@ -4,8 +4,7 @@ import dappletsRegistryABI from "../dappletsRegistryABI.json";
 import { DappletsListItemTypes } from "../components/DappletsListItem/DappletsListItem";
 import { ModalsList } from "./modals";
 import abiListing2 from "./listingContractAbi";
-import { DAPPLET_REGISTRY_ADDRESS, REGISTRY_BRANCHES } from "../constants";
-const MAX_MODULES_COUNTER = 99;
+import { DAPPLET_REGISTRY_ADDRESS } from "../constants";
 
 export enum Lists {
   MyListing = "Selected dapplets",
@@ -102,16 +101,7 @@ const effects = (dispatch: any) => ({
       signer,
     );
 
-    const offset = 0;
-    const limit = MAX_MODULES_COUNTER;
-
-    const res = await dappletsRegistry.getModulesOfListing(
-      address,
-      REGISTRY_BRANCHES.DEFAULT,
-      offset,
-      limit,
-      false,
-    );
+    const req = await dappletsRegistry.getModulesOfListing(address);
 
     const localListing: { [name: string]: MyListElement } = {};
     const dappsFromLocal = window.localStorage.getItem(Lists.MyListing);
@@ -122,8 +112,7 @@ const effects = (dispatch: any) => ({
       });
     }
 
-    const listing: MyListElement[] = res.modules
-      .map((module: MyListElement) => module.name)
+    const listing: MyListElement[] = req
       .map((name: string) => {
         const dapp = {
           id: Object.keys(dappletsNames).find(
@@ -138,8 +127,6 @@ const effects = (dispatch: any) => ({
         return dapp;
       })
       .filter((dapp: MyListElement) => !!dapp.name);
-
-    console.log(listing);
 
     dispatch.myLists.setMyList({
       name: Lists.MyOldListing,
