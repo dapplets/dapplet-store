@@ -145,6 +145,7 @@ const Layout = ({
       <StyledHeader selectedList={selectedList} isNotDapplet={isNotDapplet} />
       <StyledSidePanel
         localDappletsList={localDappletsList}
+        setLocalDappletsList={setLocalDappletsList}
         selectedDappletsList={selectedDappletsList}
         setSelectedList={setSelectedList}
         trustedUsersList={trustedUsersList}
