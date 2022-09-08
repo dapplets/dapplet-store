@@ -126,20 +126,25 @@ const SideNav = ({
             address?.replace("0x000000000000000000000000", "0x") !==
               user.replace("0x000000000000000000000000", "0x"),
         )
-        .map((user) => ({
-          title: user.replace("0x000000000000000000000000", "0x"),
-          subTitle: `${user
-            .replace("0x000000000000000000000000", "0x")
-            .slice(0, 6)}...${user
-            .replace("0x000000000000000000000000", "0x")
-            .slice(-4)}`,
-          id: user,
-          type: DappletsListItemTypes.Default,
-          onClickRemove: () => {
-            return;
-          },
-          isRemoved: false,
-        }))
+        .map((user) => {
+          const hasHumanReadableName = !user.includes("0x");
+          return {
+            title: user.replace("0x000000000000000000000000", "0x"),
+            subTitle: hasHumanReadableName
+              ? user
+              : `${user
+                  .replace("0x000000000000000000000000", "0x")
+                  .slice(0, 10)}...${user
+                  .replace("0x000000000000000000000000", "0x")
+                  .slice(-10)}`,
+            id: user,
+            type: DappletsListItemTypes.Default,
+            onClickRemove: () => {
+              return;
+            },
+            isRemoved: false,
+          };
+        })
         .filter(({ title }) => !!title)
         .map(({ id, subTitle, isRemoved, onClickRemove, title, type }) => {
           return (
