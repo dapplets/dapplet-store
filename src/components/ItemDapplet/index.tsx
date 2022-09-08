@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import styled from "styled-components/macro";
 import { ReactComponent as DappletListItemMoved } from "../DappletsListItem/arrow-down-circle.svg";
 import { DAPPLET_LISTING_STAGES } from "../../constants";
@@ -108,6 +108,8 @@ const ItemDapplet = ({
   const isLocalListEmpty = localDapplets.length === 0;
   const isPublicListEmpty = myListing.length === 0;
 
+  // const [context, setContext] = useState<null | string>(null);
+
   const trustedList = useMemo(() => {
     return item.trustedUsers.filter(
       (user) => trustedUsersList.includes(user) || user === address,
@@ -149,8 +151,13 @@ const ItemDapplet = ({
 
   const isOpen = useMemo(() => item.isExpanded, [item.isExpanded]);
 
-  const handleClickOnItem = ({ target }: any) => {
+  const handleClickOnItem = async ({ target }: any) => {
     if (target.tagName === "BUTTON") return;
+
+    /* const context = await Promise.resolve("twitter");
+
+    setContext(context); */
+
     setExpanded({
       id: item.id,
       isExpanded: !isOpen,
@@ -362,6 +369,9 @@ const ItemDapplet = ({
                 highlightStyle={{ background: "#ffff00", padding: 0 }}
               />
             </div>
+
+            {/* {isOpen && <p>{context}</p>} */}
+
             <Line />
           </>
         )}

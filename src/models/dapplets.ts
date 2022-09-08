@@ -1,7 +1,6 @@
 import { createModel } from "@rematch/core";
 import { ethers } from "ethers";
 import dappletsRegistryABI from "../dappletsRegistryABI.json";
-// import abiListing from './abi';
 import { PROVIDER_URL } from "../api/constants";
 import { customPromiseToast } from "../components/Notification";
 import { ModalsList } from "./modals";
@@ -204,10 +203,17 @@ const reducers = {
     state: DappletsState,
     { id, isExpanded }: { id: number; isExpanded: boolean },
   ) {
+    const dapp = Object.values(state).find((dapp: IDapplet) => dapp.id === id);
+    const index = Object.values(state).findIndex(
+      (dapp: IDapplet) => dapp.id === id,
+    );
+
+    if (!dapp) return state;
+
     return {
       ...state,
-      [id]: {
-        ...state[id],
+      [index]: {
+        ...state[index],
         isExpanded,
       },
     };
