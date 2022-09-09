@@ -256,49 +256,59 @@ const effects = (dispatch: any) => ({
       (module: IRawDapplet) => module.moduleType === MODULE_TYPES.DAPPLET,
     );
 
-    const dapplets: IDapplet[] = data.modules.flatMap(
-      (module: IRawDapplet, i: number) => {
-        const icon = {
-          hash: module.icon.hash,
-          uris: module.icon.uris,
+    const dapplets = data.modules.flatMap((module: IRawDapplet, i: number) => {
+      if (module.moduleType === MODULE_TYPES.DAPPLET) {
+        return {
+          id: i + 1,
+          description: module.description,
+          icon: "",
+          name: module.name,
+          owner: data.owners[i],
+          title: module.title,
+          versionToShow: "unknown",
+          version: "unknown",
+          /* TODO: timestamp to be implemented */
+          timestampToShow: "no info",
+          timestamp: "no info",
+          trustedUsers: [data.owners[i]],
+          isExpanded: false,
+          interfaces: [],
         };
+      } else {
+        return [];
+      }
+    });
 
-        if (module.moduleType === MODULE_TYPES.DAPPLET) {
-          return {
-            id: i + 1,
-            description: module.description,
-            icon: icon,
-            name: module.name,
-            owner: data.owners[i],
-            title: module.title,
-            versionToShow: formatVersion(data.lastVersions[i].version),
-            version: formatVersion(data.lastVersions[i].version),
-            /* TODO: timestamp to be implemented */
-            timestampToShow: "no info",
-            timestamp: "no info",
-            trustedUsers: [data.owners[i]],
-            isExpanded: false,
-            interfaces: [],
-          };
-        } else {
-          return [];
-        }
-      },
+    const versionatedDapplets = await Promise.all(
+      dapplets.map(async (dapplet: IDapplet) => {
+        const version = await dappletRegistry.getVersionNumbers(
+          dapplet.name,
+          REGISTRY_BRANCHES.DEFAULT,
+        );
+
+        const formattedVersions = formatVersion(version);
+
+        return {
+          ...dapplet,
+          versionToShow: formattedVersions[formattedVersions.length - 1],
+          version: formattedVersions,
+        };
+      }),
     );
 
-    await dispatch.dapplets.setDapplets(dapplets);
+    await dispatch.dapplets.setDapplets(versionatedDapplets);
 
     rawDapplets.forEach(async (dapplet: IRawDapplet, i: number) => {
       const icon = {
         hash: dapplet.icon.hash,
-        uris: dapplet.icon.uris,
+        uris: dapplet.icon.uris.map((u: any) => ethers.utils.toUtf8String(u)),
       };
 
       const url = await _getResource(icon);
       dispatch.dapplets.setBlobUrl({ id: i, blobUrl: url });
     });
 
-    dapplets.forEach(async (dapp) => {
+    dapplets.forEach(async (dapp: any) => {
       const dappListers = await dappletRegistry.getListersByModule(
         dapp.name,
         offset,
