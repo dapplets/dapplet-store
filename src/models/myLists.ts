@@ -139,8 +139,6 @@ const effects = (dispatch: any) => ({
       })
       .filter((dapp: MyListElement) => !!dapp.name);
 
-    console.log(listing);
-
     dispatch.myLists.setMyList({
       name: Lists.MyOldListing,
       elements: listing,

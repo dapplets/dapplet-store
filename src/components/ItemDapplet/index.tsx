@@ -252,11 +252,6 @@ const ItemDapplet = ({
       style={{ display: "flex", width: "100%", wordBreak: "break-all" }}
       onClick={handleClickOnItem}
     >
-      {/* debug */}
-      {/* {item.id} <br />
-      {item.name} <br />
-      {dappletIndexOverOldListing} <br />
-      {dappletIndexOverListing} <br /> */}
       {item.icon ? (
         <Image
           className={styles.itemImage}

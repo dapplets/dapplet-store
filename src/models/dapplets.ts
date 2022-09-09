@@ -177,11 +177,12 @@ const reducers = {
     state: DappletsState,
     { id, address }: { id: number; address: string },
   ) {
+    const dapIndex = Object.values(state).findIndex((dapp) => dapp.id === id);
     return {
       ...state,
-      [id]: {
-        ...state[id],
-        trustedUsers: [...state[id].trustedUsers, address],
+      [dapIndex]: {
+        ...state[dapIndex],
+        trustedUsers: [...state[dapIndex].trustedUsers, address],
       },
     };
   },
@@ -236,7 +237,7 @@ const effects = (dispatch: any) => ({
   getDapplets: async (payload: number, rootState: any): Promise<void> => {
     const provider = new ethers.providers.JsonRpcProvider(PROVIDER_URL, 0x05);
 
-    const dappletsRegistry = new ethers.Contract(
+    const dappletRegistry = new ethers.Contract(
       DAPPLET_REGISTRY_ADDRESS,
       dappletsRegistryABI,
       provider,
@@ -244,7 +245,7 @@ const effects = (dispatch: any) => ({
 
     const offset = 0;
     const limit = MAX_MODULES_COUNTER;
-    const data = await dappletsRegistry.getModules(
+    const data = await dappletRegistry.getModules(
       REGISTRY_BRANCHES.DEFAULT,
       offset,
       limit,
@@ -297,36 +298,19 @@ const effects = (dispatch: any) => ({
       dispatch.dapplets.setBlobUrl({ id: i, blobUrl: url });
     });
 
-    const { listers } = await dappletsRegistry.getListers(
-      0,
-      MAX_MODULES_COUNTER,
-    );
+    dapplets.forEach(async (dapp) => {
+      const dappListers = await dappletRegistry.getListersByModule(
+        dapp.name,
+        offset,
+        limit,
+      );
 
-    listers.forEach(async (lister: any, listerIndex: number) => {
-      if (lister) {
-        const dappsByLister = await dappletsRegistry.getModulesOfListing(
-          lister,
-          REGISTRY_BRANCHES.DEFAULT,
-          offset,
-          limit,
-          false,
-        );
-
-        dappsByLister.forEach((dappByLister: any, dappletIndex: number) => {
-          if (dappByLister) {
-            const listedDapplet = dapplets.find(
-              (dapplet) => (dapplet.name = dappByLister),
-            );
-
-            if (listedDapplet) {
-              dispatch.dapplets.addTrustedUserToDapplet({
-                id: listedDapplet.id,
-                address: listers[listerIndex],
-              });
-            }
-          }
+      dappListers.forEach((lister: any) => {
+        dispatch.dapplets.addTrustedUserToDapplet({
+          id: dapp.id,
+          address: lister,
         });
-      }
+      });
     });
   },
 
