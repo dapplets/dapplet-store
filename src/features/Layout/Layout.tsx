@@ -6,7 +6,7 @@ import Overlay from "./Overlay/Overlay";
 import SidePanel from "./SidePanel/SidePanel";
 
 import styled from "styled-components/macro";
-import ListDapplets from "./ListDapplets";
+import DappletList from "./DappletList/DappletList";
 import { Sort, SortTypes } from "../../models/sort";
 import { RootDispatch, RootState } from "../../models";
 import { connect } from "react-redux";
@@ -115,19 +115,8 @@ const Layout = ({
   setMyList,
 }: LayoutProps & Props): React.ReactElement<LayoutProps> => {
   const localDappletsList = myLists[Lists.MyDapplets];
-  const setLocalDappletsList = (elements: MyListElement[]) => {
-    setMyList({
-      name: Lists.MyDapplets,
-      elements,
-    });
-  };
   const selectedDappletsList = myLists[Lists.MyListing];
-  const setSelectedDappletsList = (elements: MyListElement[]) => {
-    setMyList({
-      name: Lists.MyListing,
-      elements,
-    });
-  };
+
 
   const dappletsByList = useMemo(() => {
     // If addressFilter is not empty,
@@ -135,10 +124,17 @@ const Layout = ({
     // and filter it inside ListDapplets in filterDappletsByCondition
     if (!dapplets || !selectedList || addressFilter) return dapplets;
 
-    return myLists[selectedList]
-      .map((dapplet) => dapplets.find((dapp) => dapp.name === dapplet.name))
-      .filter((dapp): dapp is IDapplet => !!dapp);
-  }, [dapplets, myLists, selectedList]);
+    const selectedDapplets = myLists[selectedList];
+
+    if (!selectedDapplets) return dapplets;
+
+    const formatedSelectedDapplets = selectedDapplets.flatMap(
+      (selectedDapplet) =>
+        dapplets.find((dapp) => dapp.name === selectedDapplet.name) || [],
+    );
+
+    return formatedSelectedDapplets;
+  }, [addressFilter, dapplets, myLists, selectedList]);
 
   return (
     <Wrapper isNotDapplet={isNotDapplet}>
@@ -156,12 +152,10 @@ const Layout = ({
 
       <MainContent>
         {dappletsByList && (
-          <ListDapplets
+          <DappletList
             dapplets={dappletsByList}
             selectedDapplets={selectedDappletsList}
-            setSelectedDapplets={setSelectedDappletsList}
             localDapplets={localDappletsList}
-            setLocalDapplets={setLocalDappletsList}
             selectedList={selectedList}
             setSelectedList={(newSelectedList: Lists | undefined) =>
               setSort({ selectedList: newSelectedList, searchQuery: "" })

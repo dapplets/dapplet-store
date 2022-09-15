@@ -111,16 +111,16 @@ const ItemDapplet = ({
   // const [context, setContext] = useState<null | string>(null);
 
   const trustedList = useMemo(() => {
-    return item.trustedUsers.filter(
+    return item.listers.filter(
       (user) => trustedUsersList.includes(user) || user === address,
     );
-  }, [address, item.trustedUsers, trustedUsersList]);
+  }, [address, item.listers, trustedUsersList]);
 
   const otherList = useMemo(() => {
-    return item.trustedUsers.filter(
+    return item.listers.filter(
       (user) => !(trustedUsersList.includes(user) || user === address),
     );
-  }, [address, item.trustedUsers, trustedUsersList]);
+  }, [address, item.listers, trustedUsersList]);
 
   const isLocalDapplet = useMemo(
     () => localDapplets.some((dapplet) => dapplet.name === item.name),

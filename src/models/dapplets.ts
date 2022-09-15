@@ -150,7 +150,7 @@ export interface IDapplet {
   versionToShow: string;
   timestamp: any;
   timestampToShow: string;
-  trustedUsers: string[];
+  listers: string[];
   isExpanded: boolean;
 }
 
@@ -173,7 +173,7 @@ const reducers = {
       [payload.id]: payload,
     };
   },
-  addTrustedUserToDapplet(
+  addListerToDapplet(
     state: DappletsState,
     { id, address }: { id: number; address: string },
   ) {
@@ -182,11 +182,11 @@ const reducers = {
       ...state,
       [dapIndex]: {
         ...state[dapIndex],
-        trustedUsers: [...state[dapIndex].trustedUsers, address],
+        listers: [...state[dapIndex].listers, address],
       },
     };
   },
-  removeTrustedUserFromDapplet(
+  removeListerFromDapplet(
     state: DappletsState,
     { id, address }: { id: number; address: string },
   ) {
@@ -194,7 +194,7 @@ const reducers = {
       ...state,
       [id]: {
         ...state[id],
-        trustedUsers: state[id].trustedUsers.filter(
+        trustedUsers: state[id].listers.filter(
           (nowAddress) => nowAddress !== address,
         ),
       },
@@ -234,7 +234,7 @@ const reducers = {
 };
 
 const effects = (dispatch: any) => ({
-  getDapplets: async (payload: number, rootState: any): Promise<void> => {
+  getDapplets: async (): Promise<void> => {
     const provider = new ethers.providers.JsonRpcProvider(PROVIDER_URL, 0x05);
 
     const dappletRegistry = new ethers.Contract(
@@ -276,7 +276,8 @@ const effects = (dispatch: any) => ({
             /* TODO: timestamp to be implemented */
             timestampToShow: "no info",
             timestamp: "no info",
-            trustedUsers: [data.owners[i]],
+            /* TODO: this field should be renamed to listers */
+            listers: [],
             isExpanded: false,
             interfaces: [],
           };
@@ -306,7 +307,7 @@ const effects = (dispatch: any) => ({
       );
 
       dappListers.forEach((lister: any) => {
-        dispatch.dapplets.addTrustedUserToDapplet({
+        dispatch.dapplets.addListerToDapplet({
           id: dapp.id,
           address: lister,
         });

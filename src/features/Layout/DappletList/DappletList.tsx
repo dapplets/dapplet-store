@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef } from "react";
 import { Header } from "semantic-ui-react";
 
 import { saveListToLocalStorage } from "../../../lib/localStorage";
-import styles from "./ListDapplets.module.scss";
+import styles from "./DappletList.module.scss";
 import SortableList from "../../../components/SortableList";
 import ItemDapplet from "../../../components/ItemDapplet";
 import { DappletsListItemTypes } from "../../../components/DappletsListItem/DappletsListItem";
@@ -101,6 +101,7 @@ const mapState = (state: RootState) => ({
   trustedUsers: state.trustedUsers.trustedUsers,
   isLocked: state.user.isLocked,
 });
+
 const mapDispatch = (dispatch: RootDispatch) => ({
   getEnsNames: (addresses: string[]) =>
     dispatch.ensNames.getEnsNames(addresses),
@@ -113,6 +114,8 @@ const mapDispatch = (dispatch: RootDispatch) => ({
     dispatch.myLists.addMyDapplet(payload),
   removeMyDapplet: (payload: { registryUrl: string; moduleName: string }) =>
     dispatch.myLists.removeMyDapplet(payload),
+  setMyList: (payload: { name: Lists; elements: MyListElement[] }) =>
+    dispatch.myLists.setMyList(payload),
 });
 
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
@@ -125,12 +128,10 @@ interface FilterDappletsByCondition {
   isNotDapplet: any;
 }
 
-export interface ListDappletsProps {
+export interface DappletListProps {
   dapplets: IDapplet[];
   selectedDapplets: MyListElement[];
-  setSelectedDapplets: any;
   localDapplets: MyListElement[];
-  setLocalDapplets: any;
   selectedList?: Lists;
   setSelectedList: any;
   sortType: string;
@@ -146,14 +147,13 @@ export interface ListDappletsProps {
   trigger: boolean;
   isNotDapplet: boolean;
   setModalOpen: any;
+  setMyList: any;
 }
 
-const ListDapplets = ({
+const DappletList = ({
   dapplets,
-  setSelectedDapplets,
   selectedDapplets,
   localDapplets,
-  setLocalDapplets,
   selectedList,
   setSelectedList,
   sortType,
@@ -178,7 +178,8 @@ const ListDapplets = ({
   removeTrustedUser,
   addMyDapplet,
   removeMyDapplet,
-}: ListDappletsProps & Props): React.ReactElement => {
+  setMyList,
+}: DappletListProps & Props): React.ReactElement => {
   const ref = useRef<HTMLDivElement>(null);
 
   const collator = useMemo(
@@ -231,10 +232,13 @@ const ListDapplets = ({
         localDapplets,
         DappletsListItemTypes.Default,
       );
-      setLocalDapplets(newLocalDappletsList);
+      setMyList({
+        name: Lists.MyDapplets,
+        newLocalDappletsList,
+      });
       saveListToLocalStorage(newLocalDappletsList, Lists.MyDapplets);
     },
-    [editList, localDapplets, setLocalDapplets, setOpenedList],
+    [editList, localDapplets, setOpenedList],
   );
 
   // TODO: most likely here the deleted element becomes up
@@ -304,9 +308,13 @@ const ListDapplets = ({
 
       const newDappletsList: MyListElement[] = nowDappletsList;
       saveListToLocalStorage(newDappletsList, Lists.MyListing);
-      setSelectedDapplets(newDappletsList);
+
+      setMyList({
+        name: Lists.MyListing,
+        elements: newDappletsList,
+      });
     },
-    [selectedDapplets, setOpenedList, setSelectedDapplets],
+    [selectedDapplets, setMyList, setOpenedList],
   );
 
   const titleText = useMemo(() => {
@@ -380,7 +388,7 @@ const ListDapplets = ({
     sortType: string,
     selectedList?: Lists,
   ): IDapplet[] => {
-    return [...dapplets].sort((a, b) => {
+    return dapplets.sort((a, b) => {
       if (selectedList) return 0;
 
       switch (sortType) {
@@ -420,14 +428,14 @@ const ListDapplets = ({
     }
 
     if (addressFilter) {
-      sortedList = sortedList
-        .filter(({ trustedUsers }) => trustedUsers.includes(addressFilter))
-        .sort((a, b) => a.id - b.id);
+      sortedList = sortedList.filter(({ listers }) =>
+        listers.includes(addressFilter),
+      );
     }
 
     if (isTrustedSort && !isNotDapplet) {
-      sortedList = sortedList.filter(({ trustedUsers }) =>
-        trustedUsersList.some((user) => trustedUsers.includes(user)),
+      sortedList = sortedList.filter(({ listers }) =>
+        trustedUsersList.some((user) => listers.includes(user)),
       );
     }
 
@@ -465,11 +473,20 @@ const ListDapplets = ({
 
   const chooseSetMethod = useMemo(
     () => ({
-      [Lists.MyListing]: setSelectedDapplets,
-      [Lists.MyDapplets]: setLocalDapplets,
-      [Lists.MyOldListing]: [],
+      [Lists.MyListing]: (elements: MyListElement[]) =>
+        setMyList({
+          name: Lists.MyListing,
+          elements,
+        }),
+      [Lists.MyDapplets]: (elements: MyListElement[]) =>
+        setMyList({
+          name: Lists.MyDapplets,
+          elements,
+        }),
+      /* TODO: EWW DIRT, GET RID OF IT */
+      [Lists.MyOldListing]: [] as any,
     }),
-    [setLocalDapplets, setSelectedDapplets],
+    [setMyList],
   );
 
   useEffect(() => {
@@ -607,4 +624,4 @@ const ListDapplets = ({
   );
 };
 
-export default connect(mapState, mapDispatch)(React.memo(ListDapplets));
+export default connect(mapState, mapDispatch)(React.memo(DappletList));
