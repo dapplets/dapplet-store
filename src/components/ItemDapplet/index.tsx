@@ -217,6 +217,14 @@ const ItemDapplet = ({
   };
 
   const onPublicListingButtonClick = (e: any) => {
+    const currentDappStage = getSelectedType();
+
+    const hasSetToRemoveStage =
+      currentDappStage === DAPPLET_LISTING_STAGES.PRESENTED;
+
+    const isDappOwnedByCurrentUser = item.owner === address;
+    const isRemovingOwnedDapp = hasSetToRemoveStage && isDappOwnedByCurrentUser;
+
     e.preventDefault();
     e.stopPropagation();
     if (!address)
@@ -228,6 +236,19 @@ const ItemDapplet = ({
       if (isPublicListEmpty) {
         setModalOpen({
           openedModal: ModalsList.FirstPublicDapplet,
+          settings: {
+            onAccept: () => {
+              editSelectedDappletsList(item);
+              setModalOpen({ openedModal: null, settings: null });
+            },
+            onCancel: () => setModalOpen({ openedModal: null, settings: null }),
+            dapplet: item,
+          },
+        });
+        return;
+      } else if (isRemovingOwnedDapp) {
+        setModalOpen({
+          openedModal: ModalsList.OwnDappletRemove,
           settings: {
             onAccept: () => {
               editSelectedDappletsList(item);
