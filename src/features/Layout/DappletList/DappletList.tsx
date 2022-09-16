@@ -389,7 +389,7 @@ const DappletList = ({
     selectedList?: Lists,
   ): IDapplet[] => {
     return dapplets.sort((a, b) => {
-      if (selectedList) return 0;
+      if (address === addressFilter) return 0;
 
       switch (sortType) {
         case SortTypes.ABC:
@@ -427,11 +427,11 @@ const DappletList = ({
       );
     }
 
-    if (addressFilter) {
+    /* if (addressFilter) {
       sortedList = sortedList.filter(({ listers }) =>
         listers.includes(addressFilter),
       );
-    }
+    } */
 
     if (isTrustedSort && !isNotDapplet) {
       sortedList = sortedList.filter(({ listers }) =>
@@ -566,7 +566,7 @@ const DappletList = ({
             (addressFilter !== "" || selectedList) &&
             selectedList !== Lists.MyDapplets
           ) && listDappletsHeader}
-          {selectedList && !isLocked && !addressFilter ? (
+          {selectedList && addressFilter === address ? (
             <SortableList
               dapplets={sortedDapplets}
               items={chooseList[selectedList]}

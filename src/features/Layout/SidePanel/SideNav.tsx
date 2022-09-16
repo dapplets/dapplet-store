@@ -175,6 +175,7 @@ const SideNav = ({
   const isMyListingEmpty = myListing.length === 0;
   const isMyDappletEmpty = myDapplets.length === 0;
   const isTrustedUSersListEmpty = formattedTrustedUsers.length === 0;
+  const isCurrentUserList = filter === address;
 
   return (
     <Wrapper>
@@ -186,12 +187,12 @@ const SideNav = ({
           }
         >
           <MenuItemLabel
-            isActive={selectedList === Lists.MyListing}
+            isActive={isCurrentUserList}
             disabled={isMyListingEmpty}
             onClick={() => {
               setSort({
                 selectedList: Lists.MyListing,
-                addressFilter: "",
+                addressFilter: address,
                 searchQuery: "",
               });
             }}

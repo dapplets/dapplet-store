@@ -1,114 +1,18 @@
 import { createModel } from "@rematch/core";
 import { ethers } from "ethers";
 import dappletsRegistryABI from "../dappletsRegistryABI.json";
-import { PROVIDER_URL } from "../api/constants";
 import { customPromiseToast } from "../components/Notification";
 import { ModalsList } from "./modals";
 import { Lists } from "./myLists";
 import {
   DAPPLET_REGISTRY_ADDRESS,
+  MAX_MODULES_COUNTER,
   MODULE_TYPES,
   REGISTRY_BRANCHES,
 } from "../constants";
-
-const BZZ_ENDPOINT = "https://swarmgateway.mooo.com";
-const IPFS_ENDPOINT = "https://ipfs.kaleido.art";
-const SIA_ENDPOINT = "https://siasky.net";
-const S3_ENDPOINT = "https://dapplet-api.s3.nl-ams.scw.cloud";
-
-const MAX_MODULES_COUNTER = 99;
-
-type StorageRef = {
-  hash: string;
-  uris: string[];
-};
-
-function formatVersion(hex: string) {
-  const result = (hex.replace("0x", "").match(/.{1,8}/g) ?? []).map(
-    (x) =>
-      `${parseInt("0x" + x[0] + x[1])}.${parseInt(
-        "0x" + x[2] + x[3],
-      )}.${parseInt("0x" + x[4] + x[5])}`,
-  );
-  return result;
-}
-
-const _fetchAndCheckHash = async (
-  url: string,
-  controller: AbortController,
-  expectedHash?: string,
-) => {
-  const response = await fetch(url, { signal: controller.signal });
-  if (!response.ok) throw new Error("Cannot fetch " + url);
-
-  const blob = await response.blob();
-  const buffer = await blob.arrayBuffer();
-  const recievedHash = ethers.utils.keccak256(new Uint8Array(buffer));
-
-  if (expectedHash && expectedHash !== recievedHash) {
-    throw new Error("Hash mismatch " + url);
-  }
-
-  return blob;
-};
-
-const _getResource = async (storageRef: StorageRef) => {
-  const promises: Promise<Blob>[] = [];
-  const controller = new AbortController();
-
-  for (const uri of storageRef.uris) {
-    const protocol = uri.substring(0, uri.indexOf("://"));
-    const reference = uri.substring(uri.indexOf("://") + 3);
-
-    if (protocol === "bzz") {
-      promises.push(
-        _fetchAndCheckHash(
-          BZZ_ENDPOINT + "/bzz/" + reference,
-          controller,
-          storageRef.hash,
-        ),
-      );
-    } else if (protocol === "ipfs") {
-      promises.push(
-        _fetchAndCheckHash(
-          IPFS_ENDPOINT + "/ipfs/" + reference,
-          controller,
-          storageRef.hash,
-        ),
-      );
-    } else if (protocol === "sia") {
-      promises.push(
-        _fetchAndCheckHash(
-          SIA_ENDPOINT + "/" + reference,
-          controller,
-          storageRef.hash,
-        ),
-      );
-    } else {
-      console.warn("Unsupported protocol " + uri);
-    }
-  }
-
-  if (storageRef.hash) {
-    const hash = storageRef.hash.replace("0x", "");
-    if (hash.match(/^0*$/) === null)
-      promises.push(
-        _fetchAndCheckHash(
-          S3_ENDPOINT + "/" + hash,
-          controller,
-          storageRef.hash,
-        ),
-      );
-  }
-
-  const blob = await Promise.any(promises);
-  const blobUrl = URL.createObjectURL(blob);
-
-  // cancel all request
-  controller.abort();
-
-  return blobUrl;
-};
+import getIconUrl from "../api/getIconUrl";
+import parseRawDappletVersion from "../lib/parseRawDappletVersion";
+import dappletRegistry from "../api/dappletRegistry";
 
 export enum EventType {
   REMOVE,
@@ -147,7 +51,7 @@ export interface IDapplet {
   owner: string;
   title: string;
   version: any;
-  versionToShow: string;
+  versionToShow: any;
   timestamp: any;
   timestampToShow: string;
   listers: string[];
@@ -235,14 +139,6 @@ const reducers = {
 
 const effects = (dispatch: any) => ({
   getDapplets: async (): Promise<void> => {
-    const provider = new ethers.providers.JsonRpcProvider(PROVIDER_URL, 0x05);
-
-    const dappletRegistry = new ethers.Contract(
-      DAPPLET_REGISTRY_ADDRESS,
-      dappletsRegistryABI,
-      provider,
-    );
-
     const offset = 0;
     const limit = MAX_MODULES_COUNTER;
     const data = await dappletRegistry.getModules(
@@ -271,12 +167,11 @@ const effects = (dispatch: any) => ({
             name: module.name,
             owner: data.owners[i],
             title: module.title,
-            versionToShow: formatVersion(data.lastVersions[i].version),
-            version: formatVersion(data.lastVersions[i].version),
+            versionToShow: parseRawDappletVersion(data.lastVersions[i].version),
+            version: parseRawDappletVersion(data.lastVersions[i].version),
             /* TODO: timestamp to be implemented */
             timestampToShow: "no info",
             timestamp: "no info",
-            /* TODO: this field should be renamed to listers */
             listers: [],
             isExpanded: false,
             interfaces: [],
@@ -295,7 +190,7 @@ const effects = (dispatch: any) => ({
         uris: dapplet.icon.uris,
       };
 
-      const url = await _getResource(icon);
+      const url = await getIconUrl(icon);
       dispatch.dapplets.setBlobUrl({ id: i, blobUrl: url });
     });
 

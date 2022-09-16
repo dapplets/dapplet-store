@@ -1,10 +1,12 @@
-/* eslint-disable prettier/prettier */
-import React, { useMemo } from "react";
-import { IDapplet } from "../../models/dapplets";
+import React, {
+  useEffect,
+  // useMemo,
+  useState,
+} from "react";
+import { IDapplet, IRawDapplet } from "../../models/dapplets";
 import Header from "./Header/Header";
 import Overlay from "./Overlay/Overlay";
 import SidePanel from "./SidePanel/SidePanel";
-
 import styled from "styled-components/macro";
 import DappletList from "./DappletList/DappletList";
 import { Sort, SortTypes } from "../../models/sort";
@@ -12,6 +14,10 @@ import { RootDispatch, RootState } from "../../models";
 import { connect } from "react-redux";
 import { Lists, MyListElement } from "../../models/myLists";
 import { Modals } from "../../models/modals";
+import getIconUrl from "../../api/getIconUrl";
+import parseRawDappletVersion from "../../lib/parseRawDappletVersion";
+import { MAX_MODULES_COUNTER, REGISTRY_BRANCHES } from "../../constants";
+import dappletRegistry from "../../api/dappletRegistry";
 
 interface WrapperProps {
   isNotDapplet: boolean;
@@ -117,8 +123,97 @@ const Layout = ({
   const localDappletsList = myLists[Lists.MyDapplets];
   const selectedDappletsList = myLists[Lists.MyListing];
 
+  const [dappletsByList, setDappletsByList] = useState<IDapplet[]>([]);
 
-  const dappletsByList = useMemo(() => {
+  useEffect(() => {
+    if (dapplets.length === 0) return;
+
+    if (addressFilter || selectedList === "Selected dapplets") {
+      const getModulesOfListing = async () => {
+        const offset = 0;
+        const limit = MAX_MODULES_COUNTER;
+        const data = await dappletRegistry.getModulesOfListing(
+          addressFilter,
+          REGISTRY_BRANCHES.DEFAULT,
+          offset,
+          limit,
+          false,
+        );
+
+        const { modules } = data;
+
+        let { id: lastDappId } = dapplets.reduce((prev, current) => {
+          const isNextDapp = current.id > prev.id;
+          return isNextDapp ? current : prev;
+        });
+
+        const publicList: IDapplet[] = [];
+        modules.forEach(async (dapplet: IRawDapplet, i: number) => {
+          const { name, description, title, icon } = dapplet;
+
+          const presentedDapplet = dapplets.find(
+            (presentedDapp) => presentedDapp.name === name,
+          );
+
+          const isPresented = presentedDapplet !== undefined;
+
+          if (isPresented) {
+            publicList.push(presentedDapplet);
+          } else {
+            const iconUrl = await getIconUrl(icon);
+
+            const listers = await dappletRegistry.getListersByModule(
+              name,
+              offset,
+              limit,
+            );
+
+            const formatted: IDapplet = {
+              id: lastDappId + 1,
+              description: description,
+              icon: iconUrl,
+              name: name,
+              owner: data.owners[i],
+              title: title,
+              versionToShow: parseRawDappletVersion(
+                data.lastVersions[i].version,
+              ),
+              version: parseRawDappletVersion(data.lastVersions[i].version),
+              /* TODO: timestamp to be implemented */
+              timestampToShow: "no info",
+              timestamp: "no info",
+              listers: listers,
+              isExpanded: false,
+              interfaces: [],
+            };
+
+            lastDappId++;
+            publicList.push(formatted);
+          }
+        });
+
+        setDappletsByList(publicList);
+      };
+
+      getModulesOfListing();
+    } else if (selectedList === "My dapplets") {
+      /* TODO: won't work after pagination implemented, update ASAP */
+      const selectedDappletNames = myLists[selectedList].map(
+        (dapp) => dapp.name,
+      );
+
+      const localDapplets = dapplets.filter((dapp) =>
+        selectedDappletNames.includes(dapp.name),
+      );
+
+      setDappletsByList(localDapplets);
+    } else {
+      setDappletsByList(dapplets);
+    }
+  }, [addressFilter, dapplets, myLists, selectedList]);
+
+  /* Old filter version, keep for history for now */
+  /* const dappletsByList = useMemo(() => {
     // If addressFilter is not empty,
     // return all dapplets
     // and filter it inside ListDapplets in filterDappletsByCondition
@@ -134,7 +229,7 @@ const Layout = ({
     );
 
     return formatedSelectedDapplets;
-  }, [addressFilter, dapplets, myLists, selectedList]);
+  }, [addressFilter, dapplets, myLists, selectedList]); */
 
   return (
     <Wrapper isNotDapplet={isNotDapplet}>

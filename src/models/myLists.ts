@@ -3,9 +3,11 @@ import { BigNumber, ethers } from "ethers";
 import dappletsRegistryABI from "../dappletsRegistryABI.json";
 import { DappletsListItemTypes } from "../components/DappletsListItem/DappletsListItem";
 import { ModalsList } from "./modals";
-import abiListing2 from "./listingContractAbi";
-import { DAPPLET_REGISTRY_ADDRESS, REGISTRY_BRANCHES } from "../constants";
-const MAX_MODULES_COUNTER = 99;
+import {
+  DAPPLET_REGISTRY_ADDRESS,
+  MAX_MODULES_COUNTER,
+  REGISTRY_BRANCHES,
+} from "../constants";
 
 export enum Lists {
   MyListing = "Selected dapplets",

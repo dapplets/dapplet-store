@@ -13,8 +13,8 @@ export const getAnchorParams = (address = "") => {
   if (params.selectedList === "undefined") params.selectedList = undefined;
   params.isTrustedSort = params.isTrustedSort === "true";
   // if (params.selectedList === Lists.MyListing && isFirst) params.selectedList = undefined
-  if (params.addressFilter === address && address !== "")
-    params.selectedList = Lists.MyListing;
+  /* if (params.addressFilter === address && address !== "")
+    params.selectedList = Lists.MyListing; */
   if (address === "" && params.selectedList === Lists.MyListing)
     params.selectedList = undefined;
   return params;
