@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { ReactNode, useEffect, useRef, useState } from "react";
 import styled from "styled-components/macro";
 import jazzicon from "@metamask/jazzicon";
 import { ReactComponent as UserPlus } from "./userPlus.svg";
@@ -197,6 +197,7 @@ interface ButtonProps {
   setModalOpen: any;
   addTrustedUser: any;
   removeTrustedUser: any;
+  children: ReactNode;
 }
 
 const Button = ({
@@ -208,6 +209,7 @@ const Button = ({
   setModalOpen,
   addTrustedUser,
   removeTrustedUser,
+  children,
 }: ButtonProps) => {
   const [hover, setHover] = useState(false);
 
@@ -257,18 +259,20 @@ const Button = ({
           addTrustedUser(address);
         }}
       >
-        <div>
-          {myAddress === address ? (
-            <div>Create dapplet under construction</div>
-          ) : trustedUsersList.includes(address) ? (
+        {children}
+
+        {/* <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          {isCurrentUserAuthor ? (
+            "Create dapplet under construction"
+          ) : isTrustedUserList ? (
             "Remove from trusted users"
           ) : (
-            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <>
               <UserPlus />
               Add to trusted users
-            </div>
+            </>
           )}
-        </div>
+        </div> */}
       </ButtonAction>
     </ButtonsWrapper>
   );
@@ -307,6 +311,24 @@ const ProfileInList = ({
 }: ProfileInListProps) => {
   const [isCopy, setCopy] = useState<boolean>(false);
 
+  const addToTrustedUsersButtonContent = (
+    <>
+      <UserPlus />
+      Add to trusted users
+    </>
+  );
+
+  const isListOwnedByCurrentUser = address === myAddress;
+  const isCurrentListBeingTrusted = trustedUsersList.includes(address);
+
+  const nonOwnerButtonContent = isCurrentListBeingTrusted
+    ? "Remove from trusted users"
+    : addToTrustedUsersButtonContent;
+
+  const buttonContent = isListOwnedByCurrentUser
+    ? "Create dapplet under construction"
+    : nonOwnerButtonContent;
+
   const getAvatar = (loggedIn: string): HTMLDivElement =>
     jazzicon(164, parseInt(loggedIn.slice(2, 10), 16));
   const getAddress = (address: string) =>
@@ -334,16 +356,20 @@ const ProfileInList = ({
           <MocedAvatar />
         </Avatar>
         <Title>{title}</Title>
-        <Button
-          myAddress={myAddress}
-          address={address}
-          trustedUsersList={trustedUsersList}
-          setTrustedUsersList={setTrustedUsersList}
-          isNotDapplet={isNotDapplet}
-          setModalOpen={setModalOpen}
-          addTrustedUser={addTrustedUser}
-          removeTrustedUser={removeTrustedUser}
-        />
+        {!isListOwnedByCurrentUser && (
+          <Button
+            myAddress={myAddress}
+            address={address}
+            trustedUsersList={trustedUsersList}
+            setTrustedUsersList={setTrustedUsersList}
+            isNotDapplet={isNotDapplet}
+            setModalOpen={setModalOpen}
+            addTrustedUser={addTrustedUser}
+            removeTrustedUser={removeTrustedUser}
+          >
+            {buttonContent}
+          </Button>
+        )}
         <ButtonAll>
           <button
             onClick={() => {
@@ -384,16 +410,20 @@ const ProfileInList = ({
           />
         )}
       </Address>
-      <Button
-        myAddress={myAddress}
-        address={address}
-        trustedUsersList={trustedUsersList}
-        setTrustedUsersList={setTrustedUsersList}
-        isNotDapplet={isNotDapplet}
-        setModalOpen={setModalOpen}
-        addTrustedUser={addTrustedUser}
-        removeTrustedUser={removeTrustedUser}
-      />
+      {!isListOwnedByCurrentUser && (
+        <Button
+          myAddress={myAddress}
+          address={address}
+          trustedUsersList={trustedUsersList}
+          setTrustedUsersList={setTrustedUsersList}
+          isNotDapplet={isNotDapplet}
+          setModalOpen={setModalOpen}
+          addTrustedUser={addTrustedUser}
+          removeTrustedUser={removeTrustedUser}
+        >
+          {buttonContent}
+        </Button>
+      )}
       <ButtonAll>
         <button
           onClick={() => {
