@@ -287,6 +287,7 @@ interface ProfileInListProps {
   title?: string;
   addTrustedUser: any;
   removeTrustedUser: any;
+  hexifiedAddressFilter: string;
 }
 
 const ProfileInList = ({
@@ -302,6 +303,7 @@ const ProfileInList = ({
   title,
   addTrustedUser,
   removeTrustedUser,
+  hexifiedAddressFilter,
 }: ProfileInListProps) => {
   const [isCopy, setCopy] = useState<boolean>(false);
 
@@ -364,7 +366,7 @@ const ProfileInList = ({
       <Title>{title}</Title>
       <Address>
         <a
-          href={`https://${net}.etherscan.io/address/${address}`}
+          href={`https://${net}.etherscan.io/address/${hexifiedAddressFilter}`}
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -376,7 +378,9 @@ const ProfileInList = ({
           <StyledCopy
             width={16}
             height={16}
-            onClick={() => copyTextToClipboard(getAddress(address))}
+            onClick={() =>
+              copyTextToClipboard(getAddress(hexifiedAddressFilter))
+            }
           />
         )}
       </Address>

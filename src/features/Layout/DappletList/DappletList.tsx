@@ -149,6 +149,7 @@ export interface DappletListProps {
   setModalOpen: any;
   setMyList: any;
   isListLoading: boolean;
+  hexifiedAddressFilter: string;
 }
 
 const DappletList = ({
@@ -181,6 +182,7 @@ const DappletList = ({
   removeMyDapplet,
   setMyList,
   isListLoading,
+  hexifiedAddressFilter,
 }: DappletListProps & Props): React.ReactElement => {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -533,6 +535,7 @@ const DappletList = ({
           {(addressFilter !== "" || selectedList) &&
             selectedList !== Lists.MyDapplets && (
               <ProfileInList
+                hexifiedAddressFilter={hexifiedAddressFilter}
                 myAddress={address}
                 address={addressFilter !== "" ? addressFilter : address}
                 setAddressFilter={setAddressFilter}

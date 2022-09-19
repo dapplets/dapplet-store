@@ -127,20 +127,28 @@ const Layout = ({
 
   const [dappletsByList, setDappletsByList] = useState<IDapplet[]>([]);
   const [isListLoading, setIsListLoading] = useState(false);
+  const [hexifiedAddressFilter, setHexifiedAddresFilter] = useState("");
 
   useEffect(() => {
     if (dapplets.length === 0) return;
 
     if (addressFilter || selectedList === "Selected dapplets") {
-      const getModulesOfListing = async () => {
+      const getModulesOfListing = async (addressFilter: string) => {
         setIsListLoading(true);
         const offset = 0;
         const limit = MAX_MODULES_COUNTER;
-        const listingAddress = addressFilter!.startsWith("0x")
+        const listingAddress = addressFilter.startsWith("0x")
           ? addressFilter
-          : await dappletRegistry.provider.resolveName(addressFilter!);
+          : await dappletRegistry.provider.resolveName(addressFilter);
+
+        /* TMP dirt */
+        if (listingAddress === null)
+          throw new Error("The hex pair for this ENS does not exist");
+
+        if (addressFilter) setHexifiedAddresFilter(listingAddress);
+
         const data = await dappletRegistry.getModulesOfListing(
-          addressFilter,
+          listingAddress,
           REGISTRY_BRANCHES.DEFAULT,
           offset,
           limit,
@@ -203,7 +211,7 @@ const Layout = ({
         setIsListLoading(false);
       };
 
-      getModulesOfListing();
+      getModulesOfListing(addressFilter || "");
     } else if (selectedList === "My dapplets") {
       /* TODO: won't work after pagination implemented, update ASAP */
       const selectedDappletNames = myLists[selectedList].map(
@@ -255,6 +263,7 @@ const Layout = ({
 
       <MainContent>
         <DappletList
+          hexifiedAddressFilter={hexifiedAddressFilter}
           isListLoading={isListLoading}
           dapplets={dappletsByList}
           selectedDapplets={selectedDappletsList}
