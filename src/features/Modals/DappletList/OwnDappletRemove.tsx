@@ -6,6 +6,7 @@ import { ReactComponent as TrashIcon } from "../../../images/trash.svg";
 import backgroundUrl from "../../../images/owndappletremove-bg.png";
 import styled from "styled-components/macro";
 import Button from "./Button";
+import { IDapplet } from "../../../models/dapplets";
 
 const Controls = styled.div`
   display: flex;
@@ -40,16 +41,19 @@ const Message = styled.div`
 type Settings = {
   onAccept: () => {};
   onCancel: () => {};
-  title: string;
+  dapplet: IDapplet;
 };
 
 type FirstPublicDappletProps = { settings: Settings };
 
 const OwnDappletRemove = ({ settings }: FirstPublicDappletProps) => {
-  const { onAccept, onCancel, title } = settings;
+  console.log(settings);
+  const { onAccept, onCancel, dapplet } = settings;
   return (
     <ModalCard>
-      <Title>You are the owner of the {title} you are trying to remove</Title>
+      <Title>
+        You are the owner of the {dapplet.title} you are trying to remove
+      </Title>
       <ModalButtons>
         <Button invisible onClick={onCancel}>
           <CloseIcon />
