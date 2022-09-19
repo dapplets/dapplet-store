@@ -178,7 +178,7 @@ const effects = (dispatch: any) => ({
     registryUrl: string;
     moduleName: string;
   }) {
-    await window.dapplets.addMyDapplet("registry.dapplet-base.eth", moduleName);
+    await window.dapplets.addMyDapplet("v2.registry.dapplet-base.eth", moduleName);
   },
   async removeMyDapplet({
     registryUrl,
@@ -188,7 +188,7 @@ const effects = (dispatch: any) => ({
     moduleName: string;
   }) {
     await window.dapplets.removeMyDapplet(
-      "registry.dapplet-base.eth",
+      "v2.registry.dapplet-base.eth",
       moduleName,
     );
   },
