@@ -162,7 +162,7 @@ const SideNav = ({
             />
           );
         }),
-    [trustedUsers, filter],
+    [trustedUsers, address, filter, setSort],
   );
 
   const isOpen = LegacySideLists.TrustedUsers === openedList;

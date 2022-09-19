@@ -4,6 +4,7 @@ import React, {
   useState,
 } from "react";
 import { IDapplet, IRawDapplet } from "../../models/dapplets";
+
 import Header from "./Header/Header";
 import Overlay from "./Overlay/Overlay";
 import SidePanel from "./SidePanel/SidePanel";
@@ -56,7 +57,8 @@ const MainContent = styled.main`
   grid-area: content;
 
   padding: 0 !important;
-  width: 100%;
+  width: 100%;import { Notification } from '../../components/Notification/Notification';
+
 `;
 
 const StyledOverlay = styled(Overlay)`
@@ -124,12 +126,14 @@ const Layout = ({
   const selectedDappletsList = myLists[Lists.MyListing];
 
   const [dappletsByList, setDappletsByList] = useState<IDapplet[]>([]);
+  const [isListLoading, setIsListLoading] = useState(false);
 
   useEffect(() => {
     if (dapplets.length === 0) return;
 
     if (addressFilter || selectedList === "Selected dapplets") {
       const getModulesOfListing = async () => {
+        setIsListLoading(true);
         const offset = 0;
         const limit = MAX_MODULES_COUNTER;
         const data = await dappletRegistry.getModulesOfListing(
@@ -193,6 +197,7 @@ const Layout = ({
         });
 
         setDappletsByList(publicList);
+        setIsListLoading(false);
       };
 
       getModulesOfListing();
@@ -246,34 +251,33 @@ const Layout = ({
       />
 
       <MainContent>
-        {dappletsByList && (
-          <DappletList
-            dapplets={dappletsByList}
-            selectedDapplets={selectedDappletsList}
-            localDapplets={localDappletsList}
-            selectedList={selectedList}
-            setSelectedList={(newSelectedList: Lists | undefined) =>
-              setSort({ selectedList: newSelectedList, searchQuery: "" })
-            }
-            sortType={sortType || SortTypes.ABC}
-            searchQuery={searchQuery || ""}
-            editSearchQuery={(newtSearchQuery: string) =>
-              setSort({ searchQuery: newtSearchQuery })
-            }
-            addressFilter={addressFilter || ""}
-            setAddressFilter={(newAddressFilter: string) =>
-              setSort({ addressFilter: newAddressFilter })
-            }
-            trustedUsersList={trustedUsers}
-            setTrustedUsersList={setTrustedUsers}
-            isTrustedSort={isTrustedSort || false}
-            setOpenedList={setOpenedList}
-            address={address || ""}
-            trigger={trigger || false}
-            isNotDapplet={isNotDapplet}
-            setModalOpen={setModalOpen}
-          />
-        )}
+        <DappletList
+          isListLoading={isListLoading}
+          dapplets={dappletsByList}
+          selectedDapplets={selectedDappletsList}
+          localDapplets={localDappletsList}
+          selectedList={selectedList}
+          setSelectedList={(newSelectedList: Lists | undefined) =>
+            setSort({ selectedList: newSelectedList, searchQuery: "" })
+          }
+          sortType={sortType || SortTypes.ABC}
+          searchQuery={searchQuery || ""}
+          editSearchQuery={(newtSearchQuery: string) =>
+            setSort({ searchQuery: newtSearchQuery })
+          }
+          addressFilter={addressFilter || ""}
+          setAddressFilter={(newAddressFilter: string) =>
+            setSort({ addressFilter: newAddressFilter })
+          }
+          trustedUsersList={trustedUsers}
+          setTrustedUsersList={setTrustedUsers}
+          isTrustedSort={isTrustedSort || false}
+          setOpenedList={setOpenedList}
+          address={address || ""}
+          trigger={trigger || false}
+          isNotDapplet={isNotDapplet}
+          setModalOpen={setModalOpen}
+        />
       </MainContent>
 
       {isNotDapplet && <StyledOverlay isNotDapplet={isNotDapplet} />}

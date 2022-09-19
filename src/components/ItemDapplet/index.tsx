@@ -168,24 +168,13 @@ const ItemDapplet = ({
     return myOldListing.findIndex(
       (i) => i.type !== DappletsListItemTypes.Adding && i.name === item.name,
     );
-  }, [
-    myOldListing,
-    myListing,
-    selectedDapplets,
-    editLocalDappletsList,
-    editSelectedDappletsList,
-  ]);
+  }, [myOldListing, item.name]);
 
   const dappletIndexOverListing = useMemo(() => {
     return myListing.findIndex(
       (i) => i.type !== DappletsListItemTypes.Adding && i.name === item.name,
     );
-  }, [
-    myListing,
-    selectedDapplets,
-    editLocalDappletsList,
-    editSelectedDappletsList,
-  ]);
+  }, [myListing, item.name]);
 
   const listLength = [...trustedList, ...otherList].length;
 
