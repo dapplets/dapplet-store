@@ -1,17 +1,24 @@
-/* eslint-disable prettier/prettier */
-import React, { useMemo } from "react";
-import { IDapplet } from "../../models/dapplets";
+import React, {
+  useEffect,
+  // useMemo,
+  useState,
+} from "react";
+import { IDapplet, IRawDapplet } from "../../models/dapplets";
+
 import Header from "./Header/Header";
 import Overlay from "./Overlay/Overlay";
 import SidePanel from "./SidePanel/SidePanel";
-
 import styled from "styled-components/macro";
-import ListDapplets from "./ListDapplets";
+import DappletList from "./DappletList/DappletList";
 import { Sort, SortTypes } from "../../models/sort";
 import { RootDispatch, RootState } from "../../models";
 import { connect } from "react-redux";
 import { Lists, MyListElement } from "../../models/myLists";
 import { Modals } from "../../models/modals";
+import getIconUrl from "../../api/getIconUrl";
+import parseRawDappletVersion from "../../lib/parseRawDappletVersion";
+import { MAX_MODULES_COUNTER, REGISTRY_BRANCHES } from "../../constants";
+import dappletRegistry from "../../api/dappletRegistry";
 
 interface WrapperProps {
   isNotDapplet: boolean;
@@ -50,7 +57,8 @@ const MainContent = styled.main`
   grid-area: content;
 
   padding: 0 !important;
-  width: 100%;
+  width: 100%;import { Notification } from '../../components/Notification/Notification';
+
 `;
 
 const StyledOverlay = styled(Overlay)`
@@ -115,30 +123,129 @@ const Layout = ({
   setMyList,
 }: LayoutProps & Props): React.ReactElement<LayoutProps> => {
   const localDappletsList = myLists[Lists.MyDapplets];
-  const setLocalDappletsList = (elements: MyListElement[]) => {
-    setMyList({
-      name: Lists.MyDapplets,
-      elements,
-    });
-  };
   const selectedDappletsList = myLists[Lists.MyListing];
-  const setSelectedDappletsList = (elements: MyListElement[]) => {
-    setMyList({
-      name: Lists.MyListing,
-      elements,
-    });
-  };
 
-  const dappletsByList = useMemo(() => {
+  const [dappletsByList, setDappletsByList] = useState<IDapplet[]>([]);
+  const [isListLoading, setIsListLoading] = useState(false);
+  const [hexifiedAddressFilter, setHexifiedAddresFilter] = useState("");
+
+  useEffect(() => {
+    if (dapplets.length === 0) return;
+
+    if (addressFilter || selectedList === "Selected dapplets") {
+      const getModulesOfListing = async (addressFilter: string) => {
+        setIsListLoading(true);
+        const offset = 0;
+        const limit = MAX_MODULES_COUNTER;
+        const listingAddress = addressFilter.startsWith("0x")
+          ? addressFilter
+          : await dappletRegistry.provider.resolveName(addressFilter);
+
+        /* TMP dirt */
+        if (listingAddress === null)
+          throw new Error("The hex pair for this ENS does not exist");
+
+        if (addressFilter) setHexifiedAddresFilter(listingAddress);
+
+        const data = await dappletRegistry.getModulesOfListing(
+          listingAddress,
+          REGISTRY_BRANCHES.DEFAULT,
+          offset,
+          limit,
+          false,
+        );
+
+        const { modules } = data;
+
+        let { id: lastDappId } = dapplets.reduce((prev, current) => {
+          const isNextDapp = current.id > prev.id;
+          return isNextDapp ? current : prev;
+        });
+
+        const publicList: IDapplet[] = [];
+        modules.forEach(async (dapplet: IRawDapplet, i: number) => {
+          const { name, description, title, icon } = dapplet;
+
+          const presentedDapplet = dapplets.find(
+            (presentedDapp) => presentedDapp.name === name,
+          );
+
+          const isPresented = presentedDapplet !== undefined;
+
+          if (isPresented) {
+            publicList.push(presentedDapplet);
+          } else {
+            const iconUrl = await getIconUrl(icon);
+
+            const listers = await dappletRegistry.getListersByModule(
+              name,
+              offset,
+              limit,
+            );
+
+            const formatted: IDapplet = {
+              id: lastDappId + 1,
+              description: description,
+              icon: iconUrl,
+              name: name,
+              owner: data.owners[i],
+              title: title,
+              versionToShow: parseRawDappletVersion(
+                data.lastVersions[i].version,
+              ),
+              version: parseRawDappletVersion(data.lastVersions[i].version),
+              /* TODO: timestamp to be implemented */
+              timestampToShow: "no info",
+              timestamp: "no info",
+              listers: listers,
+              isExpanded: false,
+              interfaces: [],
+            };
+
+            lastDappId++;
+            publicList.push(formatted);
+          }
+        });
+
+        setDappletsByList(publicList);
+        setIsListLoading(false);
+      };
+
+      getModulesOfListing(addressFilter || "");
+    } else if (selectedList === "My dapplets") {
+      /* TODO: won't work after pagination implemented, update ASAP */
+      const selectedDappletNames = myLists[selectedList].map(
+        (dapp) => dapp.name,
+      );
+
+      const localDapplets = dapplets.filter((dapp) =>
+        selectedDappletNames.includes(dapp.name),
+      );
+
+      setDappletsByList(localDapplets);
+    } else {
+      setDappletsByList(dapplets);
+    }
+  }, [addressFilter, dapplets, myLists, selectedList]);
+
+  /* Old filter version, keep for history for now */
+  /* const dappletsByList = useMemo(() => {
     // If addressFilter is not empty,
     // return all dapplets
     // and filter it inside ListDapplets in filterDappletsByCondition
     if (!dapplets || !selectedList || addressFilter) return dapplets;
 
-    return myLists[selectedList]
-      .map((dapplet) => dapplets.find((dapp) => dapp.name === dapplet.name))
-      .filter((dapp): dapp is IDapplet => !!dapp);
-  }, [dapplets, myLists, selectedList]);
+    const selectedDapplets = myLists[selectedList];
+
+    if (!selectedDapplets) return dapplets;
+
+    const formatedSelectedDapplets = selectedDapplets.flatMap(
+      (selectedDapplet) =>
+        dapplets.find((dapp) => dapp.name === selectedDapplet.name) || [],
+    );
+
+    return formatedSelectedDapplets;
+  }, [addressFilter, dapplets, myLists, selectedList]); */
 
   return (
     <Wrapper isNotDapplet={isNotDapplet}>
@@ -155,36 +262,34 @@ const Layout = ({
       />
 
       <MainContent>
-        {dappletsByList && (
-          <ListDapplets
-            dapplets={dappletsByList}
-            selectedDapplets={selectedDappletsList}
-            setSelectedDapplets={setSelectedDappletsList}
-            localDapplets={localDappletsList}
-            setLocalDapplets={setLocalDappletsList}
-            selectedList={selectedList}
-            setSelectedList={(newSelectedList: Lists | undefined) =>
-              setSort({ selectedList: newSelectedList, searchQuery: "" })
-            }
-            sortType={sortType || SortTypes.ABC}
-            searchQuery={searchQuery || ""}
-            editSearchQuery={(newtSearchQuery: string) =>
-              setSort({ searchQuery: newtSearchQuery })
-            }
-            addressFilter={addressFilter || ""}
-            setAddressFilter={(newAddressFilter: string) =>
-              setSort({ addressFilter: newAddressFilter })
-            }
-            trustedUsersList={trustedUsers}
-            setTrustedUsersList={setTrustedUsers}
-            isTrustedSort={isTrustedSort || false}
-            setOpenedList={setOpenedList}
-            address={address || ""}
-            trigger={trigger || false}
-            isNotDapplet={isNotDapplet}
-            setModalOpen={setModalOpen}
-          />
-        )}
+        <DappletList
+          hexifiedAddressFilter={hexifiedAddressFilter}
+          isListLoading={isListLoading}
+          dapplets={dappletsByList}
+          selectedDapplets={selectedDappletsList}
+          localDapplets={localDappletsList}
+          selectedList={selectedList}
+          setSelectedList={(newSelectedList: Lists | undefined) =>
+            setSort({ selectedList: newSelectedList, searchQuery: "" })
+          }
+          sortType={sortType || SortTypes.ABC}
+          searchQuery={searchQuery || ""}
+          editSearchQuery={(newtSearchQuery: string) =>
+            setSort({ searchQuery: newtSearchQuery })
+          }
+          addressFilter={addressFilter || ""}
+          setAddressFilter={(newAddressFilter: string) =>
+            setSort({ addressFilter: newAddressFilter })
+          }
+          trustedUsersList={trustedUsers}
+          setTrustedUsersList={setTrustedUsers}
+          isTrustedSort={isTrustedSort || false}
+          setOpenedList={setOpenedList}
+          address={address || ""}
+          trigger={trigger || false}
+          isNotDapplet={isNotDapplet}
+          setModalOpen={setModalOpen}
+        />
       </MainContent>
 
       {isNotDapplet && <StyledOverlay isNotDapplet={isNotDapplet} />}

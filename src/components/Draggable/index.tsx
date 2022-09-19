@@ -57,11 +57,11 @@ const Draggable = ({
     isSelectedDapplet && selectedDapplet.type === DappletsListItemTypes.Adding;
   const isMoved = isSelectedDapplet && isType === DappletsListItemTypes.Moved;
 
-  if (!!addressFilter && !item.trustedUsers.includes(addressFilter))
+  if (!!addressFilter && !item.listers.includes(addressFilter))
     return <></>;
   if (
     isTrustedSort &&
-    !trustedUsersList.some((user) => item.trustedUsers.includes(user))
+    !trustedUsersList.some((user) => item.listers.includes(user))
   )
     return <></>;
   return (

@@ -1,8 +1,8 @@
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { Header } from "semantic-ui-react";
-
+import { ReactComponent as Loader } from "../../../components/Notification/loader.svg";
 import { saveListToLocalStorage } from "../../../lib/localStorage";
-import styles from "./ListDapplets.module.scss";
+import styles from "./DappletList.module.scss";
 import SortableList from "../../../components/SortableList";
 import ItemDapplet from "../../../components/ItemDapplet";
 import { DappletsListItemTypes } from "../../../components/DappletsListItem/DappletsListItem";
@@ -101,6 +101,7 @@ const mapState = (state: RootState) => ({
   trustedUsers: state.trustedUsers.trustedUsers,
   isLocked: state.user.isLocked,
 });
+
 const mapDispatch = (dispatch: RootDispatch) => ({
   getEnsNames: (addresses: string[]) =>
     dispatch.ensNames.getEnsNames(addresses),
@@ -113,6 +114,8 @@ const mapDispatch = (dispatch: RootDispatch) => ({
     dispatch.myLists.addMyDapplet(payload),
   removeMyDapplet: (payload: { registryUrl: string; moduleName: string }) =>
     dispatch.myLists.removeMyDapplet(payload),
+  setMyList: (payload: { name: Lists; elements: MyListElement[] }) =>
+    dispatch.myLists.setMyList(payload),
 });
 
 type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
@@ -125,12 +128,10 @@ interface FilterDappletsByCondition {
   isNotDapplet: any;
 }
 
-export interface ListDappletsProps {
+export interface DappletListProps {
   dapplets: IDapplet[];
   selectedDapplets: MyListElement[];
-  setSelectedDapplets: any;
   localDapplets: MyListElement[];
-  setLocalDapplets: any;
   selectedList?: Lists;
   setSelectedList: any;
   sortType: string;
@@ -146,14 +147,15 @@ export interface ListDappletsProps {
   trigger: boolean;
   isNotDapplet: boolean;
   setModalOpen: any;
+  setMyList: any;
+  isListLoading: boolean;
+  hexifiedAddressFilter: string;
 }
 
-const ListDapplets = ({
+const DappletList = ({
   dapplets,
-  setSelectedDapplets,
   selectedDapplets,
   localDapplets,
-  setLocalDapplets,
   selectedList,
   setSelectedList,
   sortType,
@@ -178,7 +180,10 @@ const ListDapplets = ({
   removeTrustedUser,
   addMyDapplet,
   removeMyDapplet,
-}: ListDappletsProps & Props): React.ReactElement => {
+  setMyList,
+  isListLoading,
+  hexifiedAddressFilter,
+}: DappletListProps & Props): React.ReactElement => {
   const ref = useRef<HTMLDivElement>(null);
 
   const collator = useMemo(
@@ -231,10 +236,13 @@ const ListDapplets = ({
         localDapplets,
         DappletsListItemTypes.Default,
       );
-      setLocalDapplets(newLocalDappletsList);
+      setMyList({
+        name: Lists.MyDapplets,
+        newLocalDappletsList,
+      });
       saveListToLocalStorage(newLocalDappletsList, Lists.MyDapplets);
     },
-    [editList, localDapplets, setLocalDapplets, setOpenedList],
+    [editList, localDapplets, setMyList, setOpenedList],
   );
 
   // TODO: most likely here the deleted element becomes up
@@ -304,9 +312,13 @@ const ListDapplets = ({
 
       const newDappletsList: MyListElement[] = nowDappletsList;
       saveListToLocalStorage(newDappletsList, Lists.MyListing);
-      setSelectedDapplets(newDappletsList);
+
+      setMyList({
+        name: Lists.MyListing,
+        elements: newDappletsList,
+      });
     },
-    [selectedDapplets, setOpenedList, setSelectedDapplets],
+    [selectedDapplets, setMyList, setOpenedList],
   );
 
   const titleText = useMemo(() => {
@@ -375,64 +387,72 @@ const ListDapplets = ({
     [editSearchQuery, setAddressFilter, setSelectedList, titleText],
   );
 
-  const sortDappletsByType = (
-    dapplets: IDapplet[],
-    sortType: string,
-    selectedList?: Lists,
-  ): IDapplet[] => {
-    return [...dapplets].sort((a, b) => {
-      if (selectedList) return 0;
+  const sortDappletsByType = useCallback(
+    (
+      dapplets: IDapplet[],
+      sortType: string,
+      selectedList?: Lists,
+    ): IDapplet[] => {
+      return dapplets.sort((a, b) => {
+        if (address === addressFilter) return 0;
 
-      switch (sortType) {
-        case SortTypes.ABC:
-          return collator.compare(a.title, b.title);
+        switch (sortType) {
+          case SortTypes.ABC:
+            return collator.compare(a.title, b.title);
 
-        case SortTypes.ABCReverse:
-          return collator.compare(b.title, a.title);
+          case SortTypes.ABCReverse:
+            return collator.compare(b.title, a.title);
 
-        case SortTypes.Newest:
-          return collator.compare(b.timestamp, a.timestamp);
+          case SortTypes.Newest:
+            return collator.compare(b.timestamp, a.timestamp);
 
-        case SortTypes.Oldest:
-          return collator.compare(a.timestamp, b.timestamp);
+          case SortTypes.Oldest:
+            return collator.compare(a.timestamp, b.timestamp);
 
-        default:
-          return 0;
+          default:
+            return 0;
+        }
+      });
+    },
+    [address, addressFilter, collator],
+  );
+
+  const filterDappletsByCondition = useCallback(
+    ({
+      sortedList,
+      searchQuery,
+      addressFilter,
+      isTrustedSort,
+      isNotDapplet,
+    }: FilterDappletsByCondition): IDapplet[] => {
+      if (searchQuery) {
+        sortedList = sortedList.filter(
+          (dapplet) =>
+            dapplet.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            dapplet.owner.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            dapplet.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            dapplet.description
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase()),
+        );
       }
-    });
-  };
 
-  const filterDappletsByCondition = ({
-    sortedList,
-    searchQuery,
-    addressFilter,
-    isTrustedSort,
-    isNotDapplet,
-  }: FilterDappletsByCondition): IDapplet[] => {
-    if (searchQuery) {
-      sortedList = sortedList.filter(
-        (dapplet) =>
-          dapplet.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          dapplet.owner.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          dapplet.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          dapplet.description.toLowerCase().includes(searchQuery.toLowerCase()),
+      /* if (addressFilter) {
+      sortedList = sortedList.filter(({ listers }) =>
+        listers.includes(addressFilter),
       );
-    }
+    } */
 
-    if (addressFilter) {
-      sortedList = sortedList
-        .filter(({ trustedUsers }) => trustedUsers.includes(addressFilter))
-        .sort((a, b) => a.id - b.id);
-    }
+      if (isTrustedSort && !isNotDapplet) {
+        sortedList = sortedList.filter(({ listers }) =>
+          trustedUsersList.some((user) => listers.includes(user)),
+        );
+      }
 
-    if (isTrustedSort && !isNotDapplet) {
-      sortedList = sortedList.filter(({ trustedUsers }) =>
-        trustedUsersList.some((user) => trustedUsers.includes(user)),
-      );
-    }
-
-    return sortedList;
-  };
+      return sortedList;
+    },
+    [trustedUsersList],
+  );
 
   const sortedDapplets = useMemo(() => {
     const sortedList = sortDappletsByType(dapplets, sortType, selectedList);
@@ -446,12 +466,13 @@ const ListDapplets = ({
   }, [
     addressFilter,
     dapplets,
+    filterDappletsByCondition,
     isNotDapplet,
     isTrustedSort,
     searchQuery,
     selectedList,
+    sortDappletsByType,
     sortType,
-    trustedUsersList,
   ]);
 
   const chooseList = useMemo(
@@ -465,11 +486,20 @@ const ListDapplets = ({
 
   const chooseSetMethod = useMemo(
     () => ({
-      [Lists.MyListing]: setSelectedDapplets,
-      [Lists.MyDapplets]: setLocalDapplets,
-      [Lists.MyOldListing]: [],
+      [Lists.MyListing]: (elements: MyListElement[]) =>
+        setMyList({
+          name: Lists.MyListing,
+          elements,
+        }),
+      [Lists.MyDapplets]: (elements: MyListElement[]) =>
+        setMyList({
+          name: Lists.MyDapplets,
+          elements,
+        }),
+      /* TODO: EWW DIRT, GET RID OF IT */
+      [Lists.MyOldListing]: [] as any,
     }),
-    [setLocalDapplets, setSelectedDapplets],
+    [setMyList],
   );
 
   useEffect(() => {
@@ -505,6 +535,7 @@ const ListDapplets = ({
           {(addressFilter !== "" || selectedList) &&
             selectedList !== Lists.MyDapplets && (
               <ProfileInList
+                hexifiedAddressFilter={hexifiedAddressFilter}
                 myAddress={address}
                 address={addressFilter !== "" ? addressFilter : address}
                 setAddressFilter={setAddressFilter}
@@ -549,62 +580,73 @@ const ListDapplets = ({
             (addressFilter !== "" || selectedList) &&
             selectedList !== Lists.MyDapplets
           ) && listDappletsHeader}
-          {selectedList && !isLocked && !addressFilter ? (
-            <SortableList
-              dapplets={sortedDapplets}
-              items={chooseList[selectedList]}
-              setItems={chooseSetMethod[selectedList]}
-              selectedDapplets={selectedDapplets}
-              localDapplets={localDapplets}
-              editLocalDappletsList={editLocalDappletsList}
-              editSelectedDappletsList={editSelectedDappletsList}
-              setAddressFilter={setAddressFilter}
-              addressFilter={addressFilter}
-              setOpenedList={setOpenedList}
-              searchQuery={searchQuery}
-              trustedUsersList={trustedUsersList}
-              isTrustedSort={isTrustedSort}
-              selectedList={selectedList}
-              isNotDapplet={isNotDapplet}
-            />
-          ) : (
-            sortedDapplets.map((item, i) => {
-              const selected = selectedDapplets.find(
-                (d) => d.id === item.id,
-              )?.type;
-              const isAdding = selected === DappletsListItemTypes.Adding;
-              const isRemoving = selected === DappletsListItemTypes.Removing;
-
-              return (
-                <section
-                  className={cn(styles.item, {
-                    [styles.isChanged]: isAdding || isRemoving,
-                  })}
-                  key={item.name}
-                >
-                  <div className={styles.itemContainer}>
-                    <ItemDapplet
-                      key={item.name}
-                      item={item}
-                      selectedDapplets={selectedDapplets}
-                      localDapplets={localDapplets}
-                      editLocalDappletsList={editLocalDappletsList}
-                      editSelectedDappletsList={editSelectedDappletsList}
-                      searchQuery={searchQuery}
-                      setAddressFilter={setAddressFilter}
-                      setOpenedList={setOpenedList}
-                      trustedUsersList={trustedUsersList}
-                      isNotDapplet={isNotDapplet}
-                    />
-                  </div>
-                </section>
-              );
-            })
+          {isListLoading && (
+            <div className={styles.loaderContainer}>
+              <Loader
+                width={50}
+                height={50}
+                className="notification-custom-animate"
+              />
+            </div>
           )}
+          {!isListLoading &&
+            sortedDapplets.length !== 0 &&
+            (selectedList && addressFilter === address ? (
+              <SortableList
+                dapplets={sortedDapplets}
+                items={chooseList[selectedList]}
+                setItems={chooseSetMethod[selectedList]}
+                selectedDapplets={selectedDapplets}
+                localDapplets={localDapplets}
+                editLocalDappletsList={editLocalDappletsList}
+                editSelectedDappletsList={editSelectedDappletsList}
+                setAddressFilter={setAddressFilter}
+                addressFilter={addressFilter}
+                setOpenedList={setOpenedList}
+                searchQuery={searchQuery}
+                trustedUsersList={trustedUsersList}
+                isTrustedSort={isTrustedSort}
+                selectedList={selectedList}
+                isNotDapplet={isNotDapplet}
+              />
+            ) : (
+              sortedDapplets.map((item, i) => {
+                const selected = selectedDapplets.find(
+                  (d) => d.id === item.id,
+                )?.type;
+                const isAdding = selected === DappletsListItemTypes.Adding;
+                const isRemoving = selected === DappletsListItemTypes.Removing;
+
+                return (
+                  <section
+                    className={cn(styles.item, {
+                      [styles.isChanged]: isAdding || isRemoving,
+                    })}
+                    key={item.name}
+                  >
+                    <div className={styles.itemContainer}>
+                      <ItemDapplet
+                        key={item.name}
+                        item={item}
+                        selectedDapplets={selectedDapplets}
+                        localDapplets={localDapplets}
+                        editLocalDappletsList={editLocalDappletsList}
+                        editSelectedDappletsList={editSelectedDappletsList}
+                        searchQuery={searchQuery}
+                        setAddressFilter={setAddressFilter}
+                        setOpenedList={setOpenedList}
+                        trustedUsersList={trustedUsersList}
+                        isNotDapplet={isNotDapplet}
+                      />
+                    </div>
+                  </section>
+                );
+              })
+            ))}
         </div>
       </div>
     </article>
   );
 };
 
-export default connect(mapState, mapDispatch)(React.memo(ListDapplets));
+export default connect(mapState, mapDispatch)(React.memo(DappletList));

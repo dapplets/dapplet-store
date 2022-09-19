@@ -86,7 +86,7 @@ const Collapsible: React.FC<CollapsibleProps> = ({
     return () => {
       resizeObserver.disconnect();
     };
-  }, [height, openState]);
+  }, [height, maxHeight, openState]);
 
   useEffect(() => {
     if (openState) setHeight(ref.current?.getBoundingClientRect().height);

@@ -111,16 +111,16 @@ const ItemDapplet = ({
   // const [context, setContext] = useState<null | string>(null);
 
   const trustedList = useMemo(() => {
-    return item.trustedUsers.filter(
+    return item.listers.filter(
       (user) => trustedUsersList.includes(user) || user === address,
     );
-  }, [address, item.trustedUsers, trustedUsersList]);
+  }, [address, item.listers, trustedUsersList]);
 
   const otherList = useMemo(() => {
-    return item.trustedUsers.filter(
+    return item.listers.filter(
       (user) => !(trustedUsersList.includes(user) || user === address),
     );
-  }, [address, item.trustedUsers, trustedUsersList]);
+  }, [address, item.listers, trustedUsersList]);
 
   const isLocalDapplet = useMemo(
     () => localDapplets.some((dapplet) => dapplet.name === item.name),
@@ -168,24 +168,13 @@ const ItemDapplet = ({
     return myOldListing.findIndex(
       (i) => i.type !== DappletsListItemTypes.Adding && i.name === item.name,
     );
-  }, [
-    myOldListing,
-    myListing,
-    selectedDapplets,
-    editLocalDappletsList,
-    editSelectedDappletsList,
-  ]);
+  }, [myOldListing, item.name]);
 
   const dappletIndexOverListing = useMemo(() => {
     return myListing.findIndex(
       (i) => i.type !== DappletsListItemTypes.Adding && i.name === item.name,
     );
-  }, [
-    myListing,
-    selectedDapplets,
-    editLocalDappletsList,
-    editSelectedDappletsList,
-  ]);
+  }, [myListing, item.name]);
 
   const listLength = [...trustedList, ...otherList].length;
 

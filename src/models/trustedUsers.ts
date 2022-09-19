@@ -23,11 +23,19 @@ const effects = (dispatch: any) => ({
     // const trustedUsers = window.localStorage.getItem('trustedUsers');
     // if (trustedUsers) dispatch.trustedUsers.setTrustedUsers(JSON.parse(trustedUsers))
     try {
+      const nearNamingPatterns = [".testnet", ".near", "dev-"];
       const trustedUsers = await window.dapplets.getTrustedUsers();
-      if (trustedUsers)
-        dispatch.trustedUsers.setTrustedUsers(
-          trustedUsers.map(({ account }: { account: string }) => account),
-        );
+
+      const x = trustedUsers
+        .map(({ account }: { account: string }) => account)
+        .filter((account: string) => {
+          const isNearPattern = nearNamingPatterns.some((pattern) =>
+            account.includes(pattern),
+          );
+          return !isNearPattern;
+        });
+
+      if (trustedUsers) dispatch.trustedUsers.setTrustedUsers(x);
     } catch (error) {
       console.error({ error });
     }
