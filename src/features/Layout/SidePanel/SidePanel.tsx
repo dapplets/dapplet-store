@@ -77,7 +77,6 @@ export enum LegacySideLists {
 export interface SidePanelProps
   extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
   localDappletsList: MyListElement[];
-  setLocalDappletsList: any;
   setSelectedList: React.Dispatch<React.SetStateAction<Lists | undefined>>;
   selectedDappletsList: MyListElement[];
   trustedUsersList: string[];
@@ -98,7 +97,6 @@ const SidePanel = ({
   myListing: listingEvents,
   pushMyListing,
   setLocked,
-  removeMyDapplet,
 }: SidePanelProps & Props): React.ReactElement => {
   const dappletsStandard = useMemo(() => Object.values(dapplets), [dapplets]);
 
@@ -217,6 +215,16 @@ const SidePanel = ({
       }
     });
 
+    const deduplicatedLinks = links.filter(
+      (currentLink, index, links) =>
+        index ===
+        links.findIndex(
+          (linkToCompareTo) =>
+            linkToCompareTo.prev === currentLink.prev &&
+            linkToCompareTo.next === currentLink.next,
+        ),
+    );
+
     try {
       const dappletsNames: { [name: number]: string } = {};
 
@@ -229,7 +237,7 @@ const SidePanel = ({
         address: address || "",
         provider,
         dappletsNames,
-        links,
+        links: deduplicatedLinks,
       });
     } catch (error) {
       console.error({ error });

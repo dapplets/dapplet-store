@@ -11,9 +11,10 @@ import WarningModal from "./WarningModal/WarningModal";
 
 import { RootDispatch, RootState } from "../../models";
 import { connect } from "react-redux";
-import FirstLocalDapplet from "./FirstTimer/FirstLocalDapplet";
-import FirstPublicDapplet from "./FirstTimer/FirstPublicDapplet";
-import FirstTrustedUser from "./FirstTimer/FirstTrustedUser";
+import FirstLocalDapplet from "./DappletList/FirstLocalDapplet";
+import FirstPublicDapplet from "./DappletList/FirstPublicDapplet";
+import FirstTrustedUser from "./DappletList/FirstTrustedUser";
+import OwnDappletRemove from "./DappletList/OwnDappletRemove";
 
 const mapState = (state: RootState) => ({
   openedModal: state.modals.openedModal,
@@ -186,6 +187,8 @@ const ModalResolver = ({
         return <FirstPublicDapplet settings={settings} />;
       case ModalsList.FirstTrustedUser:
         return <FirstTrustedUser settings={settings} />;
+      case ModalsList.OwnDappletRemove:
+        return <OwnDappletRemove settings={settings} />;
       default:
         return null;
     }

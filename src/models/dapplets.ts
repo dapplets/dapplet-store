@@ -1,7 +1,6 @@
 import { createModel } from "@rematch/core";
 import { ethers } from "ethers";
 import dappletsRegistryABI from "../dappletsRegistryABI.json";
-// import abiListing from './abi';
 import { PROVIDER_URL } from "../api/constants";
 import { customPromiseToast } from "../components/Notification";
 import { ModalsList } from "./modals";
@@ -178,11 +177,12 @@ const reducers = {
     state: DappletsState,
     { id, address }: { id: number; address: string },
   ) {
+    const dapIndex = Object.values(state).findIndex((dapp) => dapp.id === id);
     return {
       ...state,
-      [id]: {
-        ...state[id],
-        trustedUsers: [...state[id].trustedUsers, address],
+      [dapIndex]: {
+        ...state[dapIndex],
+        trustedUsers: [...state[dapIndex].trustedUsers, address],
       },
     };
   },
@@ -204,10 +204,17 @@ const reducers = {
     state: DappletsState,
     { id, isExpanded }: { id: number; isExpanded: boolean },
   ) {
+    const dapp = Object.values(state).find((dapp: IDapplet) => dapp.id === id);
+    const index = Object.values(state).findIndex(
+      (dapp: IDapplet) => dapp.id === id,
+    );
+
+    if (!dapp) return state;
+
     return {
       ...state,
-      [id]: {
-        ...state[id],
+      [index]: {
+        ...state[index],
         isExpanded,
       },
     };
@@ -230,92 +237,81 @@ const effects = (dispatch: any) => ({
   getDapplets: async (payload: number, rootState: any): Promise<void> => {
     const provider = new ethers.providers.JsonRpcProvider(PROVIDER_URL, 0x05);
 
-    const dappletsRegistry = new ethers.Contract(
+    const dappletRegistry = new ethers.Contract(
       DAPPLET_REGISTRY_ADDRESS,
       dappletsRegistryABI,
       provider,
     );
 
-    const data = await dappletsRegistry.getModules(0, MAX_MODULES_COUNTER);
+    const offset = 0;
+    const limit = MAX_MODULES_COUNTER;
+    const data = await dappletRegistry.getModules(
+      REGISTRY_BRANCHES.DEFAULT,
+      offset,
+      limit,
+      false,
+    );
 
     const rawDapplets = data.modules.filter(
       (module: IRawDapplet) => module.moduleType === MODULE_TYPES.DAPPLET,
     );
 
-    const dapplets = data.modules.flatMap((module: IRawDapplet, i: number) => {
-      if (module.moduleType === MODULE_TYPES.DAPPLET) {
-        return {
-          id: i + 1,
-          description: module.description,
-          icon: "",
-          name: module.name,
-          owner: data.owners[i],
-          title: module.title,
-          versionToShow: "unknown",
-          version: "unknown",
-          /* TODO: timestamp to be implemented */
-          timestampToShow: "no info",
-          timestamp: "no info",
-          trustedUsers: [data.owners[i]],
-          isExpanded: false,
-          interfaces: [],
+    const dapplets: IDapplet[] = data.modules.flatMap(
+      (module: IRawDapplet, i: number) => {
+        const icon = {
+          hash: module.icon.hash,
+          uris: module.icon.uris,
         };
-      } else {
-        return [];
-      }
-    });
 
-    const versionatedDapplets = await Promise.all(
-      dapplets.map(async (dapplet: IDapplet) => {
-        const version = await dappletsRegistry.getVersionNumbers(
-          dapplet.name,
-          REGISTRY_BRANCHES.DEFAULT,
-        );
-
-        const formattedVersions = formatVersion(version);
-
-        return {
-          ...dapplet,
-          versionToShow: formattedVersions[formattedVersions.length - 1],
-          version: formattedVersions,
-        };
-      }),
+        if (module.moduleType === MODULE_TYPES.DAPPLET) {
+          return {
+            id: i + 1,
+            description: module.description,
+            icon: icon,
+            name: module.name,
+            owner: data.owners[i],
+            title: module.title,
+            versionToShow: formatVersion(data.lastVersions[i].version),
+            version: formatVersion(data.lastVersions[i].version),
+            /* TODO: timestamp to be implemented */
+            timestampToShow: "no info",
+            timestamp: "no info",
+            trustedUsers: [data.owners[i]],
+            isExpanded: false,
+            interfaces: [],
+          };
+        } else {
+          return [];
+        }
+      },
     );
 
-    await dispatch.dapplets.setDapplets(versionatedDapplets);
+    await dispatch.dapplets.setDapplets(dapplets);
 
     rawDapplets.forEach(async (dapplet: IRawDapplet, i: number) => {
       const icon = {
         hash: dapplet.icon.hash,
-        uris: dapplet.icon.uris.map((u: any) => ethers.utils.toUtf8String(u)),
+        uris: dapplet.icon.uris,
       };
 
       const url = await _getResource(icon);
       dispatch.dapplets.setBlobUrl({ id: i, blobUrl: url });
     });
 
-    /* const listers = await dappletsRegistry.getListers();
+    dapplets.forEach(async (dapp: any) => {
+      const dappListers = await dappletRegistry.getListersByModule(
+        dapp.name,
+        offset,
+        limit,
+      );
 
-    listers.forEach(async (lister: any, listerIndex: number) => {
-      if (listers[listerIndex]) {
-        const listersDapplets = await dappletsRegistry.getModulesOfListing(
-          listers[listerIndex],
-        );
-
-        listersDapplets.forEach((dapplet: any, dappletIndex: number) => {
-          if (listersDapplets[dappletIndex]) {
-            const { id } = versionatedDapplets.find(
-              (dapplet) => (dapplet.name = listersDapplets[dappletIndex]),
-            );
-
-            dispatch.dapplets.addTrustedUserToDapplet({
-              id: id,
-              address: listers[listerIndex],
-            });
-          }
+      dappListers.forEach((lister: any) => {
+        dispatch.dapplets.addTrustedUserToDapplet({
+          id: dapp.id,
+          address: lister,
         });
-      }
-    }); */
+      });
+    });
   },
 
   pushMyListing: async ({

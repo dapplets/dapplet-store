@@ -8,6 +8,7 @@ export enum ModalsList {
   FirstLocalDapplet = "firstlocaldapplet",
   FirstPublicDapplet = "firstpublicdapplet",
   FirstTrustedUser = "firstTrustedUser",
+  OwnDappletRemove = "ownDappletRemove",
 }
 
 export interface Modals {
