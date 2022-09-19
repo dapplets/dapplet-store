@@ -136,6 +136,9 @@ const Layout = ({
         setIsListLoading(true);
         const offset = 0;
         const limit = MAX_MODULES_COUNTER;
+        const listingAddress = addressFilter!.startsWith("0x")
+          ? addressFilter
+          : await dappletRegistry.provider.resolveName(addressFilter!);
         const data = await dappletRegistry.getModulesOfListing(
           addressFilter,
           REGISTRY_BRANCHES.DEFAULT,
