@@ -238,7 +238,7 @@ const DappletList = ({
       );
       setMyList({
         name: Lists.MyDapplets,
-        newLocalDappletsList,
+        elements: newLocalDappletsList,
       });
       saveListToLocalStorage(newLocalDappletsList, Lists.MyDapplets);
     },
