@@ -195,6 +195,7 @@ const DappletList = ({
 }: DappletListProps & Props): React.ReactElement => {
   const ref = useRef<HTMLDivElement>(null);
 
+  const [expandedCards, setExpandedCards] = useState([]);
   const [sortedDapplets, setSortedDapplets] = useState<IDapplet[]>([]);
   const [HexifiedTrustedUserList, setHexifiedTrustedUserList] = useState<any>(
     [],
@@ -451,20 +452,19 @@ const DappletList = ({
         );
       }
 
-      setIsListLoading(true);
-      const hexifiedAdresses = await Promise.all(
-        trustedUsersList.map(async (user) => {
-          if (!user.startsWith("0x")) {
-            return await dappletRegistry.provider.resolveName(user);
-          } else {
-            return user;
-          }
-        }),
-      );
-      setHexifiedTrustedUserList(hexifiedAdresses);
-      setIsListLoading(false);
-
       if (isTrustedSort && !isNotDapplet) {
+        // setIsListLoading(true);
+        const hexifiedAdresses = await Promise.all(
+          trustedUsersList.map(async (user) => {
+            if (!user.startsWith("0x")) {
+              return await dappletRegistry.provider.resolveName(user);
+            } else {
+              return user;
+            }
+          }),
+        );
+        setHexifiedTrustedUserList(hexifiedAdresses);
+        // setIsListLoading(false);
         sortedList = sortedList.filter(({ listers }) => {
           return hexifiedAdresses.some((user) => {
             return listers.includes(user!);
@@ -642,6 +642,8 @@ const DappletList = ({
             sortedDapplets.length !== 0 &&
             (selectedList && addressFilter === address ? (
               <SortableList
+                expandedCards={expandedCards}
+                setExpandedCards={setExpandedCards}
                 dapplets={sortedDapplets}
                 items={chooseList[selectedList]}
                 setItems={chooseSetMethod[selectedList]}
@@ -675,6 +677,8 @@ const DappletList = ({
                   >
                     <div className={styles.itemContainer}>
                       <ItemDapplet
+                        expandedCards={expandedCards}
+                        setExpandedCards={setExpandedCards}
                         key={item.name}
                         item={item}
                         selectedDapplets={selectedDapplets}

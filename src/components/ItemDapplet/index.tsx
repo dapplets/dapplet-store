@@ -86,6 +86,8 @@ interface ItemDappletProps {
   setOpenedList: any;
   trustedUsersList: string[];
   isNotDapplet: boolean;
+  expandedCards: any;
+  setExpandedCards: React.Dispatch<any>;
 }
 
 const ItemDapplet = ({
@@ -104,6 +106,8 @@ const ItemDapplet = ({
   setExpanded,
   isNotDapplet,
   isLocked,
+  expandedCards,
+  setExpandedCards,
 }: ItemDappletProps & Props): React.ReactElement => {
   const isLocalListEmpty = localDapplets.length === 0;
   const isPublicListEmpty = myListing.length === 0;
@@ -149,21 +153,28 @@ const ItemDapplet = ({
     [item.owner],
   );
 
-  const isOpen = useMemo(() => item.isExpanded, [item.isExpanded]);
+  const isOpen = useMemo(
+    () => expandedCards.includes(item.id),
+    [expandedCards, item.id],
+  );
 
-  const handleClickOnItem = async ({ target }: any) => {
-    if (target.tagName === "BUTTON") return;
+  const handleClickOnItem = useCallback(
+    async ({ target }: any) => {
+      if (target.tagName === "BUTTON") return;
 
-    /* const context = await Promise.resolve("twitter");
+      /* const context = await Promise.resolve("twitter");
+  
+      setContext(context); */
 
-    setContext(context); */
-
-    setExpanded({
-      id: item.id,
-      isExpanded: !isOpen,
-    });
-  };
-
+      setExpandedCards((old: any) => {
+        if (old.includes(item.id)) {
+          return old.filter((oldItem: any) => oldItem !== item.id);
+        }
+        return [...old, item.id];
+      });
+    },
+    [item.id, setExpandedCards],
+  );
   const dappletIndexOverOldListing = useMemo(() => {
     return myOldListing.findIndex(
       (i) => i.type !== DappletsListItemTypes.Adding && i.name === item.name,

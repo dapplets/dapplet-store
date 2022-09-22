@@ -17,4 +17,6 @@ export interface SortableListProps {
   isTrustedSort: boolean;
   selectedList: Lists;
   isNotDapplet: boolean;
+  expandedCards: any;
+  setExpandedCards: React.Dispatch<any>;
 }

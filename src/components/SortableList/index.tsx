@@ -41,6 +41,8 @@ const SortableList = ({
   isTrustedSort,
   selectedList,
   isNotDapplet,
+  expandedCards,
+  setExpandedCards,
 }: SortableListProps) => {
   const [activeId, setActiveId] = useState<SetStateAction<string> | null>(null);
   const [initialItems, setInitialItems] = useState<MyListElement[]>(items);
@@ -122,6 +124,8 @@ const SortableList = ({
                 isTrustedSort={isTrustedSort}
               >
                 <ItemDapplet
+                  expandedCards={expandedCards}
+                  setExpandedCards={setExpandedCards}
                   key={itemName}
                   item={dapplets.find((dapp) => dapp.name === itemName)!}
                   selectedDapplets={selectedDapplets}
@@ -151,6 +155,8 @@ const SortableList = ({
             <div className={styles.itemContainer}>
               <div className={styles.item__draggable} />
               <ItemDapplet
+                expandedCards={expandedCards}
+                setExpandedCards={setExpandedCards}
                 key={dapplets.find((dapp) => dapp.name === activeId)?.name}
                 item={dapplets.find((dapp) => dapp.name === activeId)!}
                 selectedDapplets={selectedDapplets}

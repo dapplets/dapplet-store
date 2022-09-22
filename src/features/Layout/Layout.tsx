@@ -130,11 +130,11 @@ const Layout = ({
   const [hexifiedAddressFilter, setHexifiedAddresFilter] = useState("");
 
   useEffect(() => {
+    setIsListLoading(true);
     if (dapplets.length === 0) return;
 
     if (addressFilter || selectedList === "Selected dapplets") {
       const getModulesOfListing = async (addressFilter: string) => {
-        setIsListLoading(true);
         const offset = 0;
         const limit = MAX_MODULES_COUNTER;
         const listingAddress = addressFilter.startsWith("0x")
@@ -208,7 +208,6 @@ const Layout = ({
         });
 
         setDappletsByList(publicList);
-        setIsListLoading(false);
       };
 
       getModulesOfListing(addressFilter || "");
@@ -226,6 +225,7 @@ const Layout = ({
     } else {
       setDappletsByList(dapplets);
     }
+    setIsListLoading(false);
   }, [addressFilter, dapplets, myLists, selectedList]);
 
   /* Old filter version, keep for history for now */
@@ -263,7 +263,7 @@ const Layout = ({
 
       <MainContent>
         <DappletList
-        setIsListLoading={setIsListLoading}
+          setIsListLoading={setIsListLoading}
           hexifiedAddressFilter={hexifiedAddressFilter}
           isListLoading={isListLoading}
           dapplets={dappletsByList}
