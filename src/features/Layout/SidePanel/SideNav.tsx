@@ -1,4 +1,10 @@
-import React, { useMemo, Dispatch, SetStateAction } from "react";
+import React, {
+  useMemo,
+  Dispatch,
+  SetStateAction,
+  useState,
+  useEffect,
+} from "react";
 import Tooltip from "../Tooltip/Tooltip";
 import { connect } from "react-redux";
 import { Lists, MyListElement } from "../../../models/myLists";
@@ -117,7 +123,62 @@ const SideNav = ({
 
   const arePendingActions = pendingActions.length > 0;
 
-  const formattedTrustedUsers = useMemo(
+  const [formattedTrustedUsers, setformattedTrustedUsers] = useState<any>([]);
+
+  useEffect(() => {
+    const users = trustedUsers
+      .filter(
+        (user) =>
+          !address ||
+          address?.replace("0x000000000000000000000000", "0x") !==
+            user.replace("0x000000000000000000000000", "0x"),
+      )
+      .map((user) => {
+        const hasHumanReadableName = !user.includes("0x");
+        return {
+          title: user.replace("0x000000000000000000000000", "0x"),
+          subTitle: hasHumanReadableName
+            ? user
+            : `${user
+                .replace("0x000000000000000000000000", "0x")
+                .slice(0, 10)}...${user
+                .replace("0x000000000000000000000000", "0x")
+                .slice(-10)}`,
+          id: user,
+          type: DappletsListItemTypes.Default,
+          onClickRemove: () => {
+            return;
+          },
+          isRemoved: false,
+        };
+      })
+      .filter(({ title }) => !!title)
+      .map(({ id, subTitle, isRemoved, onClickRemove, title, type }) => {
+        return (
+          <DappletsListItem
+            isActive={filter === id}
+            key={id}
+            onClick={(id: string) =>
+              setSort({
+                addressFilter: id,
+                selectedList: undefined,
+                searchQuery: "",
+              })
+            }
+            subTitle={subTitle}
+            isRemoved={isRemoved}
+            onClickRemove={onClickRemove}
+            title={title}
+            type={type}
+            id={id}
+          />
+        );
+      });
+
+    setformattedTrustedUsers(users);
+  }, [address, filter, setSort, trustedUsers]);
+
+  /* const formattedTrustedUsers = useMemo(
     () =>
       trustedUsers
         .filter(
@@ -168,7 +229,7 @@ const SideNav = ({
           );
         }),
     [trustedUsers, address, filter, setSort],
-  );
+  ); */
 
   const isOpen = LegacySideLists.TrustedUsers === openedList;
 

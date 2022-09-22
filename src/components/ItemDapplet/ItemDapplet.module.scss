@@ -18,9 +18,7 @@
   content: "" "";
 
   /* stylelint-disable-next-line function-url-quotes */
-  background: no-repeat
-    url(https://bee-0.gateway.ethswarm.org/bzz/e891ab0c03acfe168b91d3444ae66d37352db10188ad8eb898581aa132d3f014/)
-    white;
+  background: no-repeat white;
 }
 
 .item {
@@ -205,16 +203,15 @@
 }
 
 .label {
-    text-align: center;
-    align-self: start;
-    width: 25px;
-    height: 20px;
-    color: #fff;
-    border-radius: 4px;
-    background: #588ca3;
-    font-family: Roboto;
-    font-size: 10px;
-
+  text-align: center;
+  align-self: start;
+  width: 25px;
+  height: 20px;
+  color: #fff;
+  border-radius: 4px;
+  background: #588ca3;
+  font-family: Roboto;
+  font-size: 10px;
 }
 
 .order {

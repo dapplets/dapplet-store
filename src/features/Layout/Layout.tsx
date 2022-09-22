@@ -263,6 +263,7 @@ const Layout = ({
 
       <MainContent>
         <DappletList
+        setIsListLoading={setIsListLoading}
           hexifiedAddressFilter={hexifiedAddressFilter}
           isListLoading={isListLoading}
           dapplets={dappletsByList}

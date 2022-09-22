@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Header } from "semantic-ui-react";
 import { ReactComponent as Loader } from "../../../components/Notification/loader.svg";
 import { saveListToLocalStorage } from "../../../lib/localStorage";
@@ -23,6 +29,7 @@ import {
   updateDappletItem,
 } from "../../../lib/updateDappletItem";
 import { updateMyListing } from "../../../lib/updateDappletList";
+import dappletRegistry from "../../../api/dappletRegistry";
 
 const MainContentWrapper = styled.div`
   display: grid;
@@ -150,6 +157,7 @@ export interface DappletListProps {
   setMyList: any;
   isListLoading: boolean;
   hexifiedAddressFilter: string;
+  setIsListLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const DappletList = ({
@@ -183,8 +191,14 @@ const DappletList = ({
   setMyList,
   isListLoading,
   hexifiedAddressFilter,
+  setIsListLoading,
 }: DappletListProps & Props): React.ReactElement => {
   const ref = useRef<HTMLDivElement>(null);
+
+  const [sortedDapplets, setSortedDapplets] = useState<IDapplet[]>([]);
+  const [HexifiedTrustedUserList, setHexifiedTrustedUserList] = useState<any>(
+    [],
+  );
 
   const collator = useMemo(
     () => new Intl.Collator(undefined, { numeric: true, sensitivity: "base" }),
@@ -418,13 +432,13 @@ const DappletList = ({
   );
 
   const filterDappletsByCondition = useCallback(
-    ({
+    async ({
       sortedList,
       searchQuery,
       addressFilter,
       isTrustedSort,
       isNotDapplet,
-    }: FilterDappletsByCondition): IDapplet[] => {
+    }: FilterDappletsByCondition): Promise<IDapplet[]> => {
       if (searchQuery) {
         sortedList = sortedList.filter(
           (dapplet) =>
@@ -437,24 +451,57 @@ const DappletList = ({
         );
       }
 
-      /* if (addressFilter) {
-      sortedList = sortedList.filter(({ listers }) =>
-        listers.includes(addressFilter),
+      setIsListLoading(true);
+      const hexifiedAdresses = await Promise.all(
+        trustedUsersList.map(async (user) => {
+          if (!user.startsWith("0x")) {
+            return await dappletRegistry.provider.resolveName(user);
+          } else {
+            return user;
+          }
+        }),
       );
-    } */
+      setHexifiedTrustedUserList(hexifiedAdresses);
+      setIsListLoading(false);
 
       if (isTrustedSort && !isNotDapplet) {
-        sortedList = sortedList.filter(({ listers }) =>
-          trustedUsersList.some((user) => listers.includes(user)),
-        );
+        sortedList = sortedList.filter(({ listers }) => {
+          return hexifiedAdresses.some((user) => {
+            return listers.includes(user!);
+          });
+        });
       }
 
       return sortedList;
     },
-    [trustedUsersList],
+    [setIsListLoading, trustedUsersList],
   );
 
-  const sortedDapplets = useMemo(() => {
+  useEffect(() => {
+    (async () => {
+      const sortedList = sortDappletsByType(dapplets, sortType, selectedList);
+      const filtered = await filterDappletsByCondition({
+        sortedList,
+        addressFilter,
+        isNotDapplet,
+        isTrustedSort,
+        searchQuery,
+      });
+      setSortedDapplets(filtered);
+    })();
+  }, [
+    addressFilter,
+    dapplets,
+    filterDappletsByCondition,
+    isNotDapplet,
+    isTrustedSort,
+    searchQuery,
+    selectedList,
+    sortDappletsByType,
+    sortType,
+  ]);
+
+  /* const sortedDapplets = useMemo(() => {
     const sortedList = sortDappletsByType(dapplets, sortType, selectedList);
     return filterDappletsByCondition({
       sortedList,
@@ -473,7 +520,7 @@ const DappletList = ({
     selectedList,
     sortDappletsByType,
     sortType,
-  ]);
+  ]); */
 
   const chooseList = useMemo(
     () => ({
@@ -541,7 +588,9 @@ const DappletList = ({
                 setAddressFilter={setAddressFilter}
                 editSearchQuery={editSearchQuery}
                 setSelectedList={setSelectedList}
-                trustedUsersList={trustedUsersList}
+                trustedUsersList={Array.from(
+                  new Set([...trustedUsersList, ...HexifiedTrustedUserList]),
+                )}
                 setTrustedUsersList={setTrustedUsersList}
                 isNotDapplet={isNotDapplet}
                 setModalOpen={setModalOpen}
@@ -610,7 +659,7 @@ const DappletList = ({
                 isNotDapplet={isNotDapplet}
               />
             ) : (
-              sortedDapplets.map((item, i) => {
+              sortedDapplets.map((item: any, i: number) => {
                 const selected = selectedDapplets.find(
                   (d) => d.id === item.id,
                 )?.type;

@@ -47,7 +47,6 @@ type Settings = {
 type FirstPublicDappletProps = { settings: Settings };
 
 const OwnDappletRemove = ({ settings }: FirstPublicDappletProps) => {
-  console.log(settings);
   const { onAccept, onCancel, dapplet } = settings;
   return (
     <ModalCard>

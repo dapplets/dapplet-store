@@ -1,4 +1,5 @@
 import { createModel } from "@rematch/core";
+import dappletRegistry from "../api/dappletRegistry";
 
 export interface TrustedUsers {
   trustedUsers: string[];
@@ -26,7 +27,7 @@ const effects = (dispatch: any) => ({
       const nearNamingPatterns = [".testnet", ".near", "dev-"];
       const trustedUsers = await window.dapplets.getTrustedUsers();
 
-      const x = trustedUsers
+      const ethOnlyTrustedUsers = trustedUsers
         .map(({ account }: { account: string }) => account)
         .filter((account: string) => {
           const isNearPattern = nearNamingPatterns.some((pattern) =>
@@ -35,7 +36,20 @@ const effects = (dispatch: any) => ({
           return !isNearPattern;
         });
 
-      if (trustedUsers) dispatch.trustedUsers.setTrustedUsers(x);
+      for (const user of ethOnlyTrustedUsers) {
+        if (!user.startsWith("0x")) {
+          const hex = await dappletRegistry.provider.resolveName(user);
+          const hexIndex = ethOnlyTrustedUsers.findIndex(
+            (user: any) => user === hex,
+          );
+          if (hexIndex !== -1) {
+            ethOnlyTrustedUsers.splice(hexIndex, 1);
+          }
+        }
+      }
+
+      if (trustedUsers)
+        dispatch.trustedUsers.setTrustedUsers(ethOnlyTrustedUsers);
     } catch (error) {
       console.error({ error });
     }

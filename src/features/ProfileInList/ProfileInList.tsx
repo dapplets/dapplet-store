@@ -230,6 +230,7 @@ const Button = ({
             window.dapplets.openOverlay();
             return;
           }
+
           if (trustedUsersList.includes(address)) {
             setTrustedUsersList(
               trustedUsersList.filter((user) => user !== address),
