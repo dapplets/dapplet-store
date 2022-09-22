@@ -96,6 +96,7 @@ const ButtonsWrapper = styled.div`
   position: relative;
   grid-area: buttons;
   justify-self: baseline;
+  min-height: 40px;
   /* align-self: flex-start; */
 `;
 

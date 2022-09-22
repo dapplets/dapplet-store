@@ -17,7 +17,11 @@ import { Lists, MyListElement } from "../../models/myLists";
 import { Modals } from "../../models/modals";
 import getIconUrl from "../../api/getIconUrl";
 import parseRawDappletVersion from "../../lib/parseRawDappletVersion";
-import { MAX_MODULES_COUNTER, REGISTRY_BRANCHES } from "../../constants";
+import {
+  MAX_MODULES_COUNTER,
+  MODULE_TYPES,
+  REGISTRY_BRANCHES,
+} from "../../constants";
 import dappletRegistry from "../../api/dappletRegistry";
 
 interface WrapperProps {
@@ -128,13 +132,33 @@ const Layout = ({
   const [dappletsByList, setDappletsByList] = useState<IDapplet[]>([]);
   const [isListLoading, setIsListLoading] = useState(false);
   const [hexifiedAddressFilter, setHexifiedAddresFilter] = useState("");
+  const [hexifiedTrustedUserList, setHexifiedTrustedUserList] = useState<any>(
+    [],
+  );
 
   useEffect(() => {
-    setIsListLoading(true);
+    (async () => {
+      setIsListLoading(true);
+      const hexifiedAdresses = await Promise.all(
+        trustedUsers.map(async (user) => {
+          if (!user.startsWith("0x")) {
+            return await dappletRegistry.provider.resolveName(user);
+          } else {
+            return user;
+          }
+        }),
+      );
+      setHexifiedTrustedUserList(hexifiedAdresses);
+      setIsListLoading(false);
+    })();
+  }, [trustedUsers]);
+
+  useEffect(() => {
     if (dapplets.length === 0) return;
 
     if (addressFilter || selectedList === "Selected dapplets") {
       const getModulesOfListing = async (addressFilter: string) => {
+        setIsListLoading(true);
         const offset = 0;
         const limit = MAX_MODULES_COUNTER;
         const listingAddress = addressFilter.startsWith("0x")
@@ -157,57 +181,68 @@ const Layout = ({
 
         const { modules } = data;
 
+        const rawDapplets = modules.filter(
+          (module: IRawDapplet) => module.moduleType === MODULE_TYPES.DAPPLET,
+        );
+
         let { id: lastDappId } = dapplets.reduce((prev, current) => {
           const isNextDapp = current.id > prev.id;
           return isNextDapp ? current : prev;
         });
 
-        const publicList: IDapplet[] = [];
-        modules.forEach(async (dapplet: IRawDapplet, i: number) => {
-          const { name, description, title, icon } = dapplet;
+        // const publicList: IDapplet[] = [];
+        const proms = rawDapplets.map(
+          async (dapplet: IRawDapplet, i: number) => {
+            const { name, description, title, icon } = dapplet;
 
-          const presentedDapplet = dapplets.find(
-            (presentedDapp) => presentedDapp.name === name,
-          );
-
-          const isPresented = presentedDapplet !== undefined;
-
-          if (isPresented) {
-            publicList.push(presentedDapplet);
-          } else {
-            const iconUrl = await getIconUrl(icon);
-
-            const listers = await dappletRegistry.getListersByModule(
-              name,
-              offset,
-              limit,
+            const presentedDapplet = dapplets.find(
+              (presentedDapp) => presentedDapp.name === name,
             );
 
-            const formatted: IDapplet = {
-              id: lastDappId + 1,
-              description: description,
-              icon: iconUrl,
-              name: name,
-              owner: data.owners[i],
-              title: title,
-              versionToShow: parseRawDappletVersion(
-                data.lastVersions[i].version,
-              ),
-              version: parseRawDappletVersion(data.lastVersions[i].version),
-              /* TODO: timestamp to be implemented */
-              timestampToShow: "no info",
-              timestamp: "no info",
-              listers: listers,
-              isExpanded: false,
-              interfaces: [],
-            };
+            // console.log(presentedDapplet)
 
-            lastDappId++;
-            publicList.push(formatted);
-          }
-        });
+            const isPresented = presentedDapplet !== undefined;
+
+            if (isPresented) {
+              return presentedDapplet;
+            } else {
+              const iconUrl = await getIconUrl(icon);
+
+              const listers = await dappletRegistry.getListersByModule(
+                name,
+                offset,
+                limit,
+              );
+
+              const formatted: IDapplet = {
+                id: lastDappId + 1,
+                description: description,
+                icon: iconUrl,
+                name: name,
+                owner: data.owners[i],
+                title: title,
+                versionToShow: parseRawDappletVersion(
+                  data.lastVersions[i].version,
+                ),
+                version: parseRawDappletVersion(data.lastVersions[i].version),
+                /* TODO: timestamp to be implemented */
+                timestampToShow: "no info",
+                timestamp: "no info",
+                listers: listers,
+                isExpanded: false,
+                interfaces: [],
+              };
+
+              lastDappId++;
+              return formatted;
+            }
+          },
+        );
+
+        const publicList = await Promise.all(proms);
 
         setDappletsByList(publicList);
+        setIsListLoading(false);
       };
 
       getModulesOfListing(addressFilter || "");
@@ -225,7 +260,6 @@ const Layout = ({
     } else {
       setDappletsByList(dapplets);
     }
-    setIsListLoading(false);
   }, [addressFilter, dapplets, myLists, selectedList]);
 
   /* Old filter version, keep for history for now */
@@ -263,6 +297,7 @@ const Layout = ({
 
       <MainContent>
         <DappletList
+          hexifiedTrustedUserList={hexifiedTrustedUserList}
           setIsListLoading={setIsListLoading}
           hexifiedAddressFilter={hexifiedAddressFilter}
           isListLoading={isListLoading}

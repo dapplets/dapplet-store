@@ -158,6 +158,7 @@ export interface DappletListProps {
   isListLoading: boolean;
   hexifiedAddressFilter: string;
   setIsListLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  hexifiedTrustedUserList: any[];
 }
 
 const DappletList = ({
@@ -171,7 +172,7 @@ const DappletList = ({
   addressFilter,
   setAddressFilter,
   editSearchQuery,
-  trustedUsersList,
+  // trustedUsersList,
   setTrustedUsersList,
   isTrustedSort,
   setOpenedList,
@@ -192,14 +193,16 @@ const DappletList = ({
   isListLoading,
   hexifiedAddressFilter,
   setIsListLoading,
+  hexifiedTrustedUserList,
 }: DappletListProps & Props): React.ReactElement => {
   const ref = useRef<HTMLDivElement>(null);
 
   const [expandedCards, setExpandedCards] = useState([]);
   const [sortedDapplets, setSortedDapplets] = useState<IDapplet[]>([]);
-  const [HexifiedTrustedUserList, setHexifiedTrustedUserList] = useState<any>(
-    [],
-  );
+
+  const unitedTrustedUsers = useMemo(() => {
+    return Array.from(new Set([...trustedUsers, ...hexifiedTrustedUserList]));
+  }, [hexifiedTrustedUserList, trustedUsers]);
 
   const collator = useMemo(
     () => new Intl.Collator(undefined, { numeric: true, sensitivity: "base" }),
@@ -433,13 +436,13 @@ const DappletList = ({
   );
 
   const filterDappletsByCondition = useCallback(
-    async ({
+    ({
       sortedList,
       searchQuery,
       addressFilter,
       isTrustedSort,
       isNotDapplet,
-    }: FilterDappletsByCondition): Promise<IDapplet[]> => {
+    }: FilterDappletsByCondition): IDapplet[] => {
       if (searchQuery) {
         sortedList = sortedList.filter(
           (dapplet) =>
@@ -453,42 +456,28 @@ const DappletList = ({
       }
 
       if (isTrustedSort && !isNotDapplet) {
-        // setIsListLoading(true);
-        const hexifiedAdresses = await Promise.all(
-          trustedUsersList.map(async (user) => {
-            if (!user.startsWith("0x")) {
-              return await dappletRegistry.provider.resolveName(user);
-            } else {
-              return user;
-            }
-          }),
-        );
-        setHexifiedTrustedUserList(hexifiedAdresses);
-        // setIsListLoading(false);
         sortedList = sortedList.filter(({ listers }) => {
-          return hexifiedAdresses.some((user) => {
-            return listers.includes(user!);
+          return hexifiedTrustedUserList.some((user) => {
+            return listers.includes(user);
           });
         });
       }
 
       return sortedList;
     },
-    [setIsListLoading, trustedUsersList],
+    [hexifiedTrustedUserList],
   );
 
   useEffect(() => {
-    (async () => {
-      const sortedList = sortDappletsByType(dapplets, sortType, selectedList);
-      const filtered = await filterDappletsByCondition({
-        sortedList,
-        addressFilter,
-        isNotDapplet,
-        isTrustedSort,
-        searchQuery,
-      });
-      setSortedDapplets(filtered);
-    })();
+    const sortedList = sortDappletsByType(dapplets, sortType, selectedList);
+    const filtered = filterDappletsByCondition({
+      sortedList,
+      addressFilter,
+      isNotDapplet,
+      isTrustedSort,
+      searchQuery,
+    });
+    setSortedDapplets(filtered);
   }, [
     addressFilter,
     dapplets,
@@ -561,6 +550,17 @@ const DappletList = ({
     ref,
   ]);
 
+  /* if (isListLoading)
+    return (
+      <div className={styles.loaderContainer}>
+        <Loader
+          width={50}
+          height={50}
+          className="notification-custom-animate"
+        />
+      </div>
+    ); */
+
   return (
     <article
       style={{
@@ -588,9 +588,7 @@ const DappletList = ({
                 setAddressFilter={setAddressFilter}
                 editSearchQuery={editSearchQuery}
                 setSelectedList={setSelectedList}
-                trustedUsersList={Array.from(
-                  new Set([...trustedUsersList, ...HexifiedTrustedUserList]),
-                )}
+                trustedUsersList={unitedTrustedUsers}
                 setTrustedUsersList={setTrustedUsersList}
                 isNotDapplet={isNotDapplet}
                 setModalOpen={setModalOpen}
@@ -615,15 +613,17 @@ const DappletList = ({
                 }
               />
             )}
-            {!isNotDapplet && !trustedUsers.includes(addressFilter || "") && (
-              <CheckboxWrapper
-                isTrustedSort={isTrustedSort || false}
-                onClick={() => setSort({ isTrustedSort: !isTrustedSort })}
-              >
-                <div></div>
-                <span>From trusted users</span>
-              </CheckboxWrapper>
-            )}
+            {address !== addressFilter &&
+              !isNotDapplet &&
+              !trustedUsers.includes(addressFilter || "") && (
+                <CheckboxWrapper
+                  isTrustedSort={isTrustedSort || false}
+                  onClick={() => setSort({ isTrustedSort: !isTrustedSort })}
+                >
+                  <div></div>
+                  <span>From trusted users</span>
+                </CheckboxWrapper>
+              )}
           </MainContentWrapper>
           {!(
             (addressFilter !== "" || selectedList) &&
@@ -655,7 +655,7 @@ const DappletList = ({
                 addressFilter={addressFilter}
                 setOpenedList={setOpenedList}
                 searchQuery={searchQuery}
-                trustedUsersList={trustedUsersList}
+                trustedUsersList={trustedUsers}
                 isTrustedSort={isTrustedSort}
                 selectedList={selectedList}
                 isNotDapplet={isNotDapplet}
@@ -688,7 +688,7 @@ const DappletList = ({
                         searchQuery={searchQuery}
                         setAddressFilter={setAddressFilter}
                         setOpenedList={setOpenedList}
-                        trustedUsersList={trustedUsersList}
+                        trustedUsersList={trustedUsers}
                         isNotDapplet={isNotDapplet}
                       />
                     </div>
