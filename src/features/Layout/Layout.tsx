@@ -158,7 +158,7 @@ const Layout = ({
 
     if (addressFilter || selectedList === "Selected dapplets") {
       const getModulesOfListing = async (addressFilter: string) => {
-        setIsListLoading(true);
+        // setIsListLoading(true);
         const offset = 0;
         const limit = MAX_MODULES_COUNTER;
         const listingAddress = addressFilter.startsWith("0x")
@@ -242,7 +242,7 @@ const Layout = ({
         const publicList = await Promise.all(proms);
 
         setDappletsByList(publicList);
-        setIsListLoading(false);
+        // setIsListLoading(false);
       };
 
       getModulesOfListing(addressFilter || "");
