@@ -260,6 +260,7 @@ const SideNav = ({
                 selectedList: Lists.MyListing,
                 addressFilter: address,
                 searchQuery: "",
+                isTrustedSort: false,
               });
             }}
           >

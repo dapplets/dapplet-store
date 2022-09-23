@@ -138,7 +138,7 @@ const Layout = ({
 
   useEffect(() => {
     (async () => {
-      setIsListLoading(true);
+      // setIsListLoading(true);
       const hexifiedAdresses = await Promise.all(
         trustedUsers.map(async (user) => {
           if (!user.startsWith("0x")) {
@@ -149,7 +149,7 @@ const Layout = ({
         }),
       );
       setHexifiedTrustedUserList(hexifiedAdresses);
-      setIsListLoading(false);
+      // setIsListLoading(false);
     })();
   }, [trustedUsers]);
 
