@@ -68,7 +68,7 @@ const effects = (dispatch: any) => ({
 
       if (trustedUsers) dispatch.trustedUsers.setTrustedUsers(hexified);
     } catch (error) {
-      console.error({ error });
+      console.error(error);
     }
   },
   addTrustedUser(payload: string) {

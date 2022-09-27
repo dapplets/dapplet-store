@@ -12,7 +12,7 @@ import styles from "./DappletList.module.scss";
 import SortableList from "../../../components/SortableList";
 import ItemDapplet from "../../../components/ItemDapplet";
 import { DappletsListItemTypes } from "../../../components/DappletsListItem/DappletsListItem";
-import ListerProfile from "../../ProfileInList/ProfileInList";
+import ListerProfile from "../../ProfileInList/ListerProfile";
 import { IDapplet } from "../../../models/dapplets";
 import { Sort, SortTypes } from "../../../models/sort";
 import { Lists, MyListElement } from "../../../models/myLists";
@@ -155,7 +155,6 @@ export interface DappletListProps {
   isListLoading: boolean;
   hexifiedAddressFilter: string;
   setIsListLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  hexifiedTrustedUserList: any[];
 }
 
 const DappletList = ({
@@ -189,16 +188,11 @@ const DappletList = ({
   isListLoading,
   hexifiedAddressFilter,
   setIsListLoading,
-  hexifiedTrustedUserList,
 }: DappletListProps & Props): React.ReactElement => {
   const ref = useRef<HTMLDivElement>(null);
 
   const [expandedCards, setExpandedCards] = useState([]);
   const [sortedDapplets, setSortedDapplets] = useState<IDapplet[]>([]);
-
-  const unitedTrustedUsers = useMemo(() => {
-    return Array.from(new Set([...trustedUsers, ...hexifiedTrustedUserList]));
-  }, [hexifiedTrustedUserList, trustedUsers]);
 
   const collator = useMemo(
     () => new Intl.Collator(undefined, { numeric: true, sensitivity: "base" }),
@@ -399,11 +393,7 @@ const DappletList = ({
   );
 
   const sortDappletsByType = useCallback(
-    (
-      dapplets: IDapplet[],
-      sortType: string,
-      selectedList?: Lists,
-    ): IDapplet[] => {
+    (dapplets: IDapplet[], sortType: string): IDapplet[] => {
       return dapplets.sort((a, b) => {
         if (address === addressFilter) return 0;
 
@@ -432,7 +422,6 @@ const DappletList = ({
     ({
       sortedList,
       searchQuery,
-      addressFilter,
       isTrustedSort,
       isNotDapplet,
     }: FilterDappletsByCondition): IDapplet[] => {
@@ -450,19 +439,21 @@ const DappletList = ({
 
       if (isTrustedSort && !isNotDapplet) {
         sortedList = sortedList.filter(({ listers }) => {
-          return hexifiedTrustedUserList.some((user) => {
-            return listers.includes(user);
-          });
+          return trustedUsers
+            .map((user) => user.hex)
+            .some((user) => {
+              return listers.includes(user);
+            });
         });
       }
 
       return sortedList;
     },
-    [hexifiedTrustedUserList],
+    [trustedUsers],
   );
 
   useEffect(() => {
-    const sortedList = sortDappletsByType(dapplets, sortType, selectedList);
+    const sortedList = sortDappletsByType(dapplets, sortType);
     const filtered = filterDappletsByCondition({
       sortedList,
       addressFilter,
@@ -544,10 +535,6 @@ const DappletList = ({
             selectedList !== Lists.MyDapplets && (
               <ListerProfile
                 hexifiedAddressFilter={hexifiedAddressFilter}
-                setAddressFilter={setAddressFilter}
-                editSearchQuery={editSearchQuery}
-                setSelectedList={setSelectedList}
-                trustedUsersList={unitedTrustedUsers}
                 setTrustedUsersList={setTrustedUsersList}
                 isNotDapplet={isNotDapplet}
                 setModalOpen={setModalOpen}

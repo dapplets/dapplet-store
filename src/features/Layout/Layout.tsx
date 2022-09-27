@@ -1,8 +1,4 @@
-import React, {
-  useEffect,
-  // useMemo,
-  useState,
-} from "react";
+import React, { useEffect, useState } from "react";
 import { IDapplet, IRawDapplet } from "../../models/dapplets";
 
 import Header from "./Header/Header";
@@ -128,26 +124,6 @@ const Layout = ({
   const [dappletsByList, setDappletsByList] = useState<IDapplet[]>([]);
   const [isListLoading, setIsListLoading] = useState(false);
   const [hexifiedAddressFilter, setHexifiedAddresFilter] = useState("");
-  const [hexifiedTrustedUserList, setHexifiedTrustedUserList] = useState<any>(
-    [],
-  );
-
-  useEffect(() => {
-    (async () => {
-      // setIsListLoading(true);
-      const hexifiedAdresses = await Promise.all(
-        trustedUsers.map(async (user) => {
-          if (!user.hex.startsWith("0x")) {
-            return await dappletRegistry.provider.resolveName(user.hex);
-          } else {
-            return user;
-          }
-        }),
-      );
-      setHexifiedTrustedUserList(hexifiedAdresses);
-      // setIsListLoading(false);
-    })();
-  }, [trustedUsers]);
 
   useEffect(() => {
     if (dapplets.length === 0) return;
@@ -165,7 +141,7 @@ const Layout = ({
         if (listingAddress === null)
           throw new Error("The hex pair for this ENS does not exist");
 
-        if (addressFilter) setHexifiedAddresFilter(listingAddress);
+        setHexifiedAddresFilter(listingAddress);
 
         const data = await dappletRegistry.getModulesOfListing(
           listingAddress,
@@ -194,8 +170,6 @@ const Layout = ({
             const presentedDapplet = dapplets.find(
               (presentedDapp) => presentedDapp.name === name,
             );
-
-            // console.log(presentedDapplet)
 
             const isPresented = presentedDapplet !== undefined;
 
@@ -241,7 +215,7 @@ const Layout = ({
         // setIsListLoading(false);
       };
 
-      getModulesOfListing(addressFilter || "");
+      if (addressFilter) getModulesOfListing(addressFilter);
     } else if (selectedList === "My dapplets") {
       /* TODO: won't work after pagination implemented, update ASAP */
       const selectedDappletNames = myLists[selectedList].map(
@@ -272,7 +246,6 @@ const Layout = ({
 
       <MainContent>
         <DappletList
-          hexifiedTrustedUserList={hexifiedTrustedUserList}
           setIsListLoading={setIsListLoading}
           hexifiedAddressFilter={hexifiedAddressFilter}
           isListLoading={isListLoading}

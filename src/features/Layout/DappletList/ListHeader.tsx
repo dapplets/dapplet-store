@@ -8,7 +8,7 @@ type Props = {
 };
 
 const Header = ({ title, setSort }: Props) => {
-  const resetList = () => {
+  const resetSortAndFiltering = () => {
     setSort(SORT_INITIAL_STATE);
   };
 
@@ -35,7 +35,7 @@ const Header = ({ title, setSort }: Props) => {
         {title}
       </SemanticHeader>
       {isMyDappletsList && (
-        <button className={styles.button} onClick={resetList}>
+        <button className={styles.button} onClick={resetSortAndFiltering}>
           Show All
         </button>
       )}
