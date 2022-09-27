@@ -91,7 +91,7 @@ const App = ({
     width: window.innerWidth,
   });
   const [isNotDapplet, setIsNotDapplet] = useState(true);
-  const [isListLoading, setIsListLoading] = useState(true);
+  const [isListLoading, setIsListLoading] = useState(false);
 
   useEffect(() => {
     window.addEventListener("dapplets#initialized", () => {
@@ -142,6 +142,7 @@ const App = ({
 
   useEffect(() => {
     const fetchTrustedUsers = async () => {
+      setIsListLoading(true);
       await getTrustedUsers();
       setIsListLoading(false);
     };
@@ -150,10 +151,7 @@ const App = ({
       getMyDapplets();
       fetchTrustedUsers();
       onLoad();
-    } else {
-      setIsListLoading(false);
     }
-
     return () => {
       window.removeEventListener("dapplets#initialized", hangDappletsEvent);
     };
