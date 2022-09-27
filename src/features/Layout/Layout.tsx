@@ -23,6 +23,7 @@ import {
   REGISTRY_BRANCHES,
 } from "../../constants";
 import dappletRegistry from "../../api/dappletRegistry";
+import { TrustedUser } from "../../models/trustedUsers";
 
 interface WrapperProps {
   isNotDapplet: boolean;
@@ -61,8 +62,7 @@ const MainContent = styled.main`
   grid-area: content;
 
   padding: 0 !important;
-  width: 100%;import { Notification } from '../../components/Notification/Notification';
-
+  width: 100%;
 `;
 
 const StyledOverlay = styled(Overlay)`
@@ -84,7 +84,7 @@ const mapState = (state: RootState) => ({
 const mapDispatch = (dispatch: RootDispatch) => ({
   setModalOpen: (payload: Modals) => dispatch.modals.setModalOpen(payload),
   setSort: (payload: Sort) => dispatch.sort.setSort(payload),
-  setTrustedUsers: (payload: string[]) =>
+  setTrustedUsers: (payload: TrustedUser[]) =>
     dispatch.trustedUsers.setTrustedUsers(payload),
   setMyList: (payload: { name: Lists; elements: MyListElement[] }) =>
     dispatch.myLists.setMyList(payload),
@@ -95,10 +95,8 @@ type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
 export interface LayoutProps {
   selectedList?: Lists;
   setSelectedList: any;
-  trustedUsersList: string[];
+  trustedUsersList: TrustedUser[];
   setAddressFilter: any;
-  openedList: any;
-  setOpenedList: any;
   windowWidth: number;
   isNotDapplet: boolean;
 }
@@ -107,8 +105,6 @@ const Layout = ({
   setSelectedList,
   trustedUsersList,
   setAddressFilter,
-  openedList,
-  setOpenedList,
   windowWidth,
   isNotDapplet,
   dapplets,
@@ -141,8 +137,8 @@ const Layout = ({
       // setIsListLoading(true);
       const hexifiedAdresses = await Promise.all(
         trustedUsers.map(async (user) => {
-          if (!user.startsWith("0x")) {
-            return await dappletRegistry.provider.resolveName(user);
+          if (!user.hex.startsWith("0x")) {
+            return await dappletRegistry.provider.resolveName(user.hex);
           } else {
             return user;
           }
@@ -262,25 +258,6 @@ const Layout = ({
     }
   }, [addressFilter, dapplets, myLists, selectedList]);
 
-  /* Old filter version, keep for history for now */
-  /* const dappletsByList = useMemo(() => {
-    // If addressFilter is not empty,
-    // return all dapplets
-    // and filter it inside ListDapplets in filterDappletsByCondition
-    if (!dapplets || !selectedList || addressFilter) return dapplets;
-
-    const selectedDapplets = myLists[selectedList];
-
-    if (!selectedDapplets) return dapplets;
-
-    const formatedSelectedDapplets = selectedDapplets.flatMap(
-      (selectedDapplet) =>
-        dapplets.find((dapp) => dapp.name === selectedDapplet.name) || [],
-    );
-
-    return formatedSelectedDapplets;
-  }, [addressFilter, dapplets, myLists, selectedList]); */
-
   return (
     <Wrapper isNotDapplet={isNotDapplet}>
       <StyledHeader selectedList={selectedList} isNotDapplet={isNotDapplet} />
@@ -290,8 +267,6 @@ const Layout = ({
         setSelectedList={setSelectedList}
         trustedUsersList={trustedUsersList}
         setAddressFilter={setAddressFilter}
-        openedList={openedList}
-        setOpenedList={setOpenedList}
         dapplets={dapplets}
       />
 
@@ -320,7 +295,6 @@ const Layout = ({
           trustedUsersList={trustedUsers}
           setTrustedUsersList={setTrustedUsers}
           isTrustedSort={isTrustedSort || false}
-          setOpenedList={setOpenedList}
           address={address || ""}
           trigger={trigger || false}
           isNotDapplet={isNotDapplet}

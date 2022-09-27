@@ -11,6 +11,7 @@ import { Lists, MyListElement } from "../../../models/myLists";
 import SideNav from "./SideNav";
 import { PUBLIC_LIST } from "../../../constants";
 import Profile from "../Profile/Profile";
+import { TrustedUser } from "../../../models/trustedUsers";
 
 const mapState = (state: RootState) => ({
   address: state.user.address,
@@ -79,18 +80,14 @@ export interface SidePanelProps
   localDappletsList: MyListElement[];
   setSelectedList: React.Dispatch<React.SetStateAction<Lists | undefined>>;
   selectedDappletsList: MyListElement[];
-  trustedUsersList: string[];
+  trustedUsersList: TrustedUser[];
   setAddressFilter: any;
-  openedList: any;
-  setOpenedList: any;
   dapplets: IDapplet[];
 }
 
 const SidePanel = ({
   className,
   selectedDappletsList,
-  openedList,
-  setOpenedList,
   dapplets,
   address,
   provider,
@@ -252,8 +249,6 @@ const SidePanel = ({
       <SideNav
         selectedDappletsList={selectedDappletsList}
         onPush={pushSelectedDappletsList}
-        openedList={openedList}
-        setOpenedList={setOpenedList}
       />
 
       <Footer>

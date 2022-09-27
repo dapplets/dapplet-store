@@ -33,7 +33,6 @@ interface DappletsListItemWrapperProps {
 
 const DappletsListItemWrapper = styled.div<{
   type: string;
-  isClickable: boolean;
 }>`
   display: grid;
   grid-template-columns: ${({ type }) =>
@@ -44,7 +43,7 @@ const DappletsListItemWrapper = styled.div<{
   align-items: center;
   width: 100%;
   grid-column-gap: 10px;
-  cursor: ${({ isClickable }) => (isClickable ? "pointer" : "auto")};
+  cursor: "pointer";
 `;
 
 const getColorByType = (type: DappletsListItemTypes) => {
@@ -83,48 +82,28 @@ export interface DappletsListItemProps {
   title: string;
   subTitle?: string;
   type: DappletsListItemTypes;
-  onClickRemove: any;
-  isRemoved: boolean;
   isPushing?: boolean;
-  onClick?: any;
+  onClick: any;
   id?: string;
   isActive: boolean;
 }
 
-const DappletsListItem = (props: DappletsListItemProps) => {
-  const {
-    isRemoved,
-    onClickRemove,
-    title,
-    type,
-    id,
-    isPushing,
-    onClick,
-    subTitle,
-    isActive,
-  } = props;
+const TrustedListItem = (props: DappletsListItemProps) => {
+  const { title, type, id, onClick, subTitle, isActive } = props;
 
   const isSubtitle = subTitle && subTitle.length > 0;
+  const handleOnClick = () => {
+    onClick(id);
+  };
 
   return (
-    <DappletsListItemWrapper
-      type={props.type}
-      onClick={() => {
-        if (onClick) props.onClick(id);
-      }}
-      isClickable={!!onClick}
-    >
+    <DappletsListItemWrapper type={props.type} onClick={handleOnClick}>
       <TitleIcon type={type} />
       <Title isActive={isActive} title={isSubtitle ? title : ""}>
         {isSubtitle ? subTitle : title}
       </Title>
-      {isRemoved && (
-        <DappletListItemCloseWrapper onClick={onClickRemove()}>
-          <DappletListItemClose />
-        </DappletListItemCloseWrapper>
-      )}
     </DappletsListItemWrapper>
   );
 };
 
-export default DappletsListItem;
+export default TrustedListItem;

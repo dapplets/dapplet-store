@@ -1,11 +1,15 @@
 import React, { ReactNode, useEffect, useRef, useState } from "react";
 import styled from "styled-components/macro";
 import jazzicon from "@metamask/jazzicon";
+import { connect } from "react-redux";
 import { ReactComponent as UserPlus } from "./userPlus.svg";
 import { ReactComponent as Copy } from "./copy.svg";
 import { net } from "../../api/constants";
 import { ModalsList } from "../../models/modals";
 import shortenAddress from "../../lib/shortenAddress";
+import { RootState } from "../../models";
+import useCopyToClipBoard from "../../hooks/useCopyToClipBoard";
+import { TrustedUser } from "../../models/trustedUsers";
 
 interface VanillaChildrenProps {
   children: HTMLElement | HTMLDivElement;
@@ -151,30 +155,6 @@ const ButtonAction = styled.div`
   }
 `;
 
-function fallbackCopyTextToClipboard(text: string) {
-  const textArea = document.createElement("textarea");
-  textArea.value = text;
-
-  // Avoid scrolling to bottom
-  textArea.style.top = "0";
-  textArea.style.left = "0";
-  textArea.style.position = "fixed";
-
-  document.body.appendChild(textArea);
-  textArea.focus();
-  textArea.select();
-
-  try {
-    const successful = document.execCommand("copy");
-    const msg = successful ? "successful" : "unsuccessful";
-    console.log("Fallback: Copying text command was " + msg);
-  } catch (err) {
-    console.error("Fallback: Oops, unable to copy", err);
-  }
-
-  document.body.removeChild(textArea);
-}
-
 const Tooltip = styled.div`
   position: absolute;
   bottom: -20px;
@@ -190,9 +170,9 @@ const Tooltip = styled.div`
 `;
 
 interface ButtonProps {
-  myAddress: string;
+  // myAddress: string;
   address: string;
-  trustedUsersList: string[];
+  trustedUsers: TrustedUser[];
   setTrustedUsersList: any;
   isNotDapplet: boolean;
   setModalOpen: any;
@@ -202,9 +182,9 @@ interface ButtonProps {
 }
 
 const Button = ({
-  myAddress,
+  // myAddress,
   address,
-  trustedUsersList,
+  trustedUsers,
   setTrustedUsersList,
   isNotDapplet,
   setModalOpen,
@@ -214,11 +194,11 @@ const Button = ({
 }: ButtonProps) => {
   const [hover, setHover] = useState(false);
 
-  const isUserListEmpty = trustedUsersList.length === 0;
+  const isTrustedUsersListEmpty = trustedUsers.length === 0;
 
   return (
     <ButtonsWrapper>
-      {hover && myAddress === address && <Tooltip>Publish new dapplet</Tooltip>}
+      {/* {hover && myAddress === address && <Tooltip>Publish new dapplet</Tooltip>} */}
       <ButtonAction
         onMouseOver={() => setHover(true)}
         onMouseOut={() => setHover(false)}
@@ -227,25 +207,37 @@ const Button = ({
             setModalOpen({ openedModal: ModalsList.Install, settings: null });
             return;
           }
-          if (myAddress === address) {
+          /* if (myAddress === address) {
             window.dapplets.openOverlay();
             return;
-          }
+          } */
 
-          if (trustedUsersList.includes(address)) {
-            setTrustedUsersList(
-              trustedUsersList.filter((user) => user !== address),
+          const isUserInTrustedUsersList = trustedUsers
+            .map((trustedUser) => trustedUser.hex)
+            .includes(address);
+
+          if (isUserInTrustedUsersList) {
+            const updatedTrustedUsers = trustedUsers.filter(
+              (trustedUser) => trustedUser.hex !== address,
             );
-            removeTrustedUser(address);
+
+            const toBeRemoved = trustedUsers.find(
+              (trustedUser) => trustedUser.hex === address,
+            );
+
+            setTrustedUsersList(updatedTrustedUsers);
+            /* listing.dapplet-base.eth */
+            if (toBeRemoved)
+              removeTrustedUser(toBeRemoved.ens || toBeRemoved.hex);
             return;
           }
 
-          if (isUserListEmpty) {
+          if (isTrustedUsersListEmpty) {
             setModalOpen({
               openedModal: ModalsList.FirstTrustedUser,
               settings: {
                 onAccept: () => {
-                  setTrustedUsersList([...trustedUsersList, address]);
+                  setTrustedUsersList([...trustedUsers, { hex: address }]);
                   addTrustedUser(address);
                   setModalOpen({ openedModal: null, settings: null });
                 },
@@ -257,7 +249,9 @@ const Button = ({
             return;
           }
 
-          setTrustedUsersList([...trustedUsersList, address]);
+          /* BUG HERE */
+
+          setTrustedUsersList([...trustedUsers, { hex: address }]);
           addTrustedUser(address);
         }}
       >
@@ -280,9 +274,29 @@ const Button = ({
   );
 };
 
-interface ProfileInListProps {
-  myAddress: string;
-  address: string;
+const mapState = (state: RootState) => ({
+  addressFilter: state.sort.addressFilter,
+  trustedUsers: state.trustedUsers.trustedUsers,
+  currentUserAddress: state.user.address,
+});
+
+/* const mapDispatch = (dispatch: RootDispatch) => ({
+  getEnsNames: (addresses: string[]) =>
+    dispatch.ensNames.getEnsNames(addresses),
+  setSort: (payload: Sort) => dispatch.sort.setSort(payload),
+  addTrustedUser: (payload: string) =>
+    dispatch.trustedUsers.addTrustedUser(payload),
+  removeTrustedUser: (payload: string) =>
+    dispatch.trustedUsers.removeTrustedUser(payload),
+  addMyDapplet: (payload: { registryUrl: string; moduleName: string }) =>
+    dispatch.myLists.addMyDapplet(payload),
+  removeMyDapplet: (payload: { registryUrl: string; moduleName: string }) =>
+    dispatch.myLists.removeMyDapplet(payload),
+  setMyList: (payload: { name: Lists; elements: MyListElement[] }) =>
+    dispatch.myLists.setMyList(payload),
+}); */
+
+type ProfileInListProps = {
   setAddressFilter: any;
   editSearchQuery: any;
   setSelectedList: any;
@@ -294,11 +308,12 @@ interface ProfileInListProps {
   addTrustedUser: any;
   removeTrustedUser: any;
   hexifiedAddressFilter: string;
-}
+};
 
-const ProfileInList = ({
-  myAddress,
-  address,
+const ListerProfile = ({
+  currentUserAddress,
+  addressFilter,
+
   setAddressFilter,
   editSearchQuery,
   setSelectedList,
@@ -310,8 +325,11 @@ const ProfileInList = ({
   addTrustedUser,
   removeTrustedUser,
   hexifiedAddressFilter,
-}: ProfileInListProps) => {
-  const [isCopy, setCopy] = useState<boolean>(false);
+  trustedUsers,
+}: ProfileInListProps & ReturnType<typeof mapState>) => {
+  const { success: copiedSuccessfuly, copyToClipboard } = useCopyToClipBoard();
+
+  if (!addressFilter) return null;
 
   const addToTrustedUsersButtonContent = (
     <>
@@ -320,49 +338,68 @@ const ProfileInList = ({
     </>
   );
 
-  const isListOwnedByCurrentUser = address === myAddress;
-  const isCurrentListBeingTrusted = trustedUsersList.includes(address);
+  const trustedUser = trustedUsers.find(
+    (trustedUser) => trustedUser.hex === addressFilter,
+  );
+
+  const hasEns = trustedUser && trustedUser.ens;
+
+  const ens = hasEns ? trustedUser.ens : null;
+
+  const trustedUsersHexAdresses = trustedUsers.map(
+    (trustedUser) => trustedUser.hex,
+  );
+
+  const isCurrentListBeingTrusted =
+    trustedUsersHexAdresses.includes(addressFilter);
 
   const nonOwnerButtonContent = isCurrentListBeingTrusted
     ? "Remove from trusted users"
     : addToTrustedUsersButtonContent;
 
+  const isListOwnedByCurrentUser = currentUserAddress === addressFilter;
   const buttonContent = isListOwnedByCurrentUser
     ? "Create dapplet under construction"
     : nonOwnerButtonContent;
 
-  const getAvatar = (loggedIn: string): HTMLDivElement =>
-    jazzicon(164, parseInt(loggedIn.slice(2, 10), 16));
-  const getAddress = (address: string) =>
-    address.replace("0x000000000000000000000000", "0x");
+  const avatar = jazzicon(164, parseInt(addressFilter.slice(2, 10), 16));
 
-  function copyTextToClipboard(text: string) {
-    if (!navigator.clipboard) return fallbackCopyTextToClipboard(text);
+  const resetSortAndFiltering = () => {
+    setAddressFilter("");
+    editSearchQuery("");
+    setSelectedList(undefined);
+  };
 
-    navigator.clipboard.writeText(text).then(copiedText);
-  }
-
-  function copiedText() {
-    setCopy(true);
-
-    const timer = setTimeout(() => {
-      setCopy(false);
-      clearTimeout(timer);
-    }, 1000);
-  }
-
-  if (!address)
+  if (currentUserAddress) {
     return (
       <Wrapper>
         <Avatar>
-          <MocedAvatar />
+          <VanillaChildren>{avatar}</VanillaChildren>
         </Avatar>
         <Title>{title}</Title>
+        <Address>
+          <a
+            href={`https://${net}.etherscan.io/address/${hexifiedAddressFilter}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {ens || addressFilter}
+          </a>
+          {copiedSuccessfuly ? (
+            "Copied"
+          ) : (
+            <StyledCopy
+              width={16}
+              height={16}
+              onClick={() => copyToClipboard(hexifiedAddressFilter)}
+            />
+          )}
+        </Address>
         {!isListOwnedByCurrentUser && (
           <Button
-            myAddress={myAddress}
-            address={address}
-            trustedUsersList={trustedUsersList}
+            // myAddress={currentUserAddress}
+            address={addressFilter}
+            trustedUsers={trustedUsers}
             setTrustedUsersList={setTrustedUsersList}
             isNotDapplet={isNotDapplet}
             setModalOpen={setModalOpen}
@@ -373,50 +410,22 @@ const ProfileInList = ({
           </Button>
         )}
         <ButtonAll>
-          <button
-            onClick={() => {
-              setAddressFilter("");
-              editSearchQuery("");
-              setSelectedList(undefined);
-            }}
-          >
-            Show All
-          </button>
+          <button onClick={resetSortAndFiltering}>Show All</button>
         </ButtonAll>
       </Wrapper>
     );
+  }
 
   return (
     <Wrapper>
       <Avatar>
-        <VanillaChildren>{getAvatar(getAddress(address))}</VanillaChildren>
+        <MocedAvatar />
       </Avatar>
       <Title>{title}</Title>
-      <Address>
-        <a
-          href={`https://${net}.etherscan.io/address/${hexifiedAddressFilter}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {getAddress(address)}
-        </a>
-        {isCopy ? (
-          "Copied"
-        ) : (
-          <StyledCopy
-            width={16}
-            height={16}
-            onClick={() =>
-              copyTextToClipboard(getAddress(hexifiedAddressFilter))
-            }
-          />
-        )}
-      </Address>
       {!isListOwnedByCurrentUser && (
         <Button
-          myAddress={myAddress}
-          address={address}
-          trustedUsersList={trustedUsersList}
+          address={addressFilter}
+          trustedUsers={trustedUsers}
           setTrustedUsersList={setTrustedUsersList}
           isNotDapplet={isNotDapplet}
           setModalOpen={setModalOpen}
@@ -427,18 +436,10 @@ const ProfileInList = ({
         </Button>
       )}
       <ButtonAll>
-        <button
-          onClick={() => {
-            setAddressFilter("");
-            editSearchQuery("");
-            setSelectedList(undefined);
-          }}
-        >
-          Show All
-        </button>
+        <button onClick={resetSortAndFiltering}>Show All</button>
       </ButtonAll>
     </Wrapper>
   );
 };
 
-export default ProfileInList;
+export default connect(mapState)(ListerProfile);

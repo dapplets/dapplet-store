@@ -4,18 +4,25 @@ import React, {
   SetStateAction,
   useState,
   useEffect,
+  useCallback,
 } from "react";
 import Tooltip from "../Tooltip/Tooltip";
 import { connect } from "react-redux";
 import { Lists, MyListElement } from "../../../models/myLists";
 import { Sort } from "../../../models/sort";
-import DappletsListItem, {
+import TrustedListItem, {
   DappletsListItemTypes,
 } from "../../../components/DappletsListItem/DappletsListItem";
 import { LegacySideLists } from "../SidePanel/SidePanel";
 import { RootDispatch, RootState } from "../../../models";
 import styled from "styled-components/macro";
 import TrustedList from "../TrustedList/TrustedList";
+import { TrustedUser } from "../../../models/trustedUsers";
+import trimLeadingZeros from "../../../lib/trimLeadingZeros";
+import shortenAddress from "../../../lib/shortenAddress";
+
+// WHY 24?
+const ZEROS_TO_TRIM = 24;
 
 const Wrapper = styled.ul`
   list-style: none;
@@ -72,8 +79,8 @@ const PublicListingActionButton = styled.button`
 const mapState = (state: RootState) => ({
   myLists: state.myLists,
   isLocked: state.user.isLocked,
-  trustedUsers: state.trustedUsers.trustedUsers,
   address: state.user.address,
+  trustedUsers: state.trustedUsers.trustedUsers,
   filter: state.sort.addressFilter,
   selectedList: state.sort.selectedList,
 });
@@ -85,9 +92,7 @@ const mapDispatch = (dispatch: RootDispatch) => ({
 type MenuProps = {
   selectedDappletsList: MyListElement[];
   onPush: () => Promise<void>;
-  trustedUsers: string[];
-  openedList: string | undefined;
-  setOpenedList: Dispatch<SetStateAction<null | string>>;
+  trustedUsers: TrustedUser[];
 } & ReturnType<typeof mapState> &
   ReturnType<typeof mapDispatch>;
 
@@ -98,14 +103,31 @@ const SideNav = ({
   trustedUsers,
   address,
   setSort,
-  openedList,
-  setOpenedList,
   myLists,
   filter,
   selectedList,
 }: MenuProps) => {
   const myDapplets = myLists[Lists.MyDapplets];
   const myListing = myLists[Lists.MyListing];
+
+  const [isUserListOpened, setIsUserListOpened] = useState(false);
+
+  const formattedTrustedUsers = useMemo(() => {
+    const users = trustedUsers.map((trustedUser) => {
+      const { ens, hex } = trustedUser;
+      const hasEns = !!ens;
+      const formattedHex = trimLeadingZeros(hex, ZEROS_TO_TRIM);
+
+      return {
+        title: formattedHex,
+        subTitle: hasEns ? trustedUser.ens : shortenAddress(formattedHex, 10),
+        id: hex,
+        type: DappletsListItemTypes.Default,
+      };
+    });
+
+    return users;
+  }, [trustedUsers]);
 
   const pendingActions = useMemo(
     () =>
@@ -122,126 +144,31 @@ const SideNav = ({
   );
 
   const arePendingActions = pendingActions.length > 0;
+  const isMyListingEmpty = myListing.length === 0;
+  const isMyDappletsEmpty = myDapplets.length === 0;
+  const isTrustedUsersListEmpty = formattedTrustedUsers.length === 0;
+  const isCurrentUserList = filter === address;
 
-  const [formattedTrustedUsers, setformattedTrustedUsers] = useState<any>([]);
-
-  useEffect(() => {
-    const users = trustedUsers
-      .filter(
-        (user) =>
-          !address ||
-          address?.replace("0x000000000000000000000000", "0x") !==
-            user.replace("0x000000000000000000000000", "0x"),
-      )
-      .map((user) => {
-        const hasHumanReadableName = !user.includes("0x");
-        return {
-          title: user.replace("0x000000000000000000000000", "0x"),
-          subTitle: hasHumanReadableName
-            ? user
-            : `${user
-                .replace("0x000000000000000000000000", "0x")
-                .slice(0, 10)}...${user
-                .replace("0x000000000000000000000000", "0x")
-                .slice(-10)}`,
-          id: user,
-          type: DappletsListItemTypes.Default,
-          onClickRemove: () => {
-            return;
-          },
-          isRemoved: false,
-        };
-      })
-      .filter(({ title }) => !!title)
-      .map(({ id, subTitle, isRemoved, onClickRemove, title, type }) => {
-        return (
-          <DappletsListItem
-            isActive={filter === id}
-            key={id}
-            onClick={(id: string) =>
-              setSort({
-                addressFilter: id,
-                selectedList: undefined,
-                searchQuery: "",
-              })
-            }
-            subTitle={subTitle}
-            isRemoved={isRemoved}
-            onClickRemove={onClickRemove}
-            title={title}
-            type={type}
-            id={id}
-          />
-        );
-      });
-
-    setformattedTrustedUsers(users);
-  }, [address, filter, setSort, trustedUsers]);
-
-  /* const formattedTrustedUsers = useMemo(
-    () =>
-      trustedUsers
-        .filter(
-          (user) =>
-            !address ||
-            address?.replace("0x000000000000000000000000", "0x") !==
-              user.replace("0x000000000000000000000000", "0x"),
-        )
-        .map((user) => {
-          const hasHumanReadableName = !user.includes("0x");
-          return {
-            title: user.replace("0x000000000000000000000000", "0x"),
-            subTitle: hasHumanReadableName
-              ? user
-              : `${user
-                  .replace("0x000000000000000000000000", "0x")
-                  .slice(0, 10)}...${user
-                  .replace("0x000000000000000000000000", "0x")
-                  .slice(-10)}`,
-            id: user,
-            type: DappletsListItemTypes.Default,
-            onClickRemove: () => {
-              return;
-            },
-            isRemoved: false,
-          };
-        })
-        .filter(({ title }) => !!title)
-        .map(({ id, subTitle, isRemoved, onClickRemove, title, type }) => {
-          return (
-            <DappletsListItem
-              isActive={filter === id}
-              key={id}
-              onClick={(id: string) =>
-                setSort({
-                  addressFilter: id,
-                  selectedList: undefined,
-                  searchQuery: "",
-                })
-              }
-              subTitle={subTitle}
-              isRemoved={isRemoved}
-              onClickRemove={onClickRemove}
-              title={title}
-              type={type}
-              id={id}
-            />
-          );
-        }),
-    [trustedUsers, address, filter, setSort],
-  ); */
-
-  const isOpen = LegacySideLists.TrustedUsers === openedList;
-
-  const onTrustedUsersListToggle = () => {
-    if (isOpen) setOpenedList(null);
-    else setOpenedList(LegacySideLists.TrustedUsers);
+  const toggleUserList = () => {
+    setIsUserListOpened((old) => !old);
   };
 
-  const isMyListingEmpty = myListing.length === 0;
-  const isMyDappletEmpty = myDapplets.length === 0;
-  const isTrustedUSersListEmpty = formattedTrustedUsers.length === 0;
-  const isCurrentUserList = filter === address;
+  const togleLocalList = () => {
+    setSort({
+      selectedList: Lists.MyDapplets,
+      addressFilter: "",
+      searchQuery: "",
+    });
+  };
+
+  const toglePublicList = () => {
+    setSort({
+      selectedList: Lists.MyListing,
+      addressFilter: address,
+      searchQuery: "",
+      isTrustedSort: false,
+    });
+  };
 
   return (
     <Wrapper>
@@ -255,14 +182,7 @@ const SideNav = ({
           <MenuItemLabel
             isActive={isCurrentUserList}
             disabled={isMyListingEmpty}
-            onClick={() => {
-              setSort({
-                selectedList: Lists.MyListing,
-                addressFilter: address,
-                searchQuery: "",
-                isTrustedSort: false,
-              });
-            }}
+            onClick={toglePublicList}
           >
             Public list
           </MenuItemLabel>
@@ -281,19 +201,13 @@ const SideNav = ({
 
       <MenuItem>
         <Tooltip
-          isOn={isMyDappletEmpty}
+          isOn={isMyDappletsEmpty}
           tipText={"Add dapplets here for local use from dapplets card"}
         >
           <MenuItemLabel
             isActive={selectedList === Lists.MyDapplets}
-            disabled={isMyDappletEmpty}
-            onClick={() => {
-              setSort({
-                selectedList: Lists.MyDapplets,
-                addressFilter: "",
-                searchQuery: "",
-              });
-            }}
+            disabled={isMyDappletsEmpty}
+            onClick={togleLocalList}
           >
             Local list
           </MenuItemLabel>
@@ -302,17 +216,17 @@ const SideNav = ({
 
       <MenuItem>
         <Tooltip
-          isOn={isTrustedUSersListEmpty}
+          isOn={isTrustedUsersListEmpty}
           tipText={"Add users here to follow them"}
         >
-          <MenuItemLabel disabled={isTrustedUSersListEmpty}>
-            {isTrustedUSersListEmpty ? (
+          <MenuItemLabel disabled={isTrustedUsersListEmpty}>
+            {isTrustedUsersListEmpty ? (
               "Trusted Users"
             ) : (
               <TrustedList
                 users={formattedTrustedUsers}
-                isOpen={isOpen}
-                onToggle={onTrustedUsersListToggle}
+                isOpen={isUserListOpened}
+                onToggle={toggleUserList}
               ></TrustedList>
             )}
           </MenuItemLabel>

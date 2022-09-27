@@ -12,9 +12,7 @@ import styles from "./DappletList.module.scss";
 import SortableList from "../../../components/SortableList";
 import ItemDapplet from "../../../components/ItemDapplet";
 import { DappletsListItemTypes } from "../../../components/DappletsListItem/DappletsListItem";
-
-import ProfileInList from "../../ProfileInList/ProfileInList";
-import { LegacySideLists } from "../SidePanel/SidePanel";
+import ListerProfile from "../../ProfileInList/ProfileInList";
 import { IDapplet } from "../../../models/dapplets";
 import { Sort, SortTypes } from "../../../models/sort";
 import { Lists, MyListElement } from "../../../models/myLists";
@@ -29,7 +27,7 @@ import {
   updateDappletItem,
 } from "../../../lib/updateDappletItem";
 import { updateMyListing } from "../../../lib/updateDappletList";
-import dappletRegistry from "../../../api/dappletRegistry";
+import { TrustedUser } from "../../../models/trustedUsers";
 
 const MainContentWrapper = styled.div`
   display: grid;
@@ -146,10 +144,9 @@ export interface DappletListProps {
   addressFilter: string;
   setAddressFilter: any;
   editSearchQuery: any;
-  trustedUsersList: string[];
+  trustedUsersList: TrustedUser[];
   setTrustedUsersList: any;
   isTrustedSort: boolean;
-  setOpenedList: any;
   address: string;
   trigger: boolean;
   isNotDapplet: boolean;
@@ -175,7 +172,6 @@ const DappletList = ({
   // trustedUsersList,
   setTrustedUsersList,
   isTrustedSort,
-  setOpenedList,
   address,
   trigger,
   isNotDapplet,
@@ -248,7 +244,6 @@ const DappletList = ({
 
   const editLocalDappletsList = useMemo(
     () => (item: IDapplet) => {
-      setOpenedList(LegacySideLists.MyDapplets);
       const newLocalDappletsList = editList(
         item,
         localDapplets,
@@ -260,14 +255,12 @@ const DappletList = ({
       });
       saveListToLocalStorage(newLocalDappletsList, Lists.MyDapplets);
     },
-    [editList, localDapplets, setMyList, setOpenedList],
+    [editList, localDapplets, setMyList],
   );
 
   // TODO: most likely here the deleted element becomes up
   const editSelectedDappletsList = useMemo(
     () => (item: IDapplet) => {
-      setOpenedList(LegacySideLists.MyListing);
-
       let nowDappletsList: MyListElement[] = selectedDapplets;
       const indexSelectedDapplet = nowDappletsList.findIndex(
         (d) => d.name === item.name,
@@ -336,7 +329,7 @@ const DappletList = ({
         elements: newDappletsList,
       });
     },
-    [selectedDapplets, setMyList, setOpenedList],
+    [selectedDapplets, setMyList],
   );
 
   const titleText = useMemo(() => {
@@ -490,27 +483,6 @@ const DappletList = ({
     sortType,
   ]);
 
-  /* const sortedDapplets = useMemo(() => {
-    const sortedList = sortDappletsByType(dapplets, sortType, selectedList);
-    return filterDappletsByCondition({
-      sortedList,
-      addressFilter,
-      isNotDapplet,
-      isTrustedSort,
-      searchQuery,
-    });
-  }, [
-    addressFilter,
-    dapplets,
-    filterDappletsByCondition,
-    isNotDapplet,
-    isTrustedSort,
-    searchQuery,
-    selectedList,
-    sortDappletsByType,
-    sortType,
-  ]); */
-
   const chooseList = useMemo(
     () => ({
       [Lists.MyListing]: selectedDapplets,
@@ -550,17 +522,6 @@ const DappletList = ({
     ref,
   ]);
 
-  /* if (isListLoading)
-    return (
-      <div className={styles.loaderContainer}>
-        <Loader
-          width={50}
-          height={50}
-          className="notification-custom-animate"
-        />
-      </div>
-    ); */
-
   return (
     <article
       style={{
@@ -581,10 +542,8 @@ const DappletList = ({
         <div style={{ maxWidth: "calc(100vw - 910px)" }}>
           {(addressFilter !== "" || selectedList) &&
             selectedList !== Lists.MyDapplets && (
-              <ProfileInList
+              <ListerProfile
                 hexifiedAddressFilter={hexifiedAddressFilter}
-                myAddress={address}
-                address={addressFilter !== "" ? addressFilter : address}
                 setAddressFilter={setAddressFilter}
                 editSearchQuery={editSearchQuery}
                 setSelectedList={setSelectedList}
@@ -615,7 +574,9 @@ const DappletList = ({
             )}
             {address !== addressFilter &&
               !isNotDapplet &&
-              !trustedUsers.includes(addressFilter || "") && (
+              !trustedUsers
+                .map((user) => user.hex)
+                .includes(addressFilter || "") && (
                 <CheckboxWrapper
                   isTrustedSort={isTrustedSort || false}
                   onClick={() => setSort({ isTrustedSort: !isTrustedSort })}
@@ -653,7 +614,6 @@ const DappletList = ({
                 editSelectedDappletsList={editSelectedDappletsList}
                 setAddressFilter={setAddressFilter}
                 addressFilter={addressFilter}
-                setOpenedList={setOpenedList}
                 searchQuery={searchQuery}
                 trustedUsersList={trustedUsers}
                 isTrustedSort={isTrustedSort}
@@ -687,7 +647,6 @@ const DappletList = ({
                         editSelectedDappletsList={editSelectedDappletsList}
                         searchQuery={searchQuery}
                         setAddressFilter={setAddressFilter}
-                        setOpenedList={setOpenedList}
                         trustedUsersList={trustedUsers}
                         isNotDapplet={isNotDapplet}
                       />
