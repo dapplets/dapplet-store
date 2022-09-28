@@ -90,8 +90,19 @@ const App = ({
     height: window.innerHeight,
     width: window.innerWidth,
   });
+
   const [isNotDapplet, setIsNotDapplet] = useState(true);
   const [isListLoading, setIsListLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchTrustedUsers = async () => {
+      setIsListLoading(true);
+      await getTrustedUsers();
+      setIsListLoading(false);
+    };
+
+    if (!isNotDapplet) fetchTrustedUsers();
+  }, [getTrustedUsers, isNotDapplet]);
 
   useEffect(() => {
     window.addEventListener("dapplets#initialized", () => {
@@ -141,17 +152,12 @@ const App = ({
   }, [hangDappletsEvent]);
 
   useEffect(() => {
-    const fetchTrustedUsers = async () => {
-      setIsListLoading(true);
-      await getTrustedUsers();
-      setIsListLoading(false);
-    };
-
     if (!isNotDapplet) {
       getMyDapplets();
-      fetchTrustedUsers();
+      // fetchTrustedUsers();
       onLoad();
     }
+
     return () => {
       window.removeEventListener("dapplets#initialized", hangDappletsEvent);
     };
@@ -254,13 +260,12 @@ const App = ({
     }
   }, [setModalOpen, setProvider, setUser]);
 
-  if (isListLoading) return <div>Loading...</div>;
-
   return (
     <>
       <Toaster position="bottom-left" />
       <ModalResolver />
       <Layout
+        isListLoading={isListLoading}
         setSelectedList={(newSelectedList: Lists | undefined) =>
           setSort({ selectedList: newSelectedList })
         }

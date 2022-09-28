@@ -38,7 +38,7 @@ const Overlay = ({
             onClick={(e) => {
               e.preventDefault();
               window.open(
-                "https://github.com/dapplets/dapplet-extension/releases/download/v0.50.0-alpha.1/dapplet-extension.zip",
+                "https://github.com/dapplets/dapplet-extension/releases/download/v0.50.0/dapplet-extension.zip",
                 "_blank",
               );
             }}

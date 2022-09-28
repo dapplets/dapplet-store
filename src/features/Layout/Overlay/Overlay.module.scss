@@ -1,39 +1,39 @@
 .overlay {
-	background-color: #F5F5F5 !important;
-  position: fixed;
+  background-color: #f5f5f5 !important;
+  // position: fixed;
   right: 0;
   top: 84px;
   height: 100%;
-  width: 430px;
+  // width: 430px;
 }
 
 .content {
-	padding: 0 40px;
+  padding: 0 40px;
 }
 
 .info {
-	margin-bottom: 65px;
+  margin-bottom: 65px;
 }
 
 .infoLink {
-	color: #000;
+  color: #000;
 
-	font-size: 14px;
-	line-height: 16px;
-	text-decoration-line: underline;
-  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  line-height: 16px;
+  text-decoration-line: underline;
+  font-family: "Montserrat", sans-serif;
   border: 0;
   background: none;
   cursor: pointer;
 
-	&:hover {
-		color: #000;
+  &:hover {
+    color: #000;
 
-		text-decoration-line: none;
-	}
+    text-decoration-line: none;
+  }
 
   &::before {
-    content: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNiIgaGVpZ2h0PSI2IiB2aWV3Qm94PSIwIDAgNiA2IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8Y2lyY2xlIGN4PSIzIiBjeT0iMyIgcj0iMyIgZmlsbD0iIzU4OENBMyIvPgo8L3N2Zz4K');
+    content: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNiIgaGVpZ2h0PSI2IiB2aWV3Qm94PSIwIDAgNiA2IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8Y2lyY2xlIGN4PSIzIiBjeT0iMyIgcj0iMyIgZmlsbD0iIzU4OENBMyIvPgo8L3N2Zz4K");
     margin: 10px;
   }
 }
@@ -48,17 +48,17 @@
 }
 
 .message h2 {
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   font-weight: 500;
   text-align: center !important;
   margin: 0 !important;
-  color: #2A2A2A !important;
+  color: #2a2a2a !important;
 }
 
 .messageContent {
   text-align: center !important;
-	font-size: 18px !important;
-	line-height: 21px !important;
+  font-size: 18px !important;
+  line-height: 21px !important;
   margin-bottom: 1.5em;
 }
 
@@ -66,14 +66,14 @@
   display: block !important;
   width: 140px !important;
   padding: 10px 0 !important;
-  color: #D9304F !important;
+  color: #d9304f !important;
   background: none !important;
-  border: 1px solid #D9304F !important;
+  border: 1px solid #d9304f !important;
   border-radius: 0 !important;
 
   &:hover {
     color: white !important;
-    background: #D9304F !important;
+    background: #d9304f !important;
   }
 
   &:active {
@@ -86,14 +86,14 @@
   display: block !important;
   width: 140px !important;
   padding: 10px 0 !important;
-  color: #57D983 !important;
+  color: #57d983 !important;
   background: none !important;
-  border: 1px solid #57D983 !important;
+  border: 1px solid #57d983 !important;
   border-radius: 0 !important;
 
   &:hover {
     color: white !important;
-    background: #57D983 !important;
+    background: #57d983 !important;
   }
 
   &:active {
@@ -103,8 +103,8 @@
 }
 
 .message a {
-  margin: 1.5em 0 0 .5em;
-  color: #D9304F !important;
+  margin: 1.5em 0 0 0.5em;
+  color: #d9304f !important;
   font-weight: 500;
 }
 

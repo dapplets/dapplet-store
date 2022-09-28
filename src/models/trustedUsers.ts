@@ -30,6 +30,7 @@ const effects = (dispatch: any) => ({
     // const trustedUsers = window.localStorage.getItem('trustedUsers');
     // if (trustedUsers) dispatch.trustedUsers.setTrustedUsers(JSON.parse(trustedUsers))
     try {
+      // await new Promise((res) => setTimeout(res, 5000));
       const nearNamingPatterns = [".testnet", ".near", "dev-"];
       const trustedUsers = await window.dapplets.getTrustedUsers();
 

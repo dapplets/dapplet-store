@@ -62,6 +62,7 @@ const FooterLinks = styled.div`
   display: flex;
   gap: 20px;
   white-space: nowrap;
+  flex-wrap: wrap;
 
   & a {
     color: #747376;
@@ -241,6 +242,8 @@ const SidePanel = ({
     }
     setLocked(false);
   };
+
+  /* return <div style={{width: "100%", background: "red"}}></div> */
 
   return (
     <Wrapper className={className}>

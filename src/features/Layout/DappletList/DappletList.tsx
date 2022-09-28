@@ -31,10 +31,14 @@ import { TrustedUser } from "../../../models/trustedUsers";
 
 const MainContentWrapper = styled.div`
   display: grid;
-  grid-template-columns: 1fr max-content max-content;
+  grid-template-columns: 1fr max-content;
   grid-column-gap: 20px;
   align-items: center;
-  border-bottom: 1px solid rgb(227, 227, 227);
+  max-width: 800px;
+  /* margin: auto; */
+  justify-content: space-around;
+  padding: 0 15px;
+  /* border-bottom: 1px solid rgb(227, 227, 227); */
 `;
 
 interface CheckboxWrapperProps {
@@ -154,7 +158,7 @@ export interface DappletListProps {
   setMyList: any;
   isListLoading: boolean;
   hexifiedAddressFilter: string;
-  setIsListLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  // setIsListLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const DappletList = ({
@@ -186,8 +190,8 @@ const DappletList = ({
   removeMyDapplet,
   setMyList,
   isListLoading,
+  // setIsListLoading,
   hexifiedAddressFilter,
-  setIsListLoading,
 }: DappletListProps & Props): React.ReactElement => {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -530,7 +534,7 @@ const DappletList = ({
           margin: "0 !important",
         }}
       >
-        <div style={{ maxWidth: "calc(100vw - 910px)" }}>
+        <div /* style={{ padding: "0 15px" }} */>
           {(addressFilter !== "" || selectedList) &&
             selectedList !== Lists.MyDapplets && (
               <ListerProfile
@@ -586,62 +590,72 @@ const DappletList = ({
               />
             </div>
           )}
-          {!isListLoading &&
-            sortedDapplets.length !== 0 &&
-            (selectedList && addressFilter === address ? (
-              <SortableList
-                expandedCards={expandedCards}
-                setExpandedCards={setExpandedCards}
-                dapplets={sortedDapplets}
-                items={chooseList[selectedList]}
-                setItems={chooseSetMethod[selectedList]}
-                selectedDapplets={selectedDapplets}
-                localDapplets={localDapplets}
-                editLocalDappletsList={editLocalDappletsList}
-                editSelectedDappletsList={editSelectedDappletsList}
-                setAddressFilter={setAddressFilter}
-                addressFilter={addressFilter}
-                searchQuery={searchQuery}
-                trustedUsersList={trustedUsers}
-                isTrustedSort={isTrustedSort}
-                selectedList={selectedList}
-                isNotDapplet={isNotDapplet}
-              />
-            ) : (
-              sortedDapplets.map((item: any, i: number) => {
-                const selected = selectedDapplets.find(
-                  (d) => d.id === item.id,
-                )?.type;
-                const isAdding = selected === DappletsListItemTypes.Adding;
-                const isRemoving = selected === DappletsListItemTypes.Removing;
 
-                return (
-                  <section
-                    className={cn(styles.item, {
-                      [styles.isChanged]: isAdding || isRemoving,
-                    })}
-                    key={item.name}
-                  >
-                    <div className={styles.itemContainer}>
-                      <ItemDapplet
-                        expandedCards={expandedCards}
-                        setExpandedCards={setExpandedCards}
-                        key={item.name}
-                        item={item}
-                        selectedDapplets={selectedDapplets}
-                        localDapplets={localDapplets}
-                        editLocalDappletsList={editLocalDappletsList}
-                        editSelectedDappletsList={editSelectedDappletsList}
-                        searchQuery={searchQuery}
-                        setAddressFilter={setAddressFilter}
-                        trustedUsersList={trustedUsers}
-                        isNotDapplet={isNotDapplet}
-                      />
-                    </div>
-                  </section>
-                );
-              })
-            ))}
+          <div
+            style={{
+              borderTop: "1px solid lightgrey",
+              padding: "0 15px",
+              maxWidth: "800px",
+            }}
+          >
+            {!isListLoading &&
+              sortedDapplets.length !== 0 &&
+              (selectedList && addressFilter === address ? (
+                <SortableList
+                  expandedCards={expandedCards}
+                  setExpandedCards={setExpandedCards}
+                  dapplets={sortedDapplets}
+                  items={chooseList[selectedList]}
+                  setItems={chooseSetMethod[selectedList]}
+                  selectedDapplets={selectedDapplets}
+                  localDapplets={localDapplets}
+                  editLocalDappletsList={editLocalDappletsList}
+                  editSelectedDappletsList={editSelectedDappletsList}
+                  setAddressFilter={setAddressFilter}
+                  addressFilter={addressFilter}
+                  searchQuery={searchQuery}
+                  trustedUsersList={trustedUsers}
+                  isTrustedSort={isTrustedSort}
+                  selectedList={selectedList}
+                  isNotDapplet={isNotDapplet}
+                />
+              ) : (
+                sortedDapplets.map((item: any, i: number) => {
+                  const selected = selectedDapplets.find(
+                    (d) => d.id === item.id,
+                  )?.type;
+                  const isAdding = selected === DappletsListItemTypes.Adding;
+                  const isRemoving =
+                    selected === DappletsListItemTypes.Removing;
+
+                  return (
+                    <section
+                      className={cn(styles.item, {
+                        [styles.isChanged]: isAdding || isRemoving,
+                      })}
+                      key={item.name}
+                    >
+                      <div className={styles.itemContainer}>
+                        <ItemDapplet
+                          expandedCards={expandedCards}
+                          setExpandedCards={setExpandedCards}
+                          key={item.name}
+                          item={item}
+                          selectedDapplets={selectedDapplets}
+                          localDapplets={localDapplets}
+                          editLocalDappletsList={editLocalDappletsList}
+                          editSelectedDappletsList={editSelectedDappletsList}
+                          searchQuery={searchQuery}
+                          setAddressFilter={setAddressFilter}
+                          trustedUsersList={trustedUsers}
+                          isNotDapplet={isNotDapplet}
+                        />
+                      </div>
+                    </section>
+                  );
+                })
+              ))}
+          </div>
         </div>
       </div>
     </article>

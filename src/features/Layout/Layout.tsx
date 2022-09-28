@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { IDapplet, IRawDapplet } from "../../models/dapplets";
-
+import { ReactComponent as Loader } from "../../components/Notification/loader.svg";
 import Header from "./Header/Header";
 import Overlay from "./Overlay/Overlay";
 import SidePanel from "./SidePanel/SidePanel";
@@ -30,7 +30,7 @@ const Wrapper = styled.div<WrapperProps>`
 
   height: 100%;
 
-  grid-template-columns: 455px 1fr 455px;
+  grid-template-columns: 1fr 2fr 1fr;
   grid-template-rows: 84px 1fr;
 
   grid-template-areas:
@@ -95,6 +95,7 @@ export interface LayoutProps {
   setAddressFilter: any;
   windowWidth: number;
   isNotDapplet: boolean;
+  isListLoading: boolean;
 }
 
 const Layout = ({
@@ -117,12 +118,13 @@ const Layout = ({
   setSort,
   setTrustedUsers,
   setMyList,
+  isListLoading,
 }: LayoutProps & Props): React.ReactElement<LayoutProps> => {
   const localDappletsList = myLists[Lists.MyDapplets];
   const selectedDappletsList = myLists[Lists.MyListing];
 
   const [dappletsByList, setDappletsByList] = useState<IDapplet[]>([]);
-  const [isListLoading, setIsListLoading] = useState(false);
+  // const [isListLoading, setIsListLoading] = useState(false);
   const [hexifiedAddressFilter, setHexifiedAddresFilter] = useState("");
 
   useEffect(() => {
@@ -235,45 +237,67 @@ const Layout = ({
   return (
     <Wrapper isNotDapplet={isNotDapplet}>
       <StyledHeader selectedList={selectedList} isNotDapplet={isNotDapplet} />
-      <StyledSidePanel
-        localDappletsList={localDappletsList}
-        selectedDappletsList={selectedDappletsList}
-        setSelectedList={setSelectedList}
-        trustedUsersList={trustedUsersList}
-        setAddressFilter={setAddressFilter}
-        dapplets={dapplets}
-      />
 
-      <MainContent>
-        <DappletList
-          setIsListLoading={setIsListLoading}
-          hexifiedAddressFilter={hexifiedAddressFilter}
-          isListLoading={isListLoading}
-          dapplets={dappletsByList}
-          selectedDapplets={selectedDappletsList}
-          localDapplets={localDappletsList}
-          selectedList={selectedList}
-          setSelectedList={(newSelectedList: Lists | undefined) =>
-            setSort({ selectedList: newSelectedList, searchQuery: "" })
-          }
-          sortType={sortType || SortTypes.ABC}
-          searchQuery={searchQuery || ""}
-          editSearchQuery={(newtSearchQuery: string) =>
-            setSort({ searchQuery: newtSearchQuery })
-          }
-          addressFilter={addressFilter || ""}
-          setAddressFilter={(newAddressFilter: string) =>
-            setSort({ addressFilter: newAddressFilter })
-          }
-          trustedUsersList={trustedUsers}
-          setTrustedUsersList={setTrustedUsers}
-          isTrustedSort={isTrustedSort || false}
-          address={address || ""}
-          trigger={trigger || false}
-          isNotDapplet={isNotDapplet}
-          setModalOpen={setModalOpen}
-        />
-      </MainContent>
+      {/* TMP LOADER */}
+      {isListLoading ? (
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(0, -50%)",
+            padding: "10px",
+          }}
+        >
+          <Loader
+            width={50}
+            height={50}
+            className="notification-custom-animate"
+          />
+        </div>
+      ) : (
+        <>
+          <StyledSidePanel
+            localDappletsList={localDappletsList}
+            selectedDappletsList={selectedDappletsList}
+            setSelectedList={setSelectedList}
+            trustedUsersList={trustedUsersList}
+            setAddressFilter={setAddressFilter}
+            dapplets={dapplets}
+          />
+
+          <MainContent>
+            <DappletList
+              // setIsListLoading={setIsListLoading}
+              hexifiedAddressFilter={hexifiedAddressFilter}
+              isListLoading={isListLoading}
+              dapplets={dappletsByList}
+              selectedDapplets={selectedDappletsList}
+              localDapplets={localDappletsList}
+              selectedList={selectedList}
+              setSelectedList={(newSelectedList: Lists | undefined) =>
+                setSort({ selectedList: newSelectedList, searchQuery: "" })
+              }
+              sortType={sortType || SortTypes.ABC}
+              searchQuery={searchQuery || ""}
+              editSearchQuery={(newtSearchQuery: string) =>
+                setSort({ searchQuery: newtSearchQuery })
+              }
+              addressFilter={addressFilter || ""}
+              setAddressFilter={(newAddressFilter: string) =>
+                setSort({ addressFilter: newAddressFilter })
+              }
+              trustedUsersList={trustedUsers}
+              setTrustedUsersList={setTrustedUsers}
+              isTrustedSort={isTrustedSort || false}
+              address={address || ""}
+              trigger={trigger || false}
+              isNotDapplet={isNotDapplet}
+              setModalOpen={setModalOpen}
+            />
+          </MainContent>
+        </>
+      )}
 
       {isNotDapplet && <StyledOverlay isNotDapplet={isNotDapplet} />}
     </Wrapper>
