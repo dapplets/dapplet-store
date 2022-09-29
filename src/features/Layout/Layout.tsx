@@ -35,8 +35,9 @@ const Wrapper = styled.div<WrapperProps>`
 
   grid-template-areas:
     "header header header"
+    "sidePanel content overlay"
     ${({ isNotDapplet }) =>
-      `"sidePanel content ${!isNotDapplet ? "content" : "overlay"}"`}; ;
+      `"sidePanel content ${!isNotDapplet ? "overlay" : "overlay"}"`}; ;
 `;
 
 /* probabaly need those again */

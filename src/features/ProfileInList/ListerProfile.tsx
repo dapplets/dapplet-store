@@ -54,9 +54,7 @@ const Wrapper = styled.div`
     "avatar title ."
     "avatar address ."
     "avatar buttons all";
-  /* margin: auto; */
   align-items: center;
-  max-width: 800px;
   margin-top: 15px;
   padding: 0 15px;
 `;

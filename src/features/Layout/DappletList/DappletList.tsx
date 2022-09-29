@@ -34,11 +34,8 @@ const MainContentWrapper = styled.div`
   grid-template-columns: 1fr max-content;
   grid-column-gap: 20px;
   align-items: center;
-  max-width: 800px;
-  /* margin: auto; */
   justify-content: space-around;
   padding: 0 15px;
-  /* border-bottom: 1px solid rgb(227, 227, 227); */
 `;
 
 interface CheckboxWrapperProps {
@@ -595,7 +592,7 @@ const DappletList = ({
             style={{
               borderTop: "1px solid lightgrey",
               padding: "0 15px",
-              maxWidth: "800px",
+              // maxWidth: "800px",
             }}
           >
             {!isListLoading &&
