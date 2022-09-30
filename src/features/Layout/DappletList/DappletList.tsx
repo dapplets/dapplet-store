@@ -30,11 +30,12 @@ import { updateMyListing } from "../../../lib/updateDappletList";
 import { TrustedUser } from "../../../models/trustedUsers";
 
 const MainContentWrapper = styled.div`
-  display: grid;
+  display: flex;
+
   grid-template-columns: 1fr max-content;
   grid-column-gap: 20px;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
   padding: 0 15px;
 `;
 

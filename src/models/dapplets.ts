@@ -152,7 +152,7 @@ const effects = (dispatch: any) => ({
       (module: IRawDapplet) => module.moduleType === MODULE_TYPES.DAPPLET,
     );
 
-    const dapplets: IDapplet[] = data.modules.flatMap(
+    const dapplets: IDapplet[] = rawDapplets.flatMap(
       (module: IRawDapplet, i: number) => {
         const icon = {
           hash: module.icon.hash,

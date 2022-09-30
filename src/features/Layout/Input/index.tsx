@@ -29,6 +29,8 @@ function Input({
         padding: 15,
         paddingRight: 0,
         paddingLeft: 0,
+        minWidth: "500px",
+        alignSelf: "left",
       }}
     >
       <Icon name="search" />
