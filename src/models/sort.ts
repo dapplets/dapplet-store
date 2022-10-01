@@ -5,8 +5,8 @@ import { Lists } from "./myLists";
 export enum SortTypes {
   ABC = "Sort A-Z",
   ABCReverse = "Sort Z-A",
-  Newest = "Sort by newest",
-  Oldest = "Sort by oldest",
+  /* Newest = "Sort by newest",
+  Oldest = "Sort by oldest", */
 }
 
 export interface Sort {

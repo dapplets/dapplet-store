@@ -31,9 +31,7 @@ import { TrustedUser } from "../../../models/trustedUsers";
 
 const MainContentWrapper = styled.div`
   display: flex;
-
-  grid-template-columns: 1fr max-content;
-  grid-column-gap: 20px;
+  gap: 20px;
   align-items: center;
   justify-content: space-between;
   padding: 0 15px;
@@ -93,14 +91,14 @@ const dropdownItems = [
     id: 2,
     text: SortTypes.ABCReverse,
   },
-  {
+  /* {
     id: 3,
     text: SortTypes.Newest,
   },
   {
     id: 4,
     text: SortTypes.Oldest,
-  },
+  }, */
 ];
 
 const mapState = (state: RootState) => ({
@@ -406,11 +404,11 @@ const DappletList = ({
           case SortTypes.ABCReverse:
             return collator.compare(b.title, a.title);
 
-          case SortTypes.Newest:
+          /* case SortTypes.Newest:
             return collator.compare(b.timestamp, a.timestamp);
 
           case SortTypes.Oldest:
-            return collator.compare(a.timestamp, b.timestamp);
+            return collator.compare(a.timestamp, b.timestamp); */
 
           default:
             return 0;

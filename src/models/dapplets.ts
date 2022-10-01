@@ -159,6 +159,10 @@ const effects = (dispatch: any) => ({
           uris: module.icon.uris,
         };
 
+        const timeStamp = new Date(
+          Number.parseInt(data.lastVersions[i].createdAt._hex, 16) * 1000,
+        );
+
         if (module.moduleType === MODULE_TYPES.DAPPLET) {
           return {
             id: i + 1,
