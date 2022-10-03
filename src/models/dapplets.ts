@@ -152,12 +152,16 @@ const effects = (dispatch: any) => ({
       (module: IRawDapplet) => module.moduleType === MODULE_TYPES.DAPPLET,
     );
 
-    const dapplets: IDapplet[] = data.modules.flatMap(
+    const dapplets: IDapplet[] = rawDapplets.flatMap(
       (module: IRawDapplet, i: number) => {
         const icon = {
           hash: module.icon.hash,
           uris: module.icon.uris,
         };
+
+        const timeStamp = new Date(
+          Number.parseInt(data.lastVersions[i].createdAt._hex, 16) * 1000,
+        );
 
         if (module.moduleType === MODULE_TYPES.DAPPLET) {
           return {

@@ -8,6 +8,7 @@ body {
   font-family: Montserrat, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-y: hidden;
 }
 
 #root {
@@ -15,19 +16,14 @@ body {
 }
 
 code {
-  font-family:
-    source-code-pro,
-    Menlo,
-    Monaco,
-    Consolas,
-    "Courier New",
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
 
 .ui.basic.button,
 .ui.basic.buttons .message-button {
-  color: #FFF !important;
-  box-shadow: 0 0 0 1px #FFF inset;
+  color: #fff !important;
+  box-shadow: 0 0 0 1px #fff inset;
 }
 
 .ui[class*="left icon"].input > .app-input {
@@ -98,7 +94,7 @@ code {
   text-align: left !important;
   letter-spacing: 0 !important;
 
-  color: #2A2A2A !important;
+  color: #2a2a2a !important;
 
   font-family: Montserrat, sans-serif !important;
   font-size: 22px !important;
@@ -114,7 +110,7 @@ code {
     }
 
     &:active {
-      color: #0A0A0A !important;
+      color: #0a0a0a !important;
     }
   }
 }
@@ -129,7 +125,7 @@ h2.infoTitle {
 
   cursor: pointer;
 
-  color: #2A2A2A;
+  color: #2a2a2a;
   border: none;
   background: none;
 
@@ -141,6 +137,6 @@ h2.infoTitle {
   }
 
   &:active {
-    color: #0A0A0A;
+    color: #0a0a0a;
   }
 }

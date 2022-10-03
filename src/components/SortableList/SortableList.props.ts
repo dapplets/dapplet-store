@@ -1,5 +1,6 @@
 import { IDapplet } from "../../models/dapplets";
 import { Lists, MyListElement } from "../../models/myLists";
+import { TrustedUser } from "../../models/trustedUsers";
 
 export interface SortableListProps {
   dapplets: IDapplet[];
@@ -11,9 +12,8 @@ export interface SortableListProps {
   editSelectedDappletsList: (item: IDapplet) => void;
   setAddressFilter: any;
   addressFilter: string;
-  setOpenedList: any;
   searchQuery: string;
-  trustedUsersList: string[];
+  trustedUsersList: TrustedUser[];
   isTrustedSort: boolean;
   selectedList: Lists;
   isNotDapplet: boolean;

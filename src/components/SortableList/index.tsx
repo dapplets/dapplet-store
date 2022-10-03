@@ -35,7 +35,6 @@ const SortableList = ({
   editSelectedDappletsList,
   setAddressFilter,
   addressFilter,
-  setOpenedList,
   searchQuery,
   trustedUsersList,
   isTrustedSort,
@@ -133,7 +132,6 @@ const SortableList = ({
                   editLocalDappletsList={editLocalDappletsList}
                   editSelectedDappletsList={editSelectedDappletsList}
                   setAddressFilter={setAddressFilter}
-                  setOpenedList={setOpenedList}
                   searchQuery={searchQuery}
                   trustedUsersList={trustedUsersList}
                   isNotDapplet={isNotDapplet}
@@ -164,7 +162,6 @@ const SortableList = ({
                 editLocalDappletsList={editLocalDappletsList}
                 editSelectedDappletsList={editSelectedDappletsList}
                 setAddressFilter={setAddressFilter}
-                setOpenedList={setOpenedList}
                 trustedUsersList={trustedUsersList}
                 isNotDapplet={isNotDapplet}
               />

@@ -17,6 +17,7 @@ import { DappletsListItemTypes } from "../DappletsListItem/DappletsListItem";
 import Button from "./Button";
 
 import styles from "./ItemDapplet.module.scss";
+import { TrustedUser } from "../../models/trustedUsers";
 
 const mapState = (state: RootState) => ({
   address: state.user.address,
@@ -83,8 +84,7 @@ interface ItemDappletProps {
   editSelectedDappletsList: (item: IDapplet) => void;
   searchQuery?: string;
   setAddressFilter: any;
-  setOpenedList: any;
-  trustedUsersList: string[];
+  trustedUsersList: TrustedUser[];
   isNotDapplet: boolean;
   expandedCards: any;
   setExpandedCards: React.Dispatch<any>;
@@ -116,13 +116,19 @@ const ItemDapplet = ({
 
   const trustedList = useMemo(() => {
     return item.listers.filter(
-      (user) => trustedUsersList.includes(user) || user === address,
+      (user) =>
+        trustedUsersList.map((user) => user.hex).includes(user) ||
+        user === address,
     );
   }, [address, item.listers, trustedUsersList]);
 
   const otherList = useMemo(() => {
     return item.listers.filter(
-      (user) => !(trustedUsersList.includes(user) || user === address),
+      (user) =>
+        !(
+          trustedUsersList.map((user) => user.hex).includes(user) ||
+          user === address
+        ),
     );
   }, [address, item.listers, trustedUsersList]);
 

@@ -333,16 +333,19 @@ const Header: FC<HeaderProps & Props> = ({
 
       <Channels>
         <Divider />
-        <ChannelItem href="https://github.com/dapplets">
+        <ChannelItem href="https://github.com/dapplets" target="_blank">
           <GitHub />
         </ChannelItem>
-        <ChannelItem href="https://discord.com/invite/YcxbkcyjMV">
+        <ChannelItem
+          href="https://discord.com/invite/YcxbkcyjMV"
+          target="_blank"
+        >
           <Discord />
         </ChannelItem>
-        <ChannelItem href="https://t.me/dapplets">
+        <ChannelItem href="https://t.me/dapplets" target="_blank">
           <TG />
         </ChannelItem>
-        <ChannelItem href="https://twitter.com/dappletsproject">
+        <ChannelItem href="https://twitter.com/dappletsproject" target="_blank">
           <Twitter />
         </ChannelItem>
 

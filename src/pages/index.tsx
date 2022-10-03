@@ -17,6 +17,7 @@ import { useMemo } from "react";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import Web3 from "web3";
 import Web3Modal from "web3modal";
+import { TrustedUser } from "../models/trustedUsers";
 
 // import { getEnsNamesApi } from '../api/ensName/ensName';
 
@@ -52,7 +53,7 @@ const mapDispatch = (dispatch: RootDispatch) => ({
     dispatch.user.setUser({
       provider: payload,
     }),
-  setTrustedUsers: (payload: string[]) =>
+  setTrustedUsers: (payload: TrustedUser[]) =>
     dispatch.trustedUsers.setTrustedUsers(payload),
 });
 
@@ -89,7 +90,19 @@ const App = ({
     height: window.innerHeight,
     width: window.innerWidth,
   });
+
   const [isNotDapplet, setIsNotDapplet] = useState(true);
+  const [isListLoading, setIsListLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchTrustedUsers = async () => {
+      setIsListLoading(true);
+      await getTrustedUsers();
+      setIsListLoading(false);
+    };
+
+    if (!isNotDapplet) fetchTrustedUsers();
+  }, [getTrustedUsers, isNotDapplet]);
 
   useEffect(() => {
     window.addEventListener("dapplets#initialized", () => {
@@ -107,8 +120,6 @@ const App = ({
     window.addEventListener("resize", handleResize);
   }, []);
 
-  const [openedList, setOpenedList] = useState(null);
-
   const dapplets = useMemo(
     () => Object.values(dappletsStandard),
     [dappletsStandard],
@@ -119,8 +130,9 @@ const App = ({
   }, [getDapplets]);
 
   const hangDappletsEvent = useCallback(() => {
-    window.dapplets.onTrustedUsersChanged?.(getTrustedUsers);
-    window.dapplets.onMyDappletsChanged?.(getMyDapplets);
+    /* window.dapplets.onTrustedUsersChanged?.(getTrustedUsers);
+    window.dapplets.onMyDappletsChanged?.(getMyDapplets); */
+
     window.dapplets.onUninstall?.(() => {
       setIsNotDapplet(true);
       setMyList({
@@ -129,7 +141,7 @@ const App = ({
       });
       setTrustedUsers([]);
     });
-  }, [getMyDapplets, getTrustedUsers, setMyList, setTrustedUsers]);
+  }, [setMyList, setTrustedUsers]);
 
   const onLoad = useCallback(() => {
     if (window.dapplets) {
@@ -142,7 +154,7 @@ const App = ({
   useEffect(() => {
     if (!isNotDapplet) {
       getMyDapplets();
-      getTrustedUsers();
+      // fetchTrustedUsers();
       onLoad();
     }
 
@@ -253,6 +265,7 @@ const App = ({
       <Toaster position="bottom-left" />
       <ModalResolver />
       <Layout
+        isListLoading={isListLoading}
         setSelectedList={(newSelectedList: Lists | undefined) =>
           setSort({ selectedList: newSelectedList })
         }
@@ -260,8 +273,6 @@ const App = ({
         setAddressFilter={(newAddressFilter: string | undefined) => {
           setSort({ addressFilter: newAddressFilter });
         }}
-        openedList={openedList}
-        setOpenedList={setOpenedList}
         windowWidth={dimensions.width}
         isNotDapplet={isNotDapplet}
       />

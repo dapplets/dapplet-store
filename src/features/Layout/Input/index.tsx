@@ -28,9 +28,11 @@ function Input({
       style={{
         padding: 15,
         paddingRight: 0,
+        paddingLeft: 0,
+        width: "100%",
       }}
     >
-      <Icon name="search" style={{ marginLeft: "15px" }} />
+      <Icon name="search" />
       <input
         style={{
           color: "#2A2A2A",

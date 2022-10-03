@@ -31,10 +31,12 @@ const UserAddress = styled.span`
 
 const Connected = styled.div`
   display: flex;
-  padding-left: 60px;
-  padding-right: 24px;
+  /* padding-left: 60px;
+  padding-right: 24px; */
   gap: 10px;
   align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
 `;
 
 const NotConnected = styled.div`
@@ -165,26 +167,28 @@ const Profile = ({
           >
             <VanillaChildren>{getAvatar(addressShort)}</VanillaChildren>
           </Avatar>
-          <UserInfo>
-            <UserAddress>{shortenAddress(address, 8)}</UserAddress>
-          </UserInfo>
-          <InvisibleButton
-            //TODO: CLEAN THE DUCK UP THIS BLOODY MESS!!!
-            onClick={async () => {
-              try {
-                localStorage["login"] = "";
-                localStorage["metamask_disabled"] = "true";
-                const prov: any = provider;
-                prov.disconnect();
-              } catch (error) {
-                console.error(error);
-              }
-              setUser("");
-              setModalOpen({ openedModal: null, settings: null });
-            }}
-          >
-            <Logout />
-          </InvisibleButton>
+          <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+            <UserInfo>
+              <UserAddress>{shortenAddress(address, 8)}</UserAddress>
+            </UserInfo>
+            <InvisibleButton
+              //TODO: CLEAN THE DUCK UP THIS BLOODY MESS!!!
+              onClick={async () => {
+                try {
+                  localStorage["login"] = "";
+                  localStorage["metamask_disabled"] = "true";
+                  const prov: any = provider;
+                  prov.disconnect();
+                } catch (error) {
+                  console.error(error);
+                }
+                setUser("");
+                setModalOpen({ openedModal: null, settings: null });
+              }}
+            >
+              <Logout />
+            </InvisibleButton>
+          </div>
         </Connected>
       ) : (
         <NotConnected>
