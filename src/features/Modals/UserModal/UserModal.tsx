@@ -1,8 +1,8 @@
-import React, { useEffect, useMemo, useRef } from "react";
-import styled from "styled-components/macro";
-import jazzicon from "@metamask/jazzicon";
+import React, { useEffect, useMemo, useRef } from 'react'
+import styled from 'styled-components/macro'
+import jazzicon from '@metamask/jazzicon'
 
-import { ReactComponent as Close } from "../close.svg";
+import { ReactComponent as Close } from '../close.svg'
 
 const Wrapper = styled.div`
   width: 420px;
@@ -25,33 +25,33 @@ const Wrapper = styled.div`
 
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15), 0px 4px 35px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
-`;
+`
 
 interface VanillaChildrenProps {
-  children: HTMLElement | HTMLDivElement;
+  children: HTMLElement | HTMLDivElement
 }
 
 const VanillaChildren = ({ children }: VanillaChildrenProps): JSX.Element => {
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     while (ref.current?.firstChild) {
-      ref.current?.removeChild(ref.current?.firstChild);
+      ref.current?.removeChild(ref.current?.firstChild)
     }
-    ref.current?.appendChild(children);
-  }, [children, ref]);
+    ref.current?.appendChild(children)
+  }, [children, ref])
 
   return (
     <div
       style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
       }}
       ref={ref}
     />
-  );
-};
+  )
+}
 
 const Address = styled.div`
   font-family: Roboto;
@@ -62,7 +62,7 @@ const Address = styled.div`
   letter-spacing: 0em;
   text-align: center;
   color: #919191;
-`;
+`
 
 const SubText = styled.div`
   font-family: Montserrat;
@@ -73,7 +73,7 @@ const SubText = styled.div`
   letter-spacing: 0em;
   text-align: center;
   color: #747376;
-`;
+`
 
 const ButtonWrapper = styled.div`
   display: grid;
@@ -98,7 +98,7 @@ const ButtonWrapper = styled.div`
   &:hover {
     background: #f5f5f5;
   }
-`;
+`
 
 const CloseButton = styled.button`
   position: absolute;
@@ -109,21 +109,21 @@ const CloseButton = styled.button`
   background: none;
   border: none;
   cursor: pointer;
-`;
+`
 
 interface LoginModalProps {
-  address: string;
-  onLogout: any;
-  onClose: any;
+  address: string
+  onLogout: any
+  onClose: any
 }
 
 const UserModal = ({ address, onLogout, onClose }: LoginModalProps) => {
   const addressShort = useMemo(
-    () => (address ? address.replace("0x000000000000000000000000", "0x") : ""),
-    [address],
-  );
+    () => (address ? address.replace('0x000000000000000000000000', '0x') : ''),
+    [address]
+  )
   const getAvatar = (loggedIn: string): HTMLDivElement =>
-    jazzicon(122, parseInt(loggedIn.slice(2, 10), 16));
+    jazzicon(122, parseInt(loggedIn.slice(2, 10), 16))
   return (
     <Wrapper>
       <CloseButton onClick={onClose}>
@@ -134,7 +134,7 @@ const UserModal = ({ address, onLogout, onClose }: LoginModalProps) => {
       <SubText>My Dapplets control panel</SubText>
       <ButtonWrapper onClick={onLogout}>Logout</ButtonWrapper>
     </Wrapper>
-  );
-};
+  )
+}
 
-export default UserModal;
+export default UserModal

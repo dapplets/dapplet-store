@@ -1,49 +1,43 @@
-import React, {
-  ReactNode,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import styled from "styled-components/macro";
-import jazzicon from "@metamask/jazzicon";
-import { connect } from "react-redux";
-import { ReactComponent as UserPlus } from "./userPlus.svg";
-import { ReactComponent as Copy } from "./copy.svg";
-import { net } from "../../api/constants";
-import { ModalsList } from "../../models/modals";
-import shortenAddress from "../../lib/shortenAddress";
-import { RootDispatch, RootState } from "../../models";
-import useCopyToClipBoard from "../../hooks/useCopyToClipBoard";
-import { INITIAL_STATE as SORT_INITIAL_STATE, Sort } from "../../models/sort";
-import { TrustedUser } from "../../models/trustedUsers";
-import Button from "./Button";
+import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
+import styled from 'styled-components/macro'
+import jazzicon from '@metamask/jazzicon'
+import { connect } from 'react-redux'
+import { ReactComponent as UserPlus } from './userPlus.svg'
+import { ReactComponent as Copy } from './copy.svg'
+import { net } from '../../api/constants'
+import { ModalsList } from '../../models/modals'
+import shortenAddress from '../../lib/shortenAddress'
+import { RootDispatch, RootState } from '../../models'
+import useCopyToClipBoard from '../../hooks/useCopyToClipBoard'
+import { INITIAL_STATE as SORT_INITIAL_STATE, Sort } from '../../models/sort'
+import { TrustedUser } from '../../models/trustedUsers'
+import Button from './Button'
 
 interface VanillaChildrenProps {
-  children: HTMLElement | HTMLDivElement;
+  children: HTMLElement | HTMLDivElement
 }
 
 const VanillaChildren = ({ children }: VanillaChildrenProps): JSX.Element => {
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     while (ref.current?.firstChild) {
-      ref.current?.removeChild(ref.current?.firstChild);
+      ref.current?.removeChild(ref.current?.firstChild)
     }
-    ref.current?.appendChild(children);
-  }, [children, ref]);
+    ref.current?.appendChild(children)
+  }, [children, ref])
 
   return (
     <div
       style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
       }}
       ref={ref}
     />
-  );
-};
+  )
+}
 
 const Wrapper = styled.div`
   display: grid;
@@ -51,13 +45,13 @@ const Wrapper = styled.div`
   grid-column-gap: 11px;
   grid-template-rows: repeat(3, 1fr);
   grid-template-areas:
-    "avatar title ."
-    "avatar address ."
-    "avatar buttons all";
+    'avatar title .'
+    'avatar address .'
+    'avatar buttons all';
   align-items: center;
   margin-top: 15px;
   padding: 0 15px;
-`;
+`
 
 const Title = styled.div`
   font-size: 26px;
@@ -72,18 +66,18 @@ const Title = styled.div`
   text-align: left;
 
   /* align-self: flex-end; */
-`;
+`
 
 const Avatar = styled.div`
   grid-area: avatar;
-`;
+`
 
 const MocedAvatar = styled.div`
   background: #bbbbbb;
   width: 164px;
   height: 164px;
   border-radius: 54px;
-`;
+`
 
 const Address = styled.div`
   grid-area: address;
@@ -99,11 +93,11 @@ const Address = styled.div`
       text-decoration: none;
     }
   }
-`;
+`
 
 const StyledCopy = styled(Copy)`
   cursor: pointer;
-`;
+`
 
 const ButtonAll = styled.div`
   grid-area: all;
@@ -124,28 +118,28 @@ const ButtonAll = styled.div`
     border: none;
     background: none;
   }
-`;
+`
 
 const mapState = (state: RootState) => ({
   addressFilter: state.sort.addressFilter,
   trustedUsers: state.trustedUsers.trustedUsers,
   currentUserAddress: state.user.address,
-});
+})
 
 const mapDispatch = (dispatch: RootDispatch) => ({
   setSort: (payload: Sort) => dispatch.sort.setSort(payload),
-});
+})
 
 type ProfileInListProps = {
-  setTrustedUsersList: any;
-  isNotDapplet: boolean;
-  setModalOpen: any;
-  title?: string;
-  addTrustedUser: any;
-  removeTrustedUser: any;
-  hexifiedAddressFilter: string;
+  setTrustedUsersList: any
+  isNotDapplet: boolean
+  setModalOpen: any
+  title?: string
+  addTrustedUser: any
+  removeTrustedUser: any
+  hexifiedAddressFilter: string
 } & ReturnType<typeof mapState> &
-  ReturnType<typeof mapDispatch>;
+  ReturnType<typeof mapDispatch>
 
 const ListerProfile = ({
   hexifiedAddressFilter,
@@ -162,41 +156,41 @@ const ListerProfile = ({
   /* store dispatchers */
   setSort,
 }: ProfileInListProps) => {
-  const { success: copiedSuccessfuly, copyToClipboard } = useCopyToClipBoard();
+  const { success: copiedSuccessfuly, copyToClipboard } = useCopyToClipBoard()
 
-  if (!addressFilter) return null;
+  if (!addressFilter) return null
 
   const addToTrustedUsersButtonContent = (
     <>
       <UserPlus />
       Add to trusted users
     </>
-  );
+  )
 
   const currentLister = trustedUsers.find(
-    (user) => user.hex === addressFilter || user.ens === addressFilter,
-  );
+    (user) => user.hex === addressFilter || user.ens === addressFilter
+  )
 
-  const isCurrentListBeingTrusted = !!currentLister;
-  const hasEns = currentLister && currentLister.ens;
-  const ens = hasEns ? currentLister.ens : null;
+  const isCurrentListBeingTrusted = !!currentLister
+  const hasEns = currentLister && currentLister.ens
+  const ens = hasEns ? currentLister.ens : null
 
   const nonOwnerButtonContent = isCurrentListBeingTrusted
-    ? "Remove from trusted users"
-    : addToTrustedUsersButtonContent;
+    ? 'Remove from trusted users'
+    : addToTrustedUsersButtonContent
 
-  const isListOwnedByCurrentUser = currentUserAddress === addressFilter;
+  const isListOwnedByCurrentUser = currentUserAddress === addressFilter
   const buttonContent = isListOwnedByCurrentUser
-    ? "Create dapplet under construction"
-    : nonOwnerButtonContent;
+    ? 'Create dapplet under construction'
+    : nonOwnerButtonContent
 
-  const avatarSeed = currentLister?.hex || addressFilter;
+  const avatarSeed = currentLister?.hex || addressFilter
 
-  const avatar = jazzicon(164, parseInt(avatarSeed.slice(2, 10), 16));
+  const avatar = jazzicon(164, parseInt(avatarSeed.slice(2, 10), 16))
 
   const resetSortAndFiltering = () => {
-    setSort(SORT_INITIAL_STATE);
-  };
+    setSort(SORT_INITIAL_STATE)
+  }
 
   if (currentUserAddress) {
     return (
@@ -214,7 +208,7 @@ const ListerProfile = ({
             {ens || addressFilter}
           </a>
           {copiedSuccessfuly ? (
-            "Copied"
+            'Copied'
           ) : (
             <StyledCopy
               width={16}
@@ -240,7 +234,7 @@ const ListerProfile = ({
           <button onClick={resetSortAndFiltering}>Show All</button>
         </ButtonAll>
       </Wrapper>
-    );
+    )
   }
 
   return (
@@ -265,7 +259,7 @@ const ListerProfile = ({
         <button onClick={resetSortAndFiltering}>Show All</button>
       </ButtonAll>
     </Wrapper>
-  );
-};
+  )
+}
 
-export default connect(mapState, mapDispatch)(ListerProfile);
+export default connect(mapState, mapDispatch)(ListerProfile)

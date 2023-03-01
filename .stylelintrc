@@ -1,18 +1,13 @@
 {
-	"extends": [
-		"stylelint-config-standard",
-		"stylelint-order-config-standard"
-	],
-	"plugins": [
-		"stylelint-order"
-	],
-	"rules": {
-		"indentation": [
-			2
-		],
-		"color-hex-case": "upper",
-		"selector-class-pattern": null,
-		"declaration-block-no-redundant-longhand-properties": null,
-		"alpha-value-notation": "number"
-	}
+  "extends": [
+    "stylelint-config-standard-scss"
+  ],
+  "plugins": [
+    "stylelint-scss",
+    "stylelint-order"
+  ],
+  "rules": {
+    "selector-class-pattern": null
+  },
+  "ignoreFiles": ""
 }

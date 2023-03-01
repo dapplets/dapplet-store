@@ -1,6 +1,6 @@
-import replaceBetween from "./replaceBetween";
+import replaceBetween from './replaceBetween'
 
 const shortenAddress = (addres: string, length: number) =>
-  replaceBetween(addres, length, length, "...");
+  replaceBetween(addres, length, length, '...')
 
-export default shortenAddress;
+export default shortenAddress

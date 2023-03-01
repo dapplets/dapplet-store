@@ -1,16 +1,12 @@
-import { MyListElement } from "../models/myLists";
+import { MyListElement } from '../models/myLists'
 
-export const updateDappletItem = (
-  dapplet: MyListElement,
-  field: string,
-  value: unknown,
-) => {
+export const updateDappletItem = (dapplet: MyListElement, field: string, value: unknown) => {
   return {
     ...dapplet,
     [field]: value,
-  };
-};
+  }
+}
 
 export const removeDappletItem = (dapplets: MyListElement[], index: number) => {
-  return [...dapplets.slice(0, index), ...dapplets.slice(index + 1)];
-};
+  return [...dapplets.slice(0, index), ...dapplets.slice(index + 1)]
+}

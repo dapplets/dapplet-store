@@ -1,0 +1,4 @@
+.prettierignore
+.docusaurius
+node_modules
+build

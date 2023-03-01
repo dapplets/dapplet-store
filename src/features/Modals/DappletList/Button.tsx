@@ -1,5 +1,5 @@
-import React, { ReactNode } from "react";
-import styled, { css } from "styled-components/macro";
+import React, { ReactNode } from 'react'
+import styled, { css } from 'styled-components/macro'
 
 const Accept = css`
   background: #d9304f;
@@ -18,7 +18,7 @@ const Accept = css`
   & svg {
     stroke: #ffffff;
   }
-`;
+`
 
 const Cancel = css`
   background: #f5f5f5;
@@ -38,7 +38,7 @@ const Cancel = css`
   & svg {
     stroke: #919191;
   }
-`;
+`
 
 const Invisible = css`
   border: none;
@@ -55,13 +55,13 @@ const Invisible = css`
   & svg:hover {
     stroke: #bbbbbb;
   }
-`;
+`
 
 type WrapperProps = {
-  cancel?: boolean;
-  accept?: boolean;
-  invisible?: boolean;
-};
+  cancel?: boolean
+  accept?: boolean
+  invisible?: boolean
+}
 
 const Wrapper = styled.button<WrapperProps>`
   border-radius: 40px;
@@ -82,30 +82,19 @@ const Wrapper = styled.button<WrapperProps>`
   ${(props) => props.accept && Accept}
   ${(props) => props.cancel && Cancel}
   ${(props) => props.invisible && Invisible}
-`;
+`
 
 type ButtonProps = {
-  children: ReactNode;
-  onClick: () => {};
-} & WrapperProps;
+  children: ReactNode
+  onClick: () => {}
+} & WrapperProps
 
-const Button = ({
-  children,
-  accept,
-  cancel,
-  invisible,
-  onClick,
-}: ButtonProps) => {
+const Button = ({ children, accept, cancel, invisible, onClick }: ButtonProps) => {
   return (
-    <Wrapper
-      accept={accept}
-      cancel={cancel}
-      invisible={invisible}
-      onClick={onClick}
-    >
+    <Wrapper accept={accept} cancel={cancel} invisible={invisible} onClick={onClick}>
       {children}
     </Wrapper>
-  );
-};
+  )
+}
 
-export default Button;
+export default Button

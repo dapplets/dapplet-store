@@ -1,18 +1,18 @@
-import React, { ReactNode } from "react";
-import styled from "styled-components/macro";
+import React, { ReactNode } from 'react'
+import styled from 'styled-components/macro'
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 21px;
-`;
+`
 
 type BodyProps = {
-  children: ReactNode;
-};
+  children: ReactNode
+}
 
 const Body = ({ children }: BodyProps) => {
-  return <Wrapper>{children}</Wrapper>;
-};
+  return <Wrapper>{children}</Wrapper>
+}
 
-export default Body;
+export default Body

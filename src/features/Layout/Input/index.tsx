@@ -1,20 +1,17 @@
-import React from "react";
-import { Button, Icon, Input as SemanticInput } from "semantic-ui-react";
+import React from 'react'
+import { Button, Icon, Input as SemanticInput } from 'semantic-ui-react'
 
-import { InputProps } from "./Input.props";
-import cn from "classnames";
-import styles from "./Input.module.scss";
+import { InputProps } from './Input.props'
+import cn from 'classnames'
+import styles from './Input.module.scss'
 
-function Input({
-  searchQuery,
-  editSearchQuery,
-}: InputProps): React.ReactElement {
+function Input({ searchQuery, editSearchQuery }: InputProps): React.ReactElement {
   const handlerChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    const value = event.target.value;
-    editSearchQuery(value);
-  };
+    const value = event.target.value
+    editSearchQuery(value)
+  }
 
-  const deleteTextInput = () => editSearchQuery("");
+  const deleteTextInput = () => editSearchQuery('')
 
   return (
     <SemanticInput
@@ -29,16 +26,16 @@ function Input({
         padding: 15,
         paddingRight: 0,
         paddingLeft: 0,
-        width: "100%",
+        width: '100%',
       }}
     >
       <Icon name="search" />
       <input
         style={{
-          color: "#2A2A2A",
+          color: '#2A2A2A',
           fontSize: 16,
           borderRadius: 4,
-          border: "1px solid #E3E3E3",
+          border: '1px solid #E3E3E3',
         }}
         className="app-input"
       />
@@ -53,7 +50,7 @@ function Input({
         <span />
       </Button>
     </SemanticInput>
-  );
+  )
 }
 
-export default Input;
+export default Input
