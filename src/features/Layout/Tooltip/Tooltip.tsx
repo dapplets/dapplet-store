@@ -1,7 +1,7 @@
-import React, { ReactNode } from "react";
-import styled from "styled-components/macro";
+import React, { ReactNode } from 'react'
+import styled from 'styled-components/macro'
 
-const Content = styled.div``;
+const Content = styled.div``
 
 const Tip = styled.div`
   position: absolute;
@@ -13,7 +13,7 @@ const Tip = styled.div`
   min-width: 370px;
 
   &:before {
-    content: "";
+    content: '';
     width: 0;
     height: 0;
     left: 20px;
@@ -22,31 +22,30 @@ const Tip = styled.div`
     border: 10px solid transparent;
     transform: rotate(135deg);
   }
-`;
+`
 
 const Wrapper = styled.div<{ showTip: boolean }>`
   position: relative;
   width: 100%;
 
   & ${Content}:hover + ${Tip} {
-    visibility: ${(props) => (props.showTip ? "visible" : "hidden")};
+    visibility: ${(props) => (props.showTip ? 'visible' : 'hidden')};
     color: #fff;
     background: rgba(42, 42, 42, 0.7);
     padding: 10px;
     line-height: 149%;
 
     &:before {
-      border-color: transparent transparent rgba(42, 42, 42, 0.7)
-        rgba(42, 42, 42, 0.7);
+      border-color: transparent transparent rgba(42, 42, 42, 0.7) rgba(42, 42, 42, 0.7);
     }
   }
-`;
+`
 
 type TooltipProps = {
-  children: ReactNode;
-  tipText: ReactNode;
-  isOn?: boolean;
-};
+  children: ReactNode
+  tipText: ReactNode
+  isOn?: boolean
+}
 
 const Tooltip = ({ children, tipText, isOn = true }: TooltipProps) => {
   return (
@@ -54,7 +53,7 @@ const Tooltip = ({ children, tipText, isOn = true }: TooltipProps) => {
       <Content>{children}</Content>
       <Tip>{tipText}</Tip>
     </Wrapper>
-  );
-};
+  )
+}
 
-export default Tooltip;
+export default Tooltip

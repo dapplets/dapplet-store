@@ -1,34 +1,33 @@
-import React, { DetailedHTMLProps, HTMLAttributes } from "react";
-import cn from "classnames";
-import { Button, Divider, Message } from "semantic-ui-react";
+import React, { DetailedHTMLProps, HTMLAttributes } from 'react'
+import cn from 'classnames'
+import { Button, Divider, Message } from 'semantic-ui-react'
 
-import styles from "./Overlay.module.scss";
+import styles from './Overlay.module.scss'
 
 interface OverlayProps {
-  isNotDapplet: boolean;
+  isNotDapplet: boolean
 }
 
 const Overlay = ({
   className,
   isNotDapplet,
-}: OverlayProps &
-  DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>) => {
+}: OverlayProps & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>) => {
   if (!isNotDapplet) {
-    return <aside className={cn(styles.overlay, className)}></aside>;
+    return <aside className={cn(styles.overlay, className)}></aside>
   }
 
   return (
     <aside className={cn(styles.overlay, className)}>
       <div
         style={{
-          height: "calc(100vh - 70px)",
-          overflow: "auto",
-          paddingBottom: "20px",
+          height: 'calc(100vh - 70px)',
+          overflow: 'auto',
+          paddingBottom: '20px',
         }}
       >
         <Message size="large" className={styles.message}>
           <h2>Try out brand new web experience</h2>
-          <Divider style={{ width: "50%", margin: "1.5em 0" }} />
+          <Divider style={{ width: '50%', margin: '1.5em 0' }} />
           <div className={styles.messageContent}>
             You need to install the main application for using dapplets.
           </div>
@@ -36,21 +35,17 @@ const Overlay = ({
             size="large"
             className={styles.messageButton}
             onClick={(e) => {
-              e.preventDefault();
+              e.preventDefault()
               window.open(
-                "https://github.com/dapplets/dapplet-extension/releases/download/v0.50.0/dapplet-extension.zip",
-                "_blank",
-              );
+                'https://github.com/dapplets/dapplet-extension/releases/download/v0.50.0/dapplet-extension.zip',
+                '_blank'
+              )
             }}
           >
             Download
           </Button>
-          <a
-            href="https://docs.dapplets.org/docs/installation"
-            target="_blank"
-            rel="noreferrer"
-          >
-            How to install{" "}
+          <a href="https://docs.dapplets.org/docs/installation" target="_blank" rel="noreferrer">
+            How to install{' '}
             <svg
               height="10"
               width="15"
@@ -67,7 +62,7 @@ const Overlay = ({
         </Message>
       </div>
     </aside>
-  );
-};
+  )
+}
 
-export default Overlay;
+export default Overlay

@@ -3,7 +3,7 @@
   max-width: 308px;
   padding: 10px;
 
-  border: 1px solid #E3E3E3;
+  border: 1px solid #e3e3e3;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.65);
   backdrop-filter: blur(10px);
@@ -43,19 +43,19 @@
 
 .notification-custom-error {
   .notification-custom-link {
-    color: #FF6442;
+    color: #ff6442;
   }
 }
 
 .notification-custom-loading {
   .notification-custom-link {
-    color: #85CCC7;
+    color: #85ccc7;
   }
 }
 
 .notification-custom-success {
   .notification-custom-link {
-    color: #5EC280;
+    color: #5ec280;
   }
 }
 
@@ -68,15 +68,15 @@
   line-height: 149%;
 
   &.started {
-    color: #85CCC7;
+    color: #85ccc7;
   }
 
   &.error {
-    color: #FF6442;
+    color: #ff6442;
   }
 
   &.finished {
-    color: #5EC280;
+    color: #5ec280;
   }
 }
 

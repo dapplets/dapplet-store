@@ -1,17 +1,17 @@
-import React, { DetailedHTMLProps, FC, HTMLAttributes } from "react";
-import styled from "styled-components/macro";
-import { RootState, RootDispatch } from "../../../models";
-import { INITIAL_STATE, Sort } from "../../../models/sort";
+import React, { DetailedHTMLProps, FC, HTMLAttributes } from 'react'
+import styled from 'styled-components/macro'
+import { RootState, RootDispatch } from '../../../models'
+import { INITIAL_STATE, Sort } from '../../../models/sort'
 
-import { ReactComponent as Logo } from "../../../images/storelogo.svg";
-import { ReactComponent as GitHub } from "./github.svg";
-import { ReactComponent as Discord } from "./discord.svg";
-import { ReactComponent as TG } from "./tg.svg";
-import { ReactComponent as Twitter } from "./twitter.svg";
+import { ReactComponent as Logo } from '../../../images/storelogo.svg'
+import { ReactComponent as GitHub } from './github.svg'
+import { ReactComponent as Discord } from './discord.svg'
+import { ReactComponent as TG } from './tg.svg'
+import { ReactComponent as Twitter } from './twitter.svg'
 
-import { connect } from "react-redux";
-import { Modals } from "../../../models/modals";
-import { Lists } from "../../../models/myLists";
+import { connect } from 'react-redux'
+import { Modals } from '../../../models/modals'
+import { Lists } from '../../../models/myLists'
 
 /* TODO: clean out the comments ASAP but gotta keep it for now, researching purposes */
 
@@ -26,7 +26,7 @@ const Wrapper = styled.header`
   z-index: 9999;
   box-shadow: 0px 10px 8px 0px #2675d10a;
   box-shadow: 0px 3px 4px 0px #00000017;
-`;
+`
 
 const InvisibleButton = styled.button`
   background: transparent;
@@ -34,20 +34,20 @@ const InvisibleButton = styled.button`
   display: flex;
   border: none;
   cursor: pointer;
-`;
+`
 
 const Channels = styled.div`
   display: flex;
   align-items: center;
   gap: 20px;
-`;
+`
 
 const Divider = styled.div`
   width: 1px;
   background-color: #e3e3e3;
   min-height: 20px;
   margin: 0 10px;
-`;
+`
 
 const ChannelItem = styled.a`
   svg {
@@ -57,7 +57,7 @@ const ChannelItem = styled.a`
   &:hover svg {
     fill: #d9304f;
   }
-`;
+`
 
 /* const Menu = styled.div`
   display: flex;
@@ -182,14 +182,14 @@ const ChannelItem = styled.a`
 const mapState = (state: RootState) => ({
   address: state.user.address,
   trigger: state.sort.trigger,
-});
+})
 
 const mapDispatch = (dispatch: RootDispatch) => ({
   setSort: (payload: Sort) => dispatch.sort.setSort(payload),
   setModalOpen: (payload: Modals) => dispatch.modals.setModalOpen(payload),
-});
+})
 
-type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
+type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>
 
 /* interface VanillaChildrenProps {
   children: HTMLElement | HTMLDivElement;
@@ -233,10 +233,9 @@ type Props = ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>;
   { id: 5, label: "Forum", href: "https://forum.dapplets.org" },
 ]; */
 
-interface HeaderProps
-  extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
-  selectedList?: Lists;
-  isNotDapplet: boolean;
+interface HeaderProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+  selectedList?: Lists
+  isNotDapplet: boolean
 }
 
 const Header: FC<HeaderProps & Props> = ({
@@ -311,7 +310,7 @@ const Header: FC<HeaderProps & Props> = ({
           setSort({
             ...INITIAL_STATE,
             trigger: !trigger,
-          });
+          })
         }}
       >
         <Logo />
@@ -336,10 +335,7 @@ const Header: FC<HeaderProps & Props> = ({
         <ChannelItem href="https://github.com/dapplets" target="_blank">
           <GitHub />
         </ChannelItem>
-        <ChannelItem
-          href="https://discord.com/invite/YcxbkcyjMV"
-          target="_blank"
-        >
+        <ChannelItem href="https://discord.com/invite/YcxbkcyjMV" target="_blank">
           <Discord />
         </ChannelItem>
         <ChannelItem href="https://t.me/dapplets" target="_blank">
@@ -372,7 +368,7 @@ const Header: FC<HeaderProps & Props> = ({
         
       </HeaderTop> */}
     </Wrapper>
-  );
-};
+  )
+}
 
-export default connect(mapState, mapDispatch)(Header);
+export default connect(mapState, mapDispatch)(Header)
