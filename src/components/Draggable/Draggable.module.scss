@@ -25,12 +25,8 @@
     background-size: 18px 9px;
     cursor: move; /* fallback if grab cursor is unsupported */
     cursor: grab;
-    cursor: grab;
-    cursor: grab;
 
     &:active {
-      cursor: grabbing;
-      cursor: grabbing;
       cursor: grabbing;
     }
   }
