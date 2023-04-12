@@ -17,7 +17,7 @@ const PUBLIC_LIST = {
 
 const DEFAULT_CHAIN_ID = 0x05;
 
-const MAX_MODULES_COUNTER = 99;
+const MAX_MODULES_COUNTER = 150;
 
 /* TEXT */
 
