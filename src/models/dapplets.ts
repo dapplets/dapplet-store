@@ -139,6 +139,7 @@ const reducers = {
 
 const effects = (dispatch: any) => ({
   getDapplets: async (): Promise<void> => {
+    // ToDo: implement pagination. Now the first 150 dapplets will be downloaded.
     const offset = 0;
     const limit = MAX_MODULES_COUNTER;
     const data = await dappletRegistry.getModules(
@@ -194,6 +195,7 @@ const effects = (dispatch: any) => ({
         uris: dapplet.icon.uris,
       };
 
+      // ToDo: refactor downloading of icons. It shouldn't block downloading of dapplets.
       const url = await getIconUrl(icon);
       dispatch.dapplets.setBlobUrl({ id: i, blobUrl: url });
     });
