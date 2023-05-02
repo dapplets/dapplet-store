@@ -1,10 +1,10 @@
-import React from "react";
-import styled from "styled-components/macro";
+import React from 'react'
+import styled from 'styled-components/macro'
 
-import { ReactComponent as Dapplet } from "./dapplet.svg";
-import { ReactComponent as Metamask } from "./metamask.svg";
-import { ReactComponent as Walletconnect } from "./walletconnect.svg";
-import { ReactComponent as Close } from "../close.svg";
+import { ReactComponent as Dapplet } from './dapplet.svg'
+import { ReactComponent as Metamask } from './metamask.svg'
+import { ReactComponent as Walletconnect } from './walletconnect.svg'
+import { ReactComponent as Close } from '../close.svg'
 
 const Wrapper = styled.div`
   width: 380px;
@@ -27,7 +27,7 @@ const Wrapper = styled.div`
 
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15), 0px 4px 35px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
-`;
+`
 
 const CloseButton = styled.button`
   position: absolute;
@@ -38,7 +38,7 @@ const CloseButton = styled.button`
   background: none;
   border: none;
   cursor: pointer;
-`;
+`
 
 const MainText = styled.div`
   font-family: Montserrat;
@@ -49,11 +49,11 @@ const MainText = styled.div`
   letter-spacing: 0em;
   text-align: left;
   color: #2a2a2a;
-`;
+`
 
 const SubText = styled.div`
   margin-bottom: 30px;
-`;
+`
 
 const ButtonsWrapper = styled.div`
   display: grid;
@@ -61,7 +61,7 @@ const ButtonsWrapper = styled.div`
   grid-column-gap: 30px;
   grid-row-gap: 10px;
   height: 90px;
-`;
+`
 
 const ButtonWrapper = styled.button`
   border-radius: 20px;
@@ -75,7 +75,7 @@ const ButtonWrapper = styled.button`
   &:hover {
     background: #f5f5f5;
   }
-`;
+`
 
 const LinkWrapper = styled.a`
   border-radius: 20px;
@@ -89,7 +89,7 @@ const LinkWrapper = styled.a`
   &:hover {
     background: #f5f5f5;
   }
-`;
+`
 
 const ButtonContentWrapper = styled.div`
   display: grid;
@@ -97,16 +97,16 @@ const ButtonContentWrapper = styled.div`
   justify-items: center;
   align-items: center;
   grid-column-gap: 6px;
-`;
+`
 
-const ButtonText = styled.div``;
+const ButtonText = styled.div``
 
 const Button = (props: {
-  icon: any;
-  text: string;
-  className?: any;
-  onClick?: any;
-  href?: string;
+  icon: any
+  text: string
+  className?: any
+  onClick?: any
+  href?: string
 }) => {
   if (!props.href)
     return (
@@ -116,7 +116,7 @@ const Button = (props: {
           <ButtonText>{props.text}</ButtonText>
         </ButtonContentWrapper>
       </ButtonWrapper>
-    );
+    )
   return (
     <LinkWrapper className={props.className} href={props.href} target="_blank">
       <ButtonContentWrapper>
@@ -124,8 +124,8 @@ const Button = (props: {
         <ButtonText>{props.text}</ButtonText>
       </ButtonContentWrapper>
     </LinkWrapper>
-  );
-};
+  )
+}
 
 const DappletButton = styled(Button)`
   height: 90px;
@@ -138,22 +138,22 @@ const DappletButton = styled(Button)`
     color: #d9304f;
     text-decoration: none;
   }
-`;
+`
 
 const SignButton = styled(Button)`
   height: 40px;
   color: #2a2a2a;
   grid-column-gap: 10px;
   border: 1px solid #e3e3e3;
-`;
+`
 
 interface LoginModalProps {
-  onMetamask: any;
-  onWalletConnect: any;
-  onClose: any;
-  onDapplet: any;
-  isDappletInstall: boolean;
-  isDappletLogin?: boolean;
+  onMetamask: any
+  onWalletConnect: any
+  onClose: any
+  onDapplet: any
+  isDappletInstall: boolean
+  isDappletLogin?: boolean
 }
 
 const LoginModal = (props: LoginModalProps) => {
@@ -162,11 +162,8 @@ const LoginModal = (props: LoginModalProps) => {
       <CloseButton onClick={props.onClose}>
         <Close />
       </CloseButton>
-      <MainText>{!props.isDappletLogin && "Login"}</MainText>
-      <SubText>
-        {props.isDappletLogin &&
-          "You need to install extensions for this action"}
-      </SubText>
+      <MainText>{!props.isDappletLogin && 'Login'}</MainText>
+      <SubText>{props.isDappletLogin && 'You need to install extensions for this action'}</SubText>
       <ButtonsWrapper>
         {props.isDappletLogin &&
           (props.isDappletInstall ? (
@@ -184,11 +181,7 @@ const LoginModal = (props: LoginModalProps) => {
           ))}
         {!props.isDappletLogin && (
           <>
-            <SignButton
-              icon={<Metamask />}
-              text="Login with Metamask"
-              onClick={props.onMetamask}
-            />
+            <SignButton icon={<Metamask />} text="Login with Metamask" onClick={props.onMetamask} />
             <SignButton
               icon={<Walletconnect />}
               text="Login with WalletConnect"
@@ -198,7 +191,7 @@ const LoginModal = (props: LoginModalProps) => {
         )}
       </ButtonsWrapper>
     </Wrapper>
-  );
-};
+  )
+}
 
-export default LoginModal;
+export default LoginModal

@@ -1,10 +1,10 @@
-import { ReactNode, useCallback, useState } from "react";
-import styled from "styled-components/macro";
-import shortenAddress from "../../lib/shortenAddress";
-import { connect } from "react-redux";
-import { ModalsList } from "../../models/modals";
-import { TrustedUser } from "../../models/trustedUsers";
-import { RootDispatch, RootState } from "../../models";
+import { ReactNode, useCallback, useState } from 'react'
+import styled from 'styled-components/macro'
+import shortenAddress from '../../lib/shortenAddress'
+import { connect } from 'react-redux'
+import { ModalsList } from '../../models/modals'
+import { TrustedUser } from '../../models/trustedUsers'
+import { RootDispatch, RootState } from '../../models'
 
 const ButtonsWrapper = styled.div`
   position: relative;
@@ -12,7 +12,7 @@ const ButtonsWrapper = styled.div`
   justify-self: baseline;
   min-height: 40px;
   /* align-self: flex-start; */
-`;
+`
 
 const ButtonAction = styled.div`
   display: grid;
@@ -42,7 +42,7 @@ const ButtonAction = styled.div`
   & div {
     margin-top: 1px;
   }
-`;
+`
 
 const Tooltip = styled.div`
   position: absolute;
@@ -56,25 +56,24 @@ const Tooltip = styled.div`
   line-height: 14px;
   letter-spacing: 0em;
   text-align: center;
-`;
+`
 
-const mapState = (state: RootState) => ({});
+const mapState = (state: RootState) => ({})
 
 const mapDispatch = (dispatch: RootDispatch) => ({
-  setTrustedUsers: (payload: TrustedUser[]) =>
-    dispatch.trustedUsers.setTrustedUsers(payload),
-});
+  setTrustedUsers: (payload: TrustedUser[]) => dispatch.trustedUsers.setTrustedUsers(payload),
+})
 
 interface ButtonProps {
   // myAddress: string;
-  address: string;
-  trustedUsers: TrustedUser[];
-  setTrustedUsers: any;
-  isNotDapplet: boolean;
-  setModalOpen: any;
-  addTrustedUser: any;
-  removeTrustedUser: any;
-  children: ReactNode;
+  address: string
+  trustedUsers: TrustedUser[]
+  setTrustedUsers: any
+  isNotDapplet: boolean
+  setModalOpen: any
+  addTrustedUser: any
+  removeTrustedUser: any
+  children: ReactNode
 }
 
 const Button = ({
@@ -88,12 +87,10 @@ const Button = ({
   children,
   /* store dispatchers */
   setTrustedUsers,
-}: ButtonProps &
-  ReturnType<typeof mapState> &
-  ReturnType<typeof mapDispatch>) => {
-  const [hover, setHover] = useState(false);
+}: ButtonProps & ReturnType<typeof mapState> & ReturnType<typeof mapDispatch>) => {
+  const [hover, setHover] = useState(false)
 
-  const isTrustedUsersListEmpty = trustedUsers.length === 0;
+  const isTrustedUsersListEmpty = trustedUsers.length === 0
 
   const handleClick = useCallback(async () => {
     /* listing.dapplet-base.eth */
@@ -103,8 +100,8 @@ const Button = ({
       return; */
 
     if (isNotDapplet) {
-      setModalOpen({ openedModal: ModalsList.Install, settings: null });
-      return;
+      setModalOpen({ openedModal: ModalsList.Install, settings: null })
+      return
     }
 
     /* if (myAddress === address) {
@@ -114,43 +111,39 @@ const Button = ({
 
     const isUserInTrustedUsersList = trustedUsers
       .map((trustedUser) => trustedUser.hex)
-      .includes(address);
+      .includes(address)
 
     if (isUserInTrustedUsersList) {
-      const updatedTrustedUsers = trustedUsers.filter(
-        (trustedUser) => trustedUser.hex !== address,
-      );
+      const updatedTrustedUsers = trustedUsers.filter((trustedUser) => trustedUser.hex !== address)
 
-      const toBeRemoved = trustedUsers.find(
-        (trustedUser) => trustedUser.hex === address,
-      );
+      const toBeRemoved = trustedUsers.find((trustedUser) => trustedUser.hex === address)
 
-      setTrustedUsers(updatedTrustedUsers);
+      setTrustedUsers(updatedTrustedUsers)
 
-      if (toBeRemoved) removeTrustedUser(toBeRemoved.ens || toBeRemoved.hex);
-      return;
+      if (toBeRemoved) removeTrustedUser(toBeRemoved.ens || toBeRemoved.hex)
+      return
     }
 
-    const updatedTrustedUsers = [...trustedUsers, { hex: address, ens: null }];
+    const updatedTrustedUsers = [...trustedUsers, { hex: address, ens: null }]
 
     if (isTrustedUsersListEmpty) {
       setModalOpen({
         openedModal: ModalsList.FirstTrustedUser,
         settings: {
           onAccept: () => {
-            setTrustedUsers(updatedTrustedUsers);
-            addTrustedUser(address);
-            setModalOpen({ openedModal: null, settings: null });
+            setTrustedUsers(updatedTrustedUsers)
+            addTrustedUser(address)
+            setModalOpen({ openedModal: null, settings: null })
           },
           onCancel: () => setModalOpen({ openedModal: null, settings: null }),
           address: shortenAddress(address, 5),
         },
-      });
-      return;
+      })
+      return
     }
 
-    setTrustedUsers(updatedTrustedUsers);
-    addTrustedUser(address);
+    setTrustedUsers(updatedTrustedUsers)
+    addTrustedUser(address)
   }, [
     addTrustedUser,
     address,
@@ -160,7 +153,7 @@ const Button = ({
     setModalOpen,
     setTrustedUsers,
     trustedUsers,
-  ]);
+  ])
 
   return (
     <ButtonsWrapper>
@@ -186,7 +179,7 @@ const Button = ({
         </div> */}
       </ButtonAction>
     </ButtonsWrapper>
-  );
-};
+  )
+}
 
-export default connect(mapState, mapDispatch)(Button);
+export default connect(mapState, mapDispatch)(Button)

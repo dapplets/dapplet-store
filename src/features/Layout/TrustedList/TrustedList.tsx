@@ -1,41 +1,35 @@
-import React, { useMemo } from "react";
-import { connect } from "react-redux";
+import React, { useMemo } from 'react'
+import { connect } from 'react-redux'
 import TrustedListItem, {
   DappletsListItemTypes,
-} from "../../../components/DappletsListItem/DappletsListItem";
-import { RootDispatch, RootState } from "../../../models";
-import { Sort } from "../../../models/sort";
-import Collapsible from "../Collapsible/Collapsible";
+} from '../../../components/DappletsListItem/DappletsListItem'
+import { RootDispatch, RootState } from '../../../models'
+import { Sort } from '../../../models/sort'
+import Collapsible from '../Collapsible/Collapsible'
 
 type TrustedUser = {
-  title: string;
-  subTitle: string;
-  id: string;
-  type: DappletsListItemTypes;
-};
+  title: string
+  subTitle: string
+  id: string
+  type: DappletsListItemTypes
+}
 
 const mapState = (state: RootState) => ({
   addressFilter: state.sort.addressFilter,
-});
+})
 
 const mapDispatch = (dispatch: RootDispatch) => ({
   setSort: (payload: Sort) => dispatch.sort.setSort(payload),
-});
+})
 
 type TrustedListProps = {
-  users: TrustedUser[];
-  isOpen: boolean;
-  onToggle: () => void;
+  users: TrustedUser[]
+  isOpen: boolean
+  onToggle: () => void
 } & ReturnType<typeof mapDispatch> &
-  ReturnType<typeof mapState>;
+  ReturnType<typeof mapState>
 
-const TrustedList = ({
-  users,
-  isOpen,
-  onToggle,
-  setSort,
-  addressFilter,
-}: TrustedListProps) => {
+const TrustedList = ({ users, isOpen, onToggle, setSort, addressFilter }: TrustedListProps) => {
   const trustedListItems = useMemo(
     () =>
       users.map(({ id, subTitle, title, type }) => {
@@ -43,9 +37,9 @@ const TrustedList = ({
           setSort({
             addressFilter: id,
             selectedList: undefined,
-            searchQuery: "",
-          });
-        };
+            searchQuery: '',
+          })
+        }
 
         return (
           <TrustedListItem
@@ -57,21 +51,16 @@ const TrustedList = ({
             type={type}
             id={id}
           />
-        );
+        )
       }),
-    [addressFilter, setSort, users],
-  );
+    [addressFilter, setSort, users]
+  )
 
   return (
-    <Collapsible
-      isOpen={isOpen}
-      onToggle={onToggle}
-      title="Trusted users"
-      maxHeight={164}
-    >
+    <Collapsible isOpen={isOpen} onToggle={onToggle} title="Trusted users" maxHeight={164}>
       {trustedListItems}
     </Collapsible>
-  );
-};
+  )
+}
 
-export default connect(mapState, mapDispatch)(TrustedList);
+export default connect(mapState, mapDispatch)(TrustedList)

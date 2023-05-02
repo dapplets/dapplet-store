@@ -18,31 +18,27 @@
   }
 
   &__draggable {
-    cursor: pointer;
     width: 20px;
     height: 20px;
     margin: 23px 18px 0 0;
-    background: transparent url("../../images/draggable.svg") center no-repeat;
+    background: transparent url('../../images/draggable.svg') center no-repeat;
     background-size: 18px 9px;
-
     cursor: move; /* fallback if grab cursor is unsupported */
     cursor: grab;
-    cursor: -moz-grab;
-    cursor: -webkit-grab;
+    cursor: grab;
+    cursor: grab;
 
     &:active {
       cursor: grabbing;
-      cursor: -moz-grabbing;
-      cursor: -webkit-grabbing;
+      cursor: grabbing;
+      cursor: grabbing;
     }
   }
 }
 
 .itemContainer {
   display: flex;
-
   min-width: 100%;
-  flex-direction: row;
-  flex-wrap: nowrap;
+  flex-flow: row nowrap;
   justify-content: space-between;
 }

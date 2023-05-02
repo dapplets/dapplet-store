@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { useState, SetStateAction } from "react";
-import { saveListToLocalStorage } from "../../lib/localStorage";
-import styles from "./SortableList.module.scss";
-import { restrictToWindowEdges } from "@dnd-kit/modifiers";
-import { SortableListProps } from "./SortableList.props";
-import Draggable from "../Draggable";
-import ItemDapplet from "../ItemDapplet";
-import { MyListElement } from "../../models/myLists";
+import { useState, SetStateAction } from 'react'
+import { saveListToLocalStorage } from '../../lib/localStorage'
+import styles from './SortableList.module.scss'
+import { restrictToWindowEdges } from '@dnd-kit/modifiers'
+import { SortableListProps } from './SortableList.props'
+import Draggable from '../Draggable'
+import ItemDapplet from '../ItemDapplet'
+import { MyListElement } from '../../models/myLists'
 import {
   DndContext,
   KeyboardSensor,
@@ -17,13 +17,13 @@ import {
   DragOverlay,
   closestCenter,
   DragStartEvent,
-} from "@dnd-kit/core";
+} from '@dnd-kit/core'
 import {
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
   arrayMove,
-} from "@dnd-kit/sortable";
+} from '@dnd-kit/sortable'
 
 const SortableList = ({
   dapplets,
@@ -43,60 +43,58 @@ const SortableList = ({
   expandedCards,
   setExpandedCards,
 }: SortableListProps) => {
-  const [activeId, setActiveId] = useState<SetStateAction<string> | null>(null);
-  const [initialItems, setInitialItems] = useState<MyListElement[]>(items);
+  const [activeId, setActiveId] = useState<SetStateAction<string> | null>(null)
+  const [initialItems, setInitialItems] = useState<MyListElement[]>(items)
 
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    }),
-  );
+    })
+  )
 
   function handleDragStart(event: DragStartEvent) {
-    const { active } = event;
-    setActiveId(active.id);
+    const { active } = event
+    setActiveId(active.id)
   }
 
   const handleDragEnd = (event: DragEndEvent) => {
     if (initialItems.length === 0) {
-      setInitialItems(items);
+      setInitialItems(items)
     }
 
-    const { active: activeItem, over: overItem } = event;
+    const { active: activeItem, over: overItem } = event
 
-    const isDroppedInsideSortableContainer = overItem !== null;
-    const shouldHandleDragEnd =
-      isDroppedInsideSortableContainer && activeItem.id !== overItem.id;
+    const isDroppedInsideSortableContainer = overItem !== null
+    const shouldHandleDragEnd = isDroppedInsideSortableContainer && activeItem.id !== overItem.id
 
-    let indexedItems: MyListElement[] = items;
+    let indexedItems: MyListElement[] = items
 
     if (shouldHandleDragEnd) {
-      const itemNames = items.map(({ name }) => name);
-      const oldIndex = itemNames.indexOf(activeItem.id);
-      const newIndex = itemNames.indexOf(overItem.id);
+      const itemNames = items.map(({ name }) => name)
+      const oldIndex = itemNames.indexOf(activeItem.id)
+      const newIndex = itemNames.indexOf(overItem.id)
 
-      const shiftedItems = arrayMove(items, oldIndex, newIndex);
+      const shiftedItems = arrayMove(items, oldIndex, newIndex)
 
-      const currentInitialItems =
-        initialItems.length > 0 ? initialItems : items;
+      const currentInitialItems = initialItems.length > 0 ? initialItems : items
 
       indexedItems = shiftedItems.map((item, oldIndex) => {
         const newIndex = currentInitialItems.findIndex(
-          (shiftedItem) => shiftedItem.name === item.name,
-        );
+          (shiftedItem) => shiftedItem.name === item.name
+        )
 
-        const indexDiff = oldIndex - newIndex;
-        return { ...item, indexDiff };
-      });
+        const indexDiff = oldIndex - newIndex
+        return { ...item, indexDiff }
+      })
     }
 
-    setItems(indexedItems);
-    saveListToLocalStorage(indexedItems, selectedList);
-    setActiveId(null);
-  };
+    setItems(indexedItems)
+    saveListToLocalStorage(indexedItems, selectedList)
+    setActiveId(null)
+  }
 
-  if (!items || items.length === 0) return null;
+  if (!items || items.length === 0) return null
 
   return (
     <DndContext
@@ -138,13 +136,13 @@ const SortableList = ({
                 />
               </Draggable>
             )
-          );
+          )
         })}
       </SortableContext>
       <DragOverlay
         dropAnimation={{
           duration: 500,
-          easing: "cubic-bezier(0.18, 0.67, 0.6, 1.22)",
+          easing: 'cubic-bezier(0.18, 0.67, 0.6, 1.22)',
         }}
         modifiers={[restrictToWindowEdges]}
       >
@@ -170,7 +168,7 @@ const SortableList = ({
         ) : null}
       </DragOverlay>
     </DndContext>
-  );
-};
+  )
+}
 
-export default SortableList;
+export default SortableList

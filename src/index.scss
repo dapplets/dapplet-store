@@ -16,8 +16,7 @@ body {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
 .ui.basic.button,
@@ -26,7 +25,7 @@ code {
   box-shadow: 0 0 0 1px #fff inset;
 }
 
-.ui[class*="left icon"].input > .app-input {
+.ui[class*='left icon'].input > .app-input {
   padding-right: 3em !important;
 }
 
@@ -75,7 +74,7 @@ code {
       width: 70%;
       height: 2px;
 
-      content: "";
+      content: '';
 
       background-color: #980707;
     }

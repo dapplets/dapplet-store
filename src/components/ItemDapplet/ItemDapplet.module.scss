@@ -1,7 +1,6 @@
 .itemImage::before {
   display: block;
-
-  content: "";
+  content: '';
 }
 
 .itemImage::after {
@@ -9,13 +8,10 @@
   z-index: 2;
   top: 0;
   left: 0;
-
   display: block;
-
   width: 100%;
   height: 100%;
-
-  content: "" "";
+  content: '' '';
 
   /* stylelint-disable-next-line function-url-quotes */
   background: no-repeat white;
@@ -24,9 +20,7 @@
 .item {
   margin: 12px 15px;
   padding: 7px 18px !important;
-
   cursor: pointer;
-
   border: 1px solid lightgray;
   border-radius: 4px;
   background: #fff;
@@ -37,10 +31,8 @@
     width: 20px;
     height: 20px;
     margin: 23px 18px 0 0;
-
     cursor: pointer;
-
-    background: transparent url("../../images/draggable.svg") center no-repeat;
+    background: transparent url('../../images/draggable.svg') center no-repeat;
     background-size: 18px 9px;
 
     &:active {
@@ -55,19 +47,15 @@
 
 .itemContainer {
   display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
+  flex-flow: row nowrap;
   justify-content: space-between;
-
   min-width: 100%;
 }
 
 .id,
 .text {
   margin-top: 4px;
-
   color: #919191;
-
   font-size: 14px;
   line-height: 16px;
 }
@@ -89,7 +77,6 @@
 
 .id {
   display: block;
-
   margin-top: 4px;
 }
 
@@ -109,9 +96,7 @@
 
 .version {
   margin-right: 50px;
-
   color: #8c8c8c;
-
   font-size: 18px;
   font-weight: 500;
   line-height: 18px;
@@ -120,28 +105,22 @@
 .description {
   max-width: 546px;
   margin-top: 6px;
-
   color: #454545;
-
   font-size: 14px;
   line-height: 16px;
 }
 
 .detailedTitle {
   display: block;
-
   margin-top: 20px;
-
   font-weight: 700;
 }
 
 .button {
   display: block !important;
-
   width: 100px !important;
   margin: 14px 0 0 !important;
   padding: 10px 0 !important;
-
   border-radius: 0 !important;
 }
 
@@ -179,11 +158,8 @@
 
 .title {
   display: flex;
-
   margin: 0;
-
   color: #2a2a2a !important;
-
   font-family: Montserrat, sans-serif;
   font-size: 16px !important;
   font-weight: 900;
@@ -217,12 +193,9 @@
 .order {
   display: flex;
   align-items: center;
-
   margin-right: 10px;
   margin-bottom: 2px !important;
-
   color: #5ab5e8;
-
   font-size: 14px;
   font-weight: 400;
   line-height: 149%;
@@ -234,4 +207,174 @@
 
 .down {
   transform: rotate(180deg);
+}
+.labelBurn{
+  margin-top: auto;
+  margin-bottom: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 68px;
+  height: 14px;
+
+  background: #D9304F;
+  border-radius: 4px;
+  color: #fff;
+  svg{
+    margin-right: 2px;
+  }
+}
+.buttonBurnBlock{
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+}
+.buttonBurn{
+display: flex;
+justify-content: center;
+align-items: center;
+  max-width: 188px;
+  min-width: 152px;
+  height: 32px;
+  
+  /* MainColors/PrimaryColor */
+  
+  background: #D9304F;
+  border-radius: 40px;
+  font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 100%;
+
+text-align: center;
+outline: none;
+border: none;
+color: #FFFFFF;
+cursor: pointer;
+&:hover{
+  outline: none;
+  background: #eb9dab;
+}
+svg{
+  margin-right: 5px;
+}
+}
+button:active, button:focus {
+  outline: none!important;
+}
+button::-moz-focus-inner {
+  border: 0!important;
+}
+.price{
+  font-weight: 900;
+font-size: 16px;
+line-height: 149%;
+color: #D9304F;
+}
+.modalBurnDefaultContent{
+  font-size: 14px;
+    line-height: 149%;
+    color: #919191;
+    align-items: flex-start;
+  
+}
+.modalDefaultImg{
+  width: 227px;
+  height: 181px;
+    margin-left: 60px;
+    margin-right: 60px;
+  
+}
+.buttonBlockBurn{
+display: flex;
+
+align-items: center;
+width: 300px;
+}
+.buttonBurnBig{
+width: 188px;
+}
+.modalDefaultContentButton{
+  display: flex;
+cursor: pointer;
+justify-content: center;
+align-items: center;
+outline: none;
+
+width: 145px;
+height: 40px;
+border: none;
+background: #F26680;
+border-radius: 2px;
+font-family: 'Montserrat', sans-serif;
+font-weight: 400;
+font-size: 14px;
+line-height: 149%;
+color: #FFFFFF;
+&:hover{
+  background: #eb9dab;
+}
+svg{
+  margin-right: 12px;
+}
+}
+.burnCancel{
+  background: #F5F5F5;
+  border: 1px solid #919191;
+  color: #919191;
+  margin-left: 10px;
+}
+.buttonBurnIsVisible{
+  width: 25px;
+height: 25px;
+margin-left: 10px;
+background: #FFFFFF;
+background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='4' viewBox='0 0 11 4' fill='none'%3E%3Cpath d='M9.25 3.25C8.55964 3.25 8 2.69036 8 2C8 1.30964 8.55964 0.75 9.25 0.75C9.94036 0.75 10.5 1.30964 10.5 2C10.5 2.33152 10.3683 2.64946 10.1339 2.88388C9.89946 3.1183 9.58152 3.25 9.25 3.25ZM5.5 3.25C4.80964 3.25 4.25 2.69036 4.25 2C4.25 1.30964 4.80964 0.75 5.5 0.75C6.19036 0.75 6.75 1.30964 6.75 2C6.75 2.33152 6.6183 2.64946 6.38388 2.88388C6.14946 3.1183 5.83152 3.25 5.5 3.25ZM1.75 3.25C1.05964 3.25 0.5 2.69036 0.5 2C0.5 1.30964 1.05964 0.75 1.75 0.75C2.44036 0.75 3 1.30964 3 2C3 2.33152 2.8683 2.64946 2.63388 2.88388C2.39946 3.1183 2.08152 3.25 1.75 3.25Z' fill='%23588CA3'/%3E%3C/svg%3E");
+background-repeat: no-repeat;
+background-position: center;
+border: 1px solid #588CA3;
+border-radius: 50%;
+cursor: pointer;
+&:hover{
+opacity: 0.5;
+}
+}
+
+.buttonBlockRemove{
+  width: 171px;
+  border: 1px solid #588CA3;
+  border-radius: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+  display: flex;
+  flex-direction: column;
+  margin-left: 15px;
+  button:active, button:focus {
+    outline: none!important;
+  }
+  button::-moz-focus-inner {
+    border: 0!important;
+  }
+}
+.buttonRemove{
+padding-top: 10px;
+padding-bottom: 10px;
+color: #588CA3;
+font-family: 'Roboto';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 100%;
+background: inherit;
+outline: none;
+border: none;
+cursor: pointer;
+&:hover{
+  opacity: 0.5;
+}
+}
+.buttonBlockRemoveHidden{
+  opacity: 0;
+  height: 0;
 }

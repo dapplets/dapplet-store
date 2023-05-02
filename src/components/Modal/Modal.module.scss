@@ -1,0 +1,108 @@
+
+.modal {
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+
+  background: rgb(196 196 196 / 10%);
+  backdrop-filter: blur(2px);
+
+  animation-name: appear;
+  animation-duration: 300ms;
+}
+
+.modalDialog {
+  position: relative;
+
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 380px;
+  height: 543px;
+
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 4px rgb(0 0 0 / 25%);
+
+  animation-name: animatetop;
+  animation-name: slide-in;
+  animation-duration: 0.4s;
+  animation-duration: 0.5s;
+  padding: 21px 24px;
+}
+
+.modalHeader {
+  display: flex;
+}
+
+.modalClose {
+  cursor: pointer;
+
+  position: absolute;
+  top: 15px;
+  right: 14px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 20px;
+  height: 20px;
+
+  background-color: #d9304f;
+  border-radius: 50%;
+
+  &:hover {
+    background-color: #eb9dab;
+
+    svg{
+      path{
+        fill: #fff;
+      }
+    }
+  }
+
+  &:active {
+    background-color: #a6253c;
+
+    svg{
+      path{
+        fill: #fff;
+      }
+    }
+  }
+}
+
+.modalBody {
+  overflow: auto;
+  font-family: 'Montserrat';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 149%;
+  
+}
+
+.modalTitle {
+  display: block;
+
+ 
+width: 75%;
+  font-family: Montserrat, sans-serif;
+  font-weight: 900;
+font-size: 26px;
+line-height: 149%;
+  color: #2a2a2a;
+}
