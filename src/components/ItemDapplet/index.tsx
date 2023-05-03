@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components/macro'
 import { ReactComponent as DappletListItemMoved } from '../DappletsListItem/arrow-down-circle.svg'
 import { DAPPLET_LISTING_STAGES } from '../../constants'
@@ -21,7 +21,9 @@ import { ReactComponent as CloseBurnModal } from '../../images/closeBurnModal.sv
 import styles from './ItemDapplet.module.scss'
 import { TrustedUser } from '../../models/trustedUsers'
 import { Modal } from '../Modal'
-import { log } from 'console'
+import { getStakeStatus } from '../../api/burnDuc/getStakeStatus';
+import { stakes } from '../../api/burnDuc/stakes';
+import { burn } from '../../api/burnDuc/burn';
 
 const mapState = (state: RootState) => ({
   address: state.user.address,
@@ -91,6 +93,7 @@ interface ItemDappletProps {
   isNotDapplet: boolean
   expandedCards: any
   setExpandedCards: React.Dispatch<any>
+  provider?:any
 }
 
 const ItemDapplet = ({
@@ -111,18 +114,17 @@ const ItemDapplet = ({
   isLocked,
   expandedCards,
   setExpandedCards,
+  provider
 }: ItemDappletProps & Props): React.ReactElement => {
-  const [counterBurn, setCounterBurn] = useState(randomInteger)
+  const [counterBurn, setCounterBurn] = useState<number|undefined>(undefined)
   const [isModalBurn, setModalBurn] = useState(false)
   const [isVisibleButton, setVisibleButton] = useState(false)
+  const [statusStake, setStatusStake] = useState(null)
   const isLocalListEmpty = localDapplets.length === 0
   const isPublicListEmpty = myListing.length === 0
-  function randomInteger() {
-    let rand = 0 - 0.5 + Math.random() * (60 - 0 + 1)
-    return Math.round(rand)
-  }
+ 
   const onCloseModalBurn = () => setModalBurn(false)
-  // const [context, setContext] = useState<null | string>(null);
+ ;
 
   const trustedList = useMemo(() => {
     return item.listers.filter(
@@ -267,6 +269,7 @@ const ItemDapplet = ({
 
   const isIndexUpdated = dappletIndexOverOldListing === dappletIndexOverListing
   const isNewIndexLesser = dappletIndexOverListing < dappletIndexOverOldListing
+
 const onBurnBtnClick = (e: any)=>{
   e.preventDefault()
   e.stopPropagation()
@@ -280,6 +283,27 @@ const onBurnBtnClick = (e: any)=>{
         setModalBurn(true)}
     
 }
+const burnedDUC = async()=>{
+  try{
+    await burn(item.name,provider)
+  }catch(error
+  ){
+    console.log(error)
+  }finally{
+    onCloseModalBurn()
+    editLocalDappletsList(item)
+  }
+
+}
+useEffect(() => {
+  const init = async () => {
+    const status = await getStakeStatus(item.name)
+    const stakesDate = await stakes(item.name,'date')
+    setStatusStake(status)
+    setCounterBurn(stakesDate)
+  }
+  init()
+}, [])
 
   if (!item) return <></>
   return (
@@ -414,14 +438,14 @@ const onBurnBtnClick = (e: any)=>{
       {/* TODO: YOU NEED TO CHECK HOW IT WORKS */}
       {/* TODO: DappletButtonTypes.InMyDapplets : DappletButtonTypes.AddToMy */}
       <ButtonsWrapper>
-      {item.flags && <div className={styles.buttonBurnBlock}> <button onClick={(e) => onBurnBtnClick(e)} className={cn(styles.buttonBurn,{
+      {statusStake && statusStake===2 && <div className={styles.buttonBurnBlock}> <button onClick={(e) => onBurnBtnClick(e)} className={cn(styles.buttonBurn,{
         [styles.buttonBurnBig]: !address || address && !isLocalDapplet && address && getSelectedType()!=='presented'
       })}><Burn/>Burn</button> {(address && getSelectedType()==='presented') || (address&& isLocalDapplet)? <span className={styles.buttonBurnIsVisible} onClick={()=>{
         isVisibleButton? setVisibleButton(false): setVisibleButton(true)}}> </span>:null  }</div> }
-    {!address && item.flags? null : 
+    {!address && statusStake && statusStake===2 ? null : 
     <>
-    {item.flags && !isVisibleButton? <></>: <div className={cn(styles.buttonBlockRemove,{
-      [styles.buttonBlockRemoveHidden]: !item.flags
+    {statusStake && statusStake===2  && !isVisibleButton? <></>: <div className={cn(styles.buttonBlockRemove,{
+      [styles.buttonBlockRemoveHidden]: !statusStake || statusStake !=2
     })}>
      { isLocalDapplet? <button className={styles.buttonRemove}  onClick={onLocalListingButtonClick} >Remove from local list</button>:null}
    
@@ -432,7 +456,7 @@ const onBurnBtnClick = (e: any)=>{
     
    </>
    } 
-         {!item.flags &&
+         {(!statusStake || statusStake !=2)  &&
     <>
       <Button
        itemFlags={item.flags}
@@ -470,7 +494,7 @@ const onBurnBtnClick = (e: any)=>{
         footer={
           <div className={styles.buttonBlockBurn}>
             <button
-              // onClick={() => setBurnDucToken(mi.name)}
+              onClick={burnedDUC}
               className={styles.modalDefaultContentButton}
             >
               <Burn /> Do it

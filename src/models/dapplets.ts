@@ -128,10 +128,10 @@ const effects = (dispatch: any) => ({
     // ToDo: implement pagination. Now the first 150 dapplets will be downloaded.
     const offset = 0
     const limit = MAX_MODULES_COUNTER
-    console.log(REGISTRY_BRANCHES.DEFAULT, offset, limit, false)
+   
  
     const data = await dappletRegistry.getModules(REGISTRY_BRANCHES.DEFAULT, offset, limit, false)
-    console.log(data)
+ 
     const rawDapplets = data.modules.filter(
       (module: IRawDapplet) => module.moduleType === MODULE_TYPES.DAPPLET
     )
@@ -140,7 +140,7 @@ const dapplets: IDapplet[] = rawDapplets.flatMap((module: IRawDapplet, i: number
         hash: module.icon.hash,
         uris: module.icon.uris,
       }
-console.log(dapplets)
+
       const timeStamp = new Date(Number.parseInt(data.lastVersions[i].createdAt._hex, 16) * 1000)
 
       if (module.moduleType === MODULE_TYPES.DAPPLET) {
@@ -167,8 +167,7 @@ console.log(dapplets)
       }
     })
 
-    await dispatch.dapplets.setDapplets(dapplets)
-
+    await dispatch.dapplets.setDapplets(dapplets.filter((x)=> x.owner != '0x0000000000000000000000000000000000000000'))
     rawDapplets.forEach(async (dapplet: IRawDapplet, i: number) => {
       const icon = {
         hash: dapplet.icon.hash,

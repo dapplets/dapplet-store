@@ -91,6 +91,7 @@ export interface LayoutProps {
   windowWidth: number
   isNotDapplet: boolean
   isListLoading: boolean
+  provider:any
 }
 
 const Layout = ({
@@ -114,6 +115,7 @@ const Layout = ({
   setTrustedUsers,
   setMyList,
   isListLoading,
+  provider,
 }: LayoutProps & Props): React.ReactElement<LayoutProps> => {
   const localDappletsList = myLists[Lists.MyDapplets]
   const selectedDappletsList = myLists[Lists.MyListing]
@@ -270,6 +272,7 @@ const Layout = ({
               trigger={trigger || false}
               isNotDapplet={isNotDapplet}
               setModalOpen={setModalOpen}
+              provider={provider}
             />
           </MainContent>
         </>

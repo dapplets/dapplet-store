@@ -141,6 +141,7 @@ export interface DappletListProps {
   setMyList: any
   isListLoading: boolean
   hexifiedAddressFilter: string
+  provider:any
   // setIsListLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -175,6 +176,7 @@ const DappletList = ({
   isListLoading,
   // setIsListLoading,
   hexifiedAddressFilter,
+  provider,
 }: DappletListProps & Props): React.ReactElement => {
   const ref = useRef<HTMLDivElement>(null)
 
@@ -577,6 +579,7 @@ const DappletList = ({
                           setAddressFilter={setAddressFilter}
                           trustedUsersList={trustedUsers}
                           isNotDapplet={isNotDapplet}
+                          provider={provider}
                         />
                       </div>
                     </section>

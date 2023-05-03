@@ -6,7 +6,7 @@ import dappletsRegistryABI from '../DappletRegistry.abi.json'
 
 
 const provider = new ethers.providers.JsonRpcProvider(PROVIDER_URL, DEFAULT_CHAIN_ID)
-console.log(provider)
+
 const dappletRegistry = new ethers.Contract(DAPPLET_REGISTRY_ADDRESS, dappletsRegistryABI, provider)
 
 export default dappletRegistry

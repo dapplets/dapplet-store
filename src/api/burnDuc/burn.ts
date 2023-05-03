@@ -1,20 +1,33 @@
 import { ethers } from 'ethers'
 import { PROVIDER_URL } from '../constants'
 import abi from './DappletRegistry.abi.json'
+import dappletRegistry from '../../api/dappletRegistry'
+import { DAPPLET_REGISTRY_ADDRESS, MAX_MODULES_COUNTER, REGISTRY_BRANCHES } from '../../constants'
+import { AnyNsRecord } from 'dns'
 
-export const burn = async (moduleName: string) => {
-  const provider = new ethers.providers.JsonRpcProvider(PROVIDER_URL, 0x05)
-  const contract: any = new ethers.Contract(
-    '0xa0D2FB6f71F09E60aF1eD7344D4BB8Bb4c83C9af',
+export const burn = async (moduleName: string,provider:any) => {
+  const ethersProvider = new ethers.providers.Web3Provider(provider)
+  const signer = await ethersProvider.getSigner()
+
+  const dappletsRegistry = new ethers.Contract(
+    DAPPLET_REGISTRY_ADDRESS,
     abi,
-    provider
+    signer
+  )
+
+  const offset = 0
+  const limit = MAX_MODULES_COUNTER
+
+  const res = await dappletsRegistry.burnDUC(
+    moduleName
   )
   try {
     
-    const tx = await contract.burnDUC(moduleName)
-    await tx.wait()
+    // const tx = await dappletRegistry.burnDUC(moduleName)
+    await res.wait()
     
   } catch (err) {
     console.log('Error burned', err)
   }
 }
+

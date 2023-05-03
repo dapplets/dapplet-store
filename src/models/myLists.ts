@@ -97,11 +97,7 @@ const effects = (dispatch: any) => ({
 
     const offset = 0
     const limit = MAX_MODULES_COUNTER
-console.log(address,
-  REGISTRY_BRANCHES.DEFAULT,
-  offset,
-  limit,
-  false)
+
     const res = await dappletsRegistry.getModulesOfListing(
       address,
       REGISTRY_BRANCHES.DEFAULT,
@@ -165,10 +161,10 @@ console.log(address,
     })
   },
   async addMyDapplet({ registryUrl, moduleName }: { registryUrl: string; moduleName: string }) {
-    await window.dapplets.addMyDapplet('0xa0D2FB6f71F09E60aF1eD7344D4BB8Bb4c83C9af', moduleName)
+    await window.dapplets.addMyDapplet('0x194a500Cbe0369Ad916E4CDc85572BF0810Ba676', moduleName)
   },
   async removeMyDapplet({ registryUrl, moduleName }: { registryUrl: string; moduleName: string }) {
-    await window.dapplets.removeMyDapplet('0xa0D2FB6f71F09E60aF1eD7344D4BB8Bb4c83C9af', moduleName)
+    await window.dapplets.removeMyDapplet('0x194a500Cbe0369Ad916E4CDc85572BF0810Ba676', moduleName)
   },
 })
 

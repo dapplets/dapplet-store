@@ -255,7 +255,7 @@ const App = ({
       return
     }
   }, [setModalOpen, setProvider, setUser])
-
+console.log(provider)
   return (
     <>
       <Toaster position="bottom-left" />
@@ -271,6 +271,7 @@ const App = ({
         }}
         windowWidth={dimensions.width}
         isNotDapplet={isNotDapplet}
+        provider={provider}
       />
     </>
   )
